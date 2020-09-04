@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import Enumerable from 'linq';
 
 import { AbnormalEffect } from './master/abnormalEffect';
 import { BlazeArt } from './master/blaze_art';
@@ -65,8 +64,7 @@ function chara() {
     }).join("\r\n");
     str += "\r\n\r\n\r\n===========================================\r\n\r\n\r\n\r\n"
     
-    const displayData = Enumerable.from(charas)
-    .select(chara => {
+    const displayData = charas.map(chara => {
         return {
             ...chara,
             skills: chara.SKILL.map(s => {
@@ -84,7 +82,7 @@ function chara() {
                 });
             }).flat(),
         };
-    }).toArray();
+    });
 
     str += displayData.filter(p => p.skills.length).map(p => {
         let s = `${p.NAME}\r\n\r\n`;
