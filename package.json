@@ -1,0 +1,22 @@
+{
+  "name": "atelier_online_data_unpack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "linq": "^3.2.3",
+    "lodash": "^4.17.20",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.1",
+    "@types/lodash": "^4.14.161"
+  },
+  "scripts": {
+    "start": "ts-node ./src"
+  },
+  "author": "hoshiyuki_tamako",
+  "license": "MIT"
+}
