@@ -21,7 +21,7 @@ see `./result` for generated result of the data unpack info
 - LV 5 -> 0 EXP
 
 ### Other Memo
- 
+
 今他の不明 SKILL tags: SDA LDA QTH DDG SADD (status add?)
 
 ```txt
