@@ -12,6 +12,16 @@ see `./result` for generated result of the data unpack info
 
 ## Memo
 
+### Blaze art
+
+- LV 1 -> 100 EXP
+- LV 2 -> 400 EXP
+- LV 3 -> 1200 EXP
+- LV 4 -> 3600 EXP
+- LV 5 -> 0 EXP
+
+### Other Memo
+ 
 今他の不明 SKILL tags: SDA LDA QTH DDG SADD (status add?)
 
 ```txt
