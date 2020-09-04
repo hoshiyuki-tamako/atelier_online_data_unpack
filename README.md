@@ -28,3 +28,8 @@ CATEG 13 = 爆彈?
 ## Running The Script
 
 Require manually copy data from AssetStudio JSON preview to `./raw` folder
+
+### Required
+
+- NodeJs >= 14
+- Files From AssetStudio
