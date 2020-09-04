@@ -29,7 +29,7 @@ see `./result` for generated result of the data unpack info
 R = レベル值
 M = R レベルのステータス最大值
 B = ステータス初始值
-level = アイテムのレベル\r\n
+level = アイテムのレベル
 
 CATEG 16 = 料理
 CATEG 13 = 爆彈?
