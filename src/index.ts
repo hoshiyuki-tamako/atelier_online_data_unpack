@@ -175,15 +175,6 @@ function item() {
     const skills = (fs.readJsonSync("./raw/skill.json") as Skill).m_vList;
 
     let str = '';
-    str += `ステータスの公式: floor ((m - b)/r) * level + b\r\n`;
-    str += "R = レベル值\r\n"
-    str += "M = R レベルのステータス最大值\r\n"
-    str += "B = ステータス初始值\r\n"
-    str += "level = アイテムのレベル\r\n\r\n"
-    str += "今他の不明 tags: SDA LDA QTH DDG SADD (status add?)\r\n";
-
-    str += "\r\n\r\n\r\n";
-    str += "====================================================================================\r\n\r\n";
     str += items.map(p => {
         let s = `${p.NAME}\r\n${p.DESC}\r\n`;
 
