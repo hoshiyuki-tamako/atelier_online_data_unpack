@@ -133,19 +133,19 @@ html
                       th HP
                       td= LogicHelper.calculateState(_chara.SPEC.HP, lv)
                     tr
-                      th 物理攻撃:
+                      th 物理攻撃 (SATK):
                       td= LogicHelper.calculateState(_chara.SPEC.SATK, lv)
                     tr
-                      th 物理防禦:
+                      th 物理防禦 (SDEF):
                       td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv)
                     tr
-                      th 魔法攻撃:
+                      th 魔法攻撃 (MATK):
                       td= LogicHelper.calculateState(_chara.SPEC.MATK, lv)
                     tr
-                      th 魔法防禦:
+                      th 魔法防禦 (MDEF):
                       td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv)
                     tr
-                      th 速度:
+                      th 速度 (SPD):
                       td= LogicHelper.calculateState(_chara.SPEC.SPD, lv)
                     tr
                       th SDA:
@@ -162,6 +162,44 @@ html
                     tr
                       th SADD:
                       td= LogicHelper.calculateState(_chara.SPEC.SADD, lv)
+
+              - const lv = 80
+              - const maxDfm = _chara.FDM[_chara.FDM.length - 1];
+              h4 ----- LV #{lv} 完食 -----
+                table
+                  tr
+                    th HP
+                    td= LogicHelper.calculateState(_chara.SPEC.HP, lv) + maxDfm.HP
+                  tr
+                    th 物理攻撃 (SATK):
+                    td= LogicHelper.calculateState(_chara.SPEC.SATK, lv) + maxDfm.SATK
+                  tr
+                    th 物理防禦 (SDEF):
+                    td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv) + maxDfm.SDEF
+                  tr
+                    th 魔法攻撃 (MATK):
+                    td= LogicHelper.calculateState(_chara.SPEC.MATK, lv) + maxDfm.MATK
+                  tr
+                    th 魔法防禦 (MDEF):
+                    td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv) + maxDfm.MDEF
+                  tr
+                    th 速度 (SPD):
+                    td= LogicHelper.calculateState(_chara.SPEC.SPD, lv) + maxDfm.SPD
+                  tr
+                    th SDA:
+                    td= LogicHelper.calculateState(_chara.SPEC.SDA, lv) + maxDfm.SDA
+                  tr
+                    th LDA:
+                    td= LogicHelper.calculateState(_chara.SPEC.LDA, lv) + maxDfm.LDA
+                  tr
+                    th QTH:
+                    td= LogicHelper.calculateState(_chara.SPEC.QTH, lv) + maxDfm.QTH
+                  tr
+                    th DDG:
+                    td= LogicHelper.calculateState(_chara.SPEC.DDG, lv) + maxDfm.DDG
+                  tr
+                    th SADD:
+                    td= LogicHelper.calculateState(_chara.SPEC.SADD, lv) + maxDfm.SADD
 
               - if (_chara.BA.length)
                 - for (const ba of _chara.BA)
@@ -191,6 +229,40 @@ html
                     a(href="./item.html#DF-" + fd.DF style="display: flex; align-items: center")
                       p 品質 #{fd.QTY}
                       img(src="./img/icon_s/Texture2D/icon_item_s_" + food.DF + ".png" alt= food.NAME style="width: 60px")
+                table
+                  tr
+                    td HP
+                    td= fdm.HP
+                  tr
+                    th 物理攻撃 (SATK):
+                    td= fdm.SATK
+                  tr
+                    th 物理防禦 (SDEF):
+                    td= fdm.SDEF
+                  tr
+                    th 魔法攻撃 (MATK):
+                    td= fdm.MATK
+                  tr
+                    th 魔法防禦 (MDEF):
+                    td= fdm.MDEF
+                  tr
+                    th 速度 (SPD):
+                    td= fdm.SPD
+                  tr
+                    td SDA:
+                    td= fdm.SDA
+                  tr
+                    td LDA:
+                    td= fdm.LDA
+                  tr
+                    td QTH:
+                    td= fdm.QTH
+                  tr
+                    td DDG:
+                    td= fdm.DDG
+                  tr
+                    td SADD:
+                    td= fdm.SADD
 
               h4 -------- クェスト --------
               - for (const qst of _chara.QST)
