@@ -27,7 +27,7 @@ export class Option {
 
   // paths
   public static viewFolder = path.join(__dirname, '..', 'views');
-  public static outFolder = path.join(__dirname, '..', 'public');
+  public static outFolder = path.join(__dirname, '..', 'docs');
 
   // files
   public static blazeArtPath = path.join(__dirname, '..', 'export', 'blaze_art.json');
