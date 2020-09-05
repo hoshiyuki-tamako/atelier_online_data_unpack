@@ -202,6 +202,7 @@ html
                     td= LogicHelper.calculateState(_chara.SPEC.SADD, lv) + maxDfm.SADD
 
               - if (_chara.BA.length)
+                h4 ----- ブレイズアーツ (BA) -----
                 - for (const ba of _chara.BA)
                   - const thatBa = blazeArt.m_vList.find(b => b.DF === ba.DF);
                   - for (const [lv, _ba] of thatBa.LV.entries())
@@ -209,7 +210,7 @@ html
                     - if (!s)
                       p skill not found: DF=#{_ba.SKILL_DF}
                     - else
-                      h4 ----- LV #{_ba.LV} -----
+                      h4 ----- LV #{ba.LV} / BA LV #{lv + 1}  -----
                       table
                         tr
                           th 名前:
