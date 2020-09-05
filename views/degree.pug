@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title Degree
+  body
+    div
+      table
+        thead
+          tr
+            th 名前
+            th 詳細
+        tbody
+          - for (const d of degree.List)
+            tr
+              td= d.NAME
+              td= d.DESC

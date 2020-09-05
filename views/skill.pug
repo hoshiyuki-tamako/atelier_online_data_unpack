@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title Skill
+  body
+    div
+      table
+        thead
+          tr
+            th 名前
+            th 詳細
+            th 数値
+        tbody
+          - for (const s of skill.m_vList)
+            tr
+              td= s.name
+              td= s.detail
+              td= `${s.effectValue}, ${s.effectValue2}`

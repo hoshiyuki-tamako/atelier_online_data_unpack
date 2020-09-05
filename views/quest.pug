@@ -1,0 +1,41 @@
+doctype html
+html
+  head
+    title Quest
+    style(type="text/css").
+      *{padding:0;margin:0}
+
+  body
+    div
+      - for (const _quest of quest.m_vList)
+        p= _quest.NAME
+        p= _quest.DESC
+
+        p 達成條件: #{_quest.CONDITION}
+
+        - if (_quest.RWD_ITEM.length || _quest.RWD_WTH.length)
+          h3 ------ 報酬 ------
+          - if (_quest.RWD_ITEM.length)
+            - for (const rwd of _quest.RWD_ITEM)
+              - const _item = item.m_vList.find(item => item.DF === rwd.DF);
+              - if (!_item)
+                p cannot find item: DF=#{rwd.DF}
+              - else
+                a(href="./item.html#DF-" + _item.DF style="display: flex; align-items: center")
+                  p 品質 #{rwd.QTY} #{_item.NAME}`
+                  img(src="./img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME style="width: 50px")
+
+          - if (_quest.RWD_WTH.length)
+            - for (const rwd of _quest.RWD_WTH)
+              case rwd.DF
+                when 1
+                  p アカデミーポイント #{rwd.CNT}
+                when 2
+                  p エーテル #{rwd.CNT}
+                when 4
+                  p コール #{rwd.CNT}
+                when 9000
+                  p 降臨メダル #{rwd.CNT}
+                default
+                  p DF=#{rwd.DF} #{rwd.CNT}
+        hr

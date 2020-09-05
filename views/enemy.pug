@@ -1,0 +1,177 @@
+doctype html
+html
+  head
+    title Enemy
+    style(type="text/css").
+      *{padding:0;margin:0}
+
+      table th {
+        text-align: right;
+      }
+
+      table td {
+        text-align: left;
+      }
+      table th, td {
+        padding: 4px;
+      }
+
+      .categories-index-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .category-index-container {
+        border: 1px gray solid;
+        padding: 4px;
+      }
+
+
+      .items-index-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .item-index-container {
+        border: 1px gray solid;
+        width: 120px;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        padding-left: 4px;
+      }
+      .item-index-text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .item-index-img {
+        width: 100%;
+      }
+
+      .items {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+      }
+      .item-container {
+        border: 1px gray solid;
+        margin: 10px;
+        display: flex;
+        flex-direction: row;
+      }
+      .item-container-left {
+        width: 200px;
+        border-right: 1px gray solid;
+      }
+      .item-container-right {
+        padding-left: 4px;
+      }
+      .item-name {
+        text-align: center;
+      }
+      .item-icon-container {
+        justify-content: center;
+        align-items: center;
+      }
+      .item-icon-img {
+        width: 100%;
+      }
+  body
+    div.categories-index-container
+      - for(const kind of enemy.KindList)
+        div.category-index-container
+          a(href="#kind-" + kind.iKind)
+            h2= kind.strName
+    hr
+    - for(const [eKind, _enemies] of Enumerable.from(enemy.m_vList).groupBy(p => p.eKind).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
+      - const strName = enemy.KindList.find(i => i.iKind === eKind).strName
+      h2(id="kind-" + eKind)= strName
+      hr
+      div.items-index-container
+        - for (const _enemy of _enemies)
+          a(href="#DF-" + _enemy.DF)
+            div.item-index-container
+              p.item-index-text #{_enemy.strName}
+              div
+                img.item-index-img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.eKind.toString().padStart(3, "0")}_${_enemy.iCategory.toString().padStart(2, "0")}.png` alt= _enemy.strName)
+      br
+      br
+    hr
+    div.items
+      - for(const _enemy of enemy.m_vList)
+        div(id="DF-" + _enemy.DF).item-container
+          div.item-container-left
+            div
+              h3.item-name= _enemy.strName
+              div.item-icon
+                img.item-index-img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.eKind.toString().padStart(3, "0")}_${_enemy.iCategory.toString().padStart(2, "0")}.png` alt= _enemy.strName)
+          div.item-container-right
+            div DF: #{_enemy.DF}
+            div 短い名前: #{_enemy.AnotherName}
+            div 名前: #{_enemy.strDesc}
+            div 種族: #{enemy.KindList.find(i => i.iKind === _enemy.eKind).strName}
+            div ボス: #{_enemy.bBoss ? "✓" : "x"}
+            h4 ---- 屬性 ----
+              table
+                - for (const [element, value] of Object.entries(_enemy.sParam.ELM).filter(p => p[1]))
+                  tr
+                    td= element
+                    td= value
+            - if (_enemy.sParam.SKILL.length)
+              - for (const _skill of _enemy.sParam.SKILL)
+                h4 ------ Skill/Effect ------
+                - const s = skill.m_vList.find(s => s.id === _skill.DF);
+                - if (!s)
+                  p skill not found: DF=#{_skill.DF}
+                - else
+                  table
+                    tr
+                      th 名前:
+                      td= s.name
+                    tr
+                      th 詳細:
+                      td= s.detail
+                    tr
+                      th 数値:
+                      td= `${s.effectValue}, ${s.effectValue2}`
+                  p &#x3E;
+
+            - for (const lv of [1, 60, 80, 120, 140])
+              h4 ----- LV #{lv} -----
+                table
+                  tr
+                    th EXP
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.EXP, lv)
+                  tr
+                    th HP
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.HP, lv)
+                  tr
+                    th 物理攻撃:
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.SATK, lv)
+                  tr
+                    th 物理防禦:
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDEF, lv)
+                  tr
+                    th 魔法攻撃:
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.MATK, lv)
+                  tr
+                    th 魔法防禦:
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.MDEF, lv)
+                  tr
+                    th 速度:
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.SPD, lv)
+                  tr
+                    th SDA:
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDA, lv)
+                  tr
+                    th LDA:
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.LDA, lv)
+                  tr
+                    th QTH:
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.QTH, lv)
+                  tr
+                    th DDG:
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.DDG, lv)
+                  tr
+                    th SADD:
+                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.SADD, lv)
+

@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title Effect
+  body
+    div
+      table
+        thead
+          tr
+            th 名前
+            th 数値
+        tbody
+          - for (const ef of effect.m_vList)
+            tr
+              td= ef.name
+              td= ef.value
+

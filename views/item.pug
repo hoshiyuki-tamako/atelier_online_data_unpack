@@ -1,0 +1,186 @@
+doctype html
+html
+  head
+    title Item
+    style(type="text/css").
+      *{padding:0;margin:0}
+
+      table th {
+        text-align: right;
+      }
+
+      table td {
+        text-align: left;
+      }
+      table th, td {
+        padding: 4px;
+      }
+
+      .categories-index-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .category-index-container {
+        border: 1px gray solid;
+        padding: 4px;
+      }
+
+
+      .items-index-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .item-index-container {
+        border: 1px gray solid;
+        width: 120px;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        padding-left: 4px;
+      }
+      .item-index-text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .item-index-img {
+        width: 100%;
+      }
+
+      .items {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+      }
+      .item-container {
+        border: 1px gray solid;
+        margin: 10px;
+        display: flex;
+        flex-direction: row;
+      }
+      .item-container-left {
+        width: 200px;
+        border-right: 1px gray solid;
+      }
+      .item-container-right {
+        padding-left: 4px;
+      }
+      .item-name {
+        text-align: center;
+      }
+      .item-icon-container {
+        justify-content: center;
+        align-items: center;
+      }
+      .item-icon-img {
+        width: 100%;
+      }
+  body
+    div.categories-index-container
+      - for(const ii of itemIndex)
+        div.category-index-container
+          a(href="#CATEG-" + ii.CATEG)
+            h2= Option.itemCategoryLoopUp[ii.CATEG] || `CATEG=${ii.CATEG}`
+    hr
+    - for(const ii of itemIndex)
+      h2(id="CATEG-" + ii.CATEG)= Option.itemCategoryLoopUp[ii.CATEG] || `CATEG=${ii.CATEG}`
+      hr
+      div.items-index-container
+        - for (const i of ii.items)
+          a(href="#DF-" + i.DF)
+            div.item-index-container
+              p.item-index-text #{i.NAME}
+              div
+                img.item-index-img(src="./img/icon_s/Texture2D/icon_item_s_" + i.DF + ".png" alt= i.NAME)
+      br
+      br
+    hr
+    div.items
+      - for(const i of item.m_vList)
+        div(id="DF-" + i.DF).item-container
+          div.item-container-left
+            div
+              h3.item-name= i.NAME
+              div.item-icon
+                img.item-icon-img(src="./img/icon_s/Texture2D/icon_item_s_" + i.DF + ".png" alt= i.NAME)
+            div
+              div= i.DESC
+          div.item-container-right
+            div DF: #{i.DF}
+            div エーテル: #{i.RST.MN}
+            - if (i.RSP.length)
+              h4 ----- 合成 -----
+              table
+                tr
+                  - for (const rsp of i.RSP)
+                    td
+                      a(href="#DF-" + rsp.DF)
+                        img(src="./img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF style="width: 60px")
+            h4 ----- 調合 -----
+            table
+              tr
+                - for (const otherItem of item.m_vList.filter(p => p.RSP.some(j => j.DF === i.DF)))
+                  td
+                    a(href="#DF-" + otherItem.DF)
+                      img(src="./img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF style="width: 60px")
+            - if (i.SPC.length)
+              - for (const spc of i.SPC)
+                h4 ------ Skill/Effect (品質 #{spc.THR}) ------
+                - for (const spcSkill of spc.SKILL)
+                  - const s = skill.m_vList.find(s => s.id === spcSkill.DF);
+                  - if (!s)
+                    p skill not found: DF=#{spcSkill.DF}
+                  - else
+                    table
+                      tr
+                        th 名前:
+                        td= s.name
+                      tr
+                        th 詳細:
+                        td= s.detail
+                      tr
+                        th 数値:
+                        td= `${s.effectValue}, ${s.effectValue2}`
+                    p &#x3E;
+
+            - if (i.EQU_BRD)
+              h4 ---- 屬性 ----
+                table
+                  - for (const [element, value] of Object.entries(i.ELM).filter(p => p[1]))
+                    tr
+                      td= element
+                      td= value
+
+              - for (const lv of [1, 60, 80])
+                h4 ----- LV #{lv} -----
+                  table
+                    tr
+                      th 物理攻撃:
+                      td= LogicHelper.calculateState(i.EQU.SATK, lv)
+                    tr
+                      th 物理防禦:
+                      td= LogicHelper.calculateState(i.EQU.SDEF, lv)
+                    tr
+                      th 魔法攻撃:
+                      td= LogicHelper.calculateState(i.EQU.MATK, lv)
+                    tr
+                      th 魔法防禦:
+                      td= LogicHelper.calculateState(i.EQU.MDEF, lv)
+                    tr
+                      th 速度:
+                      td= LogicHelper.calculateState(i.EQU.SPD, lv)
+                    tr
+                      th SDA:
+                      td= LogicHelper.calculateState(i.EQU.SDA, lv)
+                    tr
+                      th LDA:
+                      td= LogicHelper.calculateState(i.EQU.LDA, lv)
+                    tr
+                      th QTH:
+                      td= LogicHelper.calculateState(i.EQU.QTH, lv)
+                    tr
+                      th DDG:
+                      td= LogicHelper.calculateState(i.EQU.DDG, lv)
+                    tr
+                      th SADD:
+                      td= LogicHelper.calculateState(i.EQU.SADD, lv)
