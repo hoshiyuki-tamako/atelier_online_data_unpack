@@ -99,7 +99,7 @@ html
             div.item-index-container
               p.item-index-text #{_enemy.strName}
               div
-                img.item-index-img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.eKind.toString().padStart(3, "0")}_${_enemy.iCategory.toString().padStart(2, "0")}.png` alt= _enemy.strName)
+                img.item-index-img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
       br
       br
     hr
@@ -110,7 +110,7 @@ html
             div
               h3.item-name= _enemy.strName
               div.item-icon
-                img.item-index-img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.eKind.toString().padStart(3, "0")}_${_enemy.iCategory.toString().padStart(2, "0")}.png` alt= _enemy.strName)
+                img.item-index-img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
           div.item-container-right
             div DF: #{_enemy.DF}
             div 短い名前: #{_enemy.AnotherName}
@@ -142,7 +142,7 @@ html
                       td= `${s.effectValue}, ${s.effectValue2}`
                   p &#x3E;
 
-            - for (const lv of [1, 60, 80, 120, 140])
+            - for (const lv of [1, 60, 80, 120])
               h4 ----- LV #{lv} -----
                 table
                   tr
