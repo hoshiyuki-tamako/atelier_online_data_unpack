@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title Important Item
+  body
+    div
+      table
+        thead
+          tr
+            th ID
+            th 名前
+            th 画像
+        tbody
+          - for (const id of importantItems)
+            tr
+              td= id
+              td= Option.importantItemLookUp[id] || ''
+              td
+                img(src="./img/icon_item01/Texture2D/icon_item01_" + id.toString().padStart(5, '0') + ".png" style="width: 60px")

@@ -2,7 +2,7 @@ doctype html
 html
   head
     title Item
-    style(type="text/css").
+    style.
       *{padding:0;margin:0}
 
       table th {
@@ -87,10 +87,10 @@ html
       - for(const ii of itemIndex)
         div.category-index-container
           a(href="#CATEG-" + ii.CATEG)
-            h2= Option.itemCategoryLoopUp[ii.CATEG] || `CATEG=${ii.CATEG}`
+            h2= Option.itemCategoryLookUp[ii.CATEG] || `CATEG=${ii.CATEG}`
     hr
     - for(const ii of itemIndex)
-      h2(id="CATEG-" + ii.CATEG)= Option.itemCategoryLoopUp[ii.CATEG] || `CATEG=${ii.CATEG}`
+      h2(id="CATEG-" + ii.CATEG)= Option.itemCategoryLookUp[ii.CATEG] || `CATEG=${ii.CATEG}`
       hr
       div.items-index-container
         - for (const i of ii.items)
@@ -116,19 +116,26 @@ html
             div DF: #{i.DF}
             div エーテル: #{i.RST.MN}
             - if (i.RSP.length)
+              - if (i.ALT.LV)
+                h4 ----- 合成條件 -----
+                p LV: #{i.ALT.LV}
               h4 ----- 合成 -----
+              - if (i.RST && i.RST.MN)
+                p #{i.RST.MN} エーテル
               table
                 tr
                   - for (const rsp of i.RSP)
                     td
                       a(href="#DF-" + rsp.DF)
                         img(src="./img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF style="width: 60px")
-            h4 ----- 調合 -----
-            div.item-making-container
-              - for (const otherItem of item.m_vList.filter(p => p.RSP.some(j => j.DF === i.DF)))
-                div
-                  a(href="#DF-" + otherItem.DF)
-                    img(src="./img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF style="width: 60px")
+            - const makeItem = item.m_vList.filter(p => p.RSP.some(j => j.DF === i.DF))
+            - if (makeItem.length)
+              h4 ----- 調合 -----
+              div.item-making-container
+                - for (const otherItem of makeItem)
+                  div
+                    a(href="#DF-" + otherItem.DF)
+                      img(src="./img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF style="width: 60px")
             - if (i.SPC.length)
               - for (const spc of i.SPC)
                 h4 ------ Skill/Effect (品質 #{spc.THR}) ------
@@ -161,19 +168,19 @@ html
                 h4 ----- LV #{lv} -----
                   table
                     tr
-                      th 物理攻撃 (SATK):
+                      th 物理攻撃 SATK:
                       td= LogicHelper.calculateState(i.EQU.SATK, lv)
                     tr
-                      th 物理防禦 (SDEF):
+                      th 物理防禦 SDEF:
                       td= LogicHelper.calculateState(i.EQU.SDEF, lv)
                     tr
-                      th 魔法攻撃 (MATK):
+                      th 魔法攻撃 MATK:
                       td= LogicHelper.calculateState(i.EQU.MATK, lv)
                     tr
-                      th 魔法防禦 (MDEF):
+                      th 魔法防禦 MDEF:
                       td= LogicHelper.calculateState(i.EQU.MDEF, lv)
                     tr
-                      th 速度 (SPD):
+                      th 速度 SPD:
                       td= LogicHelper.calculateState(i.EQU.SPD, lv)
                     tr
                       th SDA:

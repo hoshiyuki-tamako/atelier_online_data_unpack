@@ -4,7 +4,7 @@ import path from 'path';
 export class Option {
 
   // data name map
-  public static itemCategoryLoopUp = {
+  public static itemCategoryLookUp = {
     11: '材料',
     12: '攻撃＆探索',
     13: '攻撃',
@@ -23,7 +23,14 @@ export class Option {
     54: '限界突破',
     55: '万能強化',
     56: 'ブレイズアーツ経験値',
-  }
+  };
+
+  public static importantItemLookUp = {
+    1: 'アカデミーポイント',
+    2: 'エーテル',
+    4: 'コール',
+    9000: '降臨メダル',
+  };
 
   // paths
   public static viewFolder = path.join(__dirname, '..', 'views');
@@ -40,6 +47,19 @@ export class Option {
   public static abnomalstateeffectPath = path.join(__dirname, '..', 'export', 'abnomalstateeffect.json');
 
   public static fileCache = {} as { [s: string]: unknown };
+
+  public static async preLoadFiles() {
+    return Promise.all([
+      this.blazeArtPath,
+      this.charaPath,
+      this.degreePath,
+      this.enemyPath,
+      this.itemPath,
+      this.questPath,
+      this.skillPath,
+      this.abnomalstateeffectPath,
+    ].map(this.loadFileFromCache.bind(this)));
+  }
 
   public static async loadFileFromCache(path: string) {
     if (this.fileCache[path]) {

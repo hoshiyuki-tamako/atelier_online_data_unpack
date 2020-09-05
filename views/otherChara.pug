@@ -1,0 +1,108 @@
+doctype html
+html
+  head
+    title Other Chara
+    style.
+      *{padding:0;margin:0}
+
+      table th {
+        text-align: right;
+      }
+
+      table td {
+        text-align: left;
+      }
+      table th, td {
+        padding: 4px;
+      }
+
+      .categories-index-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .category-index-container {
+        border: 1px gray solid;
+        padding: 4px;
+      }
+
+
+      .items-index-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .item-index-container {
+        border: 1px gray solid;
+        width: 120px;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        padding-left: 4px;
+      }
+      .item-index-text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .item-index-img {
+        width: 100%;
+      }
+
+      .items {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+      }
+      .item-container {
+        border: 1px gray solid;
+        margin: 10px;
+        width: calc(100%-(10px * 2));
+        display: flex;
+        flex-direction: row;
+      }
+      .item-container-left {
+        min-width: 200px;
+        max-width: 200px;
+        border-right: 1px gray solid;
+      }
+      .item-container-right {
+        padding-left: 4px;
+      }
+      .item-making-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+      }
+      .item-name {
+        text-align: center;
+      }
+      .item-icon-container {
+        justify-content: center;
+        align-items: center;
+      }
+      .item-icon-img {
+        width: 100%;
+      }
+  body
+    div.items-index-container
+      - for (const _chara of chara.m_vList.filter(p => !p.SKILL.length))
+        a(href="#DF-" + _chara.DF)
+          div.item-index-container
+            p.item-index-text #{_chara.NAME}
+            div
+              img.item-index-img(src="./img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+    hr
+    div.items
+      - for(const _chara of chara.m_vList.filter(p => !p.SKILL.length))
+        div(id="DF-" + _chara.DF).item-container
+          div.item-container-left
+            div
+              h3.item-name= _chara.NAME
+              div.item-icon
+              - for (const id of [...Array(10).keys()])
+                - const iconFilename = `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png`
+                - if (charaIcons.includes(iconFilename))
+                  img.item-index-img(src="./img/chara/Texture2D/" + `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png` alt= _chara.NAME)
+            div
+              div= _chara.DESC
+          div.item-container-right
+            p DF: #{_chara.DF}

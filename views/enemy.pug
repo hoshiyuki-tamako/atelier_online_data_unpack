@@ -2,7 +2,7 @@ doctype html
 html
   head
     title Enemy
-    style(type="text/css").
+    style.
       *{padding:0;margin:0}
 
       table th {
@@ -117,6 +117,12 @@ html
             div 詳細: #{_enemy.strDesc}
             div 種族: #{enemy.KindList.find(i => i.iKind === _enemy.eKind).strName}
             div ボス: #{_enemy.bBoss ? "✓" : "x"}
+            div オンラインオーンリー: #{_enemy.bOnlyOnline ? "✓" : "x"}
+            div 大きさ: #{_enemy.eSize}
+            div 視角: #{"-"}°
+            div 移動速度: #{_enemy.fMoveSpeed}
+            div 打撃範囲: #{_enemy.fHitRadius}
+    
             h4 ---- 屬性 ----
               table
                 - for (const [element, value] of Object.entries(_enemy.sParam.ELM).filter(p => p[1]))
@@ -124,8 +130,8 @@ html
                     td= element
                     td= value
             - if (_enemy.sParam.SKILL.length)
+              h4 ------ Skill/Effect ------
               - for (const _skill of _enemy.sParam.SKILL)
-                h4 ------ Skill/Effect ------
                 - const s = skill.m_vList.find(s => s.id === _skill.DF);
                 - if (!s)
                   p skill not found: DF=#{_skill.DF}
@@ -152,19 +158,19 @@ html
                     th HP
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.HP, lv)
                   tr
-                    th 物理攻撃 (SATK):
+                    th 物理攻撃 SATK:
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.SATK, lv)
                   tr
-                    th 物理防禦 (SDEF):
+                    th 物理防禦 SDEF:
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDEF, lv)
                   tr
-                    th 魔法攻撃 (MATK):
+                    th 魔法攻撃 MATK:
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.MATK, lv)
                   tr
-                    th 魔法防禦 (MDEF):
+                    th 魔法防禦 MDEF:
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.MDEF, lv)
                   tr
-                    th 速度 (SPD):
+                    th 速度 SPD:
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.SPD, lv)
                   tr
                     th SDA:

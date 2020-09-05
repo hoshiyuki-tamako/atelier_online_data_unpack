@@ -2,7 +2,7 @@ doctype html
 html
   head
     title Chara
-    style(type="text/css").
+    style.
       *{padding:0;margin:0}
 
       table th {
@@ -105,6 +105,7 @@ html
             div
               div= _chara.DESC
           div.item-container-right
+            p DF: #{_chara.DF}
             div
               h4 ------ Skill ------
               - for (const [lv, skills] of Enumerable.from(chara.m_vList[0].SKILL).groupBy(p => p.LV).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
@@ -133,19 +134,19 @@ html
                       th HP
                       td= LogicHelper.calculateState(_chara.SPEC.HP, lv)
                     tr
-                      th 物理攻撃 (SATK):
+                      th 物理攻撃 SATK:
                       td= LogicHelper.calculateState(_chara.SPEC.SATK, lv)
                     tr
-                      th 物理防禦 (SDEF):
+                      th 物理防禦 SDEF:
                       td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv)
                     tr
-                      th 魔法攻撃 (MATK):
+                      th 魔法攻撃 MATK:
                       td= LogicHelper.calculateState(_chara.SPEC.MATK, lv)
                     tr
-                      th 魔法防禦 (MDEF):
+                      th 魔法防禦 MDEF:
                       td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv)
                     tr
-                      th 速度 (SPD):
+                      th 速度 SPD:
                       td= LogicHelper.calculateState(_chara.SPEC.SPD, lv)
                     tr
                       th SDA:
@@ -171,19 +172,19 @@ html
                     th HP
                     td= LogicHelper.calculateState(_chara.SPEC.HP, lv) + maxDfm.HP
                   tr
-                    th 物理攻撃 (SATK):
+                    th 物理攻撃 SATK:
                     td= LogicHelper.calculateState(_chara.SPEC.SATK, lv) + maxDfm.SATK
                   tr
-                    th 物理防禦 (SDEF):
+                    th 物理防禦 SDEF:
                     td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv) + maxDfm.SDEF
                   tr
-                    th 魔法攻撃 (MATK):
+                    th 魔法攻撃 MATK:
                     td= LogicHelper.calculateState(_chara.SPEC.MATK, lv) + maxDfm.MATK
                   tr
-                    th 魔法防禦 (MDEF):
+                    th 魔法防禦 MDEF:
                     td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv) + maxDfm.MDEF
                   tr
-                    th 速度 (SPD):
+                    th 速度 SPD:
                     td= LogicHelper.calculateState(_chara.SPEC.SPD, lv) + maxDfm.SPD
                   tr
                     th SDA:
@@ -226,28 +227,29 @@ html
               - for (const fdm of _chara.FDM)
                 h5 ----- LV #{fdm.NO} -----
                 - for (const fd of fdm.FD)
-                  - const food = item.m_vList.find(i => i.DF === fd.DF)
-                    a(href="./item.html#DF-" + fd.DF style="display: flex; align-items: center")
-                      p 品質 #{fd.QTY}
-                      img(src="./img/icon_s/Texture2D/icon_item_s_" + food.DF + ".png" alt= food.NAME style="width: 60px")
+                  div(style="width: 20%")
+                    - const food = item.m_vList.find(i => i.DF === fd.DF)
+                      a(href="./item.html#DF-" + fd.DF style="display: flex; align-items: center; flex-basis: auto")
+                        span 品質 #{fd.QTY}
+                        img(src="./img/icon_s/Texture2D/icon_item_s_" + food.DF + ".png" alt= food.NAME style="width: 60px")
                 table
                   tr
                     td HP
                     td= fdm.HP
                   tr
-                    td 物理攻撃 (SATK):
+                    td 物理攻撃 SATK:
                     td= fdm.SATK
                   tr
-                    td 物理防禦 (SDEF):
+                    td 物理防禦 SDEF:
                     td= fdm.SDEF
                   tr
-                    td 魔法攻撃 (MATK):
+                    td 魔法攻撃 MATK:
                     td= fdm.MATK
                   tr
-                    td 魔法防禦 (MDEF):
+                    td 魔法防禦 MDEF:
                     td= fdm.MDEF
                   tr
-                    td 速度 (SPD):
+                    td 速度 SPD:
                     td= fdm.SPD
                   tr
                     td SDA:

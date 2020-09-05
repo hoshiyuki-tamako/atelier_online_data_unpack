@@ -2,17 +2,34 @@ doctype html
 html
   head
     title Skill
+  style.
+    tr td {
+      border-bottom: 1px solid black;
+    }
   body
     div
       table
         thead
           tr
+            th ID
             th 名前
             th 詳細
             th 数値
+            th アイテム/人物/敵
         tbody
           - for (const s of skill.m_vList)
             tr
+              td= s.id
               td= s.name
               td= s.detail
               td= `${s.effectValue}, ${s.effectValue2}`
+              td(style="width: 40%")
+                - for (const _item of item.m_vList.filter(p => p.SPC.some(i => i.SKILL.some(j => j.DF === s.id))))
+                  a(href="./item.html#DF-" + _item.DF target="_blank")
+                    img(src="./img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.name style="width: 60px")
+                - for (const _enemy of enemy.m_vList.filter(p => p.sParam.SKILL.some(i => i.DF === s.id)))
+                  a(href="./enemy.html#DF-" + _enemy.DF target="_blank")
+                    img.item-index-img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName style="width: 60px")
+                - for (const _chara of chara.m_vList.filter(p => p.SKILL.some(i => i.DF === s.id) || p.BA.some(i => { const ba = blazeArt.m_vList.find(j => j.DF === i.DF); return ba ? ba.LV.some(k => k.SKILL_DF === s.id) : false })))
+                  a(href="./chara.html#DF-" + _chara.DF target="_blank")
+                    img.item-index-img(src="./img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME style="width: 60px")

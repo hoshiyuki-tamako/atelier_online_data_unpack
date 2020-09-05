@@ -16,4 +16,4 @@ npm start
 ### Content Update Check List
 
 - copy JSON from AssetStudio to `./export` folder json files
-- export Texture2D files to `./docs/img/chara` `./docs/img/enemy` `./docs/img/icon_s`
+- export Texture2D files to `./docs/img/*`

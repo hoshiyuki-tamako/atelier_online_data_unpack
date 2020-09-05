@@ -7,10 +7,12 @@ html
       table
         thead
           tr
+            th DF
             th 名前
             th 詳細
         tbody
           - for (const d of degree.List)
             tr
+              td= d.DF
               td= d.NAME
               td= d.DESC
