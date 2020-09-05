@@ -55,16 +55,22 @@ html
       .item-container {
         border: 1px gray solid;
         margin: 10px;
-        width: 90vw;
+        width: calc(100%-(10px * 2));
         display: flex;
         flex-direction: row;
       }
       .item-container-left {
-        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
         border-right: 1px gray solid;
       }
       .item-container-right {
         padding-left: 4px;
+      }
+      .item-making-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
       }
       .item-name {
         text-align: center;
@@ -118,12 +124,11 @@ html
                       a(href="#DF-" + rsp.DF)
                         img(src="./img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF style="width: 60px")
             h4 ----- 調合 -----
-            table
-              tr
-                - for (const otherItem of item.m_vList.filter(p => p.RSP.some(j => j.DF === i.DF)))
-                  td
-                    a(href="#DF-" + otherItem.DF)
-                      img(src="./img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF style="width: 60px")
+            div.item-making-container
+              - for (const otherItem of item.m_vList.filter(p => p.RSP.some(j => j.DF === i.DF)))
+                div
+                  a(href="#DF-" + otherItem.DF)
+                    img(src="./img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF style="width: 60px")
             - if (i.SPC.length)
               - for (const spc of i.SPC)
                 h4 ------ Skill/Effect (品質 #{spc.THR}) ------
