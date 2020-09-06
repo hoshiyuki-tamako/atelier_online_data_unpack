@@ -169,8 +169,8 @@ export class PageBuilder {
         items: p.toArray(),
       }))
       .toArray();
-
-    const pugOption = { Option, LogicHelper, itemIndex, item, skill };
+    const itemsOrderByCategory = item.m_vList.sort((a, b) => a.CATEG - b.CATEG);
+    const pugOption = { Option, LogicHelper, itemIndex, itemsOrderByCategory, item, skill };
     await fs.writeFile(
       path.join(Option.outFolder, 'item.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'item.pug'), pugOption), Option.minifyOption),
@@ -216,7 +216,18 @@ export class PageBuilder {
       Option.loadFileFromCache(Option.blazeArtPath),
     ]) as [Skill, Item, Enemy, Chara, BlazeArt];
 
-    const pugOption = { skill, item, enemy, chara, blazeArt };
+    const itemsOrderByCategory = Enumerable.from(item.m_vList)
+    .orderBy(p => p.CATEG)
+    .toArray();
+    const enemiesOrderByCategory = Enumerable.from(enemy.m_vList)
+    .orderBy(p => p.eKind)
+    .thenBy(p => p.iCategory)
+    .toArray();
+    const charasOrderByCategory = Enumerable.from(chara.m_vList)
+    .orderBy(p => p.CATEG)
+    .toArray();
+
+    const pugOption = { Enumerable, skill, item, enemy, chara, blazeArt, itemsOrderByCategory, enemiesOrderByCategory, charasOrderByCategory };
     await fs.writeFile(
       path.join(Option.outFolder, 'skill.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'skill.pug'), pugOption), Option.minifyOption),
@@ -261,12 +272,13 @@ export class PageBuilder {
   }
 
   public async quest() {
-    const [quest, item] = await Promise.all([
+    const [quest, item, chara] = await Promise.all([
       Option.loadFileFromCache(Option.questPath),
       Option.loadFileFromCache(Option.itemPath),
-    ]) as [Quest, Item];
+      Option.loadFileFromCache(Option.charaPath),
+    ]) as [Quest, Item, Chara];
 
-    const pugOption = { Option, quest, item };
+    const pugOption = { Option, Enumerable, quest, item, chara };
     await fs.writeFile(
       path.join(Option.outFolder, 'quest.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'quest.pug'), pugOption), Option.minifyOption),

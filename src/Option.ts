@@ -63,7 +63,18 @@ export class Option {
     QTH: 'SP回復量?',
     DDG: '回避',
     SADD: 'SADD',
-  }
+  };
+  
+  public static questCategoryLookUp = {
+    1: 'メーン',
+    2: 'サイド',
+    3: '依頼',
+    4: '公認試験',
+    5: 'キャラ',
+    6: 'イベント',
+    7: 'イベント',
+    8: 'イベント',
+  };
 
   // settings
   public static minifyOption = {

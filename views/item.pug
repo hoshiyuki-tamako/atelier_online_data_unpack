@@ -2,9 +2,9 @@ doctype html
 html
   head
     title Item
+    link(rel="stylesheet", href="./css/important-item.css")
+    link(rel="stylesheet", href="./css/main.css")
     style.
-      *{padding:0;margin:0}
-
       table th {
         text-align: right;
       }
@@ -107,7 +107,7 @@ html
     hr
     div.items
       - for(const i of item.m_vList)
-        div(id="DF-" + i.DF).item-container
+        div.item-container(id="DF-" + i.DF)
           div.item-container-left
             div
               h3.item-name= i.NAME
@@ -117,21 +117,27 @@ html
               div= i.DESC
           div.item-container-right
             div DF: #{i.DF}
-            div エーテル: #{i.RST.MN}
+            span.important-item-container
+              img(src="./img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
+              span= i.RST.MN
             - if (i.RSP.length)
               - if (i.ALT.LV)
                 h4 ----- 合成條件 -----
                 p LV: #{i.ALT.LV}
+                p EXP: #{i.ALT.EXP}
+                p
+                  span.important-item-container
+                    img(src="./img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
+                    span= i.ALT.CST
               h4 ----- 合成 -----
-              - if (i.RST && i.RST.MN)
-                p #{i.RST.MN} エーテル
               table
                 tr
                   - for (const rsp of i.RSP)
                     td
                       a(href="#DF-" + rsp.DF)
                         img.item-making-img(src="./img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF)
-            - const makeItem = item.m_vList.filter(p => p.RSP.some(j => j.DF === i.DF))
+
+            - const makeItem = itemsOrderByCategory.filter(p => p.RSP.some(j => j.DF === i.DF))
             - if (makeItem.length)
               h4 ----- 調合 -----
               div.item-making-container
@@ -145,7 +151,10 @@ html
                 - for (const spcSkill of spc.SKILL)
                   - const s = skill.m_vList.find(s => s.id === spcSkill.DF);
                   - if (!s)
-                    p skill not found: DF=#{spcSkill.DF}
+                    - if (spcSkill.DF)
+                      p skill not found: DF=#{spcSkill.DF}
+                    - else
+                      p -
                   - else
                     table
                       tr
@@ -157,7 +166,7 @@ html
                       tr
                         th 数値:
                         td= `${s.effectValue}, ${s.effectValue2}`
-                    p &#x3E;
+                  p &#x3E;
 
             - if (i.EQU_BRD)
               h4 ---- 屬性 ----

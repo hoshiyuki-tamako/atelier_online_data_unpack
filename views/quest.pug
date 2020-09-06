@@ -2,32 +2,140 @@ doctype html
 html
   head
     title Quest
+    link(rel="stylesheet", href="./css/important-item.css")
+    link(rel="stylesheet", href="./css/main.css")
     style.
-      *{padding:0;margin:0}
+    
+      .categories-index-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .category-index-container {
+        border: 1px gray solid;
+        padding: 4px;
+      }
 
+      .quest-indexs-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .quest-index-container {
+        padding: 4px;
+        border: 1px gray solid;
+        width: 200px;
+      }
+
+      .quest-container {
+        border: 1px gray solid;
+        margin: 10px;
+        width: calc(100%-(10px * 2));
+        display: flex;
+        flex-direction: row;
+      }
+      .quest-container-left {
+        min-width: 50%;
+        max-width: 50%;
+        border-right: 1px gray solid;
+      }
+      .quest-character-container img {
+        width: 100px;
+      }
+
+
+      .quest-container-right {
+        padding-left: 4px;
+      }
+
+
+
+      .quest-reward-item-container {
+        display: flex;
+        align-items: center;
+      }
+      .quest-reward-item-container img {
+        width: 60px;
+      }
   body
-    div quest Cat
+    div.categories-index-container
+      - for(const category of Enumerable.from(quest.m_vList).groupBy(p => p.CATEG).orderBy(p => p.key()).select(p => p.key()))
+        div.category-index-container
+          a(href="#CATEG-" + category)
+            h2= Option.questCategoryLookUp[category] || `CATEG=${category}`
+    hr
+    div
+      - for (const [category, _quests] of Enumerable.from(quest.m_vList).groupBy(p => p.CATEG).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]))
+        h3(id="CATEG-" + category)= Option.questCategoryLookUp[category] || `CATEG=${category}`
+        hr
+        div.quest-indexs-container
+          - for (const _quest of _quests)
+            div.quest-index-container
+              a(href="#DF-" + _quest.DF)
+                p= _quest.NAME
+                - if (_quest.CHARA)
+                  div.quest-character-container
+                    a(href="./chara.html#DF-" + _quest.CHARA)
+                    img.item-index-img(src="./img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
+    br
+    br
+    hr
     div
       - for (const _quest of quest.m_vList)
-        p= _quest.NAME
-        p= _quest.DESC
+        div.quest-container(id="DF-" + _quest.DF)
+          div.quest-container-left
+            p 名前: #{_quest.NAME}
+            hr
+            p 詳細:
+            p= _quest.DESC
+            hr
+            p 達成條件:
+            p= _quest.CONDITION
+            hr
+            p 解放チャプター: #{_quest.CHAPTER}
+            p キークェスト: #{_quest.KEY_QUEST ? "✓" : "x"}
+            p 重要: #{_quest.IMPORTANT ? "✓" : "x"}
 
-        p 達成條件: #{_quest.CONDITION}
+            - if (_quest.CHARA)
+              p キャラクター
+              div.quest-character-container
+                a(href="./chara.html#DF-" + _quest.CHARA)
+                 img.item-index-img(src="./img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
 
-        - if (_quest.RWD_ITEM.length || _quest.RWD_WTH.length)
-          h3 ------ 報酬 ------
-          - if (_quest.RWD_ITEM.length)
-            - for (const rwd of _quest.RWD_ITEM)
-              - const _item = item.m_vList.find(item => item.DF === rwd.DF);
-              - if (!_item)
-                p cannot find item: DF=#{rwd.DF}
-              - else
-                a(href="./item.html#DF-" + _item.DF style="display: flex; align-items: center")
-                  p 品質 #{rwd.QTY} #{_item.NAME}`
-                  img(src="./img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME style="width: 50px")
+          div.quest-container-right
+            - if (_quest.COST.WTH.CNT)
+              h4 ------ 消費 (DF=#{_quest.COST.WTH.DF}) ------
+              span.important-item-container
+                img(src="./img/icon_item01/Texture2D/icon_item01_" + _quest.COST.WTH.DF.toString().padStart(5, '0') + ".png" alt= Option.importantItemLookUp[_quest.COST.WTH.DF] || _quest.COST.WTH.DF)
+                span= _quest.COST.WTH.CNT
 
-          - if (_quest.RWD_WTH.length)
-            - for (const rwd of _quest.RWD_WTH)
-              - const name = Option.importantItemLookUp[rwd.DF] || `DF=${rwd.DF}`
-              p #{name} #{rwd.CNT}
-        hr
+            - if (_quest.RWD_ITEM.length || _quest.RWD_WTH.length)
+              h4 ------ 報酬 ------
+              - if (_quest.RWD_ITEM.length)
+                - for (const rwd of _quest.RWD_ITEM)
+                  - const _item = item.m_vList.find(item => item.DF === rwd.DF);
+                  - if (!_item)
+                    - if (rwd.DF)
+                      p cannot find item: DF=#{rwd.DF}
+                    - else
+                      p -
+                  - else
+                    a.quest-reward-item-container(href="./item.html#DF-" + _item.DF target="_blank")
+                      p 品質 #{rwd.QTY}
+                      img(src="./img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+
+              - if (_quest.RWD_WTH.length)
+                - for (const rwd of _quest.RWD_WTH)
+                  span.important-item-container
+                    img(src="./img/icon_item01/Texture2D/icon_item01_" + rwd.DF.toString().padStart(5, '0') + ".png" style="width: 30px")
+                    span= rwd.CNT
+
+            - if (_quest.UNLOCK.length)
+              h4 ------ 解放 ------
+              table
+                tr
+                  th DF
+                  th STEP
+                - for (const unlock of _quest.UNLOCK)
+                  tr
+                    td #{unlock.DF}
+                    td #{unlock.STP}

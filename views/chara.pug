@@ -127,7 +127,10 @@ html
                 - for (const _s of skills)
                   - const s = skill.m_vList.find(s => s.id === _s.DF)
                   - if (!s)
-                    p skill not found: DF=#{_s.DF}
+                    - if (_s.DF)
+                      p skill not found: DF=#{_s.DF}
+                    - else
+                      p -
                   - else
                     table
                       tr
@@ -223,7 +226,10 @@ html
                   - for (const [lv, _ba] of thatBa.LV.entries())
                     - const s = skill.m_vList.find(s => s.id === _ba.SKILL_DF);
                     - if (!s)
-                      p skill not found: DF=#{_ba.SKILL_DF}
+                      - if (s.DF)
+                        p skill not found: DF=#{s.DF}
+                      - else
+                        p -
                     - else
                       h4 ----- LV #{ba.LV} / BA LV #{lv + 1}  -----
                       table
