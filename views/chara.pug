@@ -291,4 +291,7 @@ html
               - for (const qst of _chara.QST)
                 h5 ----- LV #{qst.LV} -----
                 - const q = quest.m_vList.find(i => i.DF === qst.QUEST_DF)
-                p= q ? q.NAME : "-"
+                - if (q)
+                  a(href="./quest.html#DF-" + qst.QUEST_DF target="_blank")= q.NAME
+                - else
+                  p -

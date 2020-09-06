@@ -272,13 +272,14 @@ export class PageBuilder {
   }
 
   public async quest() {
-    const [quest, item, chara] = await Promise.all([
+    const [quest, item, chara, enemy] = await Promise.all([
       Option.loadFileFromCache(Option.questPath),
       Option.loadFileFromCache(Option.itemPath),
       Option.loadFileFromCache(Option.charaPath),
-    ]) as [Quest, Item, Chara];
+      Option.loadFileFromCache(Option.enemyPath),
+    ]) as [Quest, Item, Chara, Enemy];
 
-    const pugOption = { Option, Enumerable, quest, item, chara };
+    const pugOption = { Option, Enumerable, quest, item, chara, enemy };
     await fs.writeFile(
       path.join(Option.outFolder, 'quest.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'quest.pug'), pugOption), Option.minifyOption),

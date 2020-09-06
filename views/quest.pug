@@ -47,7 +47,10 @@ html
         padding-left: 4px;
       }
 
-
+      
+      .quest-kill-container img {
+        width: 120px;
+      }
 
       .quest-reward-item-container {
         display: flex;
@@ -91,6 +94,7 @@ html
             p 達成條件:
             p= _quest.CONDITION
             hr
+            p DF: #{_quest.DF}
             p 解放チャプター: #{_quest.CHAPTER}
             p キークェスト: #{_quest.KEY_QUEST ? "✓" : "x"}
             p 重要: #{_quest.IMPORTANT ? "✓" : "x"}
@@ -107,6 +111,33 @@ html
               span.important-item-container
                 img(src="./img/icon_item01/Texture2D/icon_item01_" + _quest.COST.WTH.DF.toString().padStart(5, '0') + ".png" alt= Option.importantItemLookUp[_quest.COST.WTH.DF] || _quest.COST.WTH.DF)
                 span= _quest.COST.WTH.CNT
+            -if (_quest.ENM.length)
+              h4 ------ 討伐 ------
+              div.quest-kill-container
+                - for (const enm of _quest.ENM)
+                  - const _enemy = enemy.m_vList.find(i => i.DF === enm.DF);
+                  - if (_enemy)
+                    a(href="./enemy.html#DF-" + _enemy.DF target="_blank")
+                      span #{_quest.ENM.BDR}
+                      img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+                  - else if (enm.DF)
+                    p enemy not found: DF=#{enm.DF}
+                  - else
+                    p -
+
+            -if (_quest.DLV.length)
+              h4 ------ 納品/報告 ------
+              - for (const dlv of _quest.DLV)
+                - const _item = item.m_vList.find(item => item.DF === dlv.DF);
+                - if (!_item)
+                  - if (dlv.DF)
+                    p cannot find item: DF=#{dlv.DF}
+                  - else
+                    p -
+                - else
+                  a.quest-reward-item-container(href="./item.html#DF-" + _item.DF target="_blank")
+                    p 品質 #{dlv.QTY} - #{dlv.BDR}個
+                    img(src="./img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
             - if (_quest.RWD_ITEM.length || _quest.RWD_WTH.length)
               h4 ------ 報酬 ------
