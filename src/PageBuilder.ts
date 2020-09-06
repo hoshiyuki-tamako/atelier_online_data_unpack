@@ -91,7 +91,7 @@ export class PageBuilder {
         href: "./skill.html",
         title: "Skill / 效果",
         img: {
-          src: "",
+          src: "./img/fx/Texture2D/FX_Skill2005_02.png",
           alt: "",
         },
       },
@@ -99,7 +99,7 @@ export class PageBuilder {
         href: "./effect.html",
         title: "異常状態",
         img: {
-          src: "",
+          src: "./img/fx/Texture2D/FX_smoke.png",
           alt: "",
         },
       },
@@ -107,7 +107,7 @@ export class PageBuilder {
         href: "./zone.html",
         title: "ゾーン",
         img: {
-          src: "",
+          src: "./img/icon_s/Texture2D/icon_item_s_10500012.png",
           alt: "",
         },
       },
@@ -115,7 +115,7 @@ export class PageBuilder {
         href: "./area.html",
         title: "区域",
         img: {
-          src: "",
+          src: "./img/map/Texture2D/MapArea_04_001_ALL.png",
           alt: "",
         },
       },
@@ -132,7 +132,7 @@ export class PageBuilder {
         href: "./importantItem.html",
         title: "大事なもの",
         img: {
-          src: "",
+          src: "./img/icon_item01/Texture2D/icon_item01_00001.png",
           alt: "",
         },
       },
@@ -140,7 +140,7 @@ export class PageBuilder {
         href: "./degree.html",
         title: "称号",
         img: {
-          src: "",
+          src: "./img/adv/Texture2D/adv_item_texture_0025.png",
           alt: "",
         },
       },
@@ -148,7 +148,7 @@ export class PageBuilder {
         href: "./quest.html",
         title: "クェスト",
         img: {
-          src: "",
+          src: "./img/adv/Texture2D/adv_item_texture_0018.png",
           alt: "",
         },
       },
