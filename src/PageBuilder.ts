@@ -243,12 +243,12 @@ export class PageBuilder {
   }
 
   public async effect() {
-    const [abnormalState, abnormalstateeffect] = await Promise.all([
+    const [abnormalState, abnormalStateEffect] = await Promise.all([
       Option.loadFileFromCache(Option.exportDataPaths.abnormalstate),
       Option.loadFileFromCache(Option.exportDataPaths.abnormalstateeffect),
     ]) as [AbnormalState, AbnormalStateEffect];
 
-    const pugOption = { abnormalState, abnormalstateeffect };
+    const pugOption = { abnormalState, abnormalStateEffect };
     await fs.writeFile(
       path.join(Option.outFolder, 'effect.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'effect.pug'), pugOption), Option.minifyOption),
