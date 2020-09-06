@@ -1,0 +1,93 @@
+doctype html
+html
+  head
+    title Area
+    style.
+      .area-container {
+        border: 1px gray solid;
+        margin: 10px;
+        width: calc(100%-(10px * 2));
+        display: flex;
+        flex-direction: row;
+      }
+      .area-container-left {
+        min-width: 300px;
+        max-width: 300px;
+        border-right: 1px gray solid;
+      }
+      .area-container-right {
+        padding-left: 4px;
+      }
+
+      .area-items-container img, .area-enemies-container img {
+        width: 60px;
+      }
+  style.
+  body
+    div
+      - for (const _areaDetail of areaDetail.List)
+        - const _areaInfo = areaInfo.List.find(p => p.iAreaId === _areaDetail.iAreaID) 
+        div
+          a(href="#iAreaID-" + _areaDetail.iAreaID)
+            - const _fieldName = fieldName.List.find(p => p.iAreaNameId === _areaInfo.iAreaNameId);
+            span #{_fieldName.strAreaName} #{_fieldName.strAreaNameSub.trim() ? `/ ${_fieldName.strAreaNameSub}` : ''}
+    br
+    br
+    hr
+    div
+      - for (const _areaDetail of areaDetail.List)
+        - const _areaInfo = areaInfo.List.find(p => p.iAreaId === _areaDetail.iAreaID)
+        div.area-container(id="iAreaID-" + _areaDetail.iAreaID)
+          div.area-container-left
+            p #{_areaDetail.iAreaID}
+            - const _fieldName = fieldName.List.find(p => p.iAreaNameId === _areaInfo.iAreaNameId);
+            - if (_fieldName)
+              p #{_fieldName.strAreaName} #{_fieldName.strAreaNameSub.trim() ? `/ ${_fieldName.strAreaNameSub}` : ''}
+            - else
+              p -
+            p LV: #{_areaDetail.iLevel}
+
+          div.area-container-right
+            - if (_areaDetail.iItemIDList.length)
+              h4 ---- アイテム ----
+              div.area-items-container
+                - for (const id of _areaDetail.iItemIDList)
+                  - const _item = item.m_vList.find(i => i.DF === id)
+                    a(href="./item.html#DF-" + id target="_blank")
+                      img(src="./img/icon_s/Texture2D/icon_item_s_" + id + ".png" alt= _item.NAME)
+            - if (_areaDetail.iEnemyIDList.length)
+              h4 ---- 敵 ----
+              div.area-enemies-container
+                - for (const id of _areaDetail.iEnemyIDList)
+                  - const _enemy = enemy.m_vList.find(i => i.DF === id)
+                    a(href="./item.html#DF-" + id target="_blank")
+                      img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+
+            - const dungeonInfos = dungeonInfo.List.filter(p => p.iAreaId === _areaDetail.iAreaID)
+            - if (dungeonInfos.length)
+              h4 ---- ダンジョン ----
+              div.area-dungeons-container
+                - for (const _dungeonInfo of dungeonInfos)
+                  - const _fieldName = fieldName.List.find(p => p.iAreaNameId === _dungeonInfo.iAreaNameId);
+                  - if (_fieldName)
+                    p #{_fieldName.strAreaName} #{_fieldName.strAreaNameSub.trim() ? `/ ${_fieldName.strAreaNameSub}` : ''}
+                  - else
+                    p -
+                  p 最大階層: #{_dungeonInfo.iMaxFloor}
+                  - const returnAreaInfo = areaInfo.List.find(p => p.iAreaId === _dungeonInfo.iReturnArea) 
+                  - const returnFieldName = fieldName.List.find(p => p.iAreaNameId === returnAreaInfo.iAreaNameId);
+                  p 脱出区域:
+                    a(href="#iAreaID-" + _dungeonInfo.iReturnArea) #{returnFieldName ? returnFieldName.strAreaName : '-'}
+                  p &#x3E;
+
+            - const townInfos = townInfo.List.filter(p => p.iAreaId === _areaDetail.iAreaID)
+            - if (townInfos.length)
+              h4 ---- 町 ----
+              div.area-townInfos-container
+                - for (const _townInfo of townInfos)
+                  - const _fieldName = fieldName.List.find(p => p.iAreaNameId === _townInfo.iAreaNameId);
+                  - if (_fieldName)
+                    p #{_fieldName.strAreaName} #{_fieldName.strAreaNameSub.trim() ? `/ ${_fieldName.strAreaNameSub}` : ''}
+                  - else
+                    p -
+                  p &#x3E;

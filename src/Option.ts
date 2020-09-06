@@ -27,9 +27,9 @@ export class Option {
   };
 
   public static importantItemLookUp = {
- //   1: 'アカデミーポイント',
+    1: 'コール',
     2: 'エーテル',
- //   4: 'コール',
+    // 1: 'アカデミーポイント',
     9000: '降臨メダル',
   };
 
@@ -102,37 +102,28 @@ export class Option {
   public static outFolder = path.join(__dirname, '..', 'docs');
 
   // files
-  public static blazeArtPath = path.join(__dirname, '..', 'export', 'blaze_art.json');
-  public static charaPath = path.join(__dirname, '..', 'export', 'chara.json');
-  public static degreePath = path.join(__dirname, '..', 'export', 'degree.json');
-  public static enemyPath = path.join(__dirname, '..', 'export', 'enemy.json');
-  public static itemPath = path.join(__dirname, '..', 'export', 'item.json');
-  public static questPath = path.join(__dirname, '..', 'export', 'quest.json');
-  public static skillPath = path.join(__dirname, '..', 'export', 'skill.json');
-  public static abnomalstateeffectPath = path.join(__dirname, '..', 'export', 'abnomalstateeffect.json');
-  public static zonePath = path.join(__dirname, '..', 'export', 'zone.json');
-  public static zoneeffectPath = path.join(__dirname, '..', 'export', 'zoneeffect.json');
-  public static fieldnamePath = path.join(__dirname, '..', 'export', 'fieldname.json');
-  public static areaDetailPath = path.join(__dirname, '..', 'export', 'areaDetail.json');
-  public static areaInfoPath = path.join(__dirname, '..', 'export', 'areaInfo.json');
+  public static exportDataPaths = {
+    blazeArt: path.join(__dirname, '..', 'export', 'blaze_art.json'),
+    chara: path.join(__dirname, '..', 'export', 'chara.json'),
+    degree: path.join(__dirname, '..', 'export', 'degree.json'),
+    enemy: path.join(__dirname, '..', 'export', 'enemy.json'),
+    item: path.join(__dirname, '..', 'export', 'item.json'),
+    quest: path.join(__dirname, '..', 'export', 'quest.json'),
+    skill: path.join(__dirname, '..', 'export', 'skill.json'),
+    abnomalstateeffect: path.join(__dirname, '..', 'export', 'abnomalstateeffect.json'),
+    zone: path.join(__dirname, '..', 'export', 'zone.json'),
+    zoneeffect: path.join(__dirname, '..', 'export', 'zoneeffect.json'),
+    fieldname: path.join(__dirname, '..', 'export', 'fieldname.json'),
+    areaDetail: path.join(__dirname, '..', 'export', 'areaDetail.json'),
+    areaInfo: path.join(__dirname, '..', 'export', 'areaInfo.json'),
+    townInfo: path.join(__dirname, '..', 'export', 'townInfo.json'),
+    dungeonInfo: path.join(__dirname, '..', 'export', 'dungeonInfo.json'),
+  };
 
   public static fileCache = {} as { [s: string]: unknown };
 
   public static async preLoadFiles() {
-    return Promise.all([
-      this.blazeArtPath,
-      this.charaPath,
-      this.degreePath,
-      this.enemyPath,
-      this.itemPath,
-      this.questPath,
-      this.skillPath,
-      this.abnomalstateeffectPath,
-      this.zonePath,
-      this.zoneeffectPath,
-      this.fieldnamePath,
-      this.areaDetailPath,
-    ].map(this.loadFileFromCache.bind(this)));
+    return Promise.all(Object.values(this.exportDataPaths).map(this.loadFileFromCache.bind(this)));
   }
 
   public static async loadFileFromCache(path: string) {

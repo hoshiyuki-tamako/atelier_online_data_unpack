@@ -2,6 +2,7 @@ doctype html
 html
   head
     title Index
+    script(src="./js/index.js")
     style.
       .indexs-container {
         display: flex;
@@ -47,6 +48,7 @@ html
         li LV 5 - 0 EXP
     hr
     div
+
       h3 ステータスの公式
       div
         p floor(((M - B)/R) * level + B)
@@ -54,6 +56,24 @@ html
         p M = R レベルのステータス最大值
         p B = ステータス初始值
         p level = アイテムのレベル
+
+      h4 計算
+      label
+        span R
+        input(id="R" placeholder="R" type="number" min="0" value="60")
+      label
+        span M
+        input(id="M" placeholder="M" type="number" min="0" value="40")
+      label
+        span B
+        input(id="B" placeholder="B" type="number" min="0" value="6")
+      label
+        span level
+        input(id="Level" placeholder="Level" min="0" value="80")
+      label
+        span= '='
+        input(id="Result" value="0")
+
       h4 Example
       div
         p 闇夜の盾

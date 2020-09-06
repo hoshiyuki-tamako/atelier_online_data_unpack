@@ -1,3 +1,7 @@
+import { DungeonInfo } from './master/dungeonInfo';
+import { TownInfo } from './master/townInfo';
+import { AreaInfo } from './master/areaInfo';
+import { AreaDetail } from './master/areaDetail';
 import fs from 'fs-extra';
 import Enumerable from 'linq';
 import _ from 'lodash';
@@ -18,6 +22,7 @@ import { Skill } from './master/skill';
 import { Zone } from './master/zone';
 import { ZoneEffect } from './master/zoneEffect';
 import { Option } from './Option';
+import { FieldName } from './master/FieldName';
 
 function minify(r: string, o: any) {
   // return _minify(r, o);
@@ -32,17 +37,17 @@ export class PageBuilder {
     const that = new this();
     await Promise.all([
       that.index(),
-      that.item(),
-      that.chara(),
-      that.otherChara(),
-      that.skill(),
-      that.effect(),
-      that.enemy(),
-      that.degree(),
-      that.quest(),
-      that.importantItem(),
-      that.zone(),
-      that.unusedItem(),
+      // that.item(),
+      // that.chara(),
+      // that.otherChara(),
+      // that.skill(),
+      // that.effect(),
+      // that.enemy(),
+      // that.degree(),
+      // that.quest(),
+      // that.importantItem(),
+      // that.zone(),
+      // that.unusedItem(),
       that.area(),
     ]);
   }
@@ -108,7 +113,7 @@ export class PageBuilder {
       },
       {
         href: "./area.html",
-        title: "エリア",
+        title: "区域",
         img: {
           src: "",
           alt: "",
@@ -157,8 +162,8 @@ export class PageBuilder {
 
   public async item() {
     const [item, skill] = await Promise.all([
-      Option.loadFileFromCache(Option.itemPath),
-      Option.loadFileFromCache(Option.skillPath),
+      Option.loadFileFromCache(Option.exportDataPaths.item),
+      Option.loadFileFromCache(Option.exportDataPaths.skill),
     ]) as [Item, Skill];
 
     const itemIndex = Enumerable.from(item.m_vList)
@@ -179,11 +184,11 @@ export class PageBuilder {
 
   public async chara() {
     const [item, skill, chara, blazeArt, quest, charaIcons] = await Promise.all([
-      Option.loadFileFromCache(Option.itemPath),
-      Option.loadFileFromCache(Option.skillPath),
-      Option.loadFileFromCache(Option.charaPath),
-      Option.loadFileFromCache(Option.blazeArtPath),
-      Option.loadFileFromCache(Option.questPath),
+      Option.loadFileFromCache(Option.exportDataPaths.item),
+      Option.loadFileFromCache(Option.exportDataPaths.skill),
+      Option.loadFileFromCache(Option.exportDataPaths.chara),
+      Option.loadFileFromCache(Option.exportDataPaths.blazeArt),
+      Option.loadFileFromCache(Option.exportDataPaths.quest),
       fs.readdir(path.join(Option.outFolder, 'img', 'chara', 'Texture2D')),
     ]) as [Item, Skill, Chara, BlazeArt, Quest, string[]];
 
@@ -196,7 +201,7 @@ export class PageBuilder {
 
   public async otherChara() {
     const [chara, charaIcons] = await Promise.all([
-      Option.loadFileFromCache(Option.charaPath),
+      Option.loadFileFromCache(Option.exportDataPaths.chara),
       fs.readdir(path.join(Option.outFolder, 'img', 'chara', 'Texture2D')),
     ]) as [Chara, string[]];
 
@@ -209,11 +214,11 @@ export class PageBuilder {
 
   public async skill() {
     const [skill, item, enemy, chara, blazeArt] = await Promise.all([
-      Option.loadFileFromCache(Option.skillPath),
-      Option.loadFileFromCache(Option.itemPath),
-      Option.loadFileFromCache(Option.enemyPath),
-      Option.loadFileFromCache(Option.charaPath),
-      Option.loadFileFromCache(Option.blazeArtPath),
+      Option.loadFileFromCache(Option.exportDataPaths.skill),
+      Option.loadFileFromCache(Option.exportDataPaths.item),
+      Option.loadFileFromCache(Option.exportDataPaths.enemy),
+      Option.loadFileFromCache(Option.exportDataPaths.chara),
+      Option.loadFileFromCache(Option.exportDataPaths.blazeArt),
     ]) as [Skill, Item, Enemy, Chara, BlazeArt];
 
     const itemsOrderByCategory = Enumerable.from(item.m_vList)
@@ -236,7 +241,7 @@ export class PageBuilder {
 
   public async effect() {
     const [effect] = await Promise.all([
-      Option.loadFileFromCache(Option.abnomalstateeffectPath),
+      Option.loadFileFromCache(Option.exportDataPaths.abnomalstateeffect),
     ]) as [AbnormalEffect];
 
     const pugOption = { effect };
@@ -248,8 +253,8 @@ export class PageBuilder {
 
   public async enemy() {
     const [enemy, skill] = await Promise.all([
-      Option.loadFileFromCache(Option.enemyPath),
-      Option.loadFileFromCache(Option.skillPath),
+      Option.loadFileFromCache(Option.exportDataPaths.enemy),
+      Option.loadFileFromCache(Option.exportDataPaths.skill),
     ]) as [Enemy, Skill];
 
     const pugOption = { Option, LogicHelper, Enumerable, math, enemy, skill };
@@ -261,7 +266,7 @@ export class PageBuilder {
 
   public async degree() {
     const [degree] = await Promise.all([
-      Option.loadFileFromCache(Option.degreePath),
+      Option.loadFileFromCache(Option.exportDataPaths.degree),
     ]) as [Degree];
 
     const pugOption = { degree };
@@ -273,10 +278,10 @@ export class PageBuilder {
 
   public async quest() {
     const [quest, item, chara, enemy] = await Promise.all([
-      Option.loadFileFromCache(Option.questPath),
-      Option.loadFileFromCache(Option.itemPath),
-      Option.loadFileFromCache(Option.charaPath),
-      Option.loadFileFromCache(Option.enemyPath),
+      Option.loadFileFromCache(Option.exportDataPaths.quest),
+      Option.loadFileFromCache(Option.exportDataPaths.item),
+      Option.loadFileFromCache(Option.exportDataPaths.chara),
+      Option.loadFileFromCache(Option.exportDataPaths.enemy),
     ]) as [Quest, Item, Chara, Enemy];
 
     const pugOption = { Option, Enumerable, quest, item, chara, enemy };
@@ -304,8 +309,8 @@ export class PageBuilder {
 
   public async zone() {
     const [zone, zoneEffect] = await Promise.all([
-      Option.loadFileFromCache(Option.zonePath),
-      Option.loadFileFromCache(Option.zoneeffectPath),
+      Option.loadFileFromCache(Option.exportDataPaths.zone),
+      Option.loadFileFromCache(Option.exportDataPaths.zoneeffect),
     ]) as [Zone, ZoneEffect];
 
     const pugOption = { zone, zoneEffect };
@@ -317,7 +322,7 @@ export class PageBuilder {
 
   public async unusedItem() {
     const [item, itemIcons] = await Promise.all([
-      Option.loadFileFromCache(Option.itemPath),
+      Option.loadFileFromCache(Option.exportDataPaths.item),
       fs.readdir(path.join(Option.outFolder, 'img', 'icon_s', 'Texture2D')),
     ]) as [Item, string[]];
 
@@ -339,12 +344,17 @@ export class PageBuilder {
   }
 
   public async area() {
-    const [item, itemIcons] = await Promise.all([
-      Option.loadFileFromCache(Option.itemPath),
-      fs.readdir(path.join(Option.outFolder, 'img', 'icon_s', 'Texture2D')),
-    ]) as [Item, string[]];
+    const [fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, item, enemy] = await Promise.all([
+      Option.loadFileFromCache(Option.exportDataPaths.fieldname),
+      Option.loadFileFromCache(Option.exportDataPaths.areaDetail),
+      Option.loadFileFromCache(Option.exportDataPaths.areaInfo),
+      Option.loadFileFromCache(Option.exportDataPaths.townInfo),
+      Option.loadFileFromCache(Option.exportDataPaths.dungeonInfo),
+      Option.loadFileFromCache(Option.exportDataPaths.item),
+      Option.loadFileFromCache(Option.exportDataPaths.enemy),
+    ]) as [FieldName, AreaDetail, AreaInfo, TownInfo, DungeonInfo, Item, Enemy];
 
-    const pugOption = {};
+    const pugOption = { fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, item, enemy };
     await fs.writeFile(
       path.join(Option.outFolder, 'area.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'area.pug'), pugOption), Option.minifyOption),

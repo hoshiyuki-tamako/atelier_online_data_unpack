@@ -1,4 +1,4 @@
-export interface Field {
+export interface FieldName {
   m_GameObject: MGameObject;
   m_Enabled:    number;
   m_Script:     MGameObject;
