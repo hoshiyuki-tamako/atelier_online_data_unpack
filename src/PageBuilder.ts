@@ -37,17 +37,17 @@ export class PageBuilder {
     const that = new this();
     await Promise.all([
       that.index(),
-      // that.item(),
-      // that.chara(),
-      // that.otherChara(),
-      // that.skill(),
-      // that.effect(),
-      // that.enemy(),
-      // that.degree(),
-      // that.quest(),
-      // that.importantItem(),
-      // that.zone(),
-      // that.unusedItem(),
+      that.item(),
+      that.chara(),
+      that.otherChara(),
+      that.skill(),
+      that.effect(),
+      that.enemy(),
+      that.degree(),
+      that.quest(),
+      that.importantItem(),
+      that.zone(),
+      that.unusedItem(),
       that.area(),
     ]);
   }
