@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    title Unused item
+  style.
+    .unused-items-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .unused-item-container {
+      border: 1px solid gray;
+      text-align: center;
+    }
+    .unused-item-container img {
+      width: 200px;
+    }
+  body
+    div.unused-items-container
+      - for (const icon of itemIcons)
+        div.unused-item-container
+          p= icon.id
+          img(src="./img/icon_s/Texture2D/" + icon.src alt="")

@@ -2,33 +2,40 @@ doctype html
 html
   head
     title Index
+    style.
+      .indexs-container {
+        display: flex;
+        flex-direction: column;
+      }
+      .index-row-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .index-container {
+        width: 200px;
+        height: 200px;
+        border: 1px solid gray;
+        text-align: center;
+        overflow: hidden;
+      }
+      .index-img {
+        max-width: 100%;
+      }
   body
     div
       p Game Version 3.12.0
       p Updated 2020-06-09
     hr
-    div
-      a(href="./item.html")
-        p アイテム / 裝備 / 料理
-      a(href="./chara.html")
-        p キャラクター
-      a(href="./otherChara.html")
-        p 他のキャラクター
-      a(href="./enemy.html")
-        p 敵
-
-      a(href="./skill.html")
-        p Skill / 效果
-      a(href="./effect.html")
-        p 異常状態
-  
-      a(href="./importantItem.html")
-        p 大事なもの
-
-      a(href="./degree.html")
-        p 称号
-      a(href="./quest.html")
-        p クェスト
+    div.indexs-container
+      - for (const row of _.chunk(pages, 4))
+        div.index-row-container
+          -for (const page of row)
+            div.index-container
+              a(href= page.href)
+                p= page.title
+                - if (page.img && page.img.src)
+                  img.index-img(src= page.img.src alt=page.img.alt)
     hr
     div
       h3 ブレイズアーツ (BA)

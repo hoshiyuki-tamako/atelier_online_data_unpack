@@ -82,6 +82,20 @@ html
       .item-icon-img {
         width: 100%;
       }
+
+
+      .chara-food-item-container {
+        width: 20%
+      }
+
+      .chara-food-consume {
+        display: flex;
+        align-items: center;
+        flex-basis: auto;
+      }
+      .chara-food-consume-img {
+        width: 60px;
+      }
   body
     div.items-index-container
       - for (const _chara of chara.m_vList.filter(p => p.SKILL.length))
@@ -134,34 +148,34 @@ html
                       th HP
                       td= LogicHelper.calculateState(_chara.SPEC.HP, lv)
                     tr
-                      th 物理攻撃 SATK:
+                      th= Option.stateLookUp.SATK
                       td= LogicHelper.calculateState(_chara.SPEC.SATK, lv)
                     tr
-                      th 物理防禦 SDEF:
+                      th= Option.stateLookUp.SDEF
                       td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv)
                     tr
-                      th 魔法攻撃 MATK:
+                      th= Option.stateLookUp.MATK
                       td= LogicHelper.calculateState(_chara.SPEC.MATK, lv)
                     tr
-                      th 魔法防禦 MDEF:
+                      th= Option.stateLookUp.MDEF
                       td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv)
                     tr
-                      th 速度 SPD:
+                      th= Option.stateLookUp.SPD
                       td= LogicHelper.calculateState(_chara.SPEC.SPD, lv)
                     tr
-                      th SDA:
+                      th= Option.stateLookUp.SDA
                       td= LogicHelper.calculateState(_chara.SPEC.SDA, lv)
                     tr
-                      th LDA:
+                      th= Option.stateLookUp.LDA
                       td= LogicHelper.calculateState(_chara.SPEC.LDA, lv)
                     tr
-                      th QTH:
+                      th= Option.stateLookUp.QTH
                       td= LogicHelper.calculateState(_chara.SPEC.QTH, lv)
                     tr
-                      th DDG:
+                      th= Option.stateLookUp.DDG
                       td= LogicHelper.calculateState(_chara.SPEC.DDG, lv)
                     tr
-                      th SADD:
+                      th= Option.stateLookUp.SADD
                       td= LogicHelper.calculateState(_chara.SPEC.SADD, lv)
 
               - const lv = 80
@@ -172,34 +186,34 @@ html
                     th HP
                     td= LogicHelper.calculateState(_chara.SPEC.HP, lv) + maxDfm.HP
                   tr
-                    th 物理攻撃 SATK:
+                    th= Option.stateLookUp.SATK
                     td= LogicHelper.calculateState(_chara.SPEC.SATK, lv) + maxDfm.SATK
                   tr
-                    th 物理防禦 SDEF:
+                    th= Option.stateLookUp.SDEF
                     td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv) + maxDfm.SDEF
                   tr
-                    th 魔法攻撃 MATK:
+                    th= Option.stateLookUp.MATK
                     td= LogicHelper.calculateState(_chara.SPEC.MATK, lv) + maxDfm.MATK
                   tr
-                    th 魔法防禦 MDEF:
+                    th= Option.stateLookUp.MDEF
                     td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv) + maxDfm.MDEF
                   tr
-                    th 速度 SPD:
+                    th= Option.stateLookUp.SPD
                     td= LogicHelper.calculateState(_chara.SPEC.SPD, lv) + maxDfm.SPD
                   tr
-                    th SDA:
+                    th= Option.stateLookUp.SDA
                     td= LogicHelper.calculateState(_chara.SPEC.SDA, lv) + maxDfm.SDA
                   tr
-                    th LDA:
+                    th= Option.stateLookUp.LDA
                     td= LogicHelper.calculateState(_chara.SPEC.LDA, lv) + maxDfm.LDA
                   tr
-                    th QTH:
+                    th= Option.stateLookUp.QTH
                     td= LogicHelper.calculateState(_chara.SPEC.QTH, lv) + maxDfm.QTH
                   tr
-                    th DDG:
+                    th= Option.stateLookUp.DDG
                     td= LogicHelper.calculateState(_chara.SPEC.DDG, lv) + maxDfm.DDG
                   tr
-                    th SADD:
+                    th= Option.stateLookUp.SADD
                     td= LogicHelper.calculateState(_chara.SPEC.SADD, lv) + maxDfm.SADD
 
               - if (_chara.BA.length)
@@ -227,44 +241,44 @@ html
               - for (const fdm of _chara.FDM)
                 h5 ----- LV #{fdm.NO} -----
                 - for (const fd of fdm.FD)
-                  div(style="width: 20%")
+                  div.chara-food-item-container
                     - const food = item.m_vList.find(i => i.DF === fd.DF)
-                      a(href="./item.html#DF-" + fd.DF style="display: flex; align-items: center; flex-basis: auto")
+                      a.chara-food-consume(href="./item.html#DF-" + fd.DF target="_blank")
                         span 品質 #{fd.QTY}
-                        img(src="./img/icon_s/Texture2D/icon_item_s_" + food.DF + ".png" alt= food.NAME style="width: 60px")
+                        img.chara-food-consume-img(src="./img/icon_s/Texture2D/icon_item_s_" + food.DF + ".png" alt= food.NAME)
                 table
                   tr
                     td HP
                     td= fdm.HP
                   tr
-                    td 物理攻撃 SATK:
+                    td= Option.stateLookUp.SATK
                     td= fdm.SATK
                   tr
-                    td 物理防禦 SDEF:
+                    td= Option.stateLookUp.SDEF
                     td= fdm.SDEF
                   tr
-                    td 魔法攻撃 MATK:
+                    td= Option.stateLookUp.MATK
                     td= fdm.MATK
                   tr
-                    td 魔法防禦 MDEF:
+                    td= Option.stateLookUp.MDEF
                     td= fdm.MDEF
                   tr
-                    td 速度 SPD:
+                    td= Option.stateLookUp.SPD
                     td= fdm.SPD
                   tr
-                    td SDA:
+                    td= Option.stateLookUp.SDA
                     td= fdm.SDA
                   tr
-                    td LDA:
+                    td= Option.stateLookUp.LDA
                     td= fdm.LDA
                   tr
-                    td QTH:
+                    td= Option.stateLookUp.QTH
                     td= fdm.QTH
                   tr
-                    td DDG:
+                    td= Option.stateLookUp.DDG
                     td= fdm.DDG
                   tr
-                    td SADD:
+                    td= Option.stateLookUp.SADD
                     td= fdm.SADD
 
               h4 -------- クェスト --------

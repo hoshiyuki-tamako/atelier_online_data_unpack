@@ -82,6 +82,9 @@ html
       .item-icon-img {
         width: 100%;
       }
+      .item-making-img {
+        width: 60px;
+      }
   body
     div.categories-index-container
       - for(const ii of itemIndex)
@@ -127,7 +130,7 @@ html
                   - for (const rsp of i.RSP)
                     td
                       a(href="#DF-" + rsp.DF)
-                        img(src="./img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF style="width: 60px")
+                        img.item-making-img(src="./img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF)
             - const makeItem = item.m_vList.filter(p => p.RSP.some(j => j.DF === i.DF))
             - if (makeItem.length)
               h4 ----- 調合 -----
@@ -135,7 +138,7 @@ html
                 - for (const otherItem of makeItem)
                   div
                     a(href="#DF-" + otherItem.DF)
-                      img(src="./img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF style="width: 60px")
+                      img.item-making-img(src="./img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF)
             - if (i.SPC.length)
               - for (const spc of i.SPC)
                 h4 ------ Skill/Effect (品質 #{spc.THR}) ------
@@ -161,39 +164,39 @@ html
                 table
                   - for (const [element, value] of Object.entries(i.ELM).filter(p => p[1]))
                     tr
-                      td= element
+                      td= Option.elementLookUp[element] || element
                       td= value
 
               - for (const lv of [1, 60, 80])
                 h4 ----- LV #{lv} -----
                   table
                     tr
-                      th 物理攻撃 SATK:
+                      th= Option.stateLookUp.SATK
                       td= LogicHelper.calculateState(i.EQU.SATK, lv)
                     tr
-                      th 物理防禦 SDEF:
+                      th= Option.stateLookUp.SDEF
                       td= LogicHelper.calculateState(i.EQU.SDEF, lv)
                     tr
-                      th 魔法攻撃 MATK:
+                      th= Option.stateLookUp.MATK
                       td= LogicHelper.calculateState(i.EQU.MATK, lv)
                     tr
-                      th 魔法防禦 MDEF:
+                      th= Option.stateLookUp.MDEF
                       td= LogicHelper.calculateState(i.EQU.MDEF, lv)
                     tr
-                      th 速度 SPD:
+                      th= Option.stateLookUp.SPD
                       td= LogicHelper.calculateState(i.EQU.SPD, lv)
                     tr
-                      th SDA:
+                      th= Option.stateLookUp.SDA
                       td= LogicHelper.calculateState(i.EQU.SDA, lv)
                     tr
-                      th LDA:
+                      th= Option.stateLookUp.LDA
                       td= LogicHelper.calculateState(i.EQU.LDA, lv)
                     tr
-                      th QTH:
+                      th= Option.stateLookUp.QTH
                       td= LogicHelper.calculateState(i.EQU.QTH, lv)
                     tr
-                      th DDG:
+                      th= Option.stateLookUp.DDG
                       td= LogicHelper.calculateState(i.EQU.DDG, lv)
                     tr
-                      th SADD:
+                      th= Option.stateLookUp.SADD
                       td= LogicHelper.calculateState(i.EQU.SADD, lv)

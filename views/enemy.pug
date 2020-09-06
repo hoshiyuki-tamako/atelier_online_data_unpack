@@ -119,15 +119,15 @@ html
             div ボス: #{_enemy.bBoss ? "✓" : "x"}
             div オンラインオーンリー: #{_enemy.bOnlyOnline ? "✓" : "x"}
             div 大きさ: #{_enemy.eSize}
-            div 視角: #{"-"}°
+            div 視角: #{Math.round(math.acos(_enemy.fViewCos)* (180/Math.PI), 2)}°
             div 移動速度: #{_enemy.fMoveSpeed}
             div 打撃範囲: #{_enemy.fHitRadius}
-    
+
             h4 ---- 屬性 ----
               table
                 - for (const [element, value] of Object.entries(_enemy.sParam.ELM).filter(p => p[1]))
                   tr
-                    td= element
+                    td= Option.elementLookUp[element] || element
                     td= value
             - if (_enemy.sParam.SKILL.length)
               h4 ------ Skill/Effect ------
@@ -152,39 +152,39 @@ html
               h4 ----- LV #{lv} -----
                 table
                   tr
-                    th EXP
+                    th= Option.stateLookUp.EXP
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.EXP, lv)
                   tr
-                    th HP
+                    th= Option.stateLookUp.HP
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.HP, lv)
                   tr
-                    th 物理攻撃 SATK:
+                    th= Option.stateLookUp.SATK
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.SATK, lv)
                   tr
-                    th 物理防禦 SDEF:
+                    th= Option.stateLookUp.SDEF
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDEF, lv)
                   tr
-                    th 魔法攻撃 MATK:
+                    th= Option.stateLookUp.MATK
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.MATK, lv)
                   tr
-                    th 魔法防禦 MDEF:
+                    th= Option.stateLookUp.MDEF
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.MDEF, lv)
                   tr
-                    th 速度 SPD:
+                    th= Option.stateLookUp.SPD
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.SPD, lv)
                   tr
-                    th SDA:
+                    th= Option.stateLookUp.SDA
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDA, lv)
                   tr
-                    th LDA:
+                    th= Option.stateLookUp.LDA
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.LDA, lv)
                   tr
-                    th QTH:
+                    th= Option.stateLookUp.QTH
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.QTH, lv)
                   tr
-                    th DDG:
+                    th= Option.stateLookUp.DDG
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.DDG, lv)
                   tr
-                    th SADD:
+                    th= Option.stateLookUp.SADD
                     td= LogicHelper.calculateState(_enemy.sParam.SPEC.SADD, lv)
 

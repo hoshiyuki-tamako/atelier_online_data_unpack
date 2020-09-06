@@ -1,1 +1,19 @@
-<!DOCTYPE html><html><head><title>Index</title></head><body><div><p>Game Version 3.12.0</p><p>Updated 2020-06-09</p></div><hr><div><a href="./item.html"><p>アイテム / 裝備 / 料理</p></a><a href="./chara.html"><p>キャラクター</p></a><a href="./otherChara.html"><p>他のキャラクター</p></a><a href="./enemy.html"><p>敵</p></a><a href="./skill.html"><p>Skill / 效果</p></a><a href="./effect.html"><p>異常状態</p></a><a href="./importantItem.html"><p>大事なもの</p></a><a href="./degree.html"><p>称号</p></a><a href="./quest.html"><p>クェスト</p></a></div><hr><div><h3>ブレイズアーツ (BA)</h3><ul><li>LV 1 - 100 EXP</li><li>LV 2 - 400 EXP</li><li>LV 3 - 1200 EXP</li><li>LV 4 - 3600 EXP</li><li>LV 5 - 0 EXP</li></ul></div><hr><div><h3>ステータスの公式</h3><div><p>floor(((M - B)/R) * level + B)</p><p>R = 目標レベル值</p><p>M = R レベルのステータス最大值</p><p>B = ステータス初始值</p><p>level = アイテムのレベル</p></div><h4>Example</h4><div><p>闇夜の盾</p><p>LV 1 物理攻撃 SATK 6</p><p>LV 60 物理攻撃 SATK	40</p><p>R = 60, M = 40, B = 6, 欲しいレベル = 80</p><p>((40 - 6)/60) * 80 + 6 = 51.3333333333</p><p>floor(51.3333333333) = 51</p><p>LV 80 物理攻撃 SATK	= 51</p></div></div></body></html>
+<!DOCTYPE html><html><head><title>Index</title><style>.indexs-container {
+  display: flex;
+  flex-direction: column;
+}
+.index-row-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.index-container {
+  width: 200px;
+  height: 200px;
+  border: 1px solid gray;
+  text-align: center;
+  overflow: hidden;
+}
+.index-img {
+  max-width: 100%;
+}</style></head><body><div><p>Game Version 3.12.0</p><p>Updated 2020-06-09</p></div><hr><div class="indexs-container"><div class="index-row-container"><div class="index-container"><a href="./item.html"><p>アイテム / 裝備 / 料理</p><img class="index-img" src="./img/icon_s/Texture2D/icon_item_s_10010001.png" alt=""></a></div><div class="index-container"><a href="./chara.html"><p>キャラクター</p><img class="index-img" src="./img/chara/Texture2D/icon_chara_all_0001.png" alt=""></a></div><div class="index-container"><a href="./otherChara.html"><p>他のキャラクター</p><img class="index-img" src="./img/chara/Texture2D/icon_chara_all_20001.png" alt=""></a></div><div class="index-container"><a href="./enemy.html"><p>敵</p><img class="index-img" src="./img/enemy/Texture2D/enemy_tex_031_06.png" alt=""></a></div></div><div class="index-row-container"><div class="index-container"><a href="./skill.html"><p>Skill / 效果</p></a></div><div class="index-container"><a href="./effect.html"><p>異常状態</p></a></div><div class="index-container"><a href="./zone.html"><p>ゾーン</p></a></div><div class="index-container"><a href="./area.html"><p>エリア</p></a></div></div><div class="index-row-container"><div class="index-container"><a href="./unusedItem.html"><p>未使用アイテム</p><img class="index-img" src="./img/icon_s/Texture2D/icon_item_s_20020010.png" alt=""></a></div><div class="index-container"><a href="./importantItem.html"><p>大事なもの</p></a></div><div class="index-container"><a href="./degree.html"><p>称号</p></a></div><div class="index-container"><a href="./quest.html"><p>クェスト</p></a></div></div></div><hr><div><h3>ブレイズアーツ (BA)</h3><ul><li>LV 1 - 100 EXP</li><li>LV 2 - 400 EXP</li><li>LV 3 - 1200 EXP</li><li>LV 4 - 3600 EXP</li><li>LV 5 - 0 EXP</li></ul></div><hr><div><h3>ステータスの公式</h3><div><p>floor(((M - B)/R) * level + B)</p><p>R = 目標レベル值</p><p>M = R レベルのステータス最大值</p><p>B = ステータス初始值</p><p>level = アイテムのレベル</p></div><h4>Example</h4><div><p>闇夜の盾</p><p>LV 1 物理攻撃 SATK 6</p><p>LV 60 物理攻撃 SATK	40</p><p>R = 60, M = 40, B = 6, 欲しいレベル = 80</p><p>((40 - 6)/60) * 80 + 6 = 51.3333333333</p><p>floor(51.3333333333) = 51</p><p>LV 80 物理攻撃 SATK	= 51</p></div></div></body></html>

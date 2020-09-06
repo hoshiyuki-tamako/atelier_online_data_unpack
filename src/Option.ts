@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
+import { Options } from 'html-minifier';
 
 export class Option {
 
@@ -26,11 +27,64 @@ export class Option {
   };
 
   public static importantItemLookUp = {
-    1: 'アカデミーポイント',
+ //   1: 'アカデミーポイント',
     2: 'エーテル',
-    4: 'コール',
+ //   4: 'コール',
     9000: '降臨メダル',
   };
+
+  public static elementIdLookUp = {
+    0: '無',
+    1: '火',
+    2: '水',
+    3: '風',
+    4: '土',
+  };
+
+  public static elementLookUp = {
+    FIRE: '火',
+    WATER: '水',
+    WIND: '風',
+    EARTH: '土',
+    LIGHT: '光',
+    DARK: '闇',
+  };
+
+  public static stateLookUp = {
+    EXP: 'EXP',
+    HP: 'HP',
+    SATK: '物理攻撃',
+    SDEF: '物理防禦',
+    MATK: '魔法攻撃',
+    MDEF: '魔法防禦',
+    SPD: '速度',
+    SDA: 'SP上限?',
+    LDA: 'LDA',
+    QTH: 'SP回復量?',
+    DDG: '回避',
+    SADD: 'SADD',
+  }
+
+  // settings
+  public static minifyOption = {
+    minifyCSS: true,
+    minifyURLs: true,
+    minifyJS: true,
+    removeAttributeQuotes: true,
+    removeComments: true,
+    removeEmptyAttributes: true,
+    removeEmptyElements: true,
+    removeOptionalTags: true,
+    removeRedundantAttributes: true,
+    removeScriptTypeAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    trimCustomFragments: true,
+    useShortDoctype: true,
+    collapseWhitespace: true,
+    conservativeCollapse: true,
+    collapseInlineTagWhitespace: true,
+    collapseBooleanAttributes: true,
+  } as Options;
 
   // paths
   public static viewFolder = path.join(__dirname, '..', 'views');
@@ -45,6 +99,11 @@ export class Option {
   public static questPath = path.join(__dirname, '..', 'export', 'quest.json');
   public static skillPath = path.join(__dirname, '..', 'export', 'skill.json');
   public static abnomalstateeffectPath = path.join(__dirname, '..', 'export', 'abnomalstateeffect.json');
+  public static zonePath = path.join(__dirname, '..', 'export', 'zone.json');
+  public static zoneeffectPath = path.join(__dirname, '..', 'export', 'zoneeffect.json');
+  public static fieldnamePath = path.join(__dirname, '..', 'export', 'fieldname.json');
+  public static areaDetailPath = path.join(__dirname, '..', 'export', 'areaDetail.json');
+  public static areaInfoPath = path.join(__dirname, '..', 'export', 'areaInfo.json');
 
   public static fileCache = {} as { [s: string]: unknown };
 
@@ -58,6 +117,10 @@ export class Option {
       this.questPath,
       this.skillPath,
       this.abnomalstateeffectPath,
+      this.zonePath,
+      this.zoneeffectPath,
+      this.fieldnamePath,
+      this.areaDetailPath,
     ].map(this.loadFileFromCache.bind(this)));
   }
 

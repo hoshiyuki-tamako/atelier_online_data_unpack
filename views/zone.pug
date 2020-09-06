@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    title Zone
+  style.
+    tr td {
+      padding: 4px;
+    }
+  body
+    div
+      - for (const _zone of zone.List)
+        h3 #{_zone.name}
+        p ID: #{_zone.id}
+        - if (_zone.effectlist.length)
+          table
+            tr
+              th 效果
+              th 数値
+            - for (const effect of _zone.effectlist)
+              - const _zoneEffect = zoneEffect.List.find(p => p.id === effect)
+              tr
+                td= _zoneEffect.name
+                td= _zoneEffect.value
+        hr
