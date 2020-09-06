@@ -1,31 +1,32 @@
-import { DungeonInfo } from './master/dungeonInfo';
-import { TownInfo } from './master/townInfo';
-import { AreaInfo } from './master/areaInfo';
-import { AreaDetail } from './master/areaDetail';
 import fs from 'fs-extra';
+import { minify as _minify } from 'html-minifier';
 import Enumerable from 'linq';
 import _ from 'lodash';
 import * as math from 'mathjs';
 import path from 'path';
 import pug from 'pug';
-import { minify as _minify } from 'html-minifier';
 
 import { LogicHelper } from './LogicHelper';
 import { AbnormalEffect } from './master/abnormalEffect';
+import { AreaDetail } from './master/areaDetail';
+import { AreaInfo } from './master/areaInfo';
 import { BlazeArt } from './master/blazeArt';
 import { Chara } from './master/chara';
 import { Degree } from './master/degree';
+import { DungeonInfo } from './master/dungeonInfo';
 import { Enemy } from './master/enemy';
+import { FieldName } from './master/fieldName';
 import { Item } from './master/item';
 import { Quest } from './master/quest';
 import { Skill } from './master/skill';
+import { TownInfo } from './master/townInfo';
 import { Zone } from './master/zone';
 import { ZoneEffect } from './master/zoneEffect';
 import { Option } from './Option';
-import { FieldName } from './master/FieldName';
 
 function minify(r: string, o: any) {
   // return _minify(r, o);
+  _minify;
   return r;
 }
 
@@ -140,7 +141,7 @@ export class PageBuilder {
         href: "./degree.html",
         title: "称号",
         img: {
-          src: "./img/other/Texture2D/_item_texture_0025.png",
+          src: "./img/other/Texture2D/item_texture_0025.png",
           alt: "",
         },
       },
@@ -148,7 +149,7 @@ export class PageBuilder {
         href: "./quest.html",
         title: "クェスト",
         img: {
-          src: "./img/other/Texture2D/_item_texture_0018.png",
+          src: "./img/other/Texture2D/item_texture_0018.png",
           alt: "",
         },
       },
