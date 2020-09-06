@@ -107,9 +107,10 @@ html
 
           div.quest-container-right
             - if (_quest.COST.WTH.CNT)
-              h4 ------ 消費 (DF=#{_quest.COST.WTH.DF}) ------
+              h4 ------ 消費 ------
+              - const _wealth = wealth.m_vList.find(p => p.DF === _quest.COST.WTH.DF)
               span.important-item-container
-                img(src="./img/icon_item01/Texture2D/icon_item01_" + _quest.COST.WTH.DF.toString().padStart(5, '0') + ".png" alt= Option.importantItemLookUp[_quest.COST.WTH.DF] || _quest.COST.WTH.DF)
+                img(src="./img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png" alt= _wealth.NAME)
                 span= _quest.COST.WTH.CNT
             -if (_quest.ENM.length)
               h4 ------ 討伐 ------
@@ -136,7 +137,7 @@ html
                     p -
                 - else
                   a.quest-reward-item-container(href="./item.html#DF-" + _item.DF target="_blank")
-                    p 品質 #{dlv.QTY} - #{dlv.BDR}個
+                    p 品質#{dlv.QTY} #{dlv.BDR}個
                     img(src="./img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
             - if (_quest.RWD_ITEM.length || _quest.RWD_WTH.length)
@@ -151,13 +152,14 @@ html
                       p -
                   - else
                     a.quest-reward-item-container(href="./item.html#DF-" + _item.DF target="_blank")
-                      p 品質 #{rwd.QTY}
+                      p 品質#{rwd.QTY} #{rwd.CNT}個
                       img(src="./img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
               - if (_quest.RWD_WTH.length)
                 - for (const rwd of _quest.RWD_WTH)
+                  - const _wealth = wealth.m_vList.find(p => p.DF === rwd.DF)
                   span.important-item-container
-                    img(src="./img/icon_item01/Texture2D/icon_item01_" + rwd.DF.toString().padStart(5, '0') + ".png")
+                    img(src="./img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png")
                     span= rwd.CNT
 
             - if (_quest.UNLOCK.length)

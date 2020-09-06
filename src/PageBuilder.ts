@@ -7,7 +7,7 @@ import path from 'path';
 import pug from 'pug';
 
 import { LogicHelper } from './LogicHelper';
-import { AbnormalEffect } from './master/abnormalEffect';
+import { AbnormalStateEffect } from './master/abnormalStateEffect';
 import { AreaDetail } from './master/areaDetail';
 import { AreaInfo } from './master/areaInfo';
 import { BlazeArt } from './master/blazeArt';
@@ -23,6 +23,8 @@ import { TownInfo } from './master/townInfo';
 import { Zone } from './master/zone';
 import { ZoneEffect } from './master/zoneEffect';
 import { Option } from './Option';
+import { AbnormalState } from './master/abnormalState';
+import { Wealth } from './master/wealth';
 
 function minify(r: string, o: any) {
   // return _minify(r, o);
@@ -46,7 +48,7 @@ export class PageBuilder {
       that.enemy(),
       that.degree(),
       that.quest(),
-      that.importantItem(),
+      that.wealth(),
       that.zone(),
       that.unusedItem(),
       that.area(),
@@ -130,7 +132,7 @@ export class PageBuilder {
       },
  
       {
-        href: "./importantItem.html",
+        href: "./wealth.html",
         title: "大事なもの",
         img: {
           src: "./img/icon_item01/Texture2D/icon_item01_00001.png",
@@ -241,11 +243,12 @@ export class PageBuilder {
   }
 
   public async effect() {
-    const [effect] = await Promise.all([
-      Option.loadFileFromCache(Option.exportDataPaths.abnomalstateeffect),
-    ]) as [AbnormalEffect];
+    const [abnormalState, abnormalstateeffect] = await Promise.all([
+      Option.loadFileFromCache(Option.exportDataPaths.abnormalstate),
+      Option.loadFileFromCache(Option.exportDataPaths.abnormalstateeffect),
+    ]) as [AbnormalState, AbnormalStateEffect];
 
-    const pugOption = { effect };
+    const pugOption = { abnormalState, abnormalstateeffect };
     await fs.writeFile(
       path.join(Option.outFolder, 'effect.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'effect.pug'), pugOption), Option.minifyOption),
@@ -278,33 +281,35 @@ export class PageBuilder {
   }
 
   public async quest() {
-    const [quest, item, chara, enemy] = await Promise.all([
+    const [quest, item, chara, enemy, wealth] = await Promise.all([
       Option.loadFileFromCache(Option.exportDataPaths.quest),
       Option.loadFileFromCache(Option.exportDataPaths.item),
       Option.loadFileFromCache(Option.exportDataPaths.chara),
       Option.loadFileFromCache(Option.exportDataPaths.enemy),
-    ]) as [Quest, Item, Chara, Enemy];
+      Option.loadFileFromCache(Option.exportDataPaths.wealth),
+    ]) as [Quest, Item, Chara, Enemy, Wealth];
 
-    const pugOption = { Option, Enumerable, quest, item, chara, enemy };
+    const pugOption = { Option, Enumerable, quest, item, chara, enemy, wealth };
     await fs.writeFile(
       path.join(Option.outFolder, 'quest.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'quest.pug'), pugOption), Option.minifyOption),
     );
   }
 
-  public async importantItem() {
-    const [icons] = await Promise.all([
+  public async wealth() {
+    const [wealth, icons] = await Promise.all([
+      Option.loadFileFromCache(Option.exportDataPaths.wealth),
       fs.readdir(path.join(Option.outFolder, 'img', 'icon_item01', 'Texture2D')),
-    ]) as [string[]];
+    ]) as [Wealth, string[]];
 
-    const importantItems = icons
+    const wealthIcons = icons
       .map(p => path.basename(p))
       .filter(p => !p.includes("#"))
       .map(p => +p.split('_')[2].split('.')[0]);
-    const pugOption = { Option, importantItems };
+    const pugOption = { wealth, wealthIcons };
     await fs.writeFile(
-      path.join(Option.outFolder, 'importantItem.html'),
-      minify(pug.renderFile(path.join(Option.viewFolder, 'importantItem.pug'), pugOption), Option.minifyOption),
+      path.join(Option.outFolder, 'wealth.html'),
+      minify(pug.renderFile(path.join(Option.viewFolder, 'wealth.pug'), pugOption), Option.minifyOption),
     );
   }
 

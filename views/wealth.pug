@@ -1,0 +1,36 @@
+doctype html
+html
+  head
+    title Wealth
+    style.
+      .wealth-character-cell img {
+        width: 80px;
+      }
+      .wealth-image-cell img {
+        width: 80px;
+      }
+  body
+    div
+      table
+        thead
+          tr
+            th DF
+            th 名前
+            th 詳細
+            th キャラクター
+            th 画像
+        tbody
+          - for (const _wealth of wealth.m_vList)
+            tr
+              td= _wealth.DF
+              td= _wealth.NAME
+              td= _wealth.DESC
+              td.wealth-character-cell
+                - if (_wealth.CHARA)
+                  div.quest-character-container
+                    a(href="./chara.html#DF-" + _wealth.CHARA)
+                    img.item-index-img(src="./img/chara/Texture2D/icon_chara_all_" + _wealth.CHARA.toString().padStart(4, "0") + "_00.png" alt= _wealth.CHARA)
+                - else
+                  div
+              td.wealth-image-cell
+                img(src="./img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png")

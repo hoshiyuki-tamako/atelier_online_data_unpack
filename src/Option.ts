@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
-import path from 'path';
 import { Options } from 'html-minifier';
+import path from 'path';
 
 export class Option {
 
@@ -24,13 +24,6 @@ export class Option {
     54: '限界突破',
     55: '万能強化',
     56: 'ブレイズアーツ経験値',
-  };
-
-  public static importantItemLookUp = {
-    1: 'コール',
-    2: 'エーテル',
-    // 1: 'アカデミーポイント',
-    9000: '降臨メダル',
   };
 
   public static elementIdLookUp = {
@@ -110,7 +103,6 @@ export class Option {
     item: path.join(__dirname, '..', 'export', 'item.json'),
     quest: path.join(__dirname, '..', 'export', 'quest.json'),
     skill: path.join(__dirname, '..', 'export', 'skill.json'),
-    abnomalstateeffect: path.join(__dirname, '..', 'export', 'abnomalstateeffect.json'),
     zone: path.join(__dirname, '..', 'export', 'zone.json'),
     zoneeffect: path.join(__dirname, '..', 'export', 'zoneeffect.json'),
     fieldname: path.join(__dirname, '..', 'export', 'fieldname.json'),
@@ -118,6 +110,9 @@ export class Option {
     areaInfo: path.join(__dirname, '..', 'export', 'areaInfo.json'),
     townInfo: path.join(__dirname, '..', 'export', 'townInfo.json'),
     dungeonInfo: path.join(__dirname, '..', 'export', 'dungeonInfo.json'),
+    abnormalstate: path.join(__dirname, '..', 'export', 'abnormalstate.json'),
+    abnormalstateeffect: path.join(__dirname, '..', 'export', 'abnormalstateeffect.json'),
+    wealth: path.join(__dirname, '..', 'export', 'wealth.json'),
   };
 
   public static fileCache = {} as { [s: string]: unknown };
@@ -127,11 +122,7 @@ export class Option {
   }
 
   public static async loadFileFromCache(path: string) {
-    if (this.fileCache[path]) {
-      return this.fileCache[path];
-    }
-
-    return this.fileCache[path] = await fs.readJSON(path);
+    return this.fileCache[path] = this.fileCache[path] || await fs.readJSON(path);
   }
 
 }
