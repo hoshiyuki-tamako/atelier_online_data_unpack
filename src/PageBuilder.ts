@@ -140,7 +140,7 @@ export class PageBuilder {
         href: "./degree.html",
         title: "称号",
         img: {
-          src: "./img/adv/Texture2D/adv_item_texture_0025.png",
+          src: "./img/other/Texture2D/_item_texture_0025.png",
           alt: "",
         },
       },
@@ -148,7 +148,7 @@ export class PageBuilder {
         href: "./quest.html",
         title: "クェスト",
         img: {
-          src: "./img/adv/Texture2D/adv_item_texture_0018.png",
+          src: "./img/other/Texture2D/_item_texture_0018.png",
           alt: "",
         },
       },
