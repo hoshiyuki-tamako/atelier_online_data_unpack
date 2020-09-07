@@ -1,4 +1,31 @@
 Vue.component('v-select', VueSelect.VueSelect);
+Vue.use(VTooltip)
+
+class Option {
+  static stateLookUp = {
+    EXP: 'EXP',
+    HP: 'HP',
+    SATK: '物理攻撃',
+    SDEF: '物理防禦',
+    MATK: '魔法攻撃',
+    MDEF: '魔法防禦',
+    SPD: '速度',
+    SDA: 'SP上限?',
+    LDA: 'LDA',
+    QTH: 'SP回復量?',
+    DDG: '回避',
+    SADD: 'SADD',
+  };
+
+  static elementLookUp = {
+    FIRE: '火',
+    WATER: '水',
+    WIND: '風',
+    EARTH: '土',
+    LIGHT: '光',
+    DARK: '闇',
+  };
+}
 
 new Vue({
   el: '#app',
@@ -6,7 +33,9 @@ new Vue({
     // data
     chara: null,
     item: null,
+    skill: null,
 
+    // processed data
     items: [],
 
     selectItems: [],
@@ -24,7 +53,7 @@ new Vue({
     //
     selectedSupportEquipment: '',
 
-
+    equipmentSlots: ['weapon', 'shield', 'head', 'body', 'accessory1', 'accessory2', 'accessory3'],
     equipment: {
       character: 0,
     
@@ -39,6 +68,37 @@ new Vue({
   
       supports: [],
     },
+    equipmentModifier: {
+      weapon: {
+        lv: null,
+        effect: null,
+      },
+      shield: {
+        lv: null,
+        effect: null,
+      },
+      head: {
+        lv: null,
+        effect: null,
+      },
+      body: {
+        lv: null,
+        effect: null,
+      },
+    
+      accessory1: {
+        lv: null,
+        effect: null,
+      },
+      accessory2: {
+        lv: null,
+        effect: null,
+      },
+      accessory3: {
+        lv: null,
+        effect: null,
+      },
+    },
   },
   methods: {
     // event
@@ -46,7 +106,7 @@ new Vue({
       this.equipment.character = value ? value.value : 0;
     },
 
-    // main items
+    // pick items
     onPickWeapon() {
       this.resetPickItemFilter();
       this.$set(this.pickItemFilter, 'category', 20);
@@ -88,13 +148,31 @@ new Vue({
       this.$set(this.equipment, this.pickItemDialogTarget, item.DF);
       this.pickItemDialogVisible = false;
     },
-  
     onRemoveCurrentItem() {
       this.$set(this.equipment, this.pickItemDialogTarget, null);
       this.pickItemDialogVisible = false;
     },
 
-    // action
+    getFilteredPickItems() {
+      if (!this.chara) {
+        return [];
+      }
+
+      const character = this.chara.m_vList.find(p => p.DF === this.equipment.character);
+      return this.items.filter(p => 
+        (!this.pickItemFilter.category || p.CATEG === this.pickItemFilter.category) &&
+        (!this.pickItemFilter.weaponGen.length || this.pickItemFilter.weaponGen.includes(p.GEN)) && 
+        (!character || !p.GROUP_DF || character.GROUP_DF === p.GROUP_DF) && 
+        (!character || !p.EQU_GND.length || p.EQU_GND.some(i => !i.GEN) || p.EQU_GND.filter(i => i.ENB).map(i => i.GEN).includes(character.GEN))
+      );
+    },
+    resetPickItemFilter() {
+      this.pickItemFilter = {
+        category: null,
+        weaponGen: [],
+      };
+    },
+
     addEquipment() {
       if (this.selectedSupportEquipment) {
         this.equipment.supports.push(this.selectedSupportEquipment.value);
@@ -104,7 +182,129 @@ new Vue({
       this.equipment.supports.splice(i, 1);
     },
 
-    //
+    // get items
+    getItemStates(df) {
+      if (!this.item || !df) {
+        return 0;
+      }
+      const item = this.item.m_vList.find(i => i.DF === df);
+      return Object.keys(Option.stateLookUp)
+      .filter(p => item.EQU[p])
+      .map(p => ({
+        label: Option.stateLookUp[p],
+        value: this.calculateState(item.EQU[p], 80),
+      }))
+      .filter(p => p.value);
+    },
+    getItemElements(df) {
+      if (!this.item || !df) {
+        return [];
+      }
+      const item = this.item.m_vList.find(i => i.DF === df);
+      return Object.entries(item.ELM).filter(p => p[1]).map(p =>({
+        label: Option.elementLookUp[p[0]],
+        value: p[1],
+      }));
+    },
+    getItemSkills(df) {
+      if (!this.item || !df) {
+        return [];
+      }
+      const item = this.item.m_vList.find(i => i.DF === df);
+      if (!item.SPC.length) {
+        return [];
+      }
+      return item.SPC[item.SPC.length - 1].SKILL.map(p => this.skill.m_vList.find(i => i.id === p.DF));
+    },
+
+    // get single
+    getSpeed() {
+      let characterSpeed = 0;
+      if (this.equipment.character) {
+        const character = this.chara.m_vList.find(p => p.DF === this.equipment.character);
+        const skills = character.SKILL.map(p => this.skill.m_vList.find(i => i.id === p.DF));
+        const overrideIds = skills.map(p => p.overrideID);
+        characterSpeed += skills
+          .filter(p => !overrideIds.includes(p.id) && p.effectTarget === 6)
+          .map(p => p.effectValue)
+          .reduce((a, b) => a + b, 0);
+
+        characterSpeed += this.calculateState(character.SPEC.SPD, 80);
+      }
+
+      const itemSpeed = this.equipmentSlots
+      .map(p => this.equipment[p])
+      .filter(p => p)
+      .map(df =>this.item.m_vList.find(p => p.DF === df))
+      .map(p => this.calculateState(p.EQU.SPD, 80))
+      .reduce((a, b) => a + b, 0);
+
+      const skillSpeed = this.equipmentSlots
+        .map(p => this.equipment[p])
+        .filter(p => p)
+        .map(df =>this.item.m_vList.find(p => p.DF === df))
+        .filter(p => p.SPC.length)
+        .map(p => p.SPC[p.SPC.length - 1].SKILL)
+        .flat()
+        .map(p => this.skill.m_vList.find(i => i.id === p.DF))
+        .filter(skill => skill.effectTarget === 6)
+        .map(skill => skill.effectValue)
+        .reduce((a, b) => a + b, 0);
+
+      return characterSpeed + itemSpeed + skillSpeed;
+    },
+    getDodge() {
+      const dodges = this.equipmentSlots
+        .map(p => this.equipment[p])
+        .filter(df => df)
+        .map(df => this.item.m_vList.find(p => p.DF === df))
+        .map(item => this.getDodgeValueFromItem(item));
+      return dodges.reduce((a, b) => a + b, 0);
+    },
+    getDodgeValueFromItem(item) {
+      if (!item.SPC.length) {
+        return 0;
+      }
+
+      return item.SPC[item.SPC.length - 1].SKILL
+        .map(p => this.skill.m_vList.find(i => i.id === p.DF))
+        .filter(p => p.effectTarget === 8)
+        .map(p => p.effectValue)
+        .reduce((a, b) => a + b, 0);
+    },
+
+    getCriticalHitRate() {
+      let characterCriticalHitRate = 0;
+      if (this.equipment.character) {
+        const character = this.chara.m_vList.find(p => p.DF === this.equipment.character);
+        const skills = character.SKILL.map(p => this.skill.m_vList.find(i => i.id === p.DF));
+        const overrideIds = skills.map(p => p.overrideID);
+        console.log(skills);
+        characterCriticalHitRate += skills
+          .filter(p => !overrideIds.includes(p.id) && p.effectTarget === 9)
+          .map(p => p.effectValue)
+          .reduce((a, b) => a + b, 0);
+      }
+
+      const itemCriticalHitRate = this.equipmentSlots
+      .map(p => this.equipment[p])
+      .filter(p => p)
+      .map(df =>this.item.m_vList.find(p => p.DF === df))
+      .filter(p => p.SPC.length)
+      .map(p => p.SPC[p.SPC.length - 1].SKILL)
+      .flat()
+      .map(p => this.skill.m_vList.find(i => i.id === p.DF))
+      .filter(skill => skill.effectTarget === 9)
+      .map(skill => skill.effectValue)
+      .reduce((a, b) => a + b, 0);
+
+      return characterCriticalHitRate + itemCriticalHitRate;
+    },
+
+    getSkillScale() {
+       return 1;
+    },    
+
     getState(type) {
       let characterState = 0;
       if (this.equipment.character) {
@@ -112,7 +312,7 @@ new Vue({
         characterState += this.calculateState(chara.SPEC[type], 80) + chara.FDM[chara.FDM.length - 1][type];
       }
 
-      const itemEquipmentState = ['weapon', 'shield', 'head', 'body', 'accessory1', 'accessory3', 'accessory3']
+      const itemEquipmentState = this.equipmentSlots
         .map(p => this.equipment[p])
         .filter(p => p)
         .map(p => this.item.m_vList.find(i => i.DF === p))
@@ -127,7 +327,22 @@ new Vue({
       return Math.round(characterState + itemEquipmentState + supportState);
     },
     getElements() {
-      return [];
+      const element = {};
+      const elements = this.equipmentSlots
+      .map(p => this.equipment[p])
+      .filter(p => p)
+      .map(df =>this.item.m_vList.find(p => p.DF === df))
+      .map(item => Object.entries(item.ELM));
+      for (const each of elements) {
+        for (const [k, v] of each) {
+          element[k] = element[k] || 0;
+          element[k] += v;
+        }
+      }
+      return Object.entries(element).map(p => ({
+        label: Option.elementLookUp[p[0]],
+        value: p[1],
+      }));
     },
     getSelectedCharacterImage() {
       return `img/chara/Texture2D/icon_chara_all_${this.equipment.character.toString().padStart(4, '0')}_00.png`;
@@ -169,35 +384,20 @@ new Vue({
     },
 
 
-
-
-    getFilteredPickItems() {
-      console.log(this.pickItemFilter);
-      return this.items.filter(p => 
-        (!this.pickItemFilter.category || p.CATEG === this.pickItemFilter.category) &&
-        (!this.pickItemFilter.weaponGen.length || this.pickItemFilter.weaponGen.includes(p.GEN))
-      );
-    },
-
-    //
-    resetPickItemFilter() {
-      this.pickItemFilter = {
-        category: null,
-        weaponGen: [],
-      };
-    },
     //
     calculateState(gmrb, lv = 1) {
       const baseValue = ((gmrb.M - gmrb.B)/gmrb.R);
       return Math.floor(baseValue * lv + gmrb.B);
     },
     async load() {
-      const [chara, item] = await Promise.all([
+      const [chara, item, skill] = await Promise.all([
         fetch('export/chara.json').then(p => p.json()),
         fetch('export/item.json').then(p => p.json()),
+        fetch('export/skill.json').then(p => p.json()),
       ]);
       this.item = item;
       this.chara = chara;
+      this.skill = skill;
   
       this.items = this.item.m_vList.filter(p => p.EQU_BRD);
       this.selectItems = this.items.map(p => ({

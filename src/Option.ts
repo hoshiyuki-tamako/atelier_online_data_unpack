@@ -94,7 +94,17 @@ export class Option {
   };
 
   public static skillEffectTargetLookUp = {
+    2: '魔防強化',
+    3: '魔攻強化',
+
+    6: '素早さ',
     8: '回避',
+    9: 'クリティカル',
+
+    21: '火属性値増加',
+    22: '水属性値増加',
+    23: '土属性値増加',
+    24: '風属性値増加',
   };
 
   // settings
