@@ -1,0 +1,110 @@
+doctype html
+html
+  head
+    title 他
+    link(rel="stylesheet" href="css/main.css")
+    style.
+      table th {
+        white-space: nowrap;
+      }
+      table td {
+        text-align: center;
+      }
+      table th, td {
+        padding: 4px;
+      }
+
+      .categories-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .categories-container > div {
+        padding: 12px;
+      }
+
+      .item-container {
+        display: flex;
+        padding: 12px;
+      }
+      .item-container-left {
+        min-width: 200px;
+        max-width: 200px;
+        padding: 12px;
+      }
+      .item-container-right {
+        padding: 12px;
+      }
+
+      .container {
+        padding: 4px;
+        margin: 4px;
+      }
+
+      .treasure-text-table tr td {
+        border-bottom: 1px solid black;
+      }
+      .treasure-character-cell img {
+        width: 120px;
+      }
+  body
+    div.categories-container
+      div
+        a(href="#advent-battle") 降臨バタル
+      div
+        a(href="#loading-tips") Loading Tips
+      div
+        a(href="#treasure-text") 宝文字
+    br
+    br
+    br
+    br
+
+    div#advent-battle
+      h3 降臨バタル
+      - for (const _adventBattle of adventBattle.RankingList)
+        - for (const _enemyList of _adventBattle.EnemyList)
+          div.item-container
+            div.item-container-left
+              - const _enemy = enemy.m_vList.find(p => p.DF === _enemyList.DF)
+              a(href="enemy.html#DF-" + _enemy.DF)
+                h3.item-name= _enemy.NAME
+                img.icon-full(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+
+            div.item-container-right
+              table
+                tr
+                  th 課題
+                  th ポイント
+                - for (const score of _enemyList.ScoreList)
+                  tr
+                    td= score.name
+                    td= score.score
+          hr
+
+    div.container#loading-tips
+      h3 Loading Tips
+      - for (const tip of tips.LOADING_LIST)
+        p= tip.sTitle
+        p= tip.sContent
+        p &#x3E;
+      h3 Battle Tips
+    - for (const tip of tips.BATTLE_LIST)
+        p= tip.sTitle
+        p= tip.sContent
+        p &#x3E;
+    hr
+
+
+    div.container#treasure-text
+      h3 宝文字
+      table.treasure-text-table
+        - for (const _treasure of treasure.m_vList)
+          tr
+            td.treasure-character-cell
+              - const _chara = chara.m_vList.find(p => p.DF === _treasure.iCharaID)
+              - if (_chara)
+                a(href="chara.html#DF-" + _chara.DF target="_blank")
+                  img(src="img/chara/Texture2D/" + `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_00.png` alt= _chara.NAME)
+            td
+              - for (const content of _treasure.vContent)
+                p= content

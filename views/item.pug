@@ -1,29 +1,29 @@
 doctype html
 html
   head
-    title Item
-    link(rel="stylesheet", href="./css/important-item.css")
-    link(rel="stylesheet", href="./css/main.css")
+    title アイテム / 裝備 / 料理
+    link(rel="stylesheet" href="css/reset.css")
+    link(rel="stylesheet" href="css/main.css")
+    link(rel="stylesheet" href="css/wealth.css")
     style.
-      table th {
-        text-align: right;
+      th {
+        white-space: nowrap;
       }
-
-      table td {
+      th, td {
         text-align: left;
-      }
-      table th, td {
         padding: 4px;
       }
 
-      .categories-index-container {
+
+
+      .category-indexes-container {
         display: flex;
         flex-wrap: wrap;
       }
       .category-index-container {
-        border: 1px gray solid;
-        padding: 4px;
+        padding: 12px;
       }
+
 
 
       .items-index-container {
@@ -31,124 +31,135 @@ html
         flex-wrap: wrap;
       }
       .item-index-container {
-        border: 1px gray solid;
+        padding: 12px;
+      }
+      .item-index-container a {
         width: 120px;
         min-height: 140px;
         display: flex;
         flex-direction: column;
         padding-left: 4px;
+        text-align: center;
       }
-      .item-index-text {
+      .item-index-container > a > p {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
       }
-      .item-index-img {
+      .item-index-container > a > img {
         width: 100%;
       }
 
-      .items {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: column;
-      }
+
+
       .item-container {
-        border: 1px gray solid;
-        margin: 10px;
-        width: calc(100%-(10px * 2));
         display: flex;
-        flex-direction: row;
+        padding: 12px;
       }
       .item-container-left {
         min-width: 200px;
         max-width: 200px;
-        border-right: 1px gray solid;
+        padding: 12px;
       }
       .item-container-right {
-        padding-left: 4px;
+        padding: 12px;
       }
+
       .item-making-container {
         display: flex;
         flex-wrap: wrap;
-        flex-direction: row;
-      }
-      .item-name {
-        text-align: center;
-      }
-      .item-icon-container {
-        justify-content: center;
-        align-items: center;
-      }
-      .item-icon-img {
-        width: 100%;
-      }
-      .item-making-img {
-        width: 60px;
       }
   body
-    div.categories-index-container
+    div
+      h2 種類
+      div.category-indexes-container
+        - for(const ii of itemIndex)
+          div.category-index-container
+            a(href="#CATEG-" + ii.CATEG)
+              h3= Option.itemCategoryLookUp[ii.CATEG] || `CATEG=${ii.CATEG}`
+    br
+    br
+    br
+    br
+
+    div
       - for(const ii of itemIndex)
-        div.category-index-container
-          a(href="#CATEG-" + ii.CATEG)
-            h2= Option.itemCategoryLookUp[ii.CATEG] || `CATEG=${ii.CATEG}`
-    hr
-    - for(const ii of itemIndex)
-      h2(id="CATEG-" + ii.CATEG)= Option.itemCategoryLookUp[ii.CATEG] || `CATEG=${ii.CATEG}`
-      hr
-      div.items-index-container
-        - for (const i of ii.items)
-          a(href="#DF-" + i.DF)
+        h2(id="CATEG-" + ii.CATEG)= Option.itemCategoryLookUp[ii.CATEG] || `CATEG=${ii.CATEG}`
+        div.items-index-container
+          - for (const i of ii.items)
             div.item-index-container
-              p.item-index-text #{i.NAME}
-              div
-                img.item-index-img(src="./img/icon_s/Texture2D/icon_item_s_" + i.DF + ".png" alt= i.NAME)
-      br
-      br
-    hr
-    div.items
-      - for(const i of item.m_vList)
-        div.item-container(id="DF-" + i.DF)
+              a(href="#DF-" + i.DF)
+                p #{i.NAME}
+                img(src="img/icon_s/Texture2D/icon_item_s_" + i.DF + ".png" alt= i.NAME)
+        br
+        br
+    br
+    br
+
+    div
+      - for(const _item of item.m_vList)
+        div.item-container(id="DF-" + _item.DF)
           div.item-container-left
-            div
-              h3.item-name= i.NAME
-              div.item-icon
-                img.item-icon-img(src="./img/icon_s/Texture2D/icon_item_s_" + i.DF + ".png" alt= i.NAME)
-            div
-              div= i.DESC
-          div.item-container-right
-            div DF: #{i.DF}
-            span.important-item-container
-              img(src="./img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
-              span= i.RST.MN
-            - if (i.RSP.length)
-              - if (i.ALT.LV)
-                h4 ----- 合成條件 -----
-                p LV: #{i.ALT.LV}
-                p EXP: #{i.ALT.EXP}
+            h3.item-name= _item.NAME
+            img.icon-full(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+            p= _item.DESC
+            br
+            p DF: #{_item.DF}
+            p 種類: #{Option.itemCategoryLookUp[_item.CATEG]}
+            p
+              span.wealth-container
+                span 売却
+                img(src="img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
+                span= _item.RST.MN
+            - if (_item.EQU_BRD)
+              p 性別: 
+                - if (!_item.EQU_GND.length || _item.EQU_GND.some(p => !p.GEN))
+                  span ♂ ♀
+                - else 
+                  - if (_item.EQU_GND.some(p => p.GEN === 1 && p.ENB))
+                    span ♂ 
+                  - if (_item.EQU_GND.some(p => p.GEN === 2 && p.ENB))
+                    span ♀ 
+              - if (_item.WPN_KIND)
+                p 武器種類: #{Option.weaponKindLookUp[_item.WPN_KIND] || _item.WPN_KIND}
+              - if (_item.GROUP_DF)
+                - const _chara = chara.m_vList.find(p => p.GROUP_DF === _item.GROUP_DF)
+                p キャラクター專用
                 p
-                  span.important-item-container
-                    img(src="./img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
-                    span= i.ALT.CST
-              h4 ----- 合成 -----
+                  a(href="chara.html#DF-" + _chara.DF target="_blank")
+                    img.icon-small(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+
+
+          div.item-container-right
+            - if (_item.RSP.length)
+              h4 ----- 調合條件 -----
+              - if (_item.ALT.LV)
+                p 錬金 LV #{_item.ALT.LV}
+                p
+                  span.wealth-container
+                    img(src="img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
+                    span= _item.ALT.CST
               table
                 tr
-                  - for (const rsp of i.RSP)
+                  - for (const rsp of _item.RSP)
                     td
                       a(href="#DF-" + rsp.DF)
-                        img.item-making-img(src="./img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF)
+                        img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF)
 
-            - const makeItem = itemsOrderByCategory.filter(p => p.RSP.some(j => j.DF === i.DF))
+
+            - const makeItem = itemsOrderByCategory.filter(p => p.RSP.some(j => j.DF === _item.DF))
             - if (makeItem.length)
-              h4 ----- 調合 -----
+              h4 ----- 材料 -----
               div.item-making-container
                 - for (const otherItem of makeItem)
                   div
                     a(href="#DF-" + otherItem.DF)
-                      img.item-making-img(src="./img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF)
-            - if (i.SPC.length)
-              - for (const spc of i.SPC)
-                h4 ------ Skill/Effect (品質 #{spc.THR}) ------
-                - for (const spcSkill of spc.SKILL)
+                      img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF)
+
+            - if (_item.SPC.length)
+              - for (const spc of _item.SPC)
+                h4 ----- スキル/効果 (品質 #{spc.THR}) -----
+                - for (const [i, spcSkill] of spc.SKILL.entries())
                   - const s = skill.m_vList.find(s => s.id === spcSkill.DF);
                   - if (!s)
                     - if (spcSkill.DF)
@@ -158,54 +169,56 @@ html
                   - else
                     table
                       tr
-                        th 名前:
+                        th 名前
                         td= s.name
                       tr
-                        th 詳細:
+                        th 詳細
                         td= s.detail
                       tr
-                        th 数値:
+                        th 数値
                         td= `${s.effectValue}, ${s.effectValue2}`
-                  p &#x3E;
+                  - if (spc.SKILL.length !== (i + 1))
+                    p &#x3E;
 
-            - if (i.EQU_BRD)
-              h4 ---- 屬性 ----
-                table
-                  - for (const [element, value] of Object.entries(i.ELM).filter(p => p[1]))
-                    tr
-                      td= Option.elementLookUp[element] || element
-                      td= value
+            - if (_item.EQU_BRD && Object.values(_item.ELM).filter(p => p).length)
+              h4 ----- 屬性 -----
+              table
+                - for (const [element, value] of Object.entries(_item.ELM).filter(p => p[1]))
+                  tr
+                    th= Option.elementLookUp[element] || element
+                    td= value
 
               - for (const lv of [1, 60, 80])
                 h4 ----- LV #{lv} -----
-                  table
-                    tr
-                      th= Option.stateLookUp.SATK
-                      td= LogicHelper.calculateState(i.EQU.SATK, lv)
-                    tr
-                      th= Option.stateLookUp.SDEF
-                      td= LogicHelper.calculateState(i.EQU.SDEF, lv)
-                    tr
-                      th= Option.stateLookUp.MATK
-                      td= LogicHelper.calculateState(i.EQU.MATK, lv)
-                    tr
-                      th= Option.stateLookUp.MDEF
-                      td= LogicHelper.calculateState(i.EQU.MDEF, lv)
-                    tr
-                      th= Option.stateLookUp.SPD
-                      td= LogicHelper.calculateState(i.EQU.SPD, lv)
-                    tr
-                      th= Option.stateLookUp.SDA
-                      td= LogicHelper.calculateState(i.EQU.SDA, lv)
-                    tr
-                      th= Option.stateLookUp.LDA
-                      td= LogicHelper.calculateState(i.EQU.LDA, lv)
-                    tr
-                      th= Option.stateLookUp.QTH
-                      td= LogicHelper.calculateState(i.EQU.QTH, lv)
-                    tr
-                      th= Option.stateLookUp.DDG
-                      td= LogicHelper.calculateState(i.EQU.DDG, lv)
-                    tr
-                      th= Option.stateLookUp.SADD
-                      td= LogicHelper.calculateState(i.EQU.SADD, lv)
+                table
+                  tr
+                    th= Option.stateLookUp.SATK
+                    td= LogicHelper.calculateState(_item.EQU.SATK, lv)
+                  tr
+                    th= Option.stateLookUp.SDEF
+                    td= LogicHelper.calculateState(_item.EQU.SDEF, lv)
+                  tr
+                    th= Option.stateLookUp.MATK
+                    td= LogicHelper.calculateState(_item.EQU.MATK, lv)
+                  tr
+                    th= Option.stateLookUp.MDEF
+                    td= LogicHelper.calculateState(_item.EQU.MDEF, lv)
+                  tr
+                    th= Option.stateLookUp.SPD
+                    td= LogicHelper.calculateState(_item.EQU.SPD, lv)
+                  tr
+                    th= Option.stateLookUp.SDA
+                    td= LogicHelper.calculateState(_item.EQU.SDA, lv)
+                  tr
+                    th= Option.stateLookUp.LDA
+                    td= LogicHelper.calculateState(_item.EQU.LDA, lv)
+                  tr
+                    th= Option.stateLookUp.QTH
+                    td= LogicHelper.calculateState(_item.EQU.QTH, lv)
+                  tr
+                    th= Option.stateLookUp.DDG
+                    td= LogicHelper.calculateState(_item.EQU.DDG, lv)
+                  tr
+                    th= Option.stateLookUp.SADD
+                    td= LogicHelper.calculateState(_item.EQU.SADD, lv)
+        hr

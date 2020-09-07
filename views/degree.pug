@@ -1,7 +1,14 @@
 doctype html
 html
   head
-    title Degree
+    title 称号
+    style.
+      th {
+        white-space: nowrap;
+      }
+      td, th {
+        text-align: center;
+      }
   body
     div
       table
@@ -10,9 +17,13 @@ html
             th DF
             th 名前
             th 詳細
+            th 画像
         tbody
-          - for (const d of degree.List)
+          - for (const _degree of degree.List)
             tr
-              td= d.DF
-              td= d.NAME
-              td= d.DESC
+              td= _degree.DF
+              td= _degree.NAME
+              td= _degree.DESC
+              td
+                - if (_degree.TYP)
+                  img(src="img/icon_degree/Texture2D/icon_degree_" + `${_degree.TYP.toString().padStart(2, "0")}${_degree.RTY.toString().padStart(2, "0")}` + ".png" alt= _degree.NAME)

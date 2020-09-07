@@ -1,29 +1,31 @@
 doctype html
 html
   head
-    title Enemy
+    title 敵
+    link(rel="stylesheet" href="css/reset.css")
+    link(rel="stylesheet" href="css/main.css")
+    link(rel="stylesheet" href="css/wealth.css")
     style.
-      *{padding:0;margin:0}
-
-      table th {
-        text-align: right;
+      th {
+        white-space: nowrap;
       }
-
-      table td {
+      th, td {
         text-align: left;
       }
-      table th, td {
+      th, td {
         padding: 4px;
       }
 
-      .categories-index-container {
+
+      .category-indexes-container {
         display: flex;
         flex-wrap: wrap;
       }
       .category-index-container {
-        border: 1px gray solid;
-        padding: 4px;
+        padding: 12px;
       }
+
+
 
 
       .items-index-container {
@@ -31,160 +33,148 @@ html
         flex-wrap: wrap;
       }
       .item-index-container {
-        border: 1px gray solid;
+        padding: 12px;
+      }
+      .item-index-container a {
         width: 120px;
         min-height: 140px;
         display: flex;
         flex-direction: column;
         padding-left: 4px;
+        text-align: center;
       }
-      .item-index-text {
+      .item-index-container > a > p {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
       }
-      .item-index-img {
+      .item-index-container > a > img {
         width: 100%;
       }
 
-      .items {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: column;
-      }
       .item-container {
-        border: 1px gray solid;
-        margin: 10px;
-        width: calc(100%-(10px * 2));
         display: flex;
-        flex-direction: row;
+        padding: 12px;
       }
       .item-container-left {
         min-width: 200px;
         max-width: 200px;
-        border-right: 1px gray solid;
+        padding: 12px;
       }
       .item-container-right {
-        padding-left: 4px;
-      }
-      .item-making-container {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-      }
-      .item-name {
-        text-align: center;
-      }
-      .item-icon-container {
-        justify-content: center;
-        align-items: center;
-      }
-      .item-icon-img {
-        width: 100%;
+        padding: 12px;
       }
   body
-    div.categories-index-container
-      - for(const kind of enemy.KindList)
-        div.category-index-container
-          a(href="#kind-" + kind.iKind)
-            h2= kind.strName
-    hr
-    - for(const [eKind, _enemies] of Enumerable.from(enemy.m_vList).groupBy(p => p.eKind).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
-      - const strName = enemy.KindList.find(i => i.iKind === eKind).strName
-      h2(id="kind-" + eKind)= strName
-      hr
-      div.items-index-container
-        - for (const _enemy of _enemies)
-          a(href="#DF-" + _enemy.DF)
-            div.item-index-container
-              p.item-index-text #{_enemy.strName}
-              div
-                img.item-index-img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
-      br
-      br
-    hr
-    div.items
-      - for(const _enemy of enemy.m_vList)
-        div(id="DF-" + _enemy.DF).item-container
-          div.item-container-left
-            div
-              h3.item-name= _enemy.strName
-              div.item-icon
-                img.item-index-img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
-          div.item-container-right
-            div DF: #{_enemy.DF}
-            div 短い名前: #{_enemy.AnotherName}
-            div 詳細: #{_enemy.strDesc}
-            div 種族: #{enemy.KindList.find(i => i.iKind === _enemy.eKind).strName}
-            div ボス: #{_enemy.bBoss ? "✓" : "x"}
-            div オンラインオーンリー: #{_enemy.bOnlyOnline ? "✓" : "x"}
-            div 大きさ: #{_enemy.eSize}
-            div 視角: #{Math.round(math.acos(_enemy.fViewCos)* (180/Math.PI), 2)}°
-            div 移動速度: #{_enemy.fMoveSpeed}
-            div 打撃範囲: #{_enemy.fHitRadius}
+    div
+      h2 種類
+      div.category-indexes-container
+        - for(const kind of enemy.KindList)
+          div.category-index-container
+            a(href="#iKind-" + kind.iKind)
+              h3= kind.strName
+    br
+    br
+    br
+    br
 
-            h4 ---- 屬性 ----
-              table
-                - for (const [element, value] of Object.entries(_enemy.sParam.ELM).filter(p => p[1]))
-                  tr
-                    td= Option.elementLookUp[element] || element
-                    td= value
+    div
+      - for(const [eKind, _enemies] of Enumerable.from(enemy.m_vList).groupBy(p => p.eKind).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
+        - const strName = enemy.KindList.find(i => i.iKind === eKind).strName
+        h2(id="iKind-" + eKind)= strName
+        div.items-index-container
+          - for (const _enemy of _enemies)
+            div.item-index-container
+              a(href="#DF-" + _enemy.DF)
+                p= _enemy.strName
+                img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+      br
+      br
+    br
+    br
+
+
+    div
+      - for(const _enemy of enemy.m_vList)
+        div.item-container(id="DF-" + _enemy.DF)
+          div.item-container-left
+            h3.item-name= _enemy.strName
+            img.icon-full(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+            p= _enemy.strDesc
+            br
+            p DF: #{_enemy.DF}
+            p 短い名前: #{_enemy.AnotherName}
+            p 種族: #{enemy.KindList.find(i => i.iKind === _enemy.eKind).strName}
+            p ボス: #{_enemy.bBoss ? "✓" : "x"}
+            p オンラインオーンリー: #{_enemy.bOnlyOnline ? "✓" : "x"}
+            p 大きさ: #{_enemy.eSize}
+            p 視角: #{Math.round(math.acos(_enemy.fViewCos)* (180/Math.PI), 2)}°
+            p 移動速度: #{_enemy.fMoveSpeed}
+            p 打撃範囲: #{_enemy.fHitRadius}
+
+          div.item-container-right
+            h4 ----- 屬性 -----
+            table
+              - for (const [element, value] of Object.entries(_enemy.sParam.ELM).filter(p => p[1]))
+                tr
+                  th= Option.elementLookUp[element] || element
+                  td= value
             - if (_enemy.sParam.SKILL.length)
-              h4 ------ Skill/Effect ------
-              - for (const _skill of _enemy.sParam.SKILL)
+              h4 ----- スキル/効果 -----
+              - for (const [i, _skill] of _enemy.sParam.SKILL.entries())
                 - const s = skill.m_vList.find(s => s.id === _skill.DF);
                 - if (!s)
                   p skill not found: DF=#{_skill.DF}
                 - else
                   table
                     tr
-                      th 名前:
+                      th 名前
                       td= s.name
                     tr
-                      th 詳細:
+                      th 詳細
                       td= s.detail
                     tr
-                      th 数値:
+                      th 数値
                       td= `${s.effectValue}, ${s.effectValue2}`
-                  p &#x3E;
+                  - if (_enemy.sParam.SKILL.length !== (i + 1))
+                    p &#x3E;
 
             - for (const lv of [1, 60, 80, 120])
               h4 ----- LV #{lv} -----
-                table
-                  tr
-                    th= Option.stateLookUp.EXP
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.EXP, lv)
-                  tr
-                    th= Option.stateLookUp.HP
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.HP, lv)
-                  tr
-                    th= Option.stateLookUp.SATK
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.SATK, lv)
-                  tr
-                    th= Option.stateLookUp.SDEF
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDEF, lv)
-                  tr
-                    th= Option.stateLookUp.MATK
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.MATK, lv)
-                  tr
-                    th= Option.stateLookUp.MDEF
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.MDEF, lv)
-                  tr
-                    th= Option.stateLookUp.SPD
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.SPD, lv)
-                  tr
-                    th= Option.stateLookUp.SDA
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDA, lv)
-                  tr
-                    th= Option.stateLookUp.LDA
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.LDA, lv)
-                  tr
-                    th= Option.stateLookUp.QTH
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.QTH, lv)
-                  tr
-                    th= Option.stateLookUp.DDG
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.DDG, lv)
-                  tr
-                    th= Option.stateLookUp.SADD
-                    td= LogicHelper.calculateState(_enemy.sParam.SPEC.SADD, lv)
-
+              table
+                tr
+                  th= Option.stateLookUp.EXP
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.EXP, lv)
+                tr
+                  th= Option.stateLookUp.HP
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.HP, lv)
+                tr
+                  th= Option.stateLookUp.SATK
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.SATK, lv)
+                tr
+                  th= Option.stateLookUp.SDEF
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDEF, lv)
+                tr
+                  th= Option.stateLookUp.MATK
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.MATK, lv)
+                tr
+                  th= Option.stateLookUp.MDEF
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.MDEF, lv)
+                tr
+                  th= Option.stateLookUp.SPD
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.SPD, lv)
+                tr
+                  th= Option.stateLookUp.SDA
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDA, lv)
+                tr
+                  th= Option.stateLookUp.LDA
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.LDA, lv)
+                tr
+                  th= Option.stateLookUp.QTH
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.QTH, lv)
+                tr
+                  th= Option.stateLookUp.DDG
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.DDG, lv)
+                tr
+                  th= Option.stateLookUp.SADD
+                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.SADD, lv)
+        hr

@@ -1,8 +1,0 @@
-.important-item-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-.important-item-container img {
-  width: 25px;
-}

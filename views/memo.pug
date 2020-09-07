@@ -1,0 +1,50 @@
+doctype html
+html
+  head
+    title Memo
+  body
+    h3 overall
+    pre.
+      skill.effect // 135 = Monster Start Zone Effect, will redirect to effect=139
+      skill.type // 1 = skill, 2 = effect
+
+      item.EQU_BRD // is item an equipment
+      item.RAR // 0 = 特殊材料, 1 = normal
+      item.GROUP_DF // character special weapon, map to chara.GROUP_DF
+      item.GEN // weapon type lookup for character
+
+      *.MDL // MDL = model
+
+      // unknown
+      chara.BTST
+      chara.EXC
+    hr
+
+    h3 look up tables
+    h4 ---- item.CATEG ----
+    - for (const [k, v] of Object.entries(Option.itemCategoryLookUp))
+      p #{k} = #{v}
+
+    h4 ---- item.ELM.* ----
+    - for (const [k, v] of Object.entries(Option.elementLookUp))
+      p #{k} = #{v}
+
+    h4 ---- chara.SPEC.* ----
+    - for (const [k, v] of Object.entries(Option.stateLookUp))
+      p #{k} = #{v}
+
+    h4 ---- quest.CATEG ----
+    - for (const [k, v] of Object.entries(Option.questCategoryLookUp))
+      p #{k} = #{v}
+
+    h4 ---- skill.effect ----
+    - for (const [k, v] of Object.entries(Option.skillEffectLookUp))
+      p #{k} = #{v}
+
+    h4 ---- item.WPN_KIND ----
+    - for (const [k, v] of Object.entries(Option.weaponKindLookUp))
+      p #{k} = #{v}
+
+    h4 ---- chara.WEAPON[].GEN ----
+    - for (const [k, v] of Object.entries(Option.weaponGenLookUp))
+      p #{k} = #{v}

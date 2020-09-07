@@ -5,6 +5,7 @@ import path from 'path';
 export class Option {
 
   // data name map
+  // item look up
   public static itemCategoryLookUp = {
     11: '材料',
     12: '攻撃＆探索',
@@ -26,14 +27,29 @@ export class Option {
     56: 'ブレイズアーツ経験値',
   };
 
-  public static elementIdLookUp = {
-    0: '無',
-    1: '火',
-    2: '水',
-    3: '風',
-    4: '土',
+  public static weaponKindLookUp = {
+    1: '剣',
+    3: '槍',
+    4: '弓',
+    5: '杖',
+    7: '大剣',
+    9: 'メイス',
+    12: '盾',
   };
 
+  public static weaponGenLookUp = {
+    0: '全種類',
+    2001: '剣',
+    2003: '槍',
+    2004: '弓',
+    2005: '杖',
+    2006: '大剣',
+    2007: '大剣',
+    2009: 'メイス',
+    2012: '盾',
+  };
+
+  // element look up
   public static elementLookUp = {
     FIRE: '火',
     WATER: '水',
@@ -43,6 +59,7 @@ export class Option {
     DARK: '闇',
   };
 
+  // state look up
   public static stateLookUp = {
     EXP: 'EXP',
     HP: 'HP',
@@ -57,7 +74,8 @@ export class Option {
     DDG: '回避',
     SADD: 'SADD',
   };
-  
+
+  // quest look up
   public static questCategoryLookUp = {
     1: 'メーン',
     2: 'サイド',
@@ -69,6 +87,12 @@ export class Option {
     8: 'イベント',
   };
 
+  // skill look up
+  public static skillEffectLookUp = {
+    139: 'Zone Effect',
+    135: 'Monster Zone Effect',
+  };
+
   // settings
   public static minifyOption = {
     minifyCSS: true,
@@ -77,7 +101,6 @@ export class Option {
     removeAttributeQuotes: true,
     removeComments: true,
     removeEmptyAttributes: true,
-    removeEmptyElements: true,
     removeOptionalTags: true,
     removeRedundantAttributes: true,
     removeScriptTypeAttributes: true,
@@ -113,6 +136,10 @@ export class Option {
     abnormalstate: path.join(__dirname, '..', 'export', 'abnormalstate.json'),
     abnormalstateeffect: path.join(__dirname, '..', 'export', 'abnormalstateeffect.json'),
     wealth: path.join(__dirname, '..', 'export', 'wealth.json'),
+    tips: path.join(__dirname, '..', 'export', 'tips.json'),
+    treasure: path.join(__dirname, '..', 'export', 'treasure.json'),
+    gateinfo: path.join(__dirname, '..', 'export', 'gateinfo.json'),
+    adventbattle: path.join(__dirname, '..', 'export', 'adventbattle.json'),
   };
 
   public static fileCache = {} as { [s: string]: unknown };

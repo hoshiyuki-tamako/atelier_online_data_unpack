@@ -1,108 +1,69 @@
 doctype html
 html
   head
-    title Other Chara
+    title 他のキャラクター
+    link(rel="stylesheet" href="css/main.css")
     style.
-      *{padding:0;margin:0}
-
-      table th {
-        text-align: right;
-      }
-
-      table td {
-        text-align: left;
-      }
-      table th, td {
-        padding: 4px;
-      }
-
-      .categories-index-container {
-        display: flex;
-        flex-wrap: wrap;
-      }
-      .category-index-container {
-        border: 1px gray solid;
-        padding: 4px;
-      }
-
-
       .items-index-container {
         display: flex;
         flex-wrap: wrap;
       }
       .item-index-container {
-        border: 1px gray solid;
+        padding: 12px;
+      }
+      .item-index-container a {
         width: 120px;
         min-height: 140px;
         display: flex;
         flex-direction: column;
         padding-left: 4px;
+        text-align: center;
       }
-      .item-index-text {
+      .item-index-container > a > p {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
       }
-      .item-index-img {
+      .item-index-container > a > img {
         width: 100%;
       }
 
-      .items {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: column;
-      }
       .item-container {
-        border: 1px gray solid;
-        margin: 10px;
-        width: calc(100%-(10px * 2));
         display: flex;
-        flex-direction: row;
+        padding: 12px;
       }
       .item-container-left {
         min-width: 200px;
         max-width: 200px;
-        border-right: 1px gray solid;
+        padding: 12px;
       }
       .item-container-right {
-        padding-left: 4px;
+        padding: 12px;
       }
-      .item-making-container {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-      }
-      .item-name {
-        text-align: center;
-      }
-      .item-icon-container {
-        justify-content: center;
-        align-items: center;
-      }
-      .item-icon-img {
-        width: 100%;
-      }
+
   body
     div.items-index-container
       - for (const _chara of chara.m_vList.filter(p => !p.SKILL.length))
-        a(href="#DF-" + _chara.DF)
-          div.item-index-container
-            p.item-index-text #{_chara.NAME}
-            div
-              img.item-index-img(src="./img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
-    hr
-    div.items
+        div.item-index-container
+          a(href="#DF-" + _chara.DF)
+            p #{_chara.NAME}
+            img(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+    br
+    br
+    br
+    br
+
+    div
       - for(const _chara of chara.m_vList.filter(p => !p.SKILL.length))
-        div(id="DF-" + _chara.DF).item-container
+        div.item-container(id="DF-" + _chara.DF)
           div.item-container-left
-            div
-              h3.item-name= _chara.NAME
-              div.item-icon
-              - for (const id of [...Array(10).keys()])
-                - const iconFilename = `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png`
-                - if (charaIcons.includes(iconFilename))
-                  img.item-index-img(src="./img/chara/Texture2D/" + `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png` alt= _chara.NAME)
-            div
-              div= _chara.DESC
-          div.item-container-right
+            h3.item-name= _chara.NAME
+            - for (const id of [...Array(10).keys()])
+              - const iconFilename = `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png`
+              - if (charaIcons.includes(iconFilename))
+                img.icon-full(src="img/chara/Texture2D/" + iconFilename alt= _chara.NAME)
+            p= _chara.DESC
+            br
             p DF: #{_chara.DF}
+          div.item-container-right
+        hr

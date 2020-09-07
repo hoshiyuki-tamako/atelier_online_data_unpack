@@ -1,257 +1,249 @@
 doctype html
 html
   head
-    title Chara
+    title キャラクター
+    link(rel="stylesheet" href="css/reset.css")
+    link(rel="stylesheet" href="css/main.css")
+    link(rel="stylesheet" href="css/wealth.css")
     style.
-      *{padding:0;margin:0}
-
-      table th {
-        text-align: right;
+      th {
+        white-space: nowrap;
       }
-
-      table td {
+      th, td {
         text-align: left;
-      }
-      table th, td {
         padding: 4px;
       }
-
-      .categories-index-container {
-        display: flex;
-        flex-wrap: wrap;
-      }
-      .category-index-container {
-        border: 1px gray solid;
-        padding: 4px;
-      }
-
 
       .items-index-container {
         display: flex;
         flex-wrap: wrap;
       }
       .item-index-container {
-        border: 1px gray solid;
+        padding: 12px;
+      }
+      .item-index-container a {
         width: 120px;
         min-height: 140px;
         display: flex;
         flex-direction: column;
         padding-left: 4px;
+        text-align: center;
       }
-      .item-index-text {
+      .item-index-container > a > p {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
       }
-      .item-index-img {
+      .item-index-container > a > img {
         width: 100%;
       }
 
-      .items {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: column;
-      }
+
       .item-container {
-        border: 1px gray solid;
-        margin: 10px;
-        width: calc(100%-(10px * 2));
         display: flex;
-        flex-direction: row;
+        padding: 12px;
       }
       .item-container-left {
         min-width: 200px;
         max-width: 200px;
-        border-right: 1px gray solid;
+        padding: 12px;
       }
       .item-container-right {
-        padding-left: 4px;
+        padding: 12px;
       }
-      .item-making-container {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-      }
-      .item-name {
-        text-align: center;
-      }
-      .item-icon-container {
-        justify-content: center;
-        align-items: center;
-      }
-      .item-icon-img {
-        width: 100%;
-      }
+
 
 
       .chara-food-item-container {
         width: 20%
       }
-
       .chara-food-consume {
         display: flex;
         align-items: center;
         flex-basis: auto;
       }
-      .chara-food-consume-img {
-        width: 60px;
-      }
   body
+    h3 キャラクター
     div.items-index-container
       - for (const _chara of chara.m_vList.filter(p => p.SKILL.length))
-        a(href="#DF-" + _chara.DF)
-          div.item-index-container
-            p.item-index-text #{_chara.NAME}
-            div
-              img.item-index-img(src="./img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
-    hr
-    div.items
+        div.item-index-container
+          a(href="#DF-" + _chara.DF)
+            p #{_chara.NAME}
+            img(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+    br
+    br
+    br
+    br
+
+
+    div
       - for(const _chara of chara.m_vList.filter(p => p.SKILL.length))
-        div(id="DF-" + _chara.DF).item-container
+        div.item-container(id="DF-" + _chara.DF)
           div.item-container-left
-            div
-              h3.item-name= _chara.NAME
-              div.item-icon
-              - for (const id of [...Array(10).keys()])
-                - const iconFilename = `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png`
-                - if (charaIcons.includes(iconFilename))
-                  img.item-index-img(src="./img/chara/Texture2D/" + `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png` alt= _chara.NAME)
-            div
-              div= _chara.DESC
-          div.item-container-right
+            h3.item-name= _chara.NAME
+            - for (const id of [...Array(10).keys()])
+              - const iconFilename = `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png`
+              - if (charaIcons.includes(iconFilename))
+                img.icon-full(src="img/chara/Texture2D/" + iconFilename alt= _chara.NAME)
+            br
+            p= _chara.DESC
             p DF: #{_chara.DF}
-            div
-              h4 ------ Skill ------
-              - for (const [lv, skills] of Enumerable.from(chara.m_vList[0].SKILL).groupBy(p => p.LV).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
-                h4 ----- LV #{lv} -----
-                - for (const _s of skills)
-                  - const s = skill.m_vList.find(s => s.id === _s.DF)
+            p 性別: 
+              - if (!_chara.GEN)
+                span ♂ ♀
+              - else if (_chara.GEN === 1)
+                span ♂ 
+              - else if (_chara.GEN === 2)
+                span ♀ 
+
+            - if (_chara.WEAPON.length)
+              p 武器種類: #{_chara.WEAPON.map(p => Option.weaponGenLookUp[p.GEN] || p.GEN).join(", ")}
+            - for (const grow of _chara.GROW)
+              p.wealth-container
+                img(src="img/icon_item01/Texture2D/icon_item01_00006.png" alt="限界キャンディ")
+                span #{grow.STONE}
+                span #{new Array(grow.STAR).fill('⭐').join('')}
+          div.item-container-right
+            - const characterOnlyItems = item.m_vList.filter(p => p.GROUP_DF === _chara.GROUP_DF);
+            - if (characterOnlyItems.length)
+              h4 ----- 専用アイテム -----
+              - for (const _item of characterOnlyItems)
+                a(href="item.html#DF-" + _item.DF target="_blank")
+                  img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+
+            h4 ----- スキル -----
+            - for (const [lv, skills] of Enumerable.from(chara.m_vList[0].SKILL).groupBy(p => p.LV).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
+              h4 --- LV #{lv} ---
+              - for (const [i, _s] of skills.entries())
+                - const s = skill.m_vList.find(s => s.id === _s.DF)
+                - if (!s)
+                  - if (_s.DF)
+                    p skill not found: DF=#{_s.DF}
+                  - else
+                    p -
+                - else
+                  table
+                    tr
+                      th 名前
+                      td= s.name
+                    tr
+                      th 詳細
+                      td= s.detail
+                    tr
+                      th 数値
+                      td= `${s.effectValue}, ${s.effectValue2}`
+                - if (skills.length !== (i + 1))
+                  p &#x3E;
+
+
+            - for (const lv of [1, 60, 80])
+              h4 ----- LV #{lv} -----
+              table
+                tr
+                  th HP
+                  td= LogicHelper.calculateState(_chara.SPEC.HP, lv)
+                tr
+                  th= Option.stateLookUp.SATK
+                  td= LogicHelper.calculateState(_chara.SPEC.SATK, lv)
+                tr
+                  th= Option.stateLookUp.SDEF
+                  td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv)
+                tr
+                  th= Option.stateLookUp.MATK
+                  td= LogicHelper.calculateState(_chara.SPEC.MATK, lv)
+                tr
+                  th= Option.stateLookUp.MDEF
+                  td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv)
+                tr
+                  th= Option.stateLookUp.SPD
+                  td= LogicHelper.calculateState(_chara.SPEC.SPD, lv)
+                tr
+                  th= Option.stateLookUp.SDA
+                  td= LogicHelper.calculateState(_chara.SPEC.SDA, lv)
+                tr
+                  th= Option.stateLookUp.LDA
+                  td= LogicHelper.calculateState(_chara.SPEC.LDA, lv)
+                tr
+                  th= Option.stateLookUp.QTH
+                  td= LogicHelper.calculateState(_chara.SPEC.QTH, lv)
+                tr
+                  th= Option.stateLookUp.DDG
+                  td= LogicHelper.calculateState(_chara.SPEC.DDG, lv)
+                tr
+                  th= Option.stateLookUp.SADD
+                  td= LogicHelper.calculateState(_chara.SPEC.SADD, lv)
+
+            - const lv = 80
+            - const maxDfm = _chara.FDM[_chara.FDM.length - 1];
+            h4 ----- LV #{lv} 完食 -----
+            table
+              tr
+                th HP
+                td= LogicHelper.calculateState(_chara.SPEC.HP, lv) + maxDfm.HP
+              tr
+                th= Option.stateLookUp.SATK
+                td= LogicHelper.calculateState(_chara.SPEC.SATK, lv) + maxDfm.SATK
+              tr
+                th= Option.stateLookUp.SDEF
+                td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv) + maxDfm.SDEF
+              tr
+                th= Option.stateLookUp.MATK
+                td= LogicHelper.calculateState(_chara.SPEC.MATK, lv) + maxDfm.MATK
+              tr
+                th= Option.stateLookUp.MDEF
+                td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv) + maxDfm.MDEF
+              tr
+                th= Option.stateLookUp.SPD
+                td= LogicHelper.calculateState(_chara.SPEC.SPD, lv) + maxDfm.SPD
+              tr
+                th= Option.stateLookUp.SDA
+                td= LogicHelper.calculateState(_chara.SPEC.SDA, lv) + maxDfm.SDA
+              tr
+                th= Option.stateLookUp.LDA
+                td= LogicHelper.calculateState(_chara.SPEC.LDA, lv) + maxDfm.LDA
+              tr
+                th= Option.stateLookUp.QTH
+                td= LogicHelper.calculateState(_chara.SPEC.QTH, lv) + maxDfm.QTH
+              tr
+                th= Option.stateLookUp.DDG
+                td= LogicHelper.calculateState(_chara.SPEC.DDG, lv) + maxDfm.DDG
+              tr
+                th= Option.stateLookUp.SADD
+                td= LogicHelper.calculateState(_chara.SPEC.SADD, lv) + maxDfm.SADD
+
+            - if (_chara.BA.length)
+              h4 ----- ブレイズアーツ (BA) -----
+              - for (const ba of _chara.BA)
+                - const thatBa = blazeArt.m_vList.find(b => b.DF === ba.DF);
+                - for (const [lv, _ba] of thatBa.LV.entries())
+                  - const s = skill.m_vList.find(s => s.id === _ba.SKILL_DF);
                   - if (!s)
-                    - if (_s.DF)
-                      p skill not found: DF=#{_s.DF}
+                    - if (s.DF)
+                      p skill not found: DF=#{s.DF}
                     - else
                       p -
                   - else
+                    h4 --- LV #{ba.LV} / BA LV #{lv + 1}  ---
                     table
                       tr
-                        th 名前:
+                        th 名前
                         td= s.name
                       tr
-                        th 詳細:
+                        th 詳細
                         td= s.detail
                       tr
-                        th 数値:
+                        th 数値
                         td= `${s.effectValue}, ${s.effectValue2}`
-                    p &#x3E;
 
-              - for (const lv of [1, 60, 80])
-                h4 ----- LV #{lv} -----
-                  table
-                    tr
-                      th HP
-                      td= LogicHelper.calculateState(_chara.SPEC.HP, lv)
-                    tr
-                      th= Option.stateLookUp.SATK
-                      td= LogicHelper.calculateState(_chara.SPEC.SATK, lv)
-                    tr
-                      th= Option.stateLookUp.SDEF
-                      td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv)
-                    tr
-                      th= Option.stateLookUp.MATK
-                      td= LogicHelper.calculateState(_chara.SPEC.MATK, lv)
-                    tr
-                      th= Option.stateLookUp.MDEF
-                      td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv)
-                    tr
-                      th= Option.stateLookUp.SPD
-                      td= LogicHelper.calculateState(_chara.SPEC.SPD, lv)
-                    tr
-                      th= Option.stateLookUp.SDA
-                      td= LogicHelper.calculateState(_chara.SPEC.SDA, lv)
-                    tr
-                      th= Option.stateLookUp.LDA
-                      td= LogicHelper.calculateState(_chara.SPEC.LDA, lv)
-                    tr
-                      th= Option.stateLookUp.QTH
-                      td= LogicHelper.calculateState(_chara.SPEC.QTH, lv)
-                    tr
-                      th= Option.stateLookUp.DDG
-                      td= LogicHelper.calculateState(_chara.SPEC.DDG, lv)
-                    tr
-                      th= Option.stateLookUp.SADD
-                      td= LogicHelper.calculateState(_chara.SPEC.SADD, lv)
-
-              - const lv = 80
-              - const maxDfm = _chara.FDM[_chara.FDM.length - 1];
-              h4 ----- LV #{lv} 完食 -----
-                table
-                  tr
-                    th HP
-                    td= LogicHelper.calculateState(_chara.SPEC.HP, lv) + maxDfm.HP
-                  tr
-                    th= Option.stateLookUp.SATK
-                    td= LogicHelper.calculateState(_chara.SPEC.SATK, lv) + maxDfm.SATK
-                  tr
-                    th= Option.stateLookUp.SDEF
-                    td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv) + maxDfm.SDEF
-                  tr
-                    th= Option.stateLookUp.MATK
-                    td= LogicHelper.calculateState(_chara.SPEC.MATK, lv) + maxDfm.MATK
-                  tr
-                    th= Option.stateLookUp.MDEF
-                    td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv) + maxDfm.MDEF
-                  tr
-                    th= Option.stateLookUp.SPD
-                    td= LogicHelper.calculateState(_chara.SPEC.SPD, lv) + maxDfm.SPD
-                  tr
-                    th= Option.stateLookUp.SDA
-                    td= LogicHelper.calculateState(_chara.SPEC.SDA, lv) + maxDfm.SDA
-                  tr
-                    th= Option.stateLookUp.LDA
-                    td= LogicHelper.calculateState(_chara.SPEC.LDA, lv) + maxDfm.LDA
-                  tr
-                    th= Option.stateLookUp.QTH
-                    td= LogicHelper.calculateState(_chara.SPEC.QTH, lv) + maxDfm.QTH
-                  tr
-                    th= Option.stateLookUp.DDG
-                    td= LogicHelper.calculateState(_chara.SPEC.DDG, lv) + maxDfm.DDG
-                  tr
-                    th= Option.stateLookUp.SADD
-                    td= LogicHelper.calculateState(_chara.SPEC.SADD, lv) + maxDfm.SADD
-
-              - if (_chara.BA.length)
-                h4 ----- ブレイズアーツ (BA) -----
-                - for (const ba of _chara.BA)
-                  - const thatBa = blazeArt.m_vList.find(b => b.DF === ba.DF);
-                  - for (const [lv, _ba] of thatBa.LV.entries())
-                    - const s = skill.m_vList.find(s => s.id === _ba.SKILL_DF);
-                    - if (!s)
-                      - if (s.DF)
-                        p skill not found: DF=#{s.DF}
-                      - else
-                        p -
-                    - else
-                      h4 ----- LV #{ba.LV} / BA LV #{lv + 1}  -----
-                      table
-                        tr
-                          th 名前:
-                          td= s.name
-                        tr
-                          th 詳細:
-                          td= s.detail
-                        tr
-                          th 数値:
-                          td= `${s.effectValue}, ${s.effectValue2}`
-
-              h4 -------- 食事 --------
+              h4 ----- 食事 -----
               - for (const fdm of _chara.FDM)
-                h5 ----- LV #{fdm.NO} -----
+                h5 --- LV #{fdm.NO} ---
                 - for (const fd of fdm.FD)
                   div.chara-food-item-container
                     - const food = item.m_vList.find(i => i.DF === fd.DF)
-                      a.chara-food-consume(href="./item.html#DF-" + fd.DF target="_blank")
+                      a.chara-food-consume(href="item.html#DF-" + fd.DF target="_blank")
                         span 品質 #{fd.QTY}
-                        img.chara-food-consume-img(src="./img/icon_s/Texture2D/icon_item_s_" + food.DF + ".png" alt= food.NAME)
+                        img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + food.DF + ".png" alt= food.NAME)
                 table
                   tr
                     td HP
@@ -287,11 +279,10 @@ html
                     td= Option.stateLookUp.SADD
                     td= fdm.SADD
 
-              h4 -------- クェスト --------
+              h4 ----- クェスト -----
               - for (const qst of _chara.QST)
-                h5 ----- LV #{qst.LV} -----
                 - const q = quest.m_vList.find(i => i.DF === qst.QUEST_DF)
                 - if (q)
-                  a(href="./quest.html#DF-" + qst.QUEST_DF target="_blank")= q.NAME
-                - else
-                  p -
+                  h5 --- LV #{qst.LV} ---
+                  a(href="quest.html#DF-" + qst.QUEST_DF target="_blank")= q.NAME
+        hr

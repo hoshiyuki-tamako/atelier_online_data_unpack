@@ -2,7 +2,15 @@
   "name": "atelier_online_data_unpack",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hoshiyuki-tamako/atelier_online_data_unpack.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hoshiyuki-tamako/atelier_online_data_unpack/issues"
+  },
+  "homepage": "https://hoshiyuki-tamako.github.io/atelier_online_data_unpack/",
   "dependencies": {
     "fs-extra": "^9.0.1",
     "html-minifier": "^4.0.0",
@@ -18,10 +26,14 @@
     "@types/html-minifier": "^4.0.0",
     "@types/lodash": "^4.14.161",
     "@types/mathjs": "^6.0.5",
-    "@types/pug": "^2.0.4"
+    "@types/pug": "^2.0.4",
+    "cross-env": "^7.0.2",
+    "ts-node-dev": "^1.0.0-pre.62"
   },
   "scripts": {
-    "start": "ts-node ./src"
+    "start": "ts-node --transpile-only ./src",
+    "dev": "ts-node-dev ./src",
+    "build": "cross-env NODE_ENV=production ts-node ./src"
   },
   "author": "hoshiyuki_tamako",
   "license": "MIT"

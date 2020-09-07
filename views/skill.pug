@@ -1,14 +1,21 @@
 doctype html
 html
   head
-    title Skill
-  style.
-    tr td {
-      border-bottom: 1px solid black;
-    }
-    td img {
-      width: 60px;
-    }
+    title スキル
+    link(rel="stylesheet" href="css/main.css")
+    style.
+      th {
+        text-align: center;
+        white-space: nowrap;
+      }
+      td {
+        border-bottom: 1px solid black;
+        text-align: center;
+      }
+      .example-cell {
+        text-align: left;
+        width: 30%;
+      }
   body
     div
       table
@@ -18,21 +25,27 @@ html
             th 名前
             th 詳細
             th 数値
+            th レア度
+            th 画像
             th アイテム/人物/敵
         tbody
-          - for (const s of skill.m_vList)
+          - for (const s of skill.m_vList.filter(p => p.type === 1))
             tr
               td= s.id
               td= s.name
               td= s.detail
               td= `${s.effectValue}, ${s.effectValue2}`
-              td(style="width: 40%")
+              td= new Array(s.rarity).fill('⭐').join('')
+              td
+                - if (s.iconPath)
+                  img.icon-small(src="img/icon_skill/Texture2D/" + `${s.iconPath}.png` alt= s.name)
+              td.example-cell
                 - for (const _item of itemsOrderByCategory.filter(p => p.SPC.some(i => i.SKILL.some(j => j.DF === s.id))))
-                  a(href="./item.html#DF-" + _item.DF target="_blank")
-                    img(src="./img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.name)
+                  a(href="item.html#DF-" + _item.DF target="_blank")
+                    img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.name)
                 - for (const _enemy of enemiesOrderByCategory.filter(p => p.sParam.SKILL.some(i => i.DF === s.id)))
-                  a(href="./enemy.html#DF-" + _enemy.DF target="_blank")
-                    img(src="./img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+                  a(href="enemy.html#DF-" + _enemy.DF target="_blank")
+                    img.icon-small(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
                 - for (const _chara of charasOrderByCategory.filter(p => p.SKILL.some(i => i.DF === s.id) || p.BA.some(i => { const ba = blazeArt.m_vList.find(j => j.DF === i.DF); return ba ? ba.LV.some(k => k.SKILL_DF === s.id) : false })))
-                  a(href="./chara.html#DF-" + _chara.DF target="_blank")
-                    img(src="./img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+                  a(href="chara.html#DF-" + _chara.DF target="_blank")
+                    img.icon-small(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)

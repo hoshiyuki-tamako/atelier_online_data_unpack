@@ -1,0 +1,47 @@
+doctype html
+html
+  head
+    title 計算/公式
+    script(src="js/calculate.js")
+    style.
+  body
+    div
+      h3 ステータスの公式
+      div
+        p floor(((M - B)/R) * level + B)
+        p R = 目標レベル值
+        p M = R レベルのステータス最大值
+        p B = ステータス初始值
+        p level = アイテムのレベル
+
+      h4 Example
+      div
+        p 闇夜の盾
+        p LV 1 物理攻撃 SATK 6
+        p LV 60 物理攻撃 SATK	40
+        p R = 60, M = 40, B = 6, 欲しいレベル = 80
+        p ((40 - 6)/60) * 80 + 6 = 51.3333333333
+        p floor(51.3333333333) = 51
+        p LV 80 物理攻撃 SATK	= 51
+
+      h4 計算
+      div.calculate-container
+        label
+          input(id="R" placeholder="R" type="number" min="0" value="60")
+          span.input-span  R
+        br
+        label
+          input(id="M" placeholder="M" type="number" min="0" value="40")
+          span.input-span  M
+        br
+        label
+          input(id="B" placeholder="B" type="number" min="0" value="6")
+          span.input-span  B
+        br
+        label
+          input(id="Level" placeholder="Level" type="number" min="0" value="80")
+          span.input-span  level
+        br
+        label
+          span.input-span= '= '
+          input(id="Result" value="0")

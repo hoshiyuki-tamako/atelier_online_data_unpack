@@ -1,4 +1,15 @@
-* {
-  padding: 0;
-  margin: 0;
+.icon-small {
+  width: 60px;
+}
+
+.icon-full {
+  width: 100%;
+}
+
+.item-name {
+  text-align: center;
+}
+
+.nowrap-cell {
+  white-space: nowrap;
 }

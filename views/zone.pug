@@ -1,24 +1,45 @@
 doctype html
 html
   head
-    title Zone
+    title ゾーン
   style.
-    tr td {
-      padding: 4px;
+    th {
+      white-space: nowrap;
+    }
+    td, th {
+      text-align: center;
+    }
+    td {
+      border-bottom: 1px solid black;
+    }
+    td img {
+      width: 60px;
+    }
+    .example-cell {
+      text-align: left;
+      width: 20%;
     }
   body
     div
-      - for (const _zone of zone.List)
-        h3 #{_zone.name}
-        p ID: #{_zone.id}
-        - if (_zone.effectlist.length)
-          table
-            tr
-              th 效果
-              th 数値
-            - for (const effect of _zone.effectlist)
-              - const _zoneEffect = zoneEffect.List.find(p => p.id === effect)
-              tr
-                td= _zoneEffect.name
-                td= _zoneEffect.value
-        hr
+      table
+        tr
+          th ID
+          th 名前
+          th 効果
+          th アイテム / 敵
+        - for (const _zone of zone.List)
+          tr
+            td= _zone.id
+            td= _zone.name
+            td
+              - if (_zone.effectlist.length)
+                - for (const effect of _zone.effectlist)
+                  - const _zoneEffect = zoneEffect.List.find(p => p.id === effect)
+                  p #{_zoneEffect.name}, #{_zoneEffect.value}
+            td.example-cell
+              - for (const _item of itemsOrderByCategory.filter(p => p.SPC.some(l => l.SKILL.some(i => skillLoopUp[i.DF] && skillLoopUp[i.DF].effect === 139 && skillLoopUp[i.DF].effectValue === _zone.id))))
+                a(href="item.html#DF-" + _item.DF target="_blank")
+                  img(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.name)
+              - for (const _enemy of enemiesOrderByCategory.filter(p => p.sParam.SKILL.some(i => skillLoopUp[i.DF] && skillLoopUp[i.DF].effect === 135 && skillLoopUp[skillLoopUp[i.DF].effectValue] && skillLoopUp[skillLoopUp[i.DF].effectValue].effectValue === _zone.id)))
+                a(href="enemy.html#DF-" + _enemy.DF target="_blank")
+                  img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
