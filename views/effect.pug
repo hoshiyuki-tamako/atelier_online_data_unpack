@@ -43,6 +43,6 @@ html
                 - for (const _enemy of enemiesOrderByCategory.filter(p => p.sParam.SKILL.some(i => i.DF === s.id)))
                   a(href="enemy.html#DF-" + _enemy.DF target="_blank")
                     img.icon-small(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
-                - for (const _chara of charasOrderByCategory.filter(p => p.SKILL.some(i => i.DF === s.id) || p.BA.some(i => { const ba = blazeArt.m_vList.find(j => j.DF === i.DF); return ba ? ba.LV.some(k => k.SKILL_DF === s.id) : false })))
+                - for (const _chara of charasOrderByCategory.filter(p => p.SKILL.some(i => i.DF === s.id)))
                   a(href="chara.html#DF-" + _chara.DF target="_blank")
                     img.icon-small(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)

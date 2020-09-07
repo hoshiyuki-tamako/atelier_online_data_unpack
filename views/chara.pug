@@ -112,7 +112,7 @@ html
                   img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
             h4 ----- スキル -----
-            - for (const [lv, skills] of Enumerable.from(chara.m_vList[0].SKILL).groupBy(p => p.LV).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
+            - for (const [lv, skills] of Enumerable.from(_chara.SKILL).groupBy(p => p.LV).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
               h4 --- LV #{lv} ---
               - for (const [i, _s] of skills.entries())
                 - const s = skill.m_vList.find(s => s.id === _s.DF)

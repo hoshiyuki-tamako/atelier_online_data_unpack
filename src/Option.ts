@@ -89,8 +89,12 @@ export class Option {
 
   // skill look up
   public static skillEffectLookUp = {
-    139: 'Zone Effect',
     135: 'Monster Zone Effect',
+    139: 'Zone Effect',
+  };
+
+  public static skillEffectTargetLookUp = {
+    8: '回避',
   };
 
   // settings
