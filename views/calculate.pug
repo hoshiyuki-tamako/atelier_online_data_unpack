@@ -27,21 +27,36 @@ html
       h4 計算
       div.calculate-container
         label
-          input(id="R" placeholder="R" type="number" min="0" value="60")
+          input(id="status-r" placeholder="R" type="number" min="0" value="60")
           span.input-span  R
         br
         label
-          input(id="M" placeholder="M" type="number" min="0" value="40")
+          input(id="status-m" placeholder="M" type="number" min="0" value="40")
           span.input-span  M
         br
         label
-          input(id="B" placeholder="B" type="number" min="0" value="6")
+          input(id="status-b" placeholder="B" type="number" min="0" value="6")
           span.input-span  B
         br
         label
-          input(id="Level" placeholder="Level" type="number" min="0" value="80")
+          input(id="status-level" placeholder="Level" type="number" min="0" value="80")
           span.input-span  level
         br
         label
           span.input-span= '= '
-          input(id="Result" value="0")
+          input(id="status-result" value="0")
+    hr
+
+    div
+      h3 サブ裝備
+      div
+        p floor(值 * 5%)
+        h4 計算
+          div.calculate-container
+            label
+              input(id="sub-status-v" placeholder="R" type="number" min="0" value="60")
+              span.input-span &nbsp;V
+            br
+            label
+              span.input-span= '= '
+              input(id="sub-status-result" value="0")

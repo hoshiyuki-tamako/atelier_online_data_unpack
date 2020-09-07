@@ -40,29 +40,29 @@ function minify(html: string, options: Options) {
 export class PageBuilder {
 
   public static async main () {
-    await Option.preLoadFiles();
+    // await Option.preLoadFiles();
 
     const that = new this();
     await Promise.all([
       that.index(),
-      that.item(),
-      that.chara(),
-      that.otherChara(),
-      that.skill(),
-      that.effect(),
-      that.abnormalEffect(),
-      that.enemy(),
-      that.degree(),
-      that.quest(),
-      that.wealth(),
-      that.zone(),
-      that.unusedItem(),
-      that.area(),
-      that.blazeArt(),
-      that.calculate(),
-      that.other(),
-      that.memo(),
-      that.equipmentRank(),
+      // that.item(),
+      // that.chara(),
+      // that.otherChara(),
+      // that.skill(),
+      // that.effect(),
+      // that.abnormalEffect(),
+      // that.enemy(),
+      // that.degree(),
+      // that.quest(),
+      // that.wealth(),
+      // that.zone(),
+      // that.unusedItem(),
+      // that.area(),
+      // that.blazeArt(),
+      // that.calculate(),
+      // that.other(),
+      // that.memo(),
+      // that.equipmentRank(),
     ]);
   }
 
@@ -182,12 +182,18 @@ export class PageBuilder {
         },
       },
 
-
+      {
+        href: "characterBuilder.html",
+        title: "キャラクタービルダー",
+        img: {
+          src: "img/other/Texture2D/item_texture_0024.png",
+        },
+      },
       // {
       //   href: "equipmentRank.html",
       //   title: "裝備ランク TODO",
       //   img: {
-      //     src: "img/icon_s/Texture2D/icon_item_s_20010001.png",
+      //     src: "img/other/Texture2D/item_texture_0025.png",
       //   },
       // },
       {
@@ -494,7 +500,11 @@ export class PageBuilder {
   }
 
   public async equipmentRank() {
-    
+    const pugOption = {};
+    await fs.writeFile(
+      path.join(Option.outFolder, 'equipmentRank.html'),
+      minify(pug.renderFile(path.join(Option.viewFolder, 'equipmentRank.pug'), pugOption), Option.minifyOption),
+    );
   }
 
 }

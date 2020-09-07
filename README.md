@@ -4,7 +4,7 @@
 
 ## Notes
 
-All files in `./docs/img` `./docs/models` `./export` are NOT license in MIT as those were not belongs to me
+All files in `./docs/img` `./docs/models` `./docs/export` are NOT license in MIT as those were not belongs to me
 
 ## Running The Script
 
@@ -30,6 +30,6 @@ npm run build
 
 ### Content Update Check List
 
-- copy JSON from AssetStudio to `./export` folder json files
+- copy JSON from AssetStudio to `./docs/export/*` folder json files
 - export Texture2D files to `./docs/img/*`
 - export updated models to `./docs/models/*`

@@ -85,8 +85,8 @@ html
               - const iconFilename = `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png`
               - if (charaIcons.includes(iconFilename))
                 img.icon-full(src="img/chara/Texture2D/" + iconFilename alt= _chara.NAME)
-            br
             p= _chara.DESC
+            br
             p DF: #{_chara.DF}
             p 性別: 
               - if (!_chara.GEN)

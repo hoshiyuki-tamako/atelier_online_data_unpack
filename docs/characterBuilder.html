@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>キャラクタービルダー</title>
+  <link rel="stylesheet" href="css/characterBuilder.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue-js-modal@1.3.16/dist/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-select@latest"></script>
+  <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <p>開発中です</p>
+      <p>Feature is work in progress. data may not be correct</p>
+      <p>Item SKILL/効果 were not added to item yet.</p>
+    </div>
+    <el-dialog title="" :visible.sync="pickItemDialogVisible" fullscreen>
+      <div class="item-picker-container">
+        <div @click="onRemoveCurrentItem()">
+          <p> - </p>
+          <img src="img/icon_s/Texture2D/icon_item_s_10790001.png" style="width: 60px">
+        </div>
+        <div @click="onPickItem(item)" v-for="item in getFilteredPickItems()" :key="item.DF">
+          <p>{{ item.NAME }}</p>
+          <img :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'" style="width: 60px">
+        </div>
+      </div>
+    </el-dialog>
+
+
+    <div class="container">
+      <div class="main-equipment">
+        <div class="left-equipment">
+          <div>
+            <p>LV 80</p>
+            <img @click="onPickWeapon()" :src="getWeaponImage()">
+          </div>
+          <div>
+            <p>LV 80</p>
+            <img @click="onPickShield()" :src="getShieldImage()">
+          </div>
+          <div>
+            <p>LV 80</p>
+            <img @click="onPickHead()" :src="getHeadImage()">
+          </div>
+          <div>
+            <p>LV 80</p>
+            <img @click="onPickBody()" :src="getBodyImage()">
+          </div>
+        </div>
+        <div class="right-equipment">
+          <div>
+            <p>LV 80</p>
+            <img @click="onPickAccessory(1)" :src="getAccessoryImage(1)">
+          </div>
+          <div>
+            <p>LV 80</p>
+            <img @click="onPickAccessory(2)" :src="getAccessoryImage(2)">
+          </div>
+          <div>
+            <p>LV 80</p>
+            <img @click="onPickAccessory(3)" :src="getAccessoryImage(3)">
+          </div>
+        </div>
+      </div>
+      <div class="sub-equipment">
+
+        <div class="sub-equipment-menu">
+          <h4 style="text-align: center">Support</h4>
+          <br>
+          <v-select v-model="selectedSupportEquipment" :options="selectItems"></v-select>
+          <button @click="addEquipment" type="button" style="width: 100%; height: 40px">ADD</button>
+        </div>
+        <p>Total: {{ equipment.supports.length }}</p>
+        <br>
+        <br>
+        <div class="sub-equipment-items">
+          <img v-for="(df, i) in equipment.supports" :key="i" :src="'img/icon_s/Texture2D/icon_item_s_' + df + '.png'" @click="removeEquipmentSupport(i)">
+        </div>
+
+      </div>
+      <div class="result">
+        <template v-if="equipment.character">
+          <p>{{ getSelectedCharacter().NAME }} LV 80 完食</p><br>
+        </template>
+        <p>HP {{ getState('HP') }}</p>
+        <p>物理攻撃 {{ getState('SATK') }}</p>
+        <p>物理防禦 {{ getState('SDEF') }}</p>
+        <p>魔法攻撃 {{ getState('MATK') }}</p>
+        <p>魔法防禦 {{ getState('MDEF') }}</p>
+        <p>速度 {{ getState('SPD') }}</p><br>
+        <p>---- 屬性 ----</p><br>
+        <p v-for="(element, i) in getElements()" :key="i">{{ element.label }} {{ element.value }}</p>
+      </div>
+    </div>
+    <div class="character">
+      <div>
+        <h4 style="text-align: center">Character</h4>
+        <br>
+        <v-select @input="onChangeCharacter" :options="charas"></v-select>
+      </div>
+      <template v-if="equipment.character">
+        <img :src="getSelectedCharacterImage()">
+      </template>
+    </div>
+  </div>
+  <script src="js/characterBuilder.js"></script>
+</body>
+
+</html>
