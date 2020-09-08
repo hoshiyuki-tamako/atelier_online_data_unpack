@@ -2,5 +2,153 @@ doctype html
 html
   head
     title 裝備ランク
-  style.
+    link(rel="stylesheet" href="css/main.css")
+    style.
+      table {
+        width: 100%;
+      }
+      th {
+        white-space: nowrap;
+      }
+      td, tbody tr th {
+        border-bottom: 1px solid black;
+      }
+      th, td {
+        text-align: center;
+      }
+
+      .category-indexes-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .category-index-container {
+        padding: 12px;
+      }
+
+      td img {
+        width: 140px;
+      }
   body
+    h2 TOP 100
+    p
+      small サブ裝備 = round(值 * 5%)
+    p
+      small (值 / サブ裝備)
+    p
+      small 全裝備 LV 80
+    div.category-indexes-container
+      - for (const state of states)
+        div.category-index-container
+          h3
+            a(href="#state-" + state)= Option.stateLookUp[state] || '総戦闘力'
+      - for (const [element, name] of Object.entries(Option.elementLookUp))
+        div.category-index-container
+          h3
+            a(href="#element-" + element)= name
+    br
+    br
+    br
+    br
+
+    div
+      - for (const state of states)
+        h3(id="state-" + state)= Option.stateLookUp[state] || '総戦闘力'
+        table
+          thead
+            tr
+              th ランク
+              th DF
+              th 名前
+              th 物理攻撃
+              th 物理防禦
+              th 魔法攻撃
+              th 魔法防禦
+              th 速度
+              th 総戦闘力
+              th 火
+              th 水
+              th 風
+              th 土
+              th 光
+              th 闇
+              th 画像
+          tbody
+            - for (const [i, _item] of byState[state].entries())
+              - const SATK = LogicHelper.calculateState(_item.EQU.SATK, 80)
+              - const SDEF = LogicHelper.calculateState(_item.EQU.SDEF, 80)
+              - const MATK = LogicHelper.calculateState(_item.EQU.MATK, 80)
+              - const MDEF = LogicHelper.calculateState(_item.EQU.MDEF, 80)
+              - const SPD = LogicHelper.calculateState(_item.EQU.SPD, 80)
+              tr
+                td= i + 1
+                td= _item.DF
+                td= _item.NAME
+                td #{SATK} / #{LogicHelper.calculateSupportState(SATK)}
+                td #{SDEF} / #{LogicHelper.calculateSupportState(SDEF)}
+                td #{MATK} / #{LogicHelper.calculateSupportState(MATK)}
+                td #{MDEF} / #{LogicHelper.calculateSupportState(MDEF)}
+                td #{SPD} / #{LogicHelper.calculateSupportState(SPD)}
+                td= SATK + SDEF + MATK + MDEF + SPD
+                th #{_item.ELM.FIRE} / #{LogicHelper.calculateSupportState(_item.ELM.FIRE)}
+                th #{_item.ELM.WATER} / #{LogicHelper.calculateSupportState(_item.ELM.WATER)}
+                th #{_item.ELM.WIND} / #{LogicHelper.calculateSupportState(_item.ELM.WIND)}
+                th #{_item.ELM.EARTH} / #{LogicHelper.calculateSupportState(_item.ELM.EARTH)}
+                th #{_item.ELM.LIGHT} / #{LogicHelper.calculateSupportState(_item.ELM.LIGHT)}
+                th #{_item.ELM.DARK} / #{LogicHelper.calculateSupportState(_item.ELM.DARK)}
+                td
+                  a(href="item.html#DF-" + _item.DF)
+                    img(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+        hr
+    div
+      - for (const element of Object.keys(Option.elementLookUp))
+        h3(id="element-" + element)= Option.elementLookUp[element]
+        table
+          thead
+            tr
+              th ランク
+              th DF
+              th 名前
+              th 物理攻撃
+              th 物理防禦
+              th 魔法攻撃
+              th 魔法防禦
+              th 速度
+              th 総戦闘力
+              th 火
+              th 水
+              th 風
+              th 土
+              th 光
+              th 闇
+              th 画像
+          tbody
+            - for (const [i, _item] of byElement[element].entries())
+              - const SATK = LogicHelper.calculateState(_item.EQU.SATK, 80)
+              - const SDEF = LogicHelper.calculateState(_item.EQU.SDEF, 80)
+              - const MATK = LogicHelper.calculateState(_item.EQU.MATK, 80)
+              - const MDEF = LogicHelper.calculateState(_item.EQU.MDEF, 80)
+              - const SPD = LogicHelper.calculateState(_item.EQU.SPD, 80)
+              tr
+                td= i + 1
+                td= _item.DF
+                td 
+                  span=_item.NAME
+                  - if (_item.GROUP_DF)
+                    - const _chara = chara.m_vList.find(p => p.GROUP_DF === _item.GROUP_DF)
+                    img.icon-small(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+                td #{SATK} / #{LogicHelper.calculateSupportState(SATK)}
+                td #{SDEF} / #{LogicHelper.calculateSupportState(SDEF)}
+                td #{MATK} / #{LogicHelper.calculateSupportState(MATK)}
+                td #{MDEF} / #{LogicHelper.calculateSupportState(MDEF)}
+                td #{SPD} / #{LogicHelper.calculateSupportState(SPD)}
+                td= SATK + SDEF + MATK + MDEF + SPD
+                th #{_item.ELM.FIRE} / #{LogicHelper.calculateSupportState(_item.ELM.FIRE)}
+                th #{_item.ELM.WATER} / #{LogicHelper.calculateSupportState(_item.ELM.WATER)}
+                th #{_item.ELM.WIND} / #{LogicHelper.calculateSupportState(_item.ELM.WIND)}
+                th #{_item.ELM.EARTH} / #{LogicHelper.calculateSupportState(_item.ELM.EARTH)}
+                th #{_item.ELM.LIGHT} / #{LogicHelper.calculateSupportState(_item.ELM.LIGHT)}
+                th #{_item.ELM.DARK} / #{LogicHelper.calculateSupportState(_item.ELM.DARK)}
+                td
+                  a(href="item.html#DF-" + _item.DF)
+                    img(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+        hr

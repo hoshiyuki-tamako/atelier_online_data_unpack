@@ -19,7 +19,7 @@ import { DungeonInfo } from './master/dungeonInfo';
 import { Enemy } from './master/enemy';
 import { FieldName } from './master/fieldName';
 import { GateInfo } from './master/gateInfo';
-import { Item } from './master/item';
+import { Item, MVList as ItemMVList } from './master/item';
 import { Quest } from './master/quest';
 import { Skill } from './master/skill';
 import { Tips } from './master/tips';
@@ -40,7 +40,7 @@ function minify(html: string, options: Options) {
 export class PageBuilder {
 
   public static async main () {
-    // await Option.preLoadFiles();
+    await Option.preLoadFiles();
 
     const that = new this();
     await Promise.all([
@@ -189,13 +189,13 @@ export class PageBuilder {
           src: "img/other/Texture2D/item_texture_0024.png",
         },
       },
-      // {
-      //   href: "equipmentRank.html",
-      //   title: "裝備ランク TODO",
-      //   img: {
-      //     src: "img/other/Texture2D/item_texture_0025.png",
-      //   },
-      // },
+      {
+        href: "equipmentRank.html",
+        title: "裝備ランク",
+        img: {
+          src: "img/other/Texture2D/item_texture_0025.png",
+        },
+      },
       {
         href: "unusedItem.html",
         title: "未使用アイテム",
@@ -500,7 +500,38 @@ export class PageBuilder {
   }
 
   public async equipmentRank() {
-    const pugOption = {};
+    const [item, chara] = await Promise.all([
+      Option.loadFileFromCache(Option.exportDataPaths.item),
+      Option.loadFileFromCache(Option.exportDataPaths.chara),
+    ]) as [Item, Chara];
+
+    const lv = 80;
+    const equipments = item.m_vList.filter(p => p.EQU_BRD);
+
+    const byState = {} as { [s: string]: ItemMVList[] };
+    const states = ['SATK', 'SDEF', 'MATK', 'MDEF', 'SPD'];
+    for (const state of states) {
+      byState[state] = Enumerable.from(equipments)
+      .orderByDescending(p => LogicHelper.calculateState(p.EQU[state], lv))
+      .take(100)
+      .toArray();
+    }
+    byState.total = Enumerable.from(equipments)
+    .orderByDescending(p => states.map(i => LogicHelper.calculateState(p.EQU[i], lv)).reduce((a, b) => a + b, 0))
+    .take(100)
+    .toArray();
+    states.unshift('total');
+
+    const byElement = {} as { [s: string]: ItemMVList[] };
+    for (const element of Object.keys(Option.elementLookUp)) {
+      byElement[element] = Enumerable.from(equipments)
+      .orderByDescending(p => p.ELM[element])
+      .thenByDescending(p => states.map(i => p.EQU[i] ? LogicHelper.calculateState(p.EQU[i], lv) : 0).reduce((a, b) => a + b, 0))
+      .take(100)
+      .toArray();
+    }
+
+    const pugOption = { Option, LogicHelper, chara, byState, byElement, states };
     await fs.writeFile(
       path.join(Option.outFolder, 'equipmentRank.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'equipmentRank.pug'), pugOption), Option.minifyOption),

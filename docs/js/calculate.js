@@ -29,7 +29,7 @@ window.addEventListener('load', () => {
 
   const calculate = function() {
     const V = +inputV.value;
-    inputResult.value = Math.floor(V * 0.05);
+    inputResult.value = Math.round(V * 0.05);
   };
 
   inputV.addEventListener('input', calculate);

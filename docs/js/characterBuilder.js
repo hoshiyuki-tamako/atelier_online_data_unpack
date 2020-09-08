@@ -1,6 +1,16 @@
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VTooltip)
 
+class LogicHelper {
+  static calculateState(gmrb, lv = 1) {
+    const baseValue = ((gmrb.M - gmrb.B)/gmrb.R);
+    return Math.floor(baseValue * lv + gmrb.B);
+  }
+  static calculateSupportState(value) {
+    return Math.round(value * .05);
+  }
+}
+
 class Option {
   static stateLookUp = {
     EXP: 'EXP',
@@ -386,8 +396,7 @@ new Vue({
 
     //
     calculateState(gmrb, lv = 1) {
-      const baseValue = ((gmrb.M - gmrb.B)/gmrb.R);
-      return Math.floor(baseValue * lv + gmrb.B);
+      return LogicHelper.calculateState(gmrb, lv);
     },
     async load() {
       const [chara, item, skill] = await Promise.all([

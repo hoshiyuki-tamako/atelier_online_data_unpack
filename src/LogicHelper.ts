@@ -10,4 +10,7 @@ export class LogicHelper {
     const baseValue = ((gmrb.M - gmrb.B)/gmrb.R);
     return Math.floor(baseValue * lv + gmrb.B);
   }
+  public static calculateSupportState(value: number) {
+    return Math.round(value * .05);
+  }
 }

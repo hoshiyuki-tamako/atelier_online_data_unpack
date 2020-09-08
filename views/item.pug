@@ -75,8 +75,8 @@ html
       div.category-indexes-container
         - for(const ii of itemIndex)
           div.category-index-container
-            a(href="#CATEG-" + ii.CATEG)
-              h3= Option.itemCategoryLookUp[ii.CATEG] || `CATEG=${ii.CATEG}`
+            h3
+              a(href="#CATEG-" + ii.CATEG)= Option.itemCategoryLookUp[ii.CATEG] || `CATEG=${ii.CATEG}`
     br
     br
     br

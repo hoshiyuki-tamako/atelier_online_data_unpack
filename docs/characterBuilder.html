@@ -18,6 +18,7 @@
     <div>
       <p>開発中です</p>
       <p>SKILL/効果 not working</p>
+      <p>Element support state not working</p>
     </div>
 
 
@@ -292,6 +293,10 @@
         </div>
         <table>
           <tr>
+            <th>総戦闘力</th>
+            <td>-</td>
+          </tr>
+          <tr>
             <th>HP</th>
             <td>{{ getState('HP') }}</td>
           </tr>
@@ -301,7 +306,7 @@
           </tr>
           <tr>
             <th>物理防禦</th>
-            <td>{{ getState('SDEF') }}</td>
+            <td>{{ getState('SDEF') }} * {{ 1 }}</td>
           </tr>
           <tr>
             <th>魔法攻撃</th>
@@ -341,6 +346,7 @@
         </div>
         <br>
         <p>6*skill 15 + skill 400% + chain 16 + 連携ボーナス Lv5 = {{ Math.round(getState('SATK') * 1.26 * 6 * 4 * 3.2 * 1.3, 2) }}</p>
+        <p>6*skill 15 + skill 400% + chain 16 + 連携ボーナス Lv5 = {{ Math.round(getState('MATK') * 1.26 * 6 * 4 * 3.2 * 1.3, 2) }}</p>
       </div>
     </div>
   </div>
