@@ -97,7 +97,7 @@ html
                 span ♀ 
 
             - if (_chara.WEAPON.length)
-              p 武器種類: #{_chara.WEAPON.map(p => Option.weaponGenLookUp[p.GEN] || p.GEN).join(", ")}
+              p 武器種類: #{_chara.WEAPON.map(p => Lookup.weaponGen[p.GEN] || p.GEN).join(", ")}
             - for (const grow of _chara.GROW)
               p.wealth-container
                 img(src="img/icon_item01/Texture2D/icon_item01_00006.png" alt="限界キャンディ")
@@ -143,34 +143,34 @@ html
                   th HP
                   td= LogicHelper.calculateState(_chara.SPEC.HP, lv)
                 tr
-                  th= Option.stateLookUp.SATK
+                  th= Lookup.state.SATK
                   td= LogicHelper.calculateState(_chara.SPEC.SATK, lv)
                 tr
-                  th= Option.stateLookUp.SDEF
+                  th= Lookup.state.SDEF
                   td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv)
                 tr
-                  th= Option.stateLookUp.MATK
+                  th= Lookup.state.MATK
                   td= LogicHelper.calculateState(_chara.SPEC.MATK, lv)
                 tr
-                  th= Option.stateLookUp.MDEF
+                  th= Lookup.state.MDEF
                   td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv)
                 tr
-                  th= Option.stateLookUp.SPD
+                  th= Lookup.state.SPD
                   td= LogicHelper.calculateState(_chara.SPEC.SPD, lv)
                 tr
-                  th= Option.stateLookUp.SDA
+                  th= Lookup.state.SDA
                   td= LogicHelper.calculateState(_chara.SPEC.SDA, lv)
                 tr
-                  th= Option.stateLookUp.LDA
+                  th= Lookup.state.LDA
                   td= LogicHelper.calculateState(_chara.SPEC.LDA, lv)
                 tr
-                  th= Option.stateLookUp.QTH
+                  th= Lookup.state.QTH
                   td= LogicHelper.calculateState(_chara.SPEC.QTH, lv)
                 tr
-                  th= Option.stateLookUp.DDG
+                  th= Lookup.state.DDG
                   td= LogicHelper.calculateState(_chara.SPEC.DDG, lv)
                 tr
-                  th= Option.stateLookUp.SADD
+                  th= Lookup.state.SADD
                   td= LogicHelper.calculateState(_chara.SPEC.SADD, lv)
 
             - const lv = 80
@@ -181,34 +181,34 @@ html
                 th HP
                 td= LogicHelper.calculateState(_chara.SPEC.HP, lv) + maxDfm.HP
               tr
-                th= Option.stateLookUp.SATK
+                th= Lookup.state.SATK
                 td= LogicHelper.calculateState(_chara.SPEC.SATK, lv) + maxDfm.SATK
               tr
-                th= Option.stateLookUp.SDEF
+                th= Lookup.state.SDEF
                 td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv) + maxDfm.SDEF
               tr
-                th= Option.stateLookUp.MATK
+                th= Lookup.state.MATK
                 td= LogicHelper.calculateState(_chara.SPEC.MATK, lv) + maxDfm.MATK
               tr
-                th= Option.stateLookUp.MDEF
+                th= Lookup.state.MDEF
                 td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv) + maxDfm.MDEF
               tr
-                th= Option.stateLookUp.SPD
+                th= Lookup.state.SPD
                 td= LogicHelper.calculateState(_chara.SPEC.SPD, lv) + maxDfm.SPD
               tr
-                th= Option.stateLookUp.SDA
+                th= Lookup.state.SDA
                 td= LogicHelper.calculateState(_chara.SPEC.SDA, lv) + maxDfm.SDA
               tr
-                th= Option.stateLookUp.LDA
+                th= Lookup.state.LDA
                 td= LogicHelper.calculateState(_chara.SPEC.LDA, lv) + maxDfm.LDA
               tr
-                th= Option.stateLookUp.QTH
+                th= Lookup.state.QTH
                 td= LogicHelper.calculateState(_chara.SPEC.QTH, lv) + maxDfm.QTH
               tr
-                th= Option.stateLookUp.DDG
+                th= Lookup.state.DDG
                 td= LogicHelper.calculateState(_chara.SPEC.DDG, lv) + maxDfm.DDG
               tr
-                th= Option.stateLookUp.SADD
+                th= Lookup.state.SADD
                 td= LogicHelper.calculateState(_chara.SPEC.SADD, lv) + maxDfm.SADD
 
             - if (_chara.BA.length)
@@ -250,34 +250,34 @@ html
                     td HP
                     td= fdm.HP
                   tr
-                    td= Option.stateLookUp.SATK
+                    td= Lookup.state.SATK
                     td= fdm.SATK
                   tr
-                    td= Option.stateLookUp.SDEF
+                    td= Lookup.state.SDEF
                     td= fdm.SDEF
                   tr
-                    td= Option.stateLookUp.MATK
+                    td= Lookup.state.MATK
                     td= fdm.MATK
                   tr
-                    td= Option.stateLookUp.MDEF
+                    td= Lookup.state.MDEF
                     td= fdm.MDEF
                   tr
-                    td= Option.stateLookUp.SPD
+                    td= Lookup.state.SPD
                     td= fdm.SPD
                   tr
-                    td= Option.stateLookUp.SDA
+                    td= Lookup.state.SDA
                     td= fdm.SDA
                   tr
-                    td= Option.stateLookUp.LDA
+                    td= Lookup.state.LDA
                     td= fdm.LDA
                   tr
-                    td= Option.stateLookUp.QTH
+                    td= Lookup.state.QTH
                     td= fdm.QTH
                   tr
-                    td= Option.stateLookUp.DDG
+                    td= Lookup.state.DDG
                     td= fdm.DDG
                   tr
-                    td= Option.stateLookUp.SADD
+                    td= Lookup.state.SADD
                     td= fdm.SADD
 
               h4 ----- クェスト -----

@@ -9,6 +9,7 @@ import pug from 'pug';
 
 import { eChatTab } from './Enums';
 import { LogicHelper } from './LogicHelper';
+import { Lookup } from './Lookup';
 import { AbnormalState } from './master/abnormalState';
 import { AbnormalStateEffect } from './master/abnormalStateEffect';
 import { AdventBattle } from './master/adventBattle';
@@ -249,7 +250,7 @@ export class PageBuilder {
       }))
       .toArray();
     const itemsOrderByCategory = item.m_vList.sort((a, b) => a.CATEG - b.CATEG);
-    const pugOption = { Option, LogicHelper, itemIndex, itemsOrderByCategory, item, skill, chara, fieldItem, abnormalState };
+    const pugOption = { Lookup, LogicHelper, itemIndex, itemsOrderByCategory, item, skill, chara, fieldItem, abnormalState };
     await fs.writeFile(
       path.join(Option.outFolder, 'item.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'item.pug'), pugOption), Option.minifyOption),
@@ -266,7 +267,7 @@ export class PageBuilder {
       fs.readdir(path.join(Option.outFolder, 'img', 'chara', 'Texture2D')),
     ]) as [Item, Skill, Chara, BlazeArt, Quest, string[]];
 
-    const pugOption = { Option, LogicHelper, Enumerable, item, skill, chara, blazeArt, quest, charaIcons: charaIcons.map(p => path.basename(p)) };
+    const pugOption = { Lookup, LogicHelper, Enumerable, item, skill, chara, blazeArt, quest, charaIcons: charaIcons.map(p => path.basename(p)) };
     await fs.writeFile(
       path.join(Option.outFolder, 'chara.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'chara.pug'), pugOption), Option.minifyOption),
@@ -328,7 +329,7 @@ export class PageBuilder {
       Option.loadFileFromCache(Option.exportDataPaths.skill),
     ]) as [Enemy, Skill];
 
-    const pugOption = { Option, LogicHelper, Enumerable, math, enemy, skill };
+    const pugOption = { Lookup, LogicHelper, Enumerable, math, enemy, skill };
     await fs.writeFile(
       path.join(Option.outFolder, 'enemy.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'enemy.pug'), pugOption), Option.minifyOption),
@@ -359,7 +360,7 @@ export class PageBuilder {
       Option.loadFileFromCache(Option.exportDataPaths.degree),
     ]) as [Quest, Item, Chara, Enemy, Wealth, AreaInfo, FieldName, Degree];
 
-    const pugOption = { Option, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName, degree };
+    const pugOption = { Lookup, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName, degree };
     await fs.writeFile(
       path.join(Option.outFolder, 'quest.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'quest.pug'), pugOption), Option.minifyOption),
@@ -526,7 +527,7 @@ export class PageBuilder {
 
     // equipment element
     const byItemElement = {} as { [s: string]: ItemMVList[] };
-    for (const element of Object.keys(Option.elementLookUp)) {
+    for (const element of Object.keys(Lookup.element)) {
       byItemElement[element] = Enumerable.from(equipments)
       .orderByDescending(p => p.ELM[element])
       .take(100)
@@ -534,7 +535,7 @@ export class PageBuilder {
     }
     byItemElement.total = Enumerable.from(equipments)
     .orderByDescending(p => 
-      Object.keys(Option.elementLookUp)
+      Object.keys(Lookup.element)
         .map(i => p.ELM[i])
         .reduce((a, b) => a + b, 0)
     )
@@ -584,7 +585,7 @@ export class PageBuilder {
     .toArray();
     enemyStates.unshift('total');
 
-    for (const element of Object.keys(Option.elementLookUp)) {
+    for (const element of Object.keys(Lookup.element)) {
       byEnemyElement[element] = Enumerable.from(enemy.m_vList)
       .orderByDescending(p => LogicHelper.calculateState(p.sParam.ELM[element], enemyLv))
       .take(100)
@@ -592,7 +593,7 @@ export class PageBuilder {
     }
     byEnemyElement.total = Enumerable.from(enemy.m_vList)
     .orderByDescending(p => 
-      Object.keys(Option.elementLookUp)
+      Object.keys(Lookup.element)
       .map(i => LogicHelper.calculateState(p.sParam.ELM[i], enemyLv))
       .reduce((a, b) => a + b, 0)
     )
@@ -600,7 +601,7 @@ export class PageBuilder {
     .toArray();
 
     // start render
-    const pugOption = { Option, LogicHelper, chara, byItemState, byItemElement, byCharacter, byEnemyState, byEnemyElement, itemStates, characterStates, enemyStates };
+    const pugOption = { Lookup, LogicHelper, chara, byItemState, byItemElement, byCharacter, byEnemyState, byEnemyElement, itemStates, characterStates, enemyStates };
     await fs.writeFile(
       path.join(Option.outFolder, 'totalRanking.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'totalRanking.pug'), pugOption), Option.minifyOption),

@@ -78,9 +78,21 @@
           </div>
 
 
-          <div class="compose-item-image">
-            <img :src="getPickedItemUrl()" :alt="getPickedItem().NAME">
-          </div>
+
+          <v-popover placement="right-end" trigger="hover">
+            <div class="compose-item-image">
+              <img :src="getPickedItemUrl()" :alt="getPickedItem().NAME">
+            </div>
+            <template slot="popover">
+              <div class="item-popover">
+                <p>{{ getPickedItem().NAME }}</p>
+                <p>{{ getPickedItem().DESC }}</p>
+                <el-link type="primary" :href="'item.html#DF-' + getPickedItem().DF" target="_blank">
+                  アイテム</el-link>
+              </div>
+            </template>
+          </v-popover>
+
         </div>
       </div>
 

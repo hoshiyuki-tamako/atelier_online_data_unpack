@@ -3,8 +3,8 @@ ELEMENT.locale(ELEMENT.lang.en);
 Vue.use(VTooltip);
 
 
-class Option {
-  static itemCategoryLookUp = {
+class Lookup {
+  static itemCategory = {
     0: 'none',
     11: '材料',
     12: '攻撃＆探索',
@@ -132,7 +132,7 @@ new Vue({
       this.items = this.item.m_vList.filter(p => p.RSP.length);
       this.items.sort((a, b) => a.CATEG - b.CATEG);
       this.itemCategories = [... new Set(this.items.map(p => p.CATEG))].map(p => ({
-        label: Option.itemCategoryLookUp[p],
+        label: Lookup.itemCategory[p],
         value: p,
       }));
 

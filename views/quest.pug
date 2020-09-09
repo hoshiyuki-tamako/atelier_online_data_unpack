@@ -64,7 +64,7 @@ html
       - for(const category of Enumerable.from(quest.m_vList).groupBy(p => p.CATEG).orderBy(p => p.key()).select(p => p.key()))
         div.category-index-container
           a(href="#CATEG-" + category)
-            h3= Option.questCategoryLookUp[category] || `CATEG=${category}`
+            h3= Lookup.questCategory[category] || `CATEG=${category}`
     br
     br
     br
@@ -72,7 +72,7 @@ html
 
     div
       - for (const [category, _quests] of Enumerable.from(quest.m_vList).groupBy(p => p.CATEG).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]))
-        h3(id="CATEG-" + category)= Option.questCategoryLookUp[category] || `CATEG=${category}`
+        h3(id="CATEG-" + category)= Lookup.questCategory[category] || `CATEG=${category}`
         div.items-index-container
           - for (const _quest of _quests)
             div.item-index-container

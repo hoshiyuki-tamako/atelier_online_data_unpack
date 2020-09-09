@@ -76,7 +76,7 @@ html
         - for(const ii of itemIndex)
           div.category-index-container
             h3
-              a(href="#CATEG-" + ii.CATEG)= Option.itemCategoryLookUp[ii.CATEG] || `CATEG=${ii.CATEG}`
+              a(href="#CATEG-" + ii.CATEG)= Lookup.itemCategory[ii.CATEG] || `CATEG=${ii.CATEG}`
     br
     br
     br
@@ -84,7 +84,7 @@ html
 
     div
       - for(const ii of itemIndex)
-        h2(id="CATEG-" + ii.CATEG)= Option.itemCategoryLookUp[ii.CATEG] || `CATEG=${ii.CATEG}`
+        h2(id="CATEG-" + ii.CATEG)= Lookup.itemCategory[ii.CATEG] || `CATEG=${ii.CATEG}`
         div.items-index-container
           - for (const i of ii.items)
             div.item-index-container
@@ -110,7 +110,7 @@ html
             p= _item.DESC
             br
             p DF: #{_item.DF}
-            p 種類: #{Option.itemCategoryLookUp[_item.CATEG]}
+            p 種類: #{Lookup.itemCategory[_item.CATEG]}
             p
               span.wealth-container
                 span 売却
@@ -126,7 +126,7 @@ html
                   - if (_item.EQU_GND.some(p => p.GEN === 2 && p.ENB))
                     span ♀ 
               - if (_item.WPN_KIND)
-                p 武器種類: #{Option.weaponKindLookUp[_item.WPN_KIND] || _item.WPN_KIND}
+                p 武器種類: #{Lookup.weaponKind[_item.WPN_KIND] || _item.WPN_KIND}
               - if (_item.GROUP_DF)
                 - const _chara = chara.m_vList.find(p => p.GROUP_DF === _item.GROUP_DF)
                 p キャラクター專用
@@ -139,8 +139,8 @@ html
             - const _fieldItem = fieldItem.List.find(p => p.iItemId === _item.DF)
             - if (_fieldItem)
               h4 ---- 戦闘用 ----
-              p 目標: #{Option.FieldItemRangeLookUp[_fieldItem.eRange]}
-              p 効果: #{Option.fieldItemUseLookUp[_fieldItem.eUse]}
+              p 目標: #{Lookup.FieldItemRange[_fieldItem.eRange]}
+              p 効果: #{Lookup.fieldItemUse[_fieldItem.eUse]}
               - for (const [i, stateId] of _fieldItem.eStateList.filter(p => p).entries())
                 - const _abnormalState = abnormalState.m_vList.find(p => p.id === stateId)
                 p= _abnormalState.name
@@ -217,40 +217,40 @@ html
               table
                 - for (const [element, value] of Object.entries(_item.ELM).filter(p => p[1]))
                   tr
-                    th= Option.elementLookUp[element] || element
+                    th= Lookup.element[element] || element
                     td= value
 
               - for (const lv of [1, 60, 80])
                 h4 ----- LV #{lv} -----
                 table
                   tr
-                    th= Option.stateLookUp.SATK
+                    th= Lookup.state.SATK
                     td= LogicHelper.calculateState(_item.EQU.SATK, lv)
                   tr
-                    th= Option.stateLookUp.SDEF
+                    th= Lookup.state.SDEF
                     td= LogicHelper.calculateState(_item.EQU.SDEF, lv)
                   tr
-                    th= Option.stateLookUp.MATK
+                    th= Lookup.state.MATK
                     td= LogicHelper.calculateState(_item.EQU.MATK, lv)
                   tr
-                    th= Option.stateLookUp.MDEF
+                    th= Lookup.state.MDEF
                     td= LogicHelper.calculateState(_item.EQU.MDEF, lv)
                   tr
-                    th= Option.stateLookUp.SPD
+                    th= Lookup.state.SPD
                     td= LogicHelper.calculateState(_item.EQU.SPD, lv)
                   tr
-                    th= Option.stateLookUp.SDA
+                    th= Lookup.state.SDA
                     td= LogicHelper.calculateState(_item.EQU.SDA, lv)
                   tr
-                    th= Option.stateLookUp.LDA
+                    th= Lookup.state.LDA
                     td= LogicHelper.calculateState(_item.EQU.LDA, lv)
                   tr
-                    th= Option.stateLookUp.QTH
+                    th= Lookup.state.QTH
                     td= LogicHelper.calculateState(_item.EQU.QTH, lv)
                   tr
-                    th= Option.stateLookUp.DDG
+                    th= Lookup.state.DDG
                     td= LogicHelper.calculateState(_item.EQU.DDG, lv)
                   tr
-                    th= Option.stateLookUp.SADD
+                    th= Lookup.state.SADD
                     td= LogicHelper.calculateState(_item.EQU.SADD, lv)
         hr

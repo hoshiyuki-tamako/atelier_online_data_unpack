@@ -49,12 +49,12 @@ html
         - for (const state of itemStates)
           div.category-index-container
             h3
-              a(href="#item-state-" + state)= Option.stateLookUp[state] || '総戦闘力'
+              a(href="#item-state-" + state)= Lookup.state[state] || '総戦闘力'
       div.category-indexes-container
         - for (const element of Object.keys(byItemElement))
           div.category-index-container
             h3
-              a(href="#item-element-" + element)= Option.elementLookUp[element] || '全屬性'
+              a(href="#item-element-" + element)= Lookup.element[element] || '全屬性'
     hr
     div
       h3 キャラクター
@@ -62,7 +62,7 @@ html
         - for (const state of characterStates)
           div.category-index-container
             h3
-              a(href="#chara-" + state)=  Option.stateLookUp[state] || '総戦闘力'
+              a(href="#chara-" + state)=  Lookup.state[state] || '総戦闘力'
     hr
     div
       h3 敵
@@ -70,16 +70,16 @@ html
         - for (const state of enemyStates)
           div.category-index-container
             h3
-              a(href="#enemy-state-" + state)=  Option.stateLookUp[state] || '総戦闘力'
+              a(href="#enemy-state-" + state)=  Lookup.state[state] || '総戦闘力'
       div.category-indexes-container
         - for (const element of Object.keys(byEnemyElement))
           div.category-index-container
             h3
-              a(href="#enemy-element-" + element)= Option.elementLookUp[element] || '全屬性'
+              a(href="#enemy-element-" + element)= Lookup.element[element] || '全屬性'
     hr
     div
       - for (const state of itemStates)
-        h3(id="item-state-" + state)= Option.stateLookUp[state] || '総戦闘力'
+        h3(id="item-state-" + state)= Lookup.state[state] || '総戦闘力'
         table
           thead
             tr
@@ -127,12 +127,12 @@ html
                 th #{_item.ELM.LIGHT} / #{LogicHelper.calculateSupportState(_item.ELM.LIGHT)}
                 th #{_item.ELM.DARK} / #{LogicHelper.calculateSupportState(_item.ELM.DARK)}
                 td
-                  a(href="item.html#DF-" + _item.DF)
+                  a(href="item.html#DF-" + _item.DF target="_blank")
                     img(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
         hr
     div
       - for (const element of Object.keys(byItemElement))
-        h3(id="item-element-" + element)= Option.elementLookUp[element] || '全屬性'
+        h3(id="item-element-" + element)= Lookup.element[element] || '全屬性'
         table
           thead
             tr
@@ -180,13 +180,13 @@ html
                 th #{_item.ELM.LIGHT} / #{LogicHelper.calculateSupportState(_item.ELM.LIGHT)}
                 th #{_item.ELM.DARK} / #{LogicHelper.calculateSupportState(_item.ELM.DARK)}
                 td
-                  a(href="item.html#DF-" + _item.DF)
+                  a(href="item.html#DF-" + _item.DF target="_blank")
                     img(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
         hr
 
     div
       - for (const characterState of characterStates)
-        h3(id="chara-" + characterState)= Option.stateLookUp[characterState] || '総戦闘力'
+        h3(id="chara-" + characterState)= Lookup.state[characterState] || '総戦闘力'
         table
           thead
             tr
@@ -222,13 +222,13 @@ html
                 td #{SPD}
                 td= HP + SATK + SDEF + MATK + MDEF + SPD
                 td
-                  a(href="#DF-" + _chara.DF)
+                  a(href="#DF-" + _chara.DF  target="_blank")
                     img(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
         hr
 
     div
       - for (const state of enemyStates)
-        h3(id="enemy-state-" + state)= Option.stateLookUp[state] || '総戦闘力'
+        h3(id="enemy-state-" + state)= Lookup.state[state] || '総戦闘力'
         table
           thead
             tr
@@ -278,6 +278,6 @@ html
                 th #{_enemy.sParam.ELM.LIGHT}
                 th #{_enemy.sParam.ELM.DARK}
                 td
-                  a(href="enemy.html#DF-" + _enemy.DF)
+                  a(href="enemy.html#DF-" + _enemy.DF target="_blank")
                     img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
         hr
