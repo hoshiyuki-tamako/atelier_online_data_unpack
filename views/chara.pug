@@ -240,10 +240,11 @@ html
                 h5 --- LV #{fdm.NO} ---
                 - for (const fd of fdm.FD)
                   div.chara-food-item-container
-                    - const food = item.m_vList.find(i => i.DF === fd.DF)
-                      a.chara-food-consume(href="item.html#DF-" + fd.DF target="_blank")
-                        span 品質 #{fd.QTY}
-                        img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + food.DF + ".png" alt= food.NAME)
+                    - const _item = item.m_vList.find(i => i.DF === fd.DF)
+                    - const href = _item.RSP.length ? `composeItem.html?df=${_item.DF}&quality=${fd.QTY}` : `item.html#DF-${_item.DF}`;
+                    a.chara-food-consume(href= href target="_blank")
+                      span 品質 #{fd.QTY}
+                      img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
                 table
                   tr
                     td HP
