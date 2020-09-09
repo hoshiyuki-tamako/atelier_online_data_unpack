@@ -103,7 +103,7 @@ html
             p DF: #{_quest.DF}
             p QUEST_NO: #{_quest.QUEST_NO}
             p QUEST_SUB_NO: #{_quest.QUEST_SUB_NO}
-            p 解放チャプター: #{_quest.CHAPTER}
+            p 解放チャプター: #{_quest.CHAPTER ? _quest.CHAPTER : '-'}
             p キークェスト: #{_quest.KEY_QUEST ? "✓" : "x"}
             p 重要: #{_quest.IMPORTANT ? "✓" : "x"}
             p 挑戦: #{_quest.IMPORTANT ? "✓" : "x"}

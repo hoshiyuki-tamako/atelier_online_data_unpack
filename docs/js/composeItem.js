@@ -49,6 +49,10 @@ new Vue({
     itemPickerFilterCategory: null,
     itemPickerFilterKeyword: '',
 
+    // export
+    exportComposeItemUrlVisible: false,
+
+    //
     materialOptions: [], // { quality: 1, addOnQuality: 1 }
     materials: [], 
     compose: null,
@@ -118,6 +122,11 @@ new Vue({
     getAbnormalState(id) {
       return this.abnormalState.m_vList.find(p => p.id === id);
     },
+    
+    // export
+    getExportUrl() {
+      return `${location.origin}${location.pathname}?df=${this.compose.DF}&materialOptions=${btoa(JSON.stringify(this.materialOptions))}`;
+    },
 
     //
     async load() {
@@ -146,7 +155,6 @@ new Vue({
     tryPickItemFromSearchParams() {
       const searchParams = new URL(window.location).searchParams;
       const df = +searchParams.get('df');
-      const quality = +searchParams.get('quality');
       if (!df) {
         return false;
       }
@@ -154,6 +162,26 @@ new Vue({
       if (!item) {
         return false;
       }
+
+      try {
+        const materialOptionString = searchParams.get('materialOptions');
+        if (materialOptionString) {
+          const materialOptions = JSON.parse(atob(materialOptionString));
+          this.onPickItem(item);
+          console.log(materialOptions)
+          // make sure the param is correct
+          for (const [i, materialOption] of this.materialOptions.entries()) {
+            const thatOption = materialOptions[i] || materialOption;
+            materialOption.quality = thatOption.quality || materialOption.quality;
+            materialOption.addOnQuality = thatOption.addOnQuality || materialOption.addOnQuality;
+          }
+          return true;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      const quality = +searchParams.get('quality');
       this.onPickItem(item, quality);
       return true;
     }

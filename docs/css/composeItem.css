@@ -32,8 +32,6 @@
   flex-direction: row;
   text-align: center;
   max-width: 940px;
-
-  height: 100%;
 }
 
 .compose-material-top img {
@@ -99,6 +97,10 @@
 .compose-result-image {
   width: 240px;
   cursor: pointer;
+}
+
+.compose-result-export {
+  text-align: center;
 }
 
 .compose-result-skill tr th {

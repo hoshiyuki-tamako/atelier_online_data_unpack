@@ -23,10 +23,10 @@
 
     <el-dialog title="" :visible.sync="pickItemDialogVisible" fullscreen>
       <div class="item-picker-container">
-        <el-select v-model="itemPickerFilterCategory" style="width: 140px" placeholder="種類" size="small" filterable>
+        <el-select v-model="itemPickerFilterCategory" style="width: 140px" placeholder="種類" size="small" filterable clearable>
           <el-option v-for="itemCategory in itemCategories" :key="itemCategory.value" :label="itemCategory.label" :value="itemCategory.value"></el-option>
         </el-select>
-        <el-input v-model="itemPickerFilterKeyword" placeholder="Name / DF"></el-input>
+        <el-input v-model="itemPickerFilterKeyword" placeholder="名前 / DF"></el-input>
         <div class="item-picker-items">
           <div @click="onPickItem(item)" v-for="item in getFilteredItemPickerItems()" :key="item.DF">
             <p>{{ item.NAME }}</p>
@@ -34,6 +34,11 @@
           </div>
         </div>
       </div>
+    </el-dialog>
+
+    <el-dialog title="" :visible.sync="exportComposeItemUrlVisible">
+        <el-input type="textarea" v-model="getExportUrl()" autosize autofocus>
+      </el-input>
     </el-dialog>
 
     <div v-if="!composeLoading" class="compose-container">
@@ -87,8 +92,7 @@
               <div class="item-popover">
                 <p>{{ getPickedItem().NAME }}</p>
                 <p>{{ getPickedItem().DESC }}</p>
-                <el-link type="primary" :href="'item.html#DF-' + getPickedItem().DF" target="_blank">
-                  アイテム</el-link>
+                <el-link type="primary" :href="'item.html#DF-' + getPickedItem().DF" target="_blank">アイテム</el-link>
               </div>
             </template>
           </v-popover>
@@ -101,6 +105,9 @@
         <h4>{{ getPickedItem().NAME }}</h4>
         <div class="compose-result-image-container">
           <img class="compose-result-image" @click="onPickItemOpen" :src="getPickedItemUrl()" :alt="getPickedItem().NAME">
+        </div>
+        <div class="compose-result-export">
+          <el-button @click="exportComposeItemUrlVisible = true" type="primary" circle>URL</el-button>
         </div>
         <div class="compose-result-skill" v-for="_skill in getPickedItemSkills()" :key="_skill.id">
           <table>
