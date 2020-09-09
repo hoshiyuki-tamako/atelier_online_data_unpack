@@ -280,10 +280,10 @@ html
                   td= Lookup.state.SADD
                   td= fdm.SADD
 
-              h4 ----- クェスト -----
-              - for (const qst of _chara.QST)
-                - const q = quest.m_vList.find(i => i.DF === qst.QUEST_DF)
-                - if (q)
-                  h5 --- LV #{qst.LV} ---
-                  a(href="quest.html#DF-" + qst.QUEST_DF target="_blank")= q.NAME
+            h4 ----- クェスト -----
+            - for (const qst of _chara.QST)
+              - const q = quest.m_vList.find(i => i.DF === qst.QUEST_DF)
+              - if (q)
+                h5 --- LV #{qst.LV} ---
+                a(href="quest.html#DF-" + qst.QUEST_DF target="_blank")= q.NAME
         hr
