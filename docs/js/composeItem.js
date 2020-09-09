@@ -125,6 +125,9 @@ new Vue({
     
     // export
     getExportUrl() {
+      if (!this.compose) {
+        return '';
+      }
       return `${location.origin}${location.pathname}?df=${this.compose.DF}&materialOptions=${btoa(JSON.stringify(this.materialOptions))}`;
     },
 
@@ -168,7 +171,6 @@ new Vue({
         if (materialOptionString) {
           const materialOptions = JSON.parse(atob(materialOptionString));
           this.onPickItem(item);
-          console.log(materialOptions)
           // make sure the param is correct
           for (const [i, materialOption] of this.materialOptions.entries()) {
             const thatOption = materialOptions[i] || materialOption;
