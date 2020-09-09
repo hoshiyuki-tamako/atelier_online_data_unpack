@@ -25,7 +25,9 @@ html
     div
       p Game Version 3.12.1
       p Updated #{moment().utc().format('YYYY-MM-DD')}
-      p Twitter @hoshiyuki_git
+      p
+        span Twitter 
+        a(href="https://twitter.com/hoshiyuki_git" target="_blank") @hoshiyuki_git
     hr
     div.indexes-container
       - for (const row of _.chunk(pages, 5))
