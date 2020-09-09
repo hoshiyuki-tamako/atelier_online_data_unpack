@@ -109,7 +109,11 @@ html
               tr
                 td= i + 1
                 td= _item.DF
-                td= _item.NAME
+                td 
+                  span=_item.NAME
+                  - if (_item.GROUP_DF)
+                    - const _chara = chara.m_vList.find(p => p.GROUP_DF === _item.GROUP_DF)
+                    img.icon-small(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
                 td #{SATK} / #{LogicHelper.calculateSupportState(SATK)}
                 td #{SDEF} / #{LogicHelper.calculateSupportState(SDEF)}
                 td #{MATK} / #{LogicHelper.calculateSupportState(MATK)}
