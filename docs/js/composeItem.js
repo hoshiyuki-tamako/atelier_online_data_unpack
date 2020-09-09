@@ -133,27 +133,35 @@ new Vue({
 
     //
     async load() {
-      const [item, skill, abnormalState] = await Promise.all([
-        fetch('export/item.json').then(p => p.json()),
-        fetch('export/skill.json').then(p => p.json()),
-        fetch('export/abnormalstate.json').then(p => p.json())
-      ]);
-      this.item = item;
-      this.skill = skill;
-      this.abnormalState = abnormalState;
-      this.items = this.item.m_vList.filter(p => p.RSP.length);
-      this.items.sort((a, b) => a.CATEG - b.CATEG);
-      this.itemCategories = [... new Set(this.items.map(p => p.CATEG))].map(p => ({
-        label: Lookup.itemCategory[p],
-        value: p,
-      }));
-
-      this.composeLoading = false;
-      if (this.tryPickItemFromSearchParams()) {
-        return;
+      try {
+        const [item, skill, abnormalState] = await Promise.all([
+          fetch('export/item.json').then(p => p.json()),
+          fetch('export/skill.json').then(p => p.json()),
+          fetch('export/abnormalstate.json').then(p => p.json())
+        ]);
+        this.item = item;
+        this.skill = skill;
+        this.abnormalState = abnormalState;
+        this.items = this.item.m_vList.filter(p => p.RSP.length);
+        this.items.sort((a, b) => a.CATEG - b.CATEG);
+        this.itemCategories = [... new Set(this.items.map(p => p.CATEG))].map(p => ({
+          label: Lookup.itemCategory[p],
+          value: p,
+        }));
+  
+        this.composeLoading = false;
+        if (this.tryPickItemFromSearchParams()) {
+          return;
+        }
+  
+        this.onPickItem(this.items[0]);
+      } catch (e) {
+        this.$message.error({
+          message: e.toString(),
+          duration: 0,
+          showClose: true,
+        });
       }
-
-      this.onPickItem(this.items[0]);
     },
     tryPickItemFromSearchParams() {
       const searchParams = new URL(window.location).searchParams;
@@ -171,7 +179,7 @@ new Vue({
         if (materialOptionString) {
           const materialOptions = JSON.parse(atob(materialOptionString));
           this.onPickItem(item);
-          // make sure the param is correct
+          // make sure the param is in correct format
           for (const [i, materialOption] of this.materialOptions.entries()) {
             const thatOption = materialOptions[i] || materialOption;
             materialOption.quality = thatOption.quality || materialOption.quality;
