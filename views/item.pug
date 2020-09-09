@@ -101,7 +101,12 @@ html
         div.item-container(id="DF-" + _item.DF)
           div.item-container-left
             h3.item-name= _item.NAME
-            img.icon-full(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+            - if (_item.RSP.length)
+              a(href="composeItem.html?df=" + _item.DF target="_blank")
+                img.icon-full(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+            - else
+              img.icon-full(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+
             p= _item.DESC
             br
             p DF: #{_item.DF}
@@ -131,6 +136,18 @@ html
 
 
           div.item-container-right
+            - const _fieldItem = fieldItem.List.find(p => p.iItemId === _item.DF)
+            - if (_fieldItem)
+              h4 ---- 戦闘用 ----
+              p 目標: #{Option.FieldItemRangeLookUp[_fieldItem.eRange]}
+              p 効果: #{Option.fieldItemUseLookUp[_fieldItem.eUse]}
+              - for (const [i, stateId] of _fieldItem.eStateList.filter(p => p).entries())
+                - const _abnormalState = abnormalState.m_vList.find(p => p.id === stateId)
+                p= _abnormalState.name
+                p #{_abnormalState.turn} ターン
+                - if (_fieldItem.eStateList.length !== (i + 1))
+                  p &gt;
+
             - if (_item.RSP.length)
               h4 ----- 調合條件 -----
               - if (_item.ALT.LV)
@@ -145,6 +162,7 @@ html
                     td
                       a(href="#DF-" + rsp.DF)
                         img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF)
+                    td x#{rsp.NC}
 
 
             - const makeItem = itemsOrderByCategory.filter(p => p.RSP.some(j => j.DF === _item.DF))
@@ -160,8 +178,8 @@ html
               - for (const spc of _item.SPC)
                 h4 ----- スキル/効果 (品質 #{spc.THR}) -----
                 - for (const [i, spcSkill] of spc.SKILL.entries())
-                  - const s = skill.m_vList.find(s => s.id === spcSkill.DF);
-                  - if (!s)
+                  - const _skill = skill.m_vList.find(s => s.id === spcSkill.DF);
+                  - if (!_skill)
                     - if (spcSkill.DF)
                       p skill not found: DF=#{spcSkill.DF}
                     - else
@@ -170,13 +188,27 @@ html
                     table
                       tr
                         th 名前
-                        td= s.name
+                        td= _skill.name
                       tr
                         th 詳細
-                        td= s.detail
+                        td= _skill.detail
                       tr
                         th 数値
-                        td= `${s.effectValue}, ${s.effectValue2}`
+                        td= `${_skill.effectValue}, ${_skill.effectValue2}`
+                      - if (_skill.stateOwn.length)
+                        tr
+                          th 追加状態 (友)
+                          td
+                            - for (const _state of _skill.stateOwn)
+                              - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
+                              p #{_state.rate * 100}% #{_abnormalState.name} #{_state.rate}ターン
+                      - if (_skill.state.length)
+                        tr
+                          th 追加状態 (敵)
+                          td
+                            - for (const _state of _skill.state)
+                              - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
+                              p #{_state.rate * 100}% #{_abnormalState.name} #{_state.rate}ターン
                   - if (spc.SKILL.length !== (i + 1))
                     p &#x3E;
 

@@ -3,9 +3,11 @@ import { minify as _minify, Options } from 'html-minifier';
 import Enumerable from 'linq';
 import _ from 'lodash';
 import * as math from 'mathjs';
+import moment from 'moment';
 import path from 'path';
 import pug from 'pug';
 
+import { eChatTab } from './Enums';
 import { LogicHelper } from './LogicHelper';
 import { AbnormalState } from './master/abnormalState';
 import { AbnormalStateEffect } from './master/abnormalStateEffect';
@@ -13,15 +15,18 @@ import { AdventBattle } from './master/adventBattle';
 import { AreaDetail } from './master/areaDetail';
 import { AreaInfo } from './master/areaInfo';
 import { BlazeArt } from './master/blazeArt';
-import { Chara } from './master/chara';
+import { Chara, MVList as CharaMVList } from './master/chara';
+import { Chat } from './master/chat';
 import { Degree } from './master/degree';
 import { DungeonInfo } from './master/dungeonInfo';
-import { Enemy } from './master/enemy';
+import { Enemy, MVList as EnemyMVList } from './master/enemy';
+import { FieldItem } from './master/fieldItem';
 import { FieldName } from './master/fieldName';
 import { GateInfo } from './master/gateInfo';
 import { Item, MVList as ItemMVList } from './master/item';
 import { Quest } from './master/quest';
 import { Skill } from './master/skill';
+import { SpawnerData } from './master/SpawnerData';
 import { Tips } from './master/tips';
 import { TownInfo } from './master/townInfo';
 import { Treasure } from './master/treasure';
@@ -29,6 +34,7 @@ import { Wealth } from './master/wealth';
 import { Zone } from './master/zone';
 import { ZoneEffect } from './master/zoneEffect';
 import { Option } from './Option';
+
 
 function minify(html: string, options: Options) {
   if (process.env.NODE_ENV === 'production') {
@@ -49,7 +55,6 @@ export class PageBuilder {
       that.chara(),
       that.otherChara(),
       that.skill(),
-      that.effect(),
       that.abnormalEffect(),
       that.enemy(),
       that.degree(),
@@ -62,7 +67,7 @@ export class PageBuilder {
       that.calculate(),
       that.other(),
       that.memo(),
-      that.equipmentRank(),
+      that.totalRanking(),
     ]);
   }
 
@@ -190,8 +195,15 @@ export class PageBuilder {
         },
       },
       {
-        href: "equipmentRank.html",
-        title: "裝備ランク",
+        href: "composeItem.html",
+        title: "調合アイテム",
+        img: {
+          src: "img/icon/icon_bowl.png",
+        },
+      },
+      {
+        href: "totalRanking.html",
+        title: "値ランキング",
         img: {
           src: "img/other/Texture2D/item_texture_0025.png",
         },
@@ -212,7 +224,7 @@ export class PageBuilder {
       },
     ];
 
-    const pugOption = { _, pages };
+    const pugOption = { _, moment, pages };
     await fs.writeFile(
       path.join(Option.outFolder, 'index.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'index.pug'), pugOption), Option.minifyOption),
@@ -220,11 +232,13 @@ export class PageBuilder {
   }
 
   public async item() {
-    const [item, skill, chara] = await Promise.all([
+    const [item, skill, chara, fieldItem, abnormalState] = await Promise.all([
       Option.loadFileFromCache(Option.exportDataPaths.item),
       Option.loadFileFromCache(Option.exportDataPaths.skill),
       Option.loadFileFromCache(Option.exportDataPaths.chara),
-    ]) as [Item, Skill, Chara];
+      Option.loadFileFromCache(Option.exportDataPaths.fieldItem),
+      Option.loadFileFromCache(Option.exportDataPaths.abnormalstate),
+    ]) as [Item, Skill, Chara, FieldItem, AbnormalState];
 
     const itemIndex = Enumerable.from(item.m_vList)
       .groupBy(p => p.CATEG)
@@ -235,7 +249,7 @@ export class PageBuilder {
       }))
       .toArray();
     const itemsOrderByCategory = item.m_vList.sort((a, b) => a.CATEG - b.CATEG);
-    const pugOption = { Option, LogicHelper, itemIndex, itemsOrderByCategory, item, skill, chara };
+    const pugOption = { Option, LogicHelper, itemIndex, itemsOrderByCategory, item, skill, chara, fieldItem, abnormalState };
     await fs.writeFile(
       path.join(Option.outFolder, 'item.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'item.pug'), pugOption), Option.minifyOption),
@@ -273,46 +287,25 @@ export class PageBuilder {
   }
 
   public async skill() {
-    const [skill, item, enemy, chara, blazeArt, skillIcons] = await Promise.all([
+    const [skill, item, enemy, chara, blazeArt, abnormalState, skillIcons] = await Promise.all([
       Option.loadFileFromCache(Option.exportDataPaths.skill),
       Option.loadFileFromCache(Option.exportDataPaths.item),
       Option.loadFileFromCache(Option.exportDataPaths.enemy),
       Option.loadFileFromCache(Option.exportDataPaths.chara),
       Option.loadFileFromCache(Option.exportDataPaths.blazeArt),
+      Option.loadFileFromCache(Option.exportDataPaths.abnormalstate),
       fs.readdir(path.join(Option.outFolder, 'img', 'icon_skill', 'Texture2D')),
-    ]) as [Skill, Item, Enemy, Chara, BlazeArt, string[]];
+    ]) as [Skill, Item, Enemy, Chara, BlazeArt, AbnormalState, string[]];
 
     const itemsOrderByCategory = Enumerable.from(item.m_vList).orderBy(p => p.CATEG).toArray();
     const enemiesOrderByCategory = Enumerable.from(enemy.m_vList).orderBy(p => p.eKind).thenBy(p => p.iCategory).toArray();
     const charasOrderByCategory = Enumerable.from(chara.m_vList).orderBy(p => p.CATEG).toArray();
 
-    const pugOption = { Enumerable, skill, item, enemy, chara, blazeArt, itemsOrderByCategory, enemiesOrderByCategory, charasOrderByCategory,
+    const pugOption = { Enumerable, skill, item, enemy, chara, blazeArt, abnormalState, itemsOrderByCategory, enemiesOrderByCategory, charasOrderByCategory,
       skillIcons: skillIcons.map(p => path.basename(p)).filter(p => !p.includes('#')) };
     await fs.writeFile(
       path.join(Option.outFolder, 'skill.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'skill.pug'), pugOption), Option.minifyOption),
-    );
-  }
-
-  public async effect() {
-    const [skill, item, enemy, chara, blazeArt, skillIcons] = await Promise.all([
-      Option.loadFileFromCache(Option.exportDataPaths.skill),
-      Option.loadFileFromCache(Option.exportDataPaths.item),
-      Option.loadFileFromCache(Option.exportDataPaths.enemy),
-      Option.loadFileFromCache(Option.exportDataPaths.chara),
-      Option.loadFileFromCache(Option.exportDataPaths.blazeArt),
-      fs.readdir(path.join(Option.outFolder, 'img', 'icon_skill', 'Texture2D')),
-    ]) as [Skill, Item, Enemy, Chara, BlazeArt, string[]];
-
-    const itemsOrderByCategory = Enumerable.from(item.m_vList).orderBy(p => p.CATEG).toArray();
-    const enemiesOrderByCategory = Enumerable.from(enemy.m_vList).orderBy(p => p.eKind).thenBy(p => p.iCategory).toArray();
-    const charasOrderByCategory = Enumerable.from(chara.m_vList).orderBy(p => p.CATEG).toArray();
-
-    const pugOption = { Enumerable, skill, item, enemy, chara, blazeArt, itemsOrderByCategory, enemiesOrderByCategory, charasOrderByCategory,
-      skillIcons: skillIcons.map(p => path.basename(p)).filter(p => !p.includes('#')) };
-    await fs.writeFile(
-      path.join(Option.outFolder, 'effect.html'),
-      minify(pug.renderFile(path.join(Option.viewFolder, 'effect.pug'), pugOption), Option.minifyOption),
     );
   }
 
@@ -355,7 +348,7 @@ export class PageBuilder {
   }
 
   public async quest() {
-    const [quest, item, chara, enemy, wealth, areaInfo, fieldName] = await Promise.all([
+    const [quest, item, chara, enemy, wealth, areaInfo, fieldName, degree] = await Promise.all([
       Option.loadFileFromCache(Option.exportDataPaths.quest),
       Option.loadFileFromCache(Option.exportDataPaths.item),
       Option.loadFileFromCache(Option.exportDataPaths.chara),
@@ -363,9 +356,10 @@ export class PageBuilder {
       Option.loadFileFromCache(Option.exportDataPaths.wealth),
       Option.loadFileFromCache(Option.exportDataPaths.areaInfo),
       Option.loadFileFromCache(Option.exportDataPaths.fieldname),
-    ]) as [Quest, Item, Chara, Enemy, Wealth, AreaInfo, FieldName];
+      Option.loadFileFromCache(Option.exportDataPaths.degree),
+    ]) as [Quest, Item, Chara, Enemy, Wealth, AreaInfo, FieldName, Degree];
 
-    const pugOption = { Option, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName };
+    const pugOption = { Option, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName, degree };
     await fs.writeFile(
       path.join(Option.outFolder, 'quest.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'quest.pug'), pugOption), Option.minifyOption),
@@ -435,7 +429,7 @@ export class PageBuilder {
   }
 
   public async area() {
-    const [fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, gateInfo, item, enemy] = await Promise.all([
+    const [fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, gateInfo, item, enemy, spawnerData, townIcons] = await Promise.all([
       Option.loadFileFromCache(Option.exportDataPaths.fieldname),
       Option.loadFileFromCache(Option.exportDataPaths.areaDetail),
       Option.loadFileFromCache(Option.exportDataPaths.areaInfo),
@@ -444,10 +438,13 @@ export class PageBuilder {
       Option.loadFileFromCache(Option.exportDataPaths.gateinfo),
       Option.loadFileFromCache(Option.exportDataPaths.item),
       Option.loadFileFromCache(Option.exportDataPaths.enemy),
-    ]) as [FieldName, AreaDetail, AreaInfo, TownInfo, DungeonInfo, GateInfo, Item, Enemy];
-
-    const pugOption = { fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, gateInfo, item, enemy };
-  await fs.writeFile(
+      SpawnerData.loadFromCache(),
+      fs.readdir(path.join(Option.outFolder, 'img', 'Map_Town', 'Texture2D')),
+    ]) as [FieldName, AreaDetail, AreaInfo, TownInfo, DungeonInfo, GateInfo, Item, Enemy, { [k: string]: SpawnerData[] }, string[]];
+    const pugOption = { fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, gateInfo, item, enemy, spawnerData,
+      townIcons: townIcons.map(p => path.basename(p))
+      .filter(p => !p.includes('#') && !p.endsWith('_02.png')) };
+    await fs.writeFile(
       path.join(Option.outFolder, 'area.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'area.pug'), pugOption), Option.minifyOption),
     );
@@ -476,15 +473,16 @@ export class PageBuilder {
   }
 
   public async other() {
-    const [tips, treasure, chara, adventBattle, enemy] = await Promise.all([
+    const [tips, treasure, chara, adventBattle, enemy, chat] = await Promise.all([
       Option.loadFileFromCache(Option.exportDataPaths.tips),
       Option.loadFileFromCache(Option.exportDataPaths.treasure),
       Option.loadFileFromCache(Option.exportDataPaths.chara),
       Option.loadFileFromCache(Option.exportDataPaths.adventbattle),
       Option.loadFileFromCache(Option.exportDataPaths.enemy),
-    ]) as [Tips, Treasure, Chara, AdventBattle, Enemy];
+      Option.loadFileFromCache(Option.exportDataPaths.chat),
+    ]) as [Tips, Treasure, Chara, AdventBattle, Enemy, Chat];
 
-    const pugOption = { tips, treasure, chara, adventBattle, enemy };
+    const pugOption = { eChatTab, tips, treasure, chara, adventBattle, enemy, chat };
     await fs.writeFile(
       path.join(Option.outFolder, 'other.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'other.pug'), pugOption), Option.minifyOption),
@@ -499,42 +497,113 @@ export class PageBuilder {
     );
   }
 
-  public async equipmentRank() {
-    const [item, chara] = await Promise.all([
+  public async totalRanking() {
+    const [item, chara, enemy] = await Promise.all([
       Option.loadFileFromCache(Option.exportDataPaths.item),
       Option.loadFileFromCache(Option.exportDataPaths.chara),
-    ]) as [Item, Chara];
+      Option.loadFileFromCache(Option.exportDataPaths.enemy),
+    ]) as [Item, Chara, Enemy];
 
     const lv = 80;
     const equipments = item.m_vList.filter(p => p.EQU_BRD);
+    const battleCharacters = chara.m_vList.filter(p => p.SKILL.length);
 
-    const byState = {} as { [s: string]: ItemMVList[] };
-    const states = ['SATK', 'SDEF', 'MATK', 'MDEF', 'SPD'];
-    for (const state of states) {
-      byState[state] = Enumerable.from(equipments)
+    // process order
+    // equipment state
+    const byItemState = {} as { [s: string]: ItemMVList[] };
+    const itemStates = ['SATK', 'SDEF', 'MATK', 'MDEF', 'SPD'];
+    for (const state of itemStates) {
+      byItemState[state] = Enumerable.from(equipments)
       .orderByDescending(p => LogicHelper.calculateState(p.EQU[state], lv))
       .take(100)
       .toArray();
     }
-    byState.total = Enumerable.from(equipments)
-    .orderByDescending(p => states.map(i => LogicHelper.calculateState(p.EQU[i], lv)).reduce((a, b) => a + b, 0))
+    byItemState.total = Enumerable.from(equipments)
+    .orderByDescending(p => itemStates.map(i => LogicHelper.calculateState(p.EQU[i], lv)).reduce((a, b) => a + b, 0))
     .take(100)
     .toArray();
-    states.unshift('total');
+    itemStates.unshift('total');
 
-    const byElement = {} as { [s: string]: ItemMVList[] };
+    // equipment element
+    const byItemElement = {} as { [s: string]: ItemMVList[] };
     for (const element of Object.keys(Option.elementLookUp)) {
-      byElement[element] = Enumerable.from(equipments)
+      byItemElement[element] = Enumerable.from(equipments)
       .orderByDescending(p => p.ELM[element])
-      .thenByDescending(p => states.map(i => p.EQU[i] ? LogicHelper.calculateState(p.EQU[i], lv) : 0).reduce((a, b) => a + b, 0))
       .take(100)
       .toArray();
     }
+    byItemElement.total = Enumerable.from(equipments)
+    .orderByDescending(p => 
+      Object.keys(Option.elementLookUp)
+        .map(i => p.ELM[i])
+        .reduce((a, b) => a + b, 0)
+    )
+    .take(100)
+    .toArray();
 
-    const pugOption = { Option, LogicHelper, chara, byState, byElement, states };
+    // character
+    const characterStates = ['HP', 'SATK', 'SDEF', 'MATK', 'MDEF', 'SPD'];
+    const byCharacter = {} as { [s: string]: CharaMVList[] };
+    for (const state of characterStates) {
+      byCharacter[state] = Enumerable.from(battleCharacters)
+      .orderByDescending(p =>
+        LogicHelper.calculateState(p.SPEC[state], lv) + (p.FDM[p.FDM.length - 1][state] ? p.FDM[p.FDM.length - 1][state] : 0)
+      )
+      .take(100)
+      .toArray();
+    }
+    byCharacter.total = Enumerable.from(battleCharacters)
+    .orderByDescending(p => 
+      characterStates
+      .map(i => LogicHelper.calculateState(p.SPEC[i], lv) + (p.FDM[p.FDM.length - 1][i] ? p.FDM[p.FDM.length - 1][i] : 0))
+      .reduce((a, b) => a + b, 0)
+    )
+    .take(100)
+    .toArray();
+    characterStates.unshift('total');
+
+    // enemy
+    const enemyLv = 120;
+    const enemyStates = ['EXP', 'HP', 'SATK', 'SDEF', 'MATK', 'MDEF', 'SPD'];
+    const byEnemyState = {} as { [s: string]: EnemyMVList[] };
+    const byEnemyElement = {} as { [s: string]: EnemyMVList[] };
+
+    for (const state of enemyStates) {
+      byEnemyState[state] = Enumerable.from(enemy.m_vList)
+      .orderByDescending(p => LogicHelper.calculateState(p.sParam.SPEC[state], enemyLv))
+      .take(100)
+      .toArray();
+    }
+    byEnemyState.total = Enumerable.from(enemy.m_vList)
+    .orderByDescending(p => 
+      enemyStates
+      .map(i => LogicHelper.calculateState(p.sParam.SPEC[i], enemyLv))
+      .reduce((a, b) => a + b, 0)
+    )
+    .take(100)
+    .toArray();
+    enemyStates.unshift('total');
+
+    for (const element of Object.keys(Option.elementLookUp)) {
+      byEnemyElement[element] = Enumerable.from(enemy.m_vList)
+      .orderByDescending(p => LogicHelper.calculateState(p.sParam.ELM[element], enemyLv))
+      .take(100)
+      .toArray();
+    }
+    byEnemyElement.total = Enumerable.from(enemy.m_vList)
+    .orderByDescending(p => 
+      Object.keys(Option.elementLookUp)
+      .map(i => LogicHelper.calculateState(p.sParam.ELM[i], enemyLv))
+      .reduce((a, b) => a + b, 0)
+    )
+    .take(100)
+    .toArray();
+
+    // start render
+    const pugOption = { Option, LogicHelper, chara, byItemState, byItemElement, byCharacter, byEnemyState, byEnemyElement, itemStates, characterStates, enemyStates };
     await fs.writeFile(
-      path.join(Option.outFolder, 'equipmentRank.html'),
-      minify(pug.renderFile(path.join(Option.viewFolder, 'equipmentRank.pug'), pugOption), Option.minifyOption),
+      path.join(Option.outFolder, 'totalRanking.html'),
+      minify(pug.renderFile(path.join(Option.viewFolder, 'totalRanking.pug'), pugOption), Option.minifyOption),
     );
   }
 

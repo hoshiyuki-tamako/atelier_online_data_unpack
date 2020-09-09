@@ -14,42 +14,39 @@ html
       item.GROUP_DF // character special weapon, map to chara.GROUP_DF
       item.GEN // weapon type lookup for character
 
-      *.MDL // MDL = model
+      *.MDL // MDL = model ID
+
+      item.MDL // model file ID
 
       // unknown
       chara.BTST
       chara.EXC
-    hr
 
-    h3 look up tables
-    h4 ---- item.CATEG ----
-    - for (const [k, v] of Object.entries(Option.itemCategoryLookUp))
-      p #{k} = #{v}
+      // spawnlist
+      id/DF,type
 
-    h4 ---- item.ELM.* ----
-    - for (const [k, v] of Object.entries(Option.elementLookUp))
-      p #{k} = #{v}
+      type; // 3 = enemy
 
-    h4 ---- chara.SPEC.* ----
-    - for (const [k, v] of Object.entries(Option.stateLookUp))
-      p #{k} = #{v}
 
-    h4 ---- quest.CATEG ----
-    - for (const [k, v] of Object.entries(Option.questCategoryLookUp))
-      p #{k} = #{v}
+      skill.attribute, EBattleAttribute
+      skill.type, EBattleType
+      skill.trigger, EBattleEffectTrigger
+      skill.effect, EBattleEffectKind
+      skill.effectTarget, EBattleEffectTarget
+      skill.targetScope, EBattleTargetAreaDefine
+      skill.state[], SkillState // when skill use, target will may have this 
 
-    h4 ---- skill.effect ----
-    - for (const [k, v] of Object.entries(Option.skillEffectLookUp))
-      p #{k} = #{v}
+      chara.json = class MasterChara
 
-    h4 ---- item.WPN_KIND ----
-    - for (const [k, v] of Object.entries(Option.weaponKindLookUp))
-      p #{k} = #{v}
+      品質20 = 81
+      品質22 = 81 + 81 * 1 + 25
+      品質23 = 81 + 81 * 2 + 1
+      品質25 = 81 + 81 * 3 + 79
+      品質26 = 81 + 81 * 4 + 108
+      品質27 = 81 + 81 * 6 + 80
+      品質28 = 81 + 81 * 7 + 162
+      品質29 = 81 + 81 * 9 + 198
 
-    h4 ---- chara.WEAPON[].GEN ----
-    - for (const [k, v] of Object.entries(Option.weaponGenLookUp))
-      p #{k} = #{v}
-
-    h4 ---- skill.effectTarget ----
-    - for (const [k, v] of Object.entries(Option.skillEffectTargetLookUp))
-      p #{k} = #{v}
+      EXP LV 1 = 1
+      EXP LV 74 = 29532
+      EXP LV 75 = 30661

@@ -7,12 +7,16 @@ export class Option {
   // data name map
   // item look up
   public static itemCategoryLookUp = {
+    0: 'none',
     11: '材料',
     12: '攻撃＆探索',
     13: '攻撃',
     14: '能力上昇',
     15: '探索',
     16: '料理',
+
+    // 17: 'Unique'
+
     20: '武器',
     21: '盾',
     31: '頭裝備',
@@ -25,6 +29,18 @@ export class Option {
     54: '限界突破',
     55: '万能強化',
     56: 'ブレイズアーツ経験値',
+  };
+
+  public static fieldItemUseLookUp = {
+    0: 'none',
+    1: 'HP回復',
+    2: '回復',
+  };
+
+  public static FieldItemRangeLookUp = {
+    0: 'none',
+    1: '1人',
+    2: '全人',
   };
 
   public static weaponKindLookUp = {
@@ -77,14 +93,15 @@ export class Option {
 
   // quest look up
   public static questCategoryLookUp = {
+    0: 'none',
     1: 'メーン',
     2: 'サイド',
     3: '依頼',
     4: '公認試験',
     5: 'キャラ',
-    6: 'イベント',
-    7: 'イベント',
-    8: 'イベント',
+    6: 'イベント Special',
+    7: 'イベント Normal',
+    8: 'イベント Extra',
   };
 
   // skill look up
@@ -93,18 +110,41 @@ export class Option {
     139: 'Zone Effect',
   };
 
-  public static skillEffectTargetLookUp = {
-    2: '魔防強化',
-    3: '魔攻強化',
 
+  public static skillEffectTargetLookUp = {
+    0: 'none',
+    1: 'HP',
+    2: '物攻強化',
+    3: '魔攻強化',
+    4: '物防強化',
+    5: '魔防強化',
     6: '素早さ',
+    7: '命中率',
+
     8: '回避',
     9: 'クリティカル',
+    10: 'SKILL',
+
 
     21: '火属性値増加',
     22: '水属性値増加',
     23: '土属性値増加',
     24: '風属性値増加',
+    25: '光属性値増加',
+    26: '闇属性値増加',
+    27: '火、土、風、水、光、闇の属性'
+  };
+
+  // enemy look up
+  public static enemySizeLookUp = {
+    0: 'Small',
+    1: 'Medium',
+    2: 'Large',
+  };
+
+  public static enemyEAttackTargetKindLookUp = {
+    0: 'Single',
+    1: 'All',
   };
 
   // settings
@@ -154,6 +194,8 @@ export class Option {
     treasure: path.join(__dirname, '..', 'docs', 'export', 'treasure.json'),
     gateinfo: path.join(__dirname, '..', 'docs', 'export', 'gateinfo.json'),
     adventbattle: path.join(__dirname, '..', 'docs', 'export', 'adventbattle.json'),
+    fieldItem: path.join(__dirname, '..', 'docs', 'export', 'fieldItem.json'),
+    chat: path.join(__dirname, '..', 'docs', 'export', 'chat.json'),
   };
 
   public static fileCache = {} as { [s: string]: unknown };

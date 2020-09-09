@@ -6,6 +6,14 @@
 
 All files in `./docs/img` `./docs/models` `./docs/export` are NOT license in MIT as those were not belongs to me
 
+### Below files were not auto generated
+
+- `./docs/3d.html`
+- `./docs/characterBuilder.html`
+- `./docs/composeItem.html`
+- `./docs/effect.html`
+- `./docs/skill.html`
+
 ## Running The Script
 
 ### Required

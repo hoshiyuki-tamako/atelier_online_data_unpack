@@ -14,7 +14,7 @@ html
       }
       .example-cell {
         text-align: left;
-        width: 30%;
+        width: 20%;
       }
   body
     div
@@ -25,17 +25,29 @@ html
             th 名前
             th 詳細
             th 数値
-            th レア度
+            th 効果 (友)
+            th 効果 (敵)
             th 画像
             th アイテム/人物/敵
         tbody
           - for (const s of skill.m_vList.filter(p => p.type === 1))
             tr
-              td= s.id
+              td.nowrap-cell= s.id
               td= s.name
               td= s.detail
-              td= `${s.effectValue}, ${s.effectValue2}`
-              td= new Array(s.rarity).fill('⭐').join('')
+              td.nowrap-cell= `${s.effectValue}, ${s.effectValue2}`
+              td
+                - for (const [i, _state] of s.stateOwn.entries())
+                  - const effect = abnormalState.m_vList.find(p => p.id === _state.id)
+                  p #{_state.rate * 100}% #{effect.name}
+                  - if (s.stateOwn.length !== (i + 1))
+                    p &#x3E;
+              td
+                - for (const [i, _state] of s.state.entries())
+                  - const effect = abnormalState.m_vList.find(p => p.id === _state.id)
+                  p #{_state.rate * 100}% #{effect.name}
+                  - if (s.state.length !== (i + 1))
+                    p &#x3E;
               td
                 - if (s.iconPath)
                   img.icon-small(src="img/icon_skill/Texture2D/" + `${s.iconPath}.png` alt= s.name)

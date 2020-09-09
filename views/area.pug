@@ -27,6 +27,9 @@ html
       .area-items-container img, .area-enemies-container img {
         width: 60px;
       }
+      .area-towns-container img {
+        width: 240px;
+      }
   style.
   body
     h2 区域
@@ -67,7 +70,17 @@ html
               div.area-enemies-container
                 - for (const id of _areaDetail.iEnemyIDList)
                   - const _enemy = enemy.m_vList.find(i => i.DF === id)
-                    a(href="enemy.html#DF-" + id target="_blank")
+                    a(href="enemy.html#DF-" + _enemy.DF target="_blank")
+                      img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+
+            - const filteredNormalSpawnerData = Object.keys(spawnerData).filter(p => !p.includes('Dun') && p.includes(`SpawnList_${_areaDetail.iAreaID.toString().padStart(2, '0')}_`)).map(p => spawnerData[p]).flat().filter(p => p.spawnerKind === 3);
+            - if (filteredNormalSpawnerData.length)
+              h4 ---- 他の敵 ----
+              div.area-enemies-container
+                - for (const spawn of filteredNormalSpawnerData)
+                  - const _enemy = enemy.m_vList.find(i => i.DF === spawn.DF)
+                  - if (_enemy)
+                    a(href="enemy.html#DF-" + _enemy.DF target="_blank")
                       img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
 
             - const dungeonInfos = dungeonInfo.List.filter(p => p.iAreaId === _areaDetail.iAreaID)
@@ -87,6 +100,16 @@ html
                     a(href="#iAreaID-" + _dungeonInfo.iReturnArea) #{returnFieldName ? returnFieldName.strAreaName : '-'}
                   - if (dungeonInfos.length !== (i + 1))
                     p &#x3E;
+              
+              - const dungeonSpawnerData = Object.keys(spawnerData).filter(p => p.includes('Dun') && p.includes(`SpawnList_${_areaDetail.iAreaID}`)).map(p => spawnerData[p]).flat().filter(p => p.spawnerKind === 3);
+              -  if (dungeonSpawnerData.length)
+                h4 ---- 敵 ----
+                div.area-enemies-container
+                  - for (const spawn of dungeonSpawnerData)
+                    - const _enemy = enemy.m_vList.find(i => i.DF === spawn.DF)
+                    - if (_enemy)
+                      a(href="enemy.html#DF-" + _enemy.DF target="_blank")
+                        img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
 
             - const townInfos = townInfo.List.filter(p => p.iAreaId === _areaDetail.iAreaID)
             - if (townInfos.length)
@@ -96,8 +119,9 @@ html
                   - const _fieldName = fieldName.List.find(p => p.iAreaNameId === _townInfo.iAreaNameId);
                   - if (_fieldName)
                     p #{_fieldName.strAreaName} #{_fieldName.strAreaNameSub.trim() ? `/ ${_fieldName.strAreaNameSub}` : ''}
-                  - else
-                    p -
+                    p
+                      - for (const townIcon of townIcons.filter(p => p.startsWith(`Map_Town_${_townInfo.iTownId.toString().padStart(2, "0")}`)))
+                        img(src="img/map_town/Texture2D/" + townIcon alt='')
 
             - const gateInfos = gateInfo.List.filter(p => p.iArea === _areaDetail.iAreaID)
             - if (gateInfos.length)

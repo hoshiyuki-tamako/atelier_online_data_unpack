@@ -46,7 +46,6 @@ html
           span.input-span= '= '
           input(id="status-result" value="0")
     hr
-
     div
       h3 サブ裝備
       div
@@ -54,9 +53,14 @@ html
         h4 計算
           div.calculate-container
             label
-              input(id="sub-status-v" placeholder="R" type="number" min="0" value="60")
+              input(id="sub-status-v" placeholder="R" type="number" min="0" value="51")
               span.input-span &nbsp;V
             br
             label
               span.input-span= '= '
               input(id="sub-status-result" value="0")
+    hr
+    div
+      h3 調合品質
+      div
+        p clamp(floor(sum(品質) / count) + sum(品質特性), 1, max)

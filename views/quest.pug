@@ -145,7 +145,8 @@ html
                   - else
                     p -
                 - else
-                  a.quest-reward-item-container(href="item.html#DF-" + _item.DF target="_blank")
+                  - const href = _item.RSP.length ? `composeItem.html?df=${_item.DF}&quality=${dlv.QTY}` : `item.html#DF-${_item.DF}`
+                  a.quest-reward-item-container(href= href target="_blank")
                     p 品質#{dlv.QTY} / #{dlv.BDR}個
                     img(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
@@ -176,13 +177,8 @@ html
                   span= _quest.RNK_PT
 
             - if (_quest.UNLOCK.length)
-              h4 ----- 解放 -----
-              table
-                tr
-                  th DF
-                  th STEP
-                - for (const unlock of _quest.UNLOCK)
-                  tr
-                    td #{unlock.DF}
-                    td #{unlock.STP}
+              h4 ----- 解放称号-----
+              - for (const unlock of _quest.UNLOCK)
+                - const _degree = degree.List.find(p => p.DF === unlock.DF)
+                p ステップ #{unlock.STP} - #{_degree.NAME}
         hr

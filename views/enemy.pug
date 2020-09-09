@@ -104,9 +104,10 @@ html
             p DF: #{_enemy.DF}
             p 短い名前: #{_enemy.AnotherName}
             p 種族: #{enemy.KindList.find(i => i.iKind === _enemy.eKind).strName}
+            p 攻撃目標: #{Option.enemyEAttackTargetKindLookUp[_enemy.eAttackTargetKind]}
             p ボス: #{_enemy.bBoss ? "✓" : "x"}
             p オンラインオーンリー: #{_enemy.bOnlyOnline ? "✓" : "x"}
-            p 大きさ: #{_enemy.eSize}
+            p 大きさ: #{Option.enemySizeLookUp[_enemy.eSize] || _enemy.eSize}
             p 視角: #{Math.round(math.acos(_enemy.fViewCos)* (180/Math.PI), 2)}°
             p 移動速度: #{_enemy.fMoveSpeed}
             p 打撃範囲: #{_enemy.fHitRadius}

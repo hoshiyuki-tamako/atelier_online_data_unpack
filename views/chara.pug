@@ -115,8 +115,8 @@ html
             - for (const [lv, skills] of Enumerable.from(_chara.SKILL).groupBy(p => p.LV).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
               h4 --- LV #{lv} ---
               - for (const [i, _s] of skills.entries())
-                - const s = skill.m_vList.find(s => s.id === _s.DF)
-                - if (!s)
+                - const _skill = skill.m_vList.find(s => s.id === _s.DF)
+                - if (!_skill)
                   - if (_s.DF)
                     p skill not found: DF=#{_s.DF}
                   - else
@@ -125,13 +125,13 @@ html
                   table
                     tr
                       th 名前
-                      td= s.name
+                      td= _skill.name
                     tr
                       th 詳細
-                      td= s.detail
+                      td= _skill.detail
                     tr
                       th 数値
-                      td= `${s.effectValue}, ${s.effectValue2}`
+                      td= `${_skill.effectValue}, ${_skill.effectValue2}`
                 - if (skills.length !== (i + 1))
                   p &#x3E;
 

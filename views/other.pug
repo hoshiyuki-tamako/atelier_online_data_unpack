@@ -40,6 +40,11 @@ html
         margin: 4px;
       }
 
+
+      #tips img {
+        width: 120px;
+      }
+
       .treasure-text-table tr td {
         border-bottom: 1px solid black;
       }
@@ -51,9 +56,11 @@ html
       div
         a(href="#advent-battle") 降臨バタル
       div
-        a(href="#loading-tips") Loading Tips
+        a(href="#tips") Tips
       div
         a(href="#treasure-text") 宝文字
+      div
+        a(href="#chat") チャット
     br
     br
     br
@@ -81,7 +88,9 @@ html
                     td= score.score
           hr
 
-    div.container#loading-tips
+
+    div.container#tips
+      img(src="img/Tips/Texture2D/Tips_Chara_01.png")
       h3 Loading Tips
       - for (const tip of tips.LOADING_LIST)
         p= tip.sTitle
@@ -92,9 +101,8 @@ html
         p= tip.sTitle
         p= tip.sContent
         p &#x3E;
+
     hr
-
-
     div.container#treasure-text
       h3 宝文字
       table.treasure-text-table
@@ -108,3 +116,16 @@ html
             td
               - for (const content of _treasure.vContent)
                 p= content
+
+    hr
+    div.container#chat
+      h3 チャット
+      img(src="img/icon/Texture2D/icon_stamp.png" alt="stamp")
+      table
+        - for (const _chat of chat.List)
+          tr
+            td= eChatTab[_chat.eTab]
+            - if (_chat.eTab === eChatTab.Stamp)
+              td= _chat.iStampId
+            - else 
+              td= _chat.strMessage

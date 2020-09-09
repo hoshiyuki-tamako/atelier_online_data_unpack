@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>調合アイテム</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/composeItem.css">
+  <link rel="stylesheet" href="css/wealth.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js" integrity="sha256-ur/YlHMU96MxHEsy3fHGszZHas7NzH4RQlD4tDVvFhw=" crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="//unpkg.com/element-ui/lib/umd/locale/en.js"></script>
+
+  <script src="https://unpkg.com/v-tooltip"></script>
+</head>
+
+<body>
+  <div id="app">
+
+    <el-dialog title="" :visible.sync="pickItemDialogVisible" fullscreen>
+      <div class="item-picker-container">
+        <el-select v-model="itemPickerFilterCategory" style="width: 140px" placeholder="種類" size="small" filterable>
+          <el-option v-for="itemCategory in itemCategories" :key="itemCategory.value" :label="itemCategory.label" :value="itemCategory.value"></el-option>
+        </el-select>
+        <el-input v-model="itemPickerFilterKeyword" placeholder="Name / DF"></el-input>
+        <div class="item-picker-items">
+          <div @click="onPickItem(item)" v-for="item in getFilteredItemPickerItems()" :key="item.DF">
+            <p>{{ item.NAME }}</p>
+            <img :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'" style="width: 60px">
+          </div>
+        </div>
+      </div>
+    </el-dialog>
+
+    <div class="compose-container">
+      <div class="compose-material-container">
+
+        <div class="compose-material-top">
+          <div v-for="(material, i) of materials" :key="i" class="compose-material">
+            <v-popover placement="right-end" trigger="hover">
+              <div>
+                <el-input-number v-model="materialOptions[i].quality" style="width: 140px" :min="1" :max="100" placeholder="品質" size="small"></el-input-number>
+              </div>
+              <div>
+                <el-select v-model="materialOptions[i].addOnQuality" style="width: 140px" placeholder="品質特性" size="small" filterable>
+                  <el-option v-for="v in [...new Array(16).keys()]" :key="v" :label="`品質特性 ${v}`" :value="v"></el-option>
+                </el-select>
+              </div>
+              <div>
+                <img :src="`img/icon_s/Texture2D/icon_item_s_${material.DF}.png`" alt="">
+              </div>
+              <template slot="popover">
+                <div class="item-popover">
+                  <p>{{ material.NAME }}</p>
+                  <p>{{ material.DESC }}</p>
+                  <el-link v-if="material.RSP.length" type="primary" :href="'composeItem.html?df=' + material.DF" target="_blank">調合</el-link>
+                </div>
+              </template>
+            </v-popover>
+          </div>
+
+
+        </div>
+       
+        <div @click="onPickItemOpen" class="compose-item">
+          <div class="compose-requirement">
+            <p v-if="getPickedItem().ALT && getPickedItem().ALT.CST">錬金 LV {{ getPickedItem().ALT.LV }}</p>
+            <p>
+              <span v-if="getPickedItem().ALT && getPickedItem().ALT.CST" class="wealth-container">
+                <img src="img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル"/>
+                <span>{{ getPickedItem().ALT.CST }}</span>
+              </span>
+            </p>
+          </div>
+
+
+          <div class="compose-item-image">
+            <img :src="getPickedItemUrl()" :alt="getPickedItem().NAME">
+          </div>
+        </div>
+      </div>
+
+      <div class="compose-result">
+        <h3>品質 {{ getQuality() }}</h3>
+        <h4>{{ getPickedItem().NAME }}</h4>
+        <div class="compose-result-image-container">
+          <img class="compose-result-image" @click="onPickItemOpen" :src="getPickedItemUrl()" :alt="getPickedItem().NAME">
+        </div>
+        <div class="compose-result-skill" v-for="_skill in getPickedItemSkills()" :key="_skill.id">
+          <table>
+            <tr>
+              <th>名前</th>
+              <td>{{ _skill.name }}</td>
+            </tr>
+            <tr>
+              <th>詳細</th>
+              <td>{{ _skill.detail }}</td>
+            </tr>
+            <tr>
+              <th>数値</th>
+              <td>{{ `${_skill.effectValue}, ${_skill.effectValue2}` }}</td>
+            </tr>
+            <tr v-if="_skill.stateOwn.length">
+              <th>追加状態 (友)</th>
+              <td>
+                <p v-for="state in _skill.stateOwn" :key="state.id">
+                  {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }}, {{state.rate}}ターン
+                </p>
+              </td>
+            </tr>
+            <tr v-if="_skill.state.length">
+              <th>追加状態 (敵)</th>
+              <td>
+                <p v-for="state in _skill.state" :key="state.id">
+                  {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }}, {{state.rate}}ターン
+                </p>
+              </td>
+            </tr>
+          </table>
+          <p>&gt;</p>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+  <script src="js/composeItem.js"></script>
+</body>
+
+</html>
