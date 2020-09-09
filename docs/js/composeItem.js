@@ -43,6 +43,8 @@ new Vue({
     itemCategories: [],
 
     // state
+    composeLoading: true,
+
     pickItemDialogVisible: false,
     itemPickerFilterCategory: null,
     itemPickerFilterKeyword: '',
@@ -134,6 +136,7 @@ new Vue({
         value: p,
       }));
 
+      this.composeLoading = false;
       if (this.tryPickItemFromSearchParams()) {
         return;
       }
