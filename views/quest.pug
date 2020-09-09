@@ -177,7 +177,7 @@ html
                   span= _quest.RNK_PT
 
             - if (_quest.UNLOCK.length)
-              h4 ----- 解放称号-----
+              h4 -----必須称号 -----
               - for (const unlock of _quest.UNLOCK)
                 - const _degree = degree.List.find(p => p.DF === unlock.DF)
                 p ステップ #{unlock.STP} - #{_degree.NAME}
