@@ -120,7 +120,7 @@ new Vue({
       const [item, skill, abnormalState] = await Promise.all([
         fetch('export/item.json').then(p => p.json()),
         fetch('export/skill.json').then(p => p.json()),
-        fetch('export/abnormalState.json').then(p => p.json()),
+        fetch('export/abnormalstate.json').then(p => p.json())
       ]);
       this.item = item;
       this.skill = skill;
