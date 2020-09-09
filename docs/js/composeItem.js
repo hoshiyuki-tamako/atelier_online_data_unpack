@@ -54,8 +54,8 @@ new Vue({
   methods: {
     // dialog
     onPickItem(item, quality = 10, addOnQuality = 0) {
-      quality = _.clamp(quality, 1, 100);
-      addOnQuality = _.clamp(addOnQuality, 0, 15);
+      quality = _.clamp(quality || 10, 1, 100);
+      addOnQuality = _.clamp(addOnQuality || 0, 0, 15);
 
       this.compose = item;
       const items = item.RSP.map(p => {
@@ -99,7 +99,9 @@ new Vue({
         return [];
       }
       filteredSkills.sort((a, b) => a.THR - b.THR);
-      return filteredSkills[filteredSkills.length - 1].SKILL.map(p => this.skill.m_vList.find(i => i.id === p.DF));
+      return filteredSkills[filteredSkills.length - 1].SKILL
+      .map(p => this.skill.m_vList.find(i => i.id === p.DF))
+      .filter(p => p);
     },
     getQuality() {
       if (!this.materialOptions.length) {
@@ -141,7 +143,7 @@ new Vue({
     tryPickItemFromSearchParams() {
       const searchParams = new URL(window.location).searchParams;
       const df = +searchParams.get('df');
-      const quality = +searchParams.get('quality') || 1;
+      const quality = +searchParams.get('quality');
       if (!df) {
         return false;
       }
