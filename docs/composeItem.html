@@ -55,7 +55,7 @@
                 <el-input-number v-model="materialOptions[i].quality" style="width: 140px" :min="1" :max="100" placeholder="品質" size="small"></el-input-number>
               </div>
               <div>
-                <el-select v-model="materialOptions[i].addOnQuality" style="width: 140px" placeholder="品質特性" size="small" filterable>
+                <el-select v-model="materialOptions[i].addonQuality" style="width: 140px" placeholder="品質特性" size="small" filterable>
                   <el-option v-for="v in [...new Array(16).keys()]" :key="v" :label="`品質特性 ${v}`" :value="v"></el-option>
                 </el-select>
               </div>
