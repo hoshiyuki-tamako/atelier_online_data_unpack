@@ -128,7 +128,7 @@
               <td>{{ `${_skill.effectValue}, ${_skill.effectValue2}` }}</td>
             </tr>
             <tr v-if="_skill.stateOwn.length">
-              <th>追加状態 (友)</th>
+              <th>追加状態 (自)</th>
               <td>
                 <p v-for="state in _skill.stateOwn" :key="state.id">
                   {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }}, {{state.rate}}ターン
@@ -136,7 +136,7 @@
               </td>
             </tr>
             <tr v-if="_skill.state.length">
-              <th>追加状態 (敵)</th>
+              <th>追加状態</th>
               <td>
                 <p v-for="state in _skill.state" :key="state.id">
                   {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }}, {{state.rate}}ターン

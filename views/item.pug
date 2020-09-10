@@ -197,14 +197,14 @@ html
                         td= `${_skill.effectValue}, ${_skill.effectValue2}`
                       - if (_skill.stateOwn.length)
                         tr
-                          th 追加状態 (友)
+                          th 追加状態 (自)
                           td
                             - for (const _state of _skill.stateOwn)
                               - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
                               p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_state.rate}ターン
                       - if (_skill.state.length)
                         tr
-                          th 追加状態 (敵)
+                          th 追加状態
                           td
                             - for (const _state of _skill.state)
                               - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
