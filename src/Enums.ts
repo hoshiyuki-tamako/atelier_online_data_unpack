@@ -53,14 +53,14 @@ export enum EBattleEffectTarget {
   eEL_ALL,
 }
 
-enum EBattleAttribute {
+export enum EBattleAttribute {
   eNONE,
   eSLASH_DAMAGED,
   eBLOW_DAMAGED,
   eMAGIC_DAMAGED
 }
 
-enum EBattleType {
+export enum EBattleType {
   eNONE,
   eACTIVESKILL,
   ePASSIVESKILL

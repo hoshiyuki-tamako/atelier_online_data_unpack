@@ -137,6 +137,15 @@ export class Lookup {
     DARK: [26, 27],
   };
 
+  public static stateMapSkillEffectTarget = {
+    HP: 1,
+    SATK: 2,
+    SDEF: 4,
+    MATK: 3,
+    MDEF: 5,
+    SPD: 6,
+  };
+
   // enemy look up
   public static enemySize = {
     0: 'Small',

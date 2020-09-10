@@ -2,7 +2,6 @@ import fs from 'fs-extra';
 import { minify as _minify, Options } from 'html-minifier';
 import Enumerable from 'linq';
 import _ from 'lodash';
-import * as math from 'mathjs';
 import moment from 'moment';
 import path from 'path';
 import pug from 'pug';
@@ -343,7 +342,7 @@ export class PageBuilder {
       return [... new Set(areaIds)];
     };
 
-    const pugOption = { Lookup, LogicHelper, Enumerable, math, enemy, skill, spawnerData, getAreaIds, areaInfo, fieldName, areaDetail };
+    const pugOption = { Lookup, LogicHelper, Enumerable, enemy, skill, spawnerData, getAreaIds, areaInfo, fieldName, areaDetail };
     await fs.writeFile(
       path.join(Option.outFolder, 'enemy.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'enemy.pug'), pugOption), Option.minifyOption),

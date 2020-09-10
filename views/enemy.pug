@@ -108,7 +108,7 @@ html
             p ボス: #{_enemy.bBoss ? "✓" : "x"}
             p オンラインオーンリー: #{_enemy.bOnlyOnline ? "✓" : "x"}
             p 大きさ: #{Lookup.enemySize[_enemy.eSize] || _enemy.eSize}
-            p 視角: #{Math.round(math.acos(_enemy.fViewCos)* (180/Math.PI), 2)}°
+            p 視角: #{Math.round(Math.acos(_enemy.fViewCos)* (180/Math.PI), 2)}°
             p 移動速度: #{_enemy.fMoveSpeed}
             p 打撃範囲: #{_enemy.fHitRadius}
 

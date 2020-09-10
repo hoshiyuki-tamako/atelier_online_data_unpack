@@ -3,36 +3,316 @@
 
 <head>
   <title>キャラクタービルダー</title>
+  <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/characterBuilder.css">
-  <script src="https://cdn.jsdelivr.net/npm/vue-js-modal@1.3.16/dist/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/linq@3.2.3/linq.min.js" integrity="sha256-wNfOgqZN3b4Ddw/AMdNgAqUulgfVw9e96maWCY30eBU=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
   <script src="https://unpkg.com/vue-select@latest"></script>
+
   <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
   <script src="https://unpkg.com/v-tooltip"></script>
 </head>
 
 <body>
   <div id="app">
-    <div>
-      <p>開発中です</p>
-      <p>SKILL/効果 not working</p>
-      <p>Element support state not working</p>
-    </div>
-
-    <el-dialog title="" :visible.sync="pickItemDialogVisible" fullscreen>
+    <el-dialog title="" :visible.sync="itemPickerDialogVisible" fullscreen>
       <div class="item-picker-container">
-        <div @click="onRemoveCurrentItem()">
-          <p> - </p>
-          <img src="img/icon_s/Texture2D/icon_item_s_10790001.png" style="width: 60px">
-        </div>
-        <div @click="onPickItem(item)" v-for="item in getFilteredPickItems()" :key="item.DF">
-          <p>{{ item.NAME }}</p>
-          <img :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'" style="width: 60px">
+        <el-select v-if="itemPickerShowSort" v-model="itemPickerSort" placeholder="" filterable clearable>
+          <el-option v-for="item in itemPickerSortOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        </el-select>
+        <el-input v-model="itemPickerFilterKeyword" placeholder="名前 / DF"></el-input>
+        <div class="item-picker-items">
+          <div v-if="itemPickerShowRemoveIcon" class="item-picker-remove-item" @click="onPickItem()">
+            <img class="icon-small" src="img/icon_s/Texture2D/icon_item_s_10790001.png">
+          </div>
+          <div @click="onPickItem(item)" v-for="item in getFilteredItemPickerItems()" :key="item.DF">
+            <p>{{ item.NAME }}</p>
+            <img class="icon-small" :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'">
+          </div>
         </div>
       </div>
     </el-dialog>
+
+
+    <el-dialog title="" :visible.sync="supportItemEditDialogVisible" width="80%">
+      <div class="support-item-edit-dialog">
+        <div class="support-item-picker" v-if="supportItemSelected">
+          <img class="icon-small" :src="'img/icon_s/Texture2D/icon_item_s_' + supportItemSelected.DF + '.png'" :alt="supportItemSelected.name">
+          <el-button @click="itemPickerDialogVisible = true">Pick Item</el-button>
+          <el-button @click="onAddSupportItem">Add</el-button>
+        </div>
+        <div>Total: {{ player.supports.length }}</div>
+        <table>
+          <tr v-for="summary in getSupportItemStatesSummary()" :key="summary.state">
+            <th>{{ summary.label }}</th>
+            <th>{{ summary.value }}</th>
+          </tr>
+          <tr v-for="summary in getSupportItemElementSummary()" :key="summary.element">
+            <th>{{ summary.label }}</th>
+            <th>{{ summary.value }}</th>
+          </tr>
+        </table>
+        <div class="support-item-editor-items">
+          <div v-for="(item, i) in player.supports" :key="i">
+            <p>
+              <el-input-number v-model="player.supportModifier[i].level" :min="0" size="small" step-strictly></el-input-number>
+              <el-button @click="onRemoveSupportItem(i)" type="danger" icon="el-icon-delete" circle></el-button>
+            </p>
+            <p>
+              <img class="icon-small" :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'">
+            </p>
+            <table>
+              <tr v-for="state in getSupportItemStates(i)">
+                <th>{{ state.label }}</th>
+                <td>+{{ state.value }}</td>
+              </tr>
+              <tr v-for="element in getSupportItemElements(i)">
+                <th>{{ element.label }}</th>
+                <td>+{{ element.value }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
+
+
+
+    <el-dialog title="" :visible.sync="characterEditDialogVisible" width="80%">
+      <div class="character-edit-dialog">
+        <div class="character-picker">
+          <div @click="onPickCharacter()">
+            <img src="img/icon_s/Texture2D/icon_item_s_10790001.png">
+          </div>
+          <div :class="{ 'selected-character': player.character && character.DF === player.character.DF }" @click="onPickCharacter(character)" v-for="character in characters" :key="character.DF">
+            <img :src="getCharacterImage(character)" :alt="character.NAME">
+          </div>
+        </div>
+        <div class="character-state">
+          <div v-if="player.character">
+            <h3>{{ player.character.NAME }}</h3>
+            <img class="character-image" :src="getCharacterImage(player.character)" :alt="player.character.NAME">
+            <table>
+              <tr>
+                <th>LV</th>
+                <td>
+                  <el-input-number v-model="player.characterModifier.level" :min="1" size="small" step-strictly></el-input-number>
+                </td>
+              </tr>
+              <tr>
+                <th>食事 LV</th>
+                <td><el-input-number v-model="player.characterModifier.foodLevel" :min="1" :max="player.character.FDM.length" size="small" step-strictly></el-input-number></td>
+              </tr>
+              <tr>
+                <th>BlazeArt LV</th>
+                <td>
+                  <el-input-number v-model="player.characterModifier.blazeArtLevel" label="" :min="0" :max="player.character.BA.length ? 5 : 1" size="small" step-strictly></el-input-number>
+                </td>
+              </tr>
+            </table>
+            <table>
+
+              <tr v-for="characterState in getCharacterStates()" :key="characterState.state">
+                <th>
+                  <v-popover placement="right-end" trigger="hover">
+                    <span>{{ characterState.label }}</span>
+                    <template slot="popover">
+                      <div class="character-state-popover">
+                        <table>
+                          <tr>
+                            <th>base</th>
+                            <td>{{ characterState.value }}</td>
+                          </tr>
+                          <tr>
+                            <th>food</th>
+                            <td>{{ characterState.foodValue }}</td>
+                          </tr>
+                          <tr v-if="characterState.skills.length">
+                            <th>skill</th>
+                            <td>
+                              <p v-for="skill in characterState.skills" :key="skill.id">
+                                {{ skill.name }} +{{ skill.effectValue }}
+                              </p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </template>
+                  </v-popover>
+                </th>
+                <td>
+                  <v-popover placement="right-end" trigger="hover">
+                    <span>{{ characterState.value + characterState.foodValue + characterState.skillValue }}</span>
+                    <template slot="popover">
+                      <div class="character-state-popover">
+                        <table>
+                          <tr>
+                            <th>base</th>
+                            <td>{{ characterState.value }}</td>
+                          </tr>
+                          <tr>
+                            <th>food</th>
+                            <td>{{ characterState.foodValue }}</td>
+                          </tr>
+                          <tr v-if="characterState.skills.length">
+                            <th>skill</th>
+                            <td>
+                              <p v-for="skill in characterState.skills" :key="skill.id">
+                                {{ skill.name }} +{{ skill.effectValue }}
+                              </p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </template>
+                  </v-popover>
+                </td>
+              </tr>
+
+
+              <tr>
+                <th>
+                  <v-popover placement="right-end" trigger="hover">
+                    <span>回避</span>
+                    <template v-if="getCharacterDodgeWithDetail().skills.length" slot="popover">
+                      <div class="character-state-popover">
+                        <table>
+                           <tr>
+                            <th>skill</th>
+                            <td>
+                              <p v-for="skill in getCharacterDodgeWithDetail().skills" :key="skill.id">
+                                {{ skill.name }} +{{ skill.effectValue }}
+                              </p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </template>
+                  </v-popover>
+                </th>
+                <td>
+                  <v-popover placement="right-end" trigger="hover">
+                    <span>{{ getCharacterDodgeWithDetail().value }}</span>
+                    <template v-if="getCharacterDodgeWithDetail().skills.length" slot="popover">
+                      <div class="character-state-popover">
+                        <table>
+                           <tr>
+                            <th>skill</th>
+                            <td>
+                              <p v-for="skill in getCharacterDodgeWithDetail().skills" :key="skill.id">
+                                {{ skill.name }} +{{ skill.effectValue }}
+                              </p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </template>
+                  </v-popover>
+                </td>
+              </tr>
+
+
+
+              <tr>
+                <th>
+                  <v-popover placement="right-end" trigger="hover">
+                    <span>クリティカル</span>
+                    <template v-if="getCharacterCriticalHitWithDetail().skills.length" slot="popover">
+                      <div class="character-state-popover">
+                        <table>
+                           <tr>
+                            <th>skill</th>
+                            <td>
+                              <p v-for="skill in getCharacterCriticalHitWithDetail().skills" :key="skill.id">
+                                {{ skill.name }} +{{ skill.effectValue }}
+                              </p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </template>
+                  </v-popover>
+                </th>
+                <td>
+                  <v-popover placement="right-end" trigger="hover">
+                    <span>{{ getCharacterCriticalHitWithDetail().value }}</span>
+                    <template v-if="getCharacterCriticalHitWithDetail().skills.length" slot="popover">
+                      <div class="character-state-popover">
+                        <table>
+                           <tr>
+                            <th>skill</th>
+                            <td>
+                              <p v-for="skill in getCharacterCriticalHitWithDetail().skills" :key="skill.id">
+                                {{ skill.name }} +{{ skill.effectValue }}
+                              </p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </template>
+                  </v-popover>
+                </td>
+              </tr>
+
+
+
+              <tr v-for="element in getCharacterElements()" :key="element.label">
+                <th>
+                  <v-popover placement="right-end" trigger="hover">
+                    <span>{{ element.label }}</span>
+                    <template v-if="element.value" slot="popover">
+                      <div class="character-state-popover">
+                        <table>
+                          <tr>
+                            <th>skill</th>
+                            <td>
+                              <p v-for="skill in getCharacterElements().map(p => p.skills).flat()" :key="skill.id">
+                                {{ skill.name }} +{{ skill.effectValue }}
+                              </p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </template>
+                  </v-popover>
+                </th>
+                <td>
+                  <v-popover placement="right-end" trigger="hover">
+                    <span>{{ element.value }}</span>
+                    <template v-if="element.value" slot="popover">
+                      <div class="character-state-popover">
+                        <table>
+                          <tr>
+                            <th>skill</th>
+                            <td>
+                              <p v-for="skill in getCharacterElements().map(p => p.skills).flat()" :key="skill.id">
+                                {{ skill.name }} +{{ skill.effectValue }}
+                              </p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </template>
+                  </v-popover>
+                </td>
+              </tr>
+            </table>
+
+  
+            <div>
+              <div v-for="skill in getFilteredSkills(getCharacterSkills())" :key="skill.id">
+                <p>{{ skill.name }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
+
 
 
     <div class="container">
@@ -40,27 +320,54 @@
         <div class="left-equipment">
 
           <v-popover placement="right-end" trigger="hover">
-            <div>
-              <p>LV 80</p>
+            <div class="equipment-icon">
+              <p>品質 {{ player.equipmentModifier.weapon.quality }} LV {{ player.equipmentModifier.weapon.level }} </p>
               <img @click="onPickWeapon()" :src="getWeaponImage()">
             </div>
-            <template v-if="equipment.weapon" slot="popover">
-              <div class="item-popover">
+            <template v-if="player.equipment.weapon" slot="popover">
+              <div class="equipment-popover">
+                <h3>{{ player.equipment.weapon.NAME }}</h3>
                 <table>
-                  <tr v-for="item in getItemStates(equipment.weapon)" :key="item.label">
+                  <tr>
+                    <th>品質</th>
+                    <td>
+                      <el-input-number v-model="player.equipmentModifier.weapon.quality" :min="1" size="small" step-strictly></el-input-number>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>LV</th>
+                    <td><el-input-number v-model="player.equipmentModifier.weapon.level" :min="1" size="small" step-strictly></el-input-number></td>
+                  </tr>
+                  <!-- <tr>
+                    <th>特性</th>
+                    <td>
+                      <el-select v-model="player.equipmentModifier.weapon.skillId" placeholder="特性" filterable clearable>
+                        <el-option v-for="skill in addonSkills" :key="skill.id" :label="skill.name" :value="skill.id"></el-option>
+                      </el-select>
+                    </td>
+                  </tr> -->
+                </table>
+
+                <table>
+                  <tr v-for="item in getEquipmentStates('weapon')" :key="item.label">
                     <th>{{ item.label }}</th>
+                    <td>{{ item.value }}{{ item.skillValue ? ` + ${item.skillValue + item.extraValue}` : '' }}</td>
+                  </tr>
+                  <tr v-if="getEquipmentDodge('weapon').skills.length">
+                    <th>回避</th>
                     <td>{{ item.value }}</td>
                   </tr>
-                </table>
-                <br>
-                <table>
-                  <tr v-for="element in getItemElements(equipment.weapon)" :key="element.label">
+                  <tr v-if="getEquipmentCriticalHit('weapon').skills.length">
+                    <th>クリティカル</th>
+                    <td>{{ item.value }}</td>
+                  </tr>
+                  <tr v-for="element in getEquipmentElements('weapon')" :key="element.label">
                     <th>{{ element.label }}</th>
-                    <td>{{ element.value }}</td>
+                    <td>{{ element.value }}{{ element.skillValue ? ` + ${element.skillValue + element.extraValue}` : '' }}</td>
                   </tr>
                 </table>
                 <br>
-                <div v-for="skill in getItemSkills(equipment.weapon)" :key="skill.id">
+                <div v-for="skill in getEquipmentSkills('weapon')" :key="skill.id">
                   <p>{{ skill.name }}</p>
                   <p>{{ skill.detail }}</p>
                   <p>&#x3E;</p>
@@ -70,27 +377,54 @@
           </v-popover>
 
           <v-popover placement="right-end" trigger="hover">
-            <div>
-              <p>LV 80</p>
+            <div class="equipment-icon">
+              <p>品質 {{ player.equipmentModifier.shield.quality }} LV {{ player.equipmentModifier.shield.level }} </p>
               <img @click="onPickShield()" :src="getShieldImage()">
             </div>
-            <template v-if="equipment.shield" slot="popover">
-              <div class="item-popover">
+            <template v-if="player.equipment.shield" slot="popover">
+              <div class="equipment-popover">
+                <h3>{{ player.equipment.shield.NAME }}</h3>
                 <table>
-                  <tr v-for="item in getItemStates(equipment.shield)" :key="item.label">
+                  <tr>
+                    <th>品質</th>
+                    <td>
+                      <el-input-number v-model="player.equipmentModifier.shield.quality" :min="1" size="small" step-strictly></el-input-number>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>LV</th>
+                    <td><el-input-number v-model="player.equipmentModifier.shield.level" :min="1" size="small" step-strictly></el-input-number></td>
+                  </tr>
+                  <!-- <tr>
+                    <th>特性</th>
+                    <td>
+                      <el-select v-model="player.equipmentModifier.shield.skillId" placeholder="特性" filterable clearable>
+                        <el-option v-for="skill in addonSkills" :key="skill.id" :label="skill.name" :value="skill.id"></el-option>
+                      </el-select>
+                    </td>
+                  </tr> -->
+                </table>
+
+                <table>
+                  <tr v-for="item in getEquipmentStates('shield')" :key="item.label">
                     <th>{{ item.label }}</th>
+                    <td>{{ item.value }}{{ item.skillValue ? ` + ${item.skillValue + item.extraValue}` : '' }}</td>
+                  </tr>
+                  <tr v-if="getEquipmentDodge('shield').skills.length">
+                    <th>回避</th>
                     <td>{{ item.value }}</td>
                   </tr>
-                </table>
-                <br>
-                <table>
-                  <tr v-for="element in getItemElements(equipment.shield)" :key="element.label">
+                  <tr v-if="getEquipmentCriticalHit('shield').skills.length">
+                    <th>クリティカル</th>
+                    <td>{{ item.value }}</td>
+                  </tr>
+                  <tr v-for="element in getEquipmentElements('shield')" :key="element.label">
                     <th>{{ element.label }}</th>
-                    <td>{{ element.value }}</td>
+                    <td>{{ element.value }}{{ element.skillValue ? ` + ${element.skillValue + element.extraValue}` : '' }}</td>
                   </tr>
                 </table>
                 <br>
-                <div v-for="skill in getItemSkills(equipment.shield)" :key="skill.id">
+                <div v-for="skill in getEquipmentSkills('shield')" :key="skill.id">
                   <p>{{ skill.name }}</p>
                   <p>{{ skill.detail }}</p>
                   <p>&#x3E;</p>
@@ -101,27 +435,54 @@
 
 
           <v-popover placement="right-end" trigger="hover">
-            <div>
-              <p>LV 80</p>
-              <img @click="onPickHead()" :src="getHeadImage()">
+            <div class="equipment-icon">
+              <p>品質 {{ player.equipmentModifier.helmet.quality }} LV {{ player.equipmentModifier.helmet.level }} </p>
+              <img @click="onPickHelmet()" :src="getHelmetImage()">
             </div>
-            <template v-if="equipment.head" slot="popover">
-              <div class="item-popover">
+            <template v-if="player.equipment.helmet" slot="popover">
+              <div class="equipment-popover">
+                <h3>{{ player.equipment.helmet.NAME }}</h3>
                 <table>
-                  <tr v-for="item in getItemStates(equipment.head)" :key="item.label">
+                  <tr>
+                    <th>品質</th>
+                    <td>
+                      <el-input-number v-model="player.equipmentModifier.helmet.quality" :min="1" size="small" step-strictly></el-input-number>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>LV</th>
+                    <td><el-input-number v-model="player.equipmentModifier.helmet.level" :min="1" size="small" step-strictly></el-input-number></td>
+                  </tr>
+                  <!-- <tr>
+                    <th>特性</th>
+                    <td>
+                      <el-select v-model="player.equipmentModifier.helmet.skillId" placeholder="特性" filterable clearable>
+                        <el-option v-for="skill in addonSkills" :key="skill.id" :label="skill.name" :value="skill.id"></el-option>
+                      </el-select>
+                    </td>
+                  </tr> -->
+                </table>
+
+                <table>
+                  <tr v-for="item in getEquipmentStates('helmet')" :key="item.label">
                     <th>{{ item.label }}</th>
+                    <td>{{ item.value }}{{ item.skillValue ? ` + ${item.skillValue + item.extraValue}` : '' }}</td>
+                  </tr>
+                  <tr v-if="getEquipmentDodge('helmet').skills.length">
+                    <th>回避</th>
                     <td>{{ item.value }}</td>
                   </tr>
-                </table>
-                <br>
-                <table>
-                  <tr v-for="element in getItemElements(equipment.head)" :key="element.label">
+                  <tr v-if="getEquipmentCriticalHit('helmet').skills.length">
+                    <th>クリティカル</th>
+                    <td>{{ item.value }}</td>
+                  </tr>
+                  <tr v-for="element in getEquipmentElements('helmet')" :key="element.label">
                     <th>{{ element.label }}</th>
-                    <td>{{ element.value }}</td>
+                    <td>{{ element.value }}{{ element.skillValue ? ` + ${element.skillValue + element.extraValue}` : '' }}</td>
                   </tr>
                 </table>
                 <br>
-                <div v-for="skill in getItemSkills(equipment.head)" :key="skill.id">
+                <div v-for="skill in getEquipmentSkills('helmet')" :key="skill.id">
                   <p>{{ skill.name }}</p>
                   <p>{{ skill.detail }}</p>
                   <p>&#x3E;</p>
@@ -133,27 +494,54 @@
 
 
           <v-popover placement="right-end" trigger="hover">
-            <div>
-              <p>LV 80</p>
-              <img @click="onPickBody()" :src="getBodyImage()">
+            <div class="equipment-icon">
+              <p>品質 {{ player.equipmentModifier.cloth.quality }} LV {{ player.equipmentModifier.cloth.level }} </p>
+              <img @click="onPickCloth()" :src="getClothImage()">
             </div>
-            <template v-if="equipment.body" slot="popover">
-              <div class="item-popover">
+            <template v-if="player.equipment.cloth" slot="popover">
+              <div class="equipment-popover">
+                <h3>{{ player.equipment.cloth.NAME }}</h3>
                 <table>
-                  <tr v-for="item in getItemStates(equipment.body)" :key="item.label">
+                  <tr>
+                    <th>品質</th>
+                    <td>
+                      <el-input-number v-model="player.equipmentModifier.cloth.quality" :min="1" size="small" step-strictly></el-input-number>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>LV</th>
+                    <td><el-input-number v-model="player.equipmentModifier.cloth.level" :min="1" size="small" step-strictly></el-input-number></td>
+                  </tr>
+                  <!-- <tr>
+                    <th>特性</th>
+                    <td>
+                      <el-select v-model="player.equipmentModifier.cloth.skillId" placeholder="特性" filterable clearable>
+                        <el-option v-for="skill in addonSkills" :key="skill.id" :label="skill.name" :value="skill.id"></el-option>
+                      </el-select>
+                    </td>
+                  </tr> -->
+                </table>
+
+                <table>
+                  <tr v-for="item in getEquipmentStates('cloth')" :key="item.label">
                     <th>{{ item.label }}</th>
+                    <td>{{ item.value }}{{ item.skillValue ? ` + ${item.skillValue + item.extraValue}` : '' }}</td>
+                  </tr>
+                  <tr v-if="getEquipmentDodge('cloth').skills.length">
+                    <th>回避</th>
                     <td>{{ item.value }}</td>
                   </tr>
-                </table>
-                <br>
-                <table>
-                  <tr v-for="element in getItemElements(equipment.body)" :key="element.label">
+                  <tr v-if="getEquipmentCriticalHit('cloth').skills.length">
+                    <th>クリティカル</th>
+                    <td>{{ item.value }}</td>
+                  </tr>
+                  <tr v-for="element in getEquipmentElements('cloth')" :key="element.label">
                     <th>{{ element.label }}</th>
-                    <td>{{ element.value }}</td>
+                    <td>{{ element.value }}{{ element.skillValue ? ` + ${element.skillValue + element.extraValue}` : '' }}</td>
                   </tr>
                 </table>
                 <br>
-                <div v-for="skill in getItemSkills(equipment.body)" :key="skill.id">
+                <div v-for="skill in getEquipmentSkills('cloth')" :key="skill.id">
                   <p>{{ skill.name }}</p>
                   <p>{{ skill.detail }}</p>
                   <p>&#x3E;</p>
@@ -164,29 +552,55 @@
 
         </div>
         <div class="right-equipment">
+          <v-popover v-for="i in [...new Array(3).keys()].map(p => p +1)" :key="i" placement="right-end" trigger="hover">
+            <div class="equipment-icon">
+              <p>品質 {{ player.equipmentModifier['accessory' + i].quality }} LV {{ player.equipmentModifier['accessory' + i].level }} </p>
+              <img @click="onPickAccessory(i)" :src="getAccessoryImage(i)">
+            </div>
+            <template v-if="player.equipment['accessory' + i]" slot="popover">
+              <div class="equipment-popover">
+                <h3>{{ player.equipment['accessory' + i].NAME }}</h3>
+                <table>
+                  <tr>
+                    <th>品質</th>
+                    <td>
+                      <el-input-number v-model="player.equipmentModifier['accessory' + i].quality" :min="1" size="small" step-strictly></el-input-number>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>LV</th>
+                    <td><el-input-number v-model="player.equipmentModifier['accessory' + i].level" :min="1" size="small" step-strictly></el-input-number></td>
+                  </tr>
+                  <!-- <tr>
+                    <th>特性</th>
+                    <td>
+                      <el-select v-model="player.equipmentModifier['accessory' + i].skillId" placeholder="特性" filterable clearable>
+                        <el-option v-for="skill in addonSkills" :key="skill.id" :label="skill.name" :value="skill.id"></el-option>
+                      </el-select>
+                    </td>
+                  </tr> -->
+                </table>
 
-          <v-popover placement="right-end" trigger="hover">
-            <div>
-              <p>LV 80</p>
-              <img @click="onPickAccessory(1)" :src="getAccessoryImage(1)">
-            </div>
-            <template v-if="equipment.accessory1" slot="popover">
-              <div class="item-popover">
                 <table>
-                  <tr v-for="item in getItemStates(equipment.accessory1)" :key="item.label">
+                  <tr v-for="item in getEquipmentStates('accessory' + i)" :key="item.label">
                     <th>{{ item.label }}</th>
+                    <td>{{ item.value }}{{ item.skillValue ? ` + ${item.skillValue + item.extraValue}` : '' }}</td>
+                  </tr>
+                  <tr v-if="getEquipmentDodge('accessory' + i).skills.length">
+                    <th>回避</th>
                     <td>{{ item.value }}</td>
                   </tr>
-                </table>
-                <br>
-                <table>
-                  <tr v-for="element in getItemElements(equipment.accessory1)" :key="element.label">
+                  <tr v-if="getEquipmentCriticalHit('accessory' + i).skills.length">
+                    <th>クリティカル</th>
+                    <td>{{ item.value }}</td>
+                  </tr>
+                  <tr v-for="element in getEquipmentElements('accessory' + i)" :key="element.label">
                     <th>{{ element.label }}</th>
-                    <td>{{ element.value }}</td>
+                    <td>{{ element.value }}{{ element.skillValue ? ` + ${element.skillValue + element.extraValue}` : '' }}</td>
                   </tr>
                 </table>
                 <br>
-                <div v-for="skill in getItemSkills(equipment.accessory1)" :key="skill.id">
+                <div v-for="skill in getEquipmentSkills('accessory' + i)" :key="skill.id">
                   <p>{{ skill.name }}</p>
                   <p>{{ skill.detail }}</p>
                   <p>&#x3E;</p>
@@ -194,65 +608,6 @@
               </div>
             </template>
           </v-popover>
-          <v-popover placement="right-end" trigger="hover">
-            <div>
-              <p>LV 80</p>
-              <img @click="onPickAccessory(2)" :src="getAccessoryImage(2)">
-            </div>
-            <template v-if="equipment.accessory2" slot="popover">
-              <div class="item-popover">
-                <table>
-                  <tr v-for="item in getItemStates(equipment.accessory2)" :key="item.label">
-                    <th>{{ item.label }}</th>
-                    <td>{{ item.value }}</td>
-                  </tr>
-                </table>
-                <br>
-                <table>
-                  <tr v-for="element in getItemElements(equipment.accessory2)" :key="element.label">
-                    <th>{{ element.label }}</th>
-                    <td>{{ element.value }}</td>
-                  </tr>
-                </table>
-                <br>
-                <div v-for="skill in getItemSkills(equipment.accessory2)" :key="skill.id">
-                  <p>{{ skill.name }}</p>
-                  <p>{{ skill.detail }}</p>
-                  <p>&#x3E;</p>
-                </div>
-              </div>
-            </template>
-          </v-popover>
-          <v-popover placement="right-end" trigger="hover">
-            <div>
-              <p>LV 80</p>
-              <img @click="onPickAccessory(3)" :src="getAccessoryImage(3)">
-            </div>
-            <template v-if="equipment.accessory3" slot="popover">
-              <div class="item-popover">
-                <table>
-                  <tr v-for="item in getItemStates(equipment.accessory3)" :key="item.label">
-                    <th>{{ item.label }}</th>
-                    <td>{{ item.value }}</td>
-                  </tr>
-                </table>
-                <br>
-                <table>
-                  <tr v-for="element in getItemElements(equipment.accessory3)" :key="element.label">
-                    <th>{{ element.label }}</th>
-                    <td>{{ element.value }}</td>
-                  </tr>
-                </table>
-                <br>
-                <div v-for="skill in getItemSkills(equipment.accessory3)" :key="skill.id">
-                  <p>{{ skill.name }}</p>
-                  <p>{{ skill.detail }}</p>
-                  <p>&#x3E;</p>
-                </div>
-              </div>
-            </template>
-          </v-popover>
-
         </div>
       </div>
 
@@ -263,92 +618,68 @@
 
 
       <div class="sub-equipment">
-
         <div class="sub-equipment-menu">
-          <div class="character-picker">
-            <h4 style="text-align: center">Character</h4>
-            <v-select @input="onChangeCharacter" :options="charas"></v-select>
-          </div>
-
-          <h4 style="text-align: center">Support</h4>
-          <v-select v-model="selectedSupportEquipment" :options="selectItems"></v-select>
-          <button @click="addEquipment" type="button" style="width: 100%; height: 40px">ADD</button>
+          <p style="text-align: center">
+            <span>Support x {{ player.supports.length }}</span>
+            <el-button @click="openSupportItemEditDialog" type="success" icon="el-icon-edit" circle></el-button>
+          </p>
         </div>
-        <p>Total: {{ equipment.supports.length }}</p>
-        <br>
-        <br>
         <div class="sub-equipment-items">
-          <img v-for="(df, i) in equipment.supports" :key="i" :src="'img/icon_s/Texture2D/icon_item_s_' + df + '.png'" @click="removeEquipmentSupport(i)">
+          <div v-for="(item, i) in player.supports" :key="i">
+            <img class="icon-middle" :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'">
+          </div>
         </div>
-
       </div>
+
+
+
+
+
       <div class="result">
         <div class="character">
-          <template v-if="equipment.character">
-            <p>{{ getSelectedCharacter().NAME }} (LV 80) 完食</p><br>
-            <img :src="getSelectedCharacterImage()">
-          </template>
+          <div>
+            <h4>
+              <span>
+                <el-button @click="characterEditDialogVisible = true" type="primary" icon="el-icon-edit" circle></el-button>
+              </span>
+              <span v-if="player.character">
+                {{ player.character.NAME }} (LV {{ player.characterModifier.level }}) (食事 LV {{ player.characterModifier.foodLevel }})  (BA LV {{ player.characterModifier.blazeArtLevel }})
+              </span>
+            </h4>
+            <img v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
+          </div>
         </div>
-        <table>
-          <tr>
-            <th>総戦闘力</th>
-            <td>-</td>
-          </tr>
-          <tr>
-            <th>HP</th>
-            <td>{{ getState('HP') }}</td>
-          </tr>
-          <tr>
-            <th>物理攻撃</th>
-            <td>{{ getState('SATK') }}</td>
-          </tr>
-          <tr>
-            <th>物理防禦</th>
-            <td>{{ getState('SDEF') }} * {{ 1 }}</td>
-          </tr>
-          <tr>
-            <th>魔法攻撃</th>
-            <td>{{ getState('MATK') }}</td>
-          </tr>
-          <tr>
-            <th>魔法防禦</th>
-            <td>{{ getState('MDEF') }} * {{ 1 }}</td>
-          </tr>
-          <tr>
-            <th>速度</th>
-            <td>{{ getSpeed() }}</td>
+
+        <table :set="temp = getSummaryState()">
+          <tr v-for="summary in temp.totalStates" :key="summary.state">
+            <th>{{ summary.label }}</th>
+            <td>{{ summary.value }}</td>
           </tr>
           <tr>
             <th>回避</th>
-            <td>{{ getDodge() }}</td>
+            <td>{{ temp.totalDodgeState }}</td>
           </tr>
           <tr>
             <th>クリティカル</th>
-            <td>{{ getCriticalHitRate() }}</td>
+            <td>{{ temp.totalCriticalHitState }}</td>
           </tr>
-          <tr>
-            <th>SKILL x %</th>
-            <td>-</td>
-          </tr>
-        </table>
-        <br>
-        <table>
-          <tr v-for="element in getElements()" :key="element.label">
+          <tr v-for="element in temp.totalElements" :key="element.label">
             <th>{{ element.label }}</th>
             <td>{{ element.value }}</td>
           </tr>
+          <tr>
+            <th>SKILL</th>
+            <td>{{ 100 + temp.skillMultiplier * 100 }}%</td>
+          </tr>
         </table>
-        <br>
-        <div>
-          -
-        </div>
-        <br>
-        <p>6*skill 15 + skill 400% + chain 16 + 連携ボーナス Lv5 = {{ Math.round(getState('SATK') * 1.26 * 6 * 4 * 3.2 * 1.3, 2) }}</p>
-        <p>6*skill 15 + skill 400% + chain 16 + 連携ボーナス Lv5 = {{ Math.round(getState('MATK') * 1.26 * 6 * 4 * 3.2 * 1.3, 2) }}</p>
       </div>
     </div>
   </div>
   <script src="js/characterBuilder.js"></script>
+  <div>
+    <p>開発中です</p>
+    <p>skill/属性/効果 may not working</p>
+  </div>
 </body>
 
 </html>

@@ -3,7 +3,7 @@
   display: flex;
   flex-wrap: wrap;
   text-align: center;
-  padding: 36px;
+  padding-top: 36px;
 }
 .item-picker-items > div {
   width: 140px;

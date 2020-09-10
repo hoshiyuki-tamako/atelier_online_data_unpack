@@ -45,7 +45,7 @@ new Vue({
     // state
     composeLoading: true,
 
-    pickItemDialogVisible: false,
+    itemPickerDialogVisible: false,
     itemPickerFilterCategory: null,
     itemPickerFilterKeyword: '',
 
@@ -70,7 +70,7 @@ new Vue({
       }).flat();
       this.materialOptions = Array.from({length: items.length}, p => ({ quality, addonQuality }));
       this.materials = items;
-      this.pickItemDialogVisible = false;
+      this.itemPickerDialogVisible = false;
     },
     getFilteredItemPickerItems() {
       return this.items.filter(p =>
@@ -81,7 +81,7 @@ new Vue({
 
     // compose target
     onPickItemOpen() {
-      this.pickItemDialogVisible = true;
+      this.itemPickerDialogVisible = true;
     },
     getPickedItem() {
       if (!this.compose) {

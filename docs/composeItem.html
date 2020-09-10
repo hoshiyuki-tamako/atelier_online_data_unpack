@@ -21,7 +21,7 @@
 <body>
   <div id="app">
 
-    <el-dialog title="" :visible.sync="pickItemDialogVisible" fullscreen>
+    <el-dialog title="" :visible.sync="itemPickerDialogVisible" fullscreen>
       <div class="item-picker-container">
         <el-select v-model="itemPickerFilterCategory" style="width: 140px" placeholder="種類" size="small" filterable clearable>
           <el-option v-for="itemCategory in itemCategories" :key="itemCategory.value" :label="itemCategory.label" :value="itemCategory.value"></el-option>
