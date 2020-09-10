@@ -53,22 +53,22 @@ new Vue({
     exportComposeItemUrlVisible: false,
 
     //
-    materialOptions: [], // { quality: 1, addOnQuality: 1 }
+    materialOptions: [], // { quality: 1, addonQuality: 1 }
     materials: [], 
     compose: null,
   },
   methods: {
     // dialog
-    onPickItem(item, quality = 10, addOnQuality = 0) {
+    onPickItem(item, quality = 10, addonQuality = 0) {
       quality = _.clamp(quality || 10, 1, 100);
-      addOnQuality = _.clamp(addOnQuality || 0, 0, 15);
+      addonQuality = _.clamp(addonQuality || 0, 0, 15);
 
       this.compose = item;
       const items = item.RSP.map(p => {
         const _item = this.item.m_vList.find(i => i.DF === p.DF);
         return new Array(p.NC).fill(_item);
       }).flat();
-      this.materialOptions = Array.from({length: items.length}, p => ({ quality, addOnQuality }));
+      this.materialOptions = Array.from({length: items.length}, p => ({ quality, addonQuality }));
       this.materials = items;
       this.pickItemDialogVisible = false;
     },
@@ -115,8 +115,8 @@ new Vue({
       }
 
       const sumQuality = this.materialOptions.reduce((sum, p) => sum + p.quality, 0);
-      const addOnQuality = this.materialOptions.reduce((sum, p) => sum + p.addOnQuality, 0);
-      return _.clamp(Math.floor((sumQuality / this.materialOptions.length) + addOnQuality), 1, 100);
+      const addonQuality = this.materialOptions.reduce((sum, p) => sum + p.addonQuality, 0);
+      return _.clamp(Math.floor((sumQuality / this.materialOptions.length) + addonQuality), 1, 100);
     },
 
     getAbnormalState(id) {
@@ -183,7 +183,7 @@ new Vue({
           for (const [i, materialOption] of this.materialOptions.entries()) {
             const thatOption = materialOptions[i] || materialOption;
             materialOption.quality = thatOption.quality || materialOption.quality;
-            materialOption.addOnQuality = thatOption.addOnQuality || materialOption.addOnQuality;
+            materialOption.addonQuality = thatOption.addonQuality || materialOption.addonQuality;
           }
           return true;
         }
