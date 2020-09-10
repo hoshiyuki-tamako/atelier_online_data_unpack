@@ -7,10 +7,16 @@ import { eSpawnerKind } from './../Enums';
 
 export class SpawnerData
 {
+  public static spawnerDataCache: { [s: string]: SpawnerData[] } = {};
+
   public static async loadFromCache() {
+    if (Object.keys(this.spawnerDataCache).length) {
+      return this.spawnerDataCache;
+    }
+
     const folder = path.join(Option.outFolder, 'export', 'SpawnList', 'TextAsset');
     const filePaths = await fs.readdir(folder);
-    return Object.fromEntries(
+    return this.spawnerDataCache = Object.fromEntries(
       await Promise.all(
           filePaths
           .map(p => path.join(folder, p))

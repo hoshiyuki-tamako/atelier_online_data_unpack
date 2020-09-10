@@ -88,9 +88,10 @@ html
               h4 ---- ダンジョン ----
               div.area-dungeons-container
                 - for (const [i, _dungeonInfo] of dungeonInfos.entries())
+                  span(id="iDungeonId-" + _dungeonInfo.iDungeonId)
                   - const _fieldName = fieldName.List.find(p => p.iAreaNameId === _dungeonInfo.iAreaNameId);
                   - if (_fieldName)
-                    p #{_fieldName.strAreaName} #{_fieldName.strAreaNameSub.trim() ? `/ ${_fieldName.strAreaNameSub}` : ''}
+                    p() #{_fieldName.strAreaName} #{_fieldName.strAreaNameSub.trim() ? `/ ${_fieldName.strAreaNameSub}` : ''}
                   - else
                     p -
                   p 最大階層: #{_dungeonInfo.iMaxFloor}

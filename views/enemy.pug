@@ -113,6 +113,14 @@ html
             p 打撃範囲: #{_enemy.fHitRadius}
 
           div.item-container-right
+            - const appearAreas = getAreaIds(_enemy).map(areaId => areaInfo.List.find(p => p.iAreaId === areaId)).filter(p => p);
+            - if (appearAreas.length)
+              h4 ----- 出現エリア -----
+              - for (const area of appearAreas)
+                - const _fieldName = fieldName.List.find(p => p.iAreaNameId === area.iAreaNameId);
+                p
+                  a(href="area.html#iAreaID-" + area.iAreaId target="_blank")= _fieldName.strAreaName
+            br
             h4 ----- 屬性 -----
             table
               - for (const [element, value] of Object.entries(_enemy.sParam.ELM).filter(p => p[1]))

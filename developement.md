@@ -1,4 +1,5 @@
-<!doctype html><title>Memo</title><h3>overall</h3><pre>skill.effect // 135 = Monster Start Zone Effect, will redirect to effect=139
+# Memo
+skill.effect // 135 = Monster Start Zone Effect, will redirect to effect=139
 skill.type // 1 = skill, 2 = effect
 skill.overrideID // remove skill from skill list
 
@@ -42,4 +43,4 @@ chara.json = class MasterChara
 
 EXP LV 1 = 1
 EXP LV 74 = 29532
-EXP LV 75 = 30661</pre>
+EXP LV 75 = 30661

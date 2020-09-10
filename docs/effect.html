@@ -15,6 +15,10 @@
 
 <body>
   <div id="app">
+    <div v-loading="pageLoading">
+      <span>すべてを一度に表示</span>
+      <el-switch @change="onShowAllChange" v-model="showAll"></el-switch>
+    </div>
     <el-table id="effect-table" v-loading="tableLoading" :data="getFilteredPaginationSkills()" header-align="center" style="width: 100%" default-expand-all>
       <el-table-column type="expand">
         <template slot-scope="props">
@@ -62,7 +66,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination @current-change="scrollTop" :page-size="take" :current-page.sync="page" :total="getFilteredSkills().length" layout="prev, pager, next" background></el-pagination>
+    <el-pagination @current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="getFilteredSkills().length" layout="prev, pager, next" background></el-pagination>
   </div>
   <script src="js/effect.js"></script>
 </body>

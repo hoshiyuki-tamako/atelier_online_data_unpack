@@ -12,7 +12,6 @@ All files in `./docs/img` `./docs/models` `./docs/export` are NOT license in MIT
 - `./docs/characterBuilder.html`
 - `./docs/composeItem.html`
 - `./docs/effect.html`
-- `./docs/skill.html`
 
 ## Running The Script
 

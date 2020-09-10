@@ -47,7 +47,10 @@ function minify(html: string, options: Options) {
 export class PageBuilder {
 
   public static async main () {
-    await Option.preLoadFiles();
+    await Promise.all([
+      Option.preLoadFiles(),
+      SpawnerData.loadFromCache(),
+    ]);
 
     const that = new this();
     await Promise.all([
@@ -67,7 +70,6 @@ export class PageBuilder {
       that.blazeArt(),
       that.calculate(),
       that.other(),
-      that.memo(),
       that.totalRanking(),
     ]);
   }
@@ -216,13 +218,6 @@ export class PageBuilder {
           src: "img/icon_s/Texture2D/icon_item_s_20020010.png",
         },
       },
-      {
-        href: "memo.html",
-        title: "Memo",
-        img: {
-          src: "img/icon_s/Texture2D/icon_item_s_10950054.png",
-        },
-      },
     ];
 
     const pugOption = { _, moment, pages };
@@ -324,12 +319,31 @@ export class PageBuilder {
   }
 
   public async enemy() {
-    const [enemy, skill] = await Promise.all([
+    const [enemy, skill, spawnerData, areaInfo, fieldName, areaDetail] = await Promise.all([
       Option.loadFileFromCache(Option.exportDataPaths.enemy),
       Option.loadFileFromCache(Option.exportDataPaths.skill),
-    ]) as [Enemy, Skill];
+      SpawnerData.loadFromCache(),
 
-    const pugOption = { Lookup, LogicHelper, Enumerable, math, enemy, skill };
+      Option.loadFileFromCache(Option.exportDataPaths.areaInfo),
+      Option.loadFileFromCache(Option.exportDataPaths.fieldname),
+      Option.loadFileFromCache(Option.exportDataPaths.areaDetail),
+    ]) as [Enemy, Skill, { [k: string]: SpawnerData[] }, AreaInfo, FieldName, AreaDetail];
+
+    const getAreaIds = (enemy: EnemyMVList) => {
+      const spawnerDataAreaIds = Object.entries(spawnerData).map(p => ({
+          key: path.basename(p[0]),
+          spawners: p[1].filter(i => i.spawnerKind === 3 && i.DF === enemy.DF),
+      }))
+      .filter(p => p.spawners.length)
+      .map(p => +p.key.split('_')[1]);
+      const areaIds = areaDetail.List
+      .filter(i => i.iEnemyIDList.includes(enemy.DF))
+      .map(p => p.iAreaID)
+      .concat(spawnerDataAreaIds);
+      return [... new Set(areaIds)];
+    };
+
+    const pugOption = { Lookup, LogicHelper, Enumerable, math, enemy, skill, spawnerData, getAreaIds, areaInfo, fieldName, areaDetail };
     await fs.writeFile(
       path.join(Option.outFolder, 'enemy.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'enemy.pug'), pugOption), Option.minifyOption),
@@ -487,14 +501,6 @@ export class PageBuilder {
     await fs.writeFile(
       path.join(Option.outFolder, 'other.html'),
       minify(pug.renderFile(path.join(Option.viewFolder, 'other.pug'), pugOption), Option.minifyOption),
-    );
-  }
-
-  public async memo() {
-    const pugOption = { Option };
-    await fs.writeFile(
-      path.join(Option.outFolder, 'memo.html'),
-      minify(pug.renderFile(path.join(Option.viewFolder, 'memo.pug'), pugOption), Option.minifyOption),
     );
   }
 
