@@ -21,7 +21,7 @@
   <div id="app">
     <el-dialog title="" :visible.sync="itemPickerDialogVisible" fullscreen>
       <div class="item-picker-container">
-        <el-select v-if="itemPickerShowSort" v-model="itemPickerSort" placeholder="" filterable clearable>
+        <el-select v-if="itemPickerShowSort" v-model="itemPickerSort" placeholder="Sort" filterable clearable>
           <el-option v-for="item in itemPickerSortOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
         <el-input v-model="itemPickerFilterKeyword" placeholder="名前 / DF"></el-input>
@@ -44,6 +44,12 @@
           <img class="icon-small" :src="'img/icon_s/Texture2D/icon_item_s_' + supportItemSelected.DF + '.png'" :alt="supportItemSelected.name">
           <el-button @click="itemPickerDialogVisible = true">Pick Item</el-button>
           <el-button @click="onAddSupportItem">Add</el-button>
+        </div>
+        <div>
+          <p>
+            LV 全設定 <el-input-number v-model="supportItemAllLevel" :min="1" size="small" step-strictly></el-input-number>
+            <el-button @click="onSetAllSupportItemLevel" type="primary">確認</el-button>
+          </p>
         </div>
         <div>Total: {{ player.supports.length }}</div>
         <table>
@@ -68,11 +74,11 @@
             <table>
               <tr v-for="state in getSupportItemStates(i)">
                 <th>{{ state.label }}</th>
-                <td>+{{ state.value }}</td>
+                <td>{{ getNumberSignText(state.value) }}{{ state.value }}</td>
               </tr>
               <tr v-for="element in getSupportItemElements(i)">
                 <th>{{ element.label }}</th>
-                <td>+{{ element.value }}</td>
+                <td>{{ getNumberSignText(element.value) }}{{ element.value }}</td>
               </tr>
             </table>
           </div>
@@ -105,7 +111,7 @@
               </tr>
               <tr>
                 <th>食事 LV</th>
-                <td><el-input-number v-model="player.characterModifier.foodLevel" :min="1" :max="player.character.FDM.length" size="small" step-strictly></el-input-number></td>
+                <td><el-input-number v-model="player.characterModifier.foodLevel" :min="1" :max="player.characterModifier.level" size="small" step-strictly></el-input-number></td>
               </tr>
               <tr>
                 <th>BlazeArt LV</th>
@@ -135,7 +141,7 @@
                             <th>skill</th>
                             <td>
                               <p v-for="skill in characterState.skills" :key="skill.id">
-                                {{ skill.name }} +{{ skill.effectValue }}
+                                {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
                               </p>
                             </td>
                           </tr>
@@ -162,7 +168,7 @@
                             <th>skill</th>
                             <td>
                               <p v-for="skill in characterState.skills" :key="skill.id">
-                                {{ skill.name }} +{{ skill.effectValue }}
+                                {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
                               </p>
                             </td>
                           </tr>
@@ -185,7 +191,7 @@
                             <th>skill</th>
                             <td>
                               <p v-for="skill in getCharacterDodgeWithDetail().skills" :key="skill.id">
-                                {{ skill.name }} +{{ skill.effectValue }}
+                                {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
                               </p>
                             </td>
                           </tr>
@@ -204,7 +210,7 @@
                             <th>skill</th>
                             <td>
                               <p v-for="skill in getCharacterDodgeWithDetail().skills" :key="skill.id">
-                                {{ skill.name }} +{{ skill.effectValue }}
+                                {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
                               </p>
                             </td>
                           </tr>
@@ -228,7 +234,7 @@
                             <th>skill</th>
                             <td>
                               <p v-for="skill in getCharacterCriticalHitWithDetail().skills" :key="skill.id">
-                                {{ skill.name }} +{{ skill.effectValue }}
+                                {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
                               </p>
                             </td>
                           </tr>
@@ -247,7 +253,7 @@
                             <th>skill</th>
                             <td>
                               <p v-for="skill in getCharacterCriticalHitWithDetail().skills" :key="skill.id">
-                                {{ skill.name }} +{{ skill.effectValue }}
+                                {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
                               </p>
                             </td>
                           </tr>
@@ -271,7 +277,7 @@
                             <th>skill</th>
                             <td>
                               <p v-for="skill in getCharacterElements().map(p => p.skills).flat()" :key="skill.id">
-                                {{ skill.name }} +{{ skill.effectValue }}
+                                {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
                               </p>
                             </td>
                           </tr>
@@ -290,7 +296,7 @@
                             <th>skill</th>
                             <td>
                               <p v-for="skill in getCharacterElements().map(p => p.skills).flat()" :key="skill.id">
-                                {{ skill.name }} +{{ skill.effectValue }}
+                                {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
                               </p>
                             </td>
                           </tr>
@@ -315,7 +321,7 @@
 
 
 
-    <div class="container">
+    <div class="container" v-loading="pageLoading">
       <div class="main-equipment">
         <div class="left-equipment">
 
@@ -351,7 +357,7 @@
                 <table>
                   <tr v-for="item in getEquipmentStates('weapon')" :key="item.label">
                     <th>{{ item.label }}</th>
-                    <td>{{ item.value }}{{ item.skillValue ? ` + ${item.skillValue + item.extraValue}` : '' }}</td>
+                    <td>{{ item.value }}{{ item.skillValue ? ` ${getNumberSignText(item.skillValue + item.extraValue)} ${item.skillValue + item.extraValue}` : '' }}</td>
                   </tr>
                   <tr v-if="getEquipmentDodge('weapon').skills.length">
                     <th>回避</th>
@@ -363,7 +369,7 @@
                   </tr>
                   <tr v-for="element in getEquipmentElements('weapon')" :key="element.label">
                     <th>{{ element.label }}</th>
-                    <td>{{ element.value }}{{ element.skillValue ? ` + ${element.skillValue + element.extraValue}` : '' }}</td>
+                    <td>{{ element.value }}{{ element.skillValue ? ` ${getNumberSignText(element.skillValue + element.extraValue)} ${element.skillValue + element.extraValue}` : '' }}</td>
                   </tr>
                 </table>
                 <br>
@@ -408,7 +414,7 @@
                 <table>
                   <tr v-for="item in getEquipmentStates('shield')" :key="item.label">
                     <th>{{ item.label }}</th>
-                    <td>{{ item.value }}{{ item.skillValue ? ` + ${item.skillValue + item.extraValue}` : '' }}</td>
+                    <td>{{ item.value }}{{ item.skillValue ? ` ${getNumberSignText(item.skillValue + item.extraValue)} ${item.skillValue + item.extraValue}` : '' }}</td>
                   </tr>
                   <tr v-if="getEquipmentDodge('shield').skills.length">
                     <th>回避</th>
@@ -420,7 +426,7 @@
                   </tr>
                   <tr v-for="element in getEquipmentElements('shield')" :key="element.label">
                     <th>{{ element.label }}</th>
-                    <td>{{ element.value }}{{ element.skillValue ? ` + ${element.skillValue + element.extraValue}` : '' }}</td>
+                    <td>{{ element.value }}{{ element.skillValue ? ` ${getNumberSignText(element.skillValue + element.extraValue)} ${element.skillValue + element.extraValue}` : '' }}</td>
                   </tr>
                 </table>
                 <br>
@@ -466,7 +472,7 @@
                 <table>
                   <tr v-for="item in getEquipmentStates('helmet')" :key="item.label">
                     <th>{{ item.label }}</th>
-                    <td>{{ item.value }}{{ item.skillValue ? ` + ${item.skillValue + item.extraValue}` : '' }}</td>
+                    <td>{{ item.value }}{{ item.skillValue ? ` ${getNumberSignText(item.skillValue + item.extraValue)} ${item.skillValue + item.extraValue}` : '' }}</td>
                   </tr>
                   <tr v-if="getEquipmentDodge('helmet').skills.length">
                     <th>回避</th>
@@ -478,7 +484,7 @@
                   </tr>
                   <tr v-for="element in getEquipmentElements('helmet')" :key="element.label">
                     <th>{{ element.label }}</th>
-                    <td>{{ element.value }}{{ element.skillValue ? ` + ${element.skillValue + element.extraValue}` : '' }}</td>
+                    <td>{{ element.value }}{{ element.skillValue ? ` ${getNumberSignText(element.skillValue + element.extraValue)} ${element.skillValue + element.extraValue}` : '' }}</td>
                   </tr>
                 </table>
                 <br>
@@ -525,7 +531,7 @@
                 <table>
                   <tr v-for="item in getEquipmentStates('cloth')" :key="item.label">
                     <th>{{ item.label }}</th>
-                    <td>{{ item.value }}{{ item.skillValue ? ` + ${item.skillValue + item.extraValue}` : '' }}</td>
+                    <td>{{ item.value }}{{ item.skillValue ? ` ${getNumberSignText(item.skillValue + item.extraValue)} ${item.skillValue + item.extraValue}` : '' }}</td>
                   </tr>
                   <tr v-if="getEquipmentDodge('cloth').skills.length">
                     <th>回避</th>
@@ -537,7 +543,7 @@
                   </tr>
                   <tr v-for="element in getEquipmentElements('cloth')" :key="element.label">
                     <th>{{ element.label }}</th>
-                    <td>{{ element.value }}{{ element.skillValue ? ` + ${element.skillValue + element.extraValue}` : '' }}</td>
+                    <td>{{ element.value }}{{ element.skillValue ? ` ${getNumberSignText(element.skillValue + element.extraValue)} ${element.skillValue + element.extraValue}` : '' }}</td>
                   </tr>
                 </table>
                 <br>
@@ -584,7 +590,7 @@
                 <table>
                   <tr v-for="item in getEquipmentStates('accessory' + i)" :key="item.label">
                     <th>{{ item.label }}</th>
-                    <td>{{ item.value }}{{ item.skillValue ? ` + ${item.skillValue + item.extraValue}` : '' }}</td>
+                    <td>{{ item.value }}{{ item.skillValue ? ` ${getNumberSignText(item.skillValue + item.extraValue)} ${item.skillValue + item.extraValue}` : '' }}</td>
                   </tr>
                   <tr v-if="getEquipmentDodge('accessory' + i).skills.length">
                     <th>回避</th>
@@ -596,7 +602,7 @@
                   </tr>
                   <tr v-for="element in getEquipmentElements('accessory' + i)" :key="element.label">
                     <th>{{ element.label }}</th>
-                    <td>{{ element.value }}{{ element.skillValue ? ` + ${element.skillValue + element.extraValue}` : '' }}</td>
+                    <td>{{ element.value }}{{ element.skillValue ? ` ${getNumberSignText(element.skillValue + element.extraValue)} ${element.skillValue + element.extraValue}` : '' }}</td>
                   </tr>
                 </table>
                 <br>
@@ -626,7 +632,24 @@
         </div>
         <div class="sub-equipment-items">
           <div v-for="(item, i) in player.supports" :key="i">
-            <img class="icon-middle" :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'">
+            <v-popover placement="right-end" trigger="hover">
+              <img :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'">
+              <template slot="popover">
+                <div class="equipment-popover">
+                  <h3>{{ item.NAME }} (LV {{ player.supportModifier[i].level }})</h3>
+                  <table>
+                    <tr v-for="state in getSupportItemStates(i)">
+                      <th>{{ state.label }}</th>
+                      <td>{{ getNumberSignText(state.value) }}{{ state.value }}</td>
+                    </tr>
+                    <tr v-for="element in getSupportItemElements(i)">
+                      <th>{{ element.label }}</th>
+                      <td>{{ getNumberSignText(element.value) }}{{ element.value }}</td>
+                    </tr>
+                  </table>
+                </div>
+              </template>
+            </v-popover>
           </div>
         </div>
       </div>

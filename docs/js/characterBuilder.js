@@ -77,8 +77,8 @@ class CharacterModifier {
 }
 
 class EquipmentModifier {
+  quality = 120;
   level = 80;
-  quality = 100;
   skill;
 
   set skillId(id) {
@@ -134,8 +134,9 @@ new Vue({
 
     skillLookup: {},
     addonSkills: [],
-    
-    selectItems: [],
+
+    // state
+    pageLoading: true,
 
     // dialog
     characterEditDialogVisible: false,
@@ -166,7 +167,7 @@ new Vue({
       value: p[0],
     }))),
     itemPickerShowRemoveIcon: true,
-    itemPickerShowSort: null,
+    itemPickerShowSort: true,
     itemPickerSort: null,
     itemPickerDialogVisible: false,
     itemPickerFilterCategory: null,
@@ -178,7 +179,7 @@ new Vue({
 
     supportItemEditDialogVisible: false,
     supportItemSelected: null,
-    
+    supportItemAllLevel: 80,
 
     // data
     player: new Player(),
@@ -212,7 +213,7 @@ new Vue({
         (!this.itemPickerFilterKeyword || p.NAME.toLowerCase().includes(this.itemPickerFilterKeyword.toLowerCase()) || p.DF === +this.itemPickerFilterKeyword) && 
         (!this.itemPickerFilterCharacterGender || p.EQU_GND.some(i => !i.GEN) || p.EQU_GND.filter(i => i.ENB).some(i => i.GEN === this.itemPickerFilterCharacterGender)) &&
         (!this.itemPickerFilterWeaponGen.length || this.itemPickerFilterWeaponGen.includes(p.GEN)) &&
-        (!this.itemPickerFilterGroupDf || !p.GROUP_DF || this.itemPickerFilterGroupDf === p.GROUP_DF)
+        (!this.itemPickerFilterGroupDf || !p.GROUP_DF || this.itemPickerFilterGroupDf === p.GROUP_DF) || console.log(this.itemPickerFilterGroupDf, p.GROUP_DF, p.DF, p.EQU_GND, p.CATEG)
       );
 
       if (this.itemPickerSort) {
@@ -236,7 +237,6 @@ new Vue({
     openSupportItemEditDialog() {
       this.resetItemPickerFilter().setDefaultItemPickerFilter();
       this.itemPickerShowRemoveIcon = false;
-      this.itemPickerShowSort = true;
       this.itemPickerCallback = item => this.supportItemSelected = item;
       if (!this.supportItemSelected) {
         this.supportItemSelected = this.items[0];
@@ -250,6 +250,11 @@ new Vue({
     onRemoveSupportItem(i) {
       this.player.supports.splice(i, 1);
       this.player.supportModifier.splice(i, 1);
+    },
+    onSetAllSupportItemLevel() {
+      for (const modifier of this.player.supportModifier) {
+        modifier.level = this.supportItemAllLevel;
+      }
     },
     getSupportItemStates(i) {
       return Equipment.states.map(state => ({
@@ -570,7 +575,7 @@ new Vue({
     // helpers
     resetItemPickerFilter() {
       this.itemPickerShowRemoveIcon = true;
-      this.itemPickerShowSort = false;
+      this.itemPickerShowSort = true;
       this.itemPickerSort = null;
   
       this.itemPickerFilterCategory = null;
@@ -583,10 +588,14 @@ new Vue({
     },
     setDefaultItemPickerFilter() {
       if (this.player.character) {
-        this.itemPickerFilterCharacterGender = this.player.character;
+        this.itemPickerFilterCharacterGender = this.player.character.GEN;
         this.itemPickerFilterGroupDf = this.player.character.GROUP_DF;
       }
       return this;
+    },
+
+    getNumberSignText(number) {
+      return number > 0 ? '+' : '';
     },
 
     //
@@ -604,12 +613,9 @@ new Vue({
         window.addonSkills = this.addonSkills = this.skill.m_vList.filter(p => p.type === 2 && Equipment.skillTriggers.includes(p.trigger));
         this.items = this.item.m_vList.filter(p => p.EQU_BRD);
         this.characters = this.chara.m_vList.filter(p => p.SKILL.length);
-
         this.skillLookup = Enumerable.from(this.skill.m_vList).toObject(p => p.id, p => p);
-        this.selectItems = this.items.map(p => ({
-          label: `${p.NAME} (LV 80) DF=${p.DF}`,
-          value: p.DF,
-        }));
+
+        this.pageLoading = false;
       } catch (e) {
         this.$message.error({
           message: e.toString(),
