@@ -576,8 +576,7 @@ new Vue({
     resetItemPickerFilter() {
       this.itemPickerShowRemoveIcon = true;
       this.itemPickerShowSort = true;
-      this.itemPickerSort = null;
-  
+
       this.itemPickerFilterCategory = null;
       this.itemPickerFilterKeyword = '';
       this.itemPickerFilterCharacterGender = null;
