@@ -110,16 +110,6 @@ class Player {
   supportModifier = [];
 }
 
-Vue.mixin({
-  data: function() {
-    return {
-      Lookup,
-      CharacterModifier,
-    };
-  },
-});
-
-
 new Vue({
   el: '#app',
   data: {
