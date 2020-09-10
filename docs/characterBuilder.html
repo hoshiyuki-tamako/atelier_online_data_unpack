@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/characterBuilder.css">
   <script src="https://cdn.jsdelivr.net/npm/linq@3.2.3/linq.min.js" integrity="sha256-wNfOgqZN3b4Ddw/AMdNgAqUulgfVw9e96maWCY30eBU=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 
   <script src="https://unpkg.com/vue-select@latest"></script>
 
@@ -23,15 +23,47 @@
       <div class="item-picker-container">
         <el-select v-if="itemPickerShowSort" v-model="itemPickerSort" placeholder="Sort" filterable clearable>
           <el-option v-for="item in itemPickerSortOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
-        </el-select>
+        </el-select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>show info</span>
+        <el-switch v-model="itemPickerShowStates"></el-switch>
         <el-input v-model="itemPickerFilterKeyword" placeholder="名前 / DF"></el-input>
         <div class="item-picker-items">
           <div v-if="itemPickerShowRemoveIcon" class="item-picker-remove-item" @click="onPickItem()">
             <img class="icon-small" src="img/icon_s/Texture2D/icon_item_s_10790001.png">
           </div>
           <div @click="onPickItem(item)" v-for="item in getFilteredItemPickerItems()" :key="item.DF">
-            <p>{{ item.NAME }}</p>
-            <img class="icon-small" :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'">
+            <v-popover placement="right-end" trigger="hover">
+              <p>{{ item.NAME }}</p>
+              <img class="icon-small" :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'">
+              <template v-if="itemPickerShowStates" slot="popover">
+                <div class="equipment-popover">
+                  <table>
+                    <tr v-for="_item in getItemStates(item)" :key="_item.label">
+                      <th>{{ _item.label }}</th>
+                      <td>{{ _item.value }}{{ _item.skillValue ? ` ${getNumberSignText(_item.skillValue)} ${_item.skillValue}` : '' }}</td>
+                    </tr>
+                    <tr v-for="info in [getItemDodge(item)].filter(p => p.skills.length)">
+                      <th>回避</th>
+                      <td>{{ getItemDodge(item).value }}</td>
+                    </tr>
+                    <tr v-for="info in [getItemCriticalHit(item)].filter(p => p.skills.length)">
+                      <th>クリティカル</th>
+                      <td>{{ info.value }}</td>
+                    </tr>
+                    <tr v-for="element in getItemElements(item)" :key="element.label">
+                      <th>{{ element.label }}</th>
+                      <td>{{ element.value }}{{ element.skillValue ? ` ${getNumberSignText(element.skillValue)} ${element.skillValue}` : '' }}</td>
+                    </tr>
+                  </table>
+                  <br>
+                  <div v-for="skill in getItemSkills(item)" :key="skill.id">
+                    <p>{{ skill.name }}</p>
+                    <p>{{ skill.detail }}</p>
+                    <p>&#x3E;</p>
+                  </div>
+                </div>
+              </template>
+            </v-popover>
           </div>
         </div>
       </div>

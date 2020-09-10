@@ -169,6 +169,7 @@ new Vue({
     itemPickerShowRemoveIcon: true,
     itemPickerShowSort: true,
     itemPickerSort: null,
+    itemPickerShowStates: false,
     itemPickerDialogVisible: false,
     itemPickerFilterCategory: null,
     itemPickerFilterKeyword: '',
@@ -183,6 +184,11 @@ new Vue({
     supportItemEditDialogVisible: false,
     supportItemSelected: null,
     supportItemAllLevel: 80,
+
+    // cache
+    defaultItemDodgeSkillCache: new Map(),
+    defaultItemCriticalSkillCache: new Map(),
+    defaultItemElementSkillCache: new Map(),
 
     // data
     player: new Player(),
@@ -447,10 +453,63 @@ new Vue({
       if (!this.player.equipment[slot]) {
         return [];
       }
-
       return this.getItemSkills(this.player.equipment[slot], this.player.equipmentModifier[slot].quality);
     },
-    getItemSkills(item, quality = 1) {
+
+    // items
+    getItemStates(item, level = 80) {
+      const skills = this.getItemSkills(item, level);
+      return Equipment.states
+        .filter(p => item.EQU[p])
+        .map(p => {
+          return {
+            key: p,
+            label: Lookup.state[p],
+            value: LogicHelper.calculateState(item.EQU[p], level),
+            skillValue: this.getSkillEffectTargetValues(skills, Lookup.stateMapSkillEffectTarget[p]),
+          };
+        })
+        .filter(p => p.value + p.skillValue);
+    },
+    getItemDodge(item) {
+      if (!this.defaultItemDodgeSkillCache.has(item)) {
+        this.defaultItemDodgeSkillCache.set(item, this.getFilteredSkills(this.getItemSkills(item), 8))
+      }
+
+      const skills = this.defaultItemDodgeSkillCache.get(item);
+      return {
+        skills,
+        value: skills.reduce((sum, p) => sum + p.effectValue, 0),
+      };
+    },
+    getItemCriticalHit(item) {
+      if (!this.defaultItemCriticalSkillCache.has(item)) {
+        this.defaultItemCriticalSkillCache.set(item, this.getFilteredSkills(this.getItemSkills(item), 9))
+      }
+
+      const skills = this.defaultItemCriticalSkillCache.get(item);
+      return {
+        skills,
+        value: skills.reduce((sum, p) => sum + p.effectValue, 0),
+      };
+    },
+    getItemElements(item) {
+      if (!this.defaultItemElementSkillCache.has(item)) {
+        this.defaultItemElementSkillCache.set(item, this.getItemSkills(item));
+      }
+      const skills = this.defaultItemElementSkillCache.get(item);
+      return Object.entries(Lookup.element)
+        .filter(p => item.ELM[p[0]])
+        .map(p => ({
+          key: p[0],
+          label: p[1],
+          value: item.ELM[p[0]],
+          skillValue: 0, //this.getSkillEffectTargetValues(skills, Lookup.elementMapSkillEffectTarget[p]),
+          skills,
+        }))
+        .filter(p => p.value + p.skillValue);
+    },
+    getItemSkills(item, quality = 120) {
       const allSkills = item.SPC.filter(p => p.THR <= quality);
       return (allSkills.length ? allSkills[allSkills.length - 1].SKILL : [])
         .map(p => this.skillLookup[p.DF])
