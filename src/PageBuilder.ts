@@ -387,6 +387,7 @@ export class PageBuilder {
       fs.readdir(path.join(Option.outFolder, 'img', 'icon_item01', 'Texture2D')),
     ]) as [Wealth, string[]];
 
+    wealth.m_vList.sort((a, b) => a.SORT - b.SORT);
     const wealthIcons = icons
       .map(p => path.basename(p))
       .filter(p => !p.includes("#"))

@@ -99,10 +99,10 @@ export class Lookup {
 
   // skill look up
   public static skillEffect = {
+    101: '属性値増加',
     135: 'Monster Zone Effect',
     139: 'Zone Effect',
   };
-
 
   public static skillEffectTarget = {
     0: 'none',
@@ -126,6 +126,15 @@ export class Lookup {
     25: '光属性値増加',
     26: '闇属性値増加',
     27: '火、土、風、水、光、闇の属性'
+  };
+
+  public static elementMapSkillEffectTarget = {
+    FIRE: [21, 27],
+    WATER: [22, 27],
+    WIND: [23, 27],
+    EARTH: [24, 27],
+    LIGHT: [25, 27],
+    DARK: [26, 27],
   };
 
   // enemy look up
