@@ -127,12 +127,14 @@ new Vue({
     chara: null,
     item: null,
     skill: null,
+    abnormalstate: null,
 
     // processed data
     items: [],
     characters: [],
 
     skillLookup: {},
+    abnormalStateLookup: {},
     addonSkills: [],
 
     // state
@@ -162,6 +164,14 @@ new Vue({
         label: '速度',
         value: 'SPD'
       },
+      {
+        label: '回避',
+        value: 'dodge'
+      },
+      {
+        label: 'クリティカル',
+        value: 'criticalHit'
+      },
     ].concat(Object.entries(Lookup.element).map(p => ({
       label: p[1],
       value: p[0],
@@ -176,6 +186,9 @@ new Vue({
     itemPickerFilterWeaponGen: [], // [gen_id], GEN
     itemPickerFilterGroupDf: null,
     itemPickerCallback: null, // (item: unknown?) => void
+
+    itemPickerDodgeSortSearchCache: new Map(),
+    itemPickerCriticalHitSortSearchCache: new Map(),
 
     supportItemEditDialogVisible: false,
     supportItemSelected: null,
@@ -213,7 +226,7 @@ new Vue({
         (!this.itemPickerFilterKeyword || p.NAME.toLowerCase().includes(this.itemPickerFilterKeyword.toLowerCase()) || p.DF === +this.itemPickerFilterKeyword) && 
         (!this.itemPickerFilterCharacterGender || p.EQU_GND.some(i => !i.GEN) || p.EQU_GND.filter(i => i.ENB).some(i => i.GEN === this.itemPickerFilterCharacterGender)) &&
         (!this.itemPickerFilterWeaponGen.length || this.itemPickerFilterWeaponGen.includes(p.GEN)) &&
-        (!this.itemPickerFilterGroupDf || !p.GROUP_DF || this.itemPickerFilterGroupDf === p.GROUP_DF) || console.log(this.itemPickerFilterGroupDf, p.GROUP_DF, p.DF, p.EQU_GND, p.CATEG)
+        (!this.itemPickerFilterGroupDf || !p.GROUP_DF || this.itemPickerFilterGroupDf === p.GROUP_DF)
       );
 
       if (this.itemPickerSort) {
@@ -221,6 +234,26 @@ new Vue({
           items.sort((a, b) => LogicHelper.calculateState(b.EQU[this.itemPickerSort], 80) - LogicHelper.calculateState(a.EQU[this.itemPickerSort], 80));
         } else if (this.itemPickerSort in Lookup.element) {
           items.sort((a, b) => b.ELM[this.itemPickerSort] - a.ELM[this.itemPickerSort]);
+        } else if (this.itemPickerSort === 'dodge') {
+          items.sort((a, b) => {
+            if(!this.itemPickerDodgeSortSearchCache.has(b)) {
+              this.itemPickerDodgeSortSearchCache.set(b, this.getSkillEffectTargetValues(this.getItemSkills(b, 80), 8));
+            }
+            if(!this.itemPickerDodgeSortSearchCache.has(a)) {
+              this.itemPickerDodgeSortSearchCache.set(a, this.getSkillEffectTargetValues(this.getItemSkills(a, 80), 8));
+            }
+            return this.itemPickerDodgeSortSearchCache.get(b) - this.itemPickerDodgeSortSearchCache.get(a);
+          });
+        } else if (this.itemPickerSort === 'criticalHit') {
+          items.sort((a, b) => {
+            if(!this.itemPickerCriticalHitSortSearchCache.has(b)) {
+              this.itemPickerCriticalHitSortSearchCache.set(b, this.getSkillEffectTargetValues(this.getItemSkills(b, 80), 9));
+            }
+            if(!this.itemPickerCriticalHitSortSearchCache.has(a)) {
+              this.itemPickerCriticalHitSortSearchCache.set(a, this.getSkillEffectTargetValues(this.getItemSkills(a, 80), 9));
+            }
+            return this.itemPickerCriticalHitSortSearchCache.get(b) - this.itemPickerCriticalHitSortSearchCache.get(a);
+          });
         }
       }
 
@@ -425,9 +458,13 @@ new Vue({
         return [];
       }
 
-      const allSkills = this.player.equipment[slot].SPC.filter(p => p.THR <= this.player.equipmentModifier[slot].quality);
+      return this.getItemSkills(this.player.equipment[slot], this.player.equipmentModifier[slot].quality);
+    },
+    getItemSkills(item, quality = 1) {
+      const allSkills = item.SPC.filter(p => p.THR <= quality);
       return (allSkills.length ? allSkills[allSkills.length - 1].SKILL : [])
-        .map(p => this.skillLookup[p.DF]);
+        .map(p => this.skillLookup[p.DF])
+        .filter(p => p);
     },
 
     onPickWeapon() {
@@ -600,19 +637,23 @@ new Vue({
     //
     async load() {
       try {
-        const [chara, item, skill] = await Promise.all([
+        const [chara, item, skill, abnormalstate] = await Promise.all([
           fetch('export/chara.json').then(p => p.json()),
           fetch('export/item.json').then(p => p.json()),
           fetch('export/skill.json').then(p => p.json()),
+          fetch('export/abnormalstate.json').then(p => p.json()),
         ]);
         this.item = item;
         this.chara = chara;
         this.skill = skill;
+        this.abnormalstate = abnormalstate;
 
         window.addonSkills = this.addonSkills = this.skill.m_vList.filter(p => p.type === 2 && Equipment.skillTriggers.includes(p.trigger));
+  
         this.items = this.item.m_vList.filter(p => p.EQU_BRD);
         this.characters = this.chara.m_vList.filter(p => p.SKILL.length);
         this.skillLookup = Enumerable.from(this.skill.m_vList).toObject(p => p.id, p => p);
+        this.abnormalStateLookup = Enumerable.from(this.abnormalstate.m_vList).toObject(p => p.id, p => p);
 
         this.pageLoading = false;
       } catch (e) {

@@ -89,13 +89,16 @@
   white-space: nowrap;
 }
 
+.character-skill-popover-detail {
+  width: 400px;
+}
 
 /* equipment */
 .equipment-icon {
   cursor: pointer;
 }
 
-.equipment-popover, .character-state-popover {
+.equipment-popover, .character-state-popover, .character-skill-popover {
   border: 2px solid green;
   color: black;
   background: white;

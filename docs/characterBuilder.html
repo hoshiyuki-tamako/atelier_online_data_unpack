@@ -276,7 +276,7 @@
                           <tr>
                             <th>skill</th>
                             <td>
-                              <p v-for="skill in getCharacterElements().map(p => p.skills).flat()" :key="skill.id">
+                              <p v-for="skill in element.skills" :key="skill.id">
                                 {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
                               </p>
                             </td>
@@ -295,8 +295,8 @@
                           <tr>
                             <th>skill</th>
                             <td>
-                              <p v-for="skill in getCharacterElements().map(p => p.skills).flat()" :key="skill.id">
-                                {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
+                              <p v-for="skill in element.skills" :key="skill.id">
+                                {{ skill.id }} {{ skill.name }} {{ getNumberSignText(skill.effectValue) }}{{ skill.effectValue }}
                               </p>
                             </td>
                           </tr>
@@ -311,7 +311,20 @@
   
             <div>
               <div v-for="skill in getFilteredSkills(getCharacterSkills())" :key="skill.id">
-                <p>{{ skill.name }}</p>
+                <v-popover placement="right-end" trigger="hover">
+                  <p>{{ skill.name }}</p>
+                  <template v-if="skill.detail || skill.state.length || skill.stateOwn.length" slot="popover">
+                    <div class="character-skill-popover">
+                      <p class="character-skill-popover-detail">{{ skill.detail }}</p>
+                      <div v-for="(state in skill.state" :key="state.id">
+                        <p>{{(state.rate * 100).toFixed()}}% {{ abnormalStateLookup[state.id].name }}</p>
+                      </div>
+                      <div v-for="(state in skill.stateOwn" :key="state.i">
+                        <p>{{(state.rate * 100).toFixed()}}% {{ abnormalStateLookup[state.id].name }}</p>
+                      </div>
+                    </div>
+                  </template>
+                </v-popover>
               </div>
             </div>
           </div>
@@ -361,11 +374,11 @@
                   </tr>
                   <tr v-if="getEquipmentDodge('weapon').skills.length">
                     <th>回避</th>
-                    <td>{{ item.value }}</td>
+                    <td>{{ getEquipmentDodge('weapon').value }}</td>
                   </tr>
                   <tr v-if="getEquipmentCriticalHit('weapon').skills.length">
                     <th>クリティカル</th>
-                    <td>{{ item.value }}</td>
+                    <td>{{ getEquipmentCriticalHit('weapon').value }}</td>
                   </tr>
                   <tr v-for="element in getEquipmentElements('weapon')" :key="element.label">
                     <th>{{ element.label }}</th>
@@ -418,11 +431,11 @@
                   </tr>
                   <tr v-if="getEquipmentDodge('shield').skills.length">
                     <th>回避</th>
-                    <td>{{ item.value }}</td>
+                    <td>{{ getEquipmentDodge('shield').value }}</td>
                   </tr>
                   <tr v-if="getEquipmentCriticalHit('shield').skills.length">
                     <th>クリティカル</th>
-                    <td>{{ item.value }}</td>
+                    <td>{{ getEquipmentCriticalHit('shield').value }}</td>
                   </tr>
                   <tr v-for="element in getEquipmentElements('shield')" :key="element.label">
                     <th>{{ element.label }}</th>
@@ -476,11 +489,11 @@
                   </tr>
                   <tr v-if="getEquipmentDodge('helmet').skills.length">
                     <th>回避</th>
-                    <td>{{ item.value }}</td>
+                    <td>{{ getEquipmentDodge('helmet').value }}</td>
                   </tr>
                   <tr v-if="getEquipmentCriticalHit('helmet').skills.length">
                     <th>クリティカル</th>
-                    <td>{{ item.value }}</td>
+                    <td>{{ getEquipmentCriticalHit('helmet').value }}</td>
                   </tr>
                   <tr v-for="element in getEquipmentElements('helmet')" :key="element.label">
                     <th>{{ element.label }}</th>
@@ -535,11 +548,11 @@
                   </tr>
                   <tr v-if="getEquipmentDodge('cloth').skills.length">
                     <th>回避</th>
-                    <td>{{ item.value }}</td>
+                    <td>{{ getEquipmentDodge('cloth').value }}</td>
                   </tr>
                   <tr v-if="getEquipmentCriticalHit('cloth').skills.length">
                     <th>クリティカル</th>
-                    <td>{{ item.value }}</td>
+                    <td>{{ getEquipmentCriticalHit('cloth').value }}</td>
                   </tr>
                   <tr v-for="element in getEquipmentElements('cloth')" :key="element.label">
                     <th>{{ element.label }}</th>
@@ -594,11 +607,11 @@
                   </tr>
                   <tr v-if="getEquipmentDodge('accessory' + i).skills.length">
                     <th>回避</th>
-                    <td>{{ item.value }}</td>
+                    <td>{{ getEquipmentDodge('accessory' + i).value }}</td>
                   </tr>
                   <tr v-if="getEquipmentCriticalHit('accessory' + i).skills.length">
                     <th>クリティカル</th>
-                    <td>{{ item.value }}</td>
+                    <td>{{ getEquipmentCriticalHit('accessory' + i).value }}</td>
                   </tr>
                   <tr v-for="element in getEquipmentElements('accessory' + i)" :key="element.label">
                     <th>{{ element.label }}</th>
