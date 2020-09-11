@@ -936,7 +936,7 @@
         </div>
         <br>
         <div v-for="skill in [getCharacterBlazeArt()].filter(p => p)">
-          <h4>Blaze Art</h4>
+          <h4>Blaze Art (LV {{ player.characterModifier.blazeArtLevel }})</h4>
           <p>{{ skill.name }}</p>
           <p>{{ skill.detail }}</p>
           <div v-if="skill.attribute === 3">
