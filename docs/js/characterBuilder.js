@@ -891,10 +891,15 @@ new Vue({
 
     // import / export
     onImportFromString() {
+      const orginalPlayer = this.player;
       if (this.importFromString(this.importString)) {
         this.successNotification();
         this.importDialogVisible = false;
+        return;
       }
+
+      // restore if failed to load
+      this.player = orginalPlayer;
     },
     importFromLocalStorage() {
       try {
