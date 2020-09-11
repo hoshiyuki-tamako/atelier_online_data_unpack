@@ -180,24 +180,44 @@ new Vue({
 
     itemPickerSortOption: [
       {
-        label: '物理攻撃base',
+        label: '物理攻撃',
         value: 'SATK'
       },
       {
-        label: '物理防禦base',
+        label: '物理防禦',
         value: 'SDEF'
       },
       {
-        label: '魔法攻撃base',
+        label: '魔法攻撃',
         value: 'MATK'
       },
       {
-        label: '魔法防禦base',
+        label: '魔法防禦',
         value: 'MDEF'
       },
       {
-        label: '速度base',
+        label: '速度',
         value: 'SPD'
+      },
+      {
+        label: '物理攻撃base(support)',
+        value: 'SATK_base'
+      },
+      {
+        label: '物理防禦base(support)',
+        value: 'SDEF_base'
+      },
+      {
+        label: '魔法攻撃base(support)',
+        value: 'MATK_base'
+      },
+      {
+        label: '魔法防禦base(support)',
+        value: 'MDEF_base'
+      },
+      {
+        label: '速度base(support)',
+        value: 'SPD_base'
       },
       {
         label: '回避',
@@ -207,9 +227,14 @@ new Vue({
         label: 'クリティカル',
         value: 'criticalHit'
       },
-    ].concat(Object.entries(Lookup.element).map(p => ({
-      label: p[1] + 'base',
-      value: p[0],
+    ]
+    .concat(Object.entries(Lookup.element).map(([value, label]) => ({
+      label,
+      value,
+    })))
+    .concat(Object.entries(Lookup.element).map(([value, label]) => ({
+      label: `${label}base(support)`,
+      value: `${value}_base`,
     }))),
     itemPickerShowRemoveIcon: true,
     itemPickerShowSort: true,
@@ -243,7 +268,8 @@ new Vue({
     defaultItemDodgeSkillCache: new Map(),
     defaultItemCriticalSkillCache: new Map(),
     defaultItemElementSkillCache: new Map(),
-    imageCache: [],
+    itemPickerSortStateCache: new Map(),
+    itemPickerSortElementCache: new Map(),
 
     // data
     player: new Player(),
@@ -288,9 +314,37 @@ new Vue({
 
       if (this.itemPickerSort) {
         if (this.itemPickerSort in Lookup.state) {
-          items.sort((a, b) => LogicHelper.calculateState(b.EQU[this.itemPickerSort], 80) - LogicHelper.calculateState(a.EQU[this.itemPickerSort], 80));
+          items.sort((a, b) => {
+            const defualt = { value: 0, skillValue :0 };
+            if (!this.itemPickerSortStateCache.has(a)) {
+              this.itemPickerSortStateCache.set(a, Enumerable.from(this.getItemStates(a)).toObject(p => p.key, p => p));
+            }
+            if (!this.itemPickerSortStateCache.has(b)) {
+              this.itemPickerSortStateCache.set(b, Enumerable.from(this.getItemStates(b)).toObject(p => p.key, p => p));
+            }
+            const _a = this.itemPickerSortStateCache.get(a)[this.itemPickerSort] || defualt;
+            const _b = this.itemPickerSortStateCache.get(b)[this.itemPickerSort] || defualt;
+            return (_b.value + _b.skillValue) - (_a.value + _a.skillValue);
+          });
+        } else if (this.itemPickerSort.replace('_base', '') in Lookup.state) {
+          const state = this.itemPickerSort.replace('_base', '');
+          items.sort((a, b) => LogicHelper.calculateState(b.EQU[state], 80) - LogicHelper.calculateState(a.EQU[state], 80));
         } else if (this.itemPickerSort in Lookup.element) {
-          items.sort((a, b) => b.ELM[this.itemPickerSort] - a.ELM[this.itemPickerSort]);
+          items.sort((a, b) => {
+            const defualt = { value: 0, skillValue :0 };
+            if (!this.itemPickerSortElementCache.has(a)) {
+              this.itemPickerSortElementCache.set(a, Enumerable.from(this.getItemElements(a)).toObject(p => p.key, p => p));
+            }
+            if (!this.itemPickerSortElementCache.has(b)) {
+              this.itemPickerSortElementCache.set(b, Enumerable.from(this.getItemStates(b)).toObject(p => p.key, p => p));
+            }
+            const _a = this.itemPickerSortElementCache.get(a)[this.itemPickerSort] || defualt;
+            const _b = this.itemPickerSortElementCache.get(b)[this.itemPickerSort] || defualt;
+            return (_b.value + _b.skillValue) - (_a.value + _a.skillValue);
+          });
+        } else if (this.itemPickerSort.replace('_base', '') in Lookup.element) {
+          const element = this.itemPickerSort.replace('_base', '');
+          items.sort((a, b) => b.ELM[element] - a.ELM[element]);
         } else if (this.itemPickerSort === 'dodge') {
           items.sort((a, b) => {
             if(!this.itemPickerDodgeSortSearchCache.has(b)) {
@@ -327,6 +381,9 @@ new Vue({
     openSupportItemEditDialog() {
       this.resetItemPickerFilter().setDefaultItemPickerFilter();
       this.itemPickerShowRemoveIcon = false;
+      if (this.itemPickerSort && !this.itemPickerSort.includes('_base')) {
+        this.itemPickerSort += '_base';
+      }
       this.itemPickerCallback = item => this.supportItemSelected = item;
       if (!this.supportItemSelected) {
         this.supportItemSelected = this.items[0];
