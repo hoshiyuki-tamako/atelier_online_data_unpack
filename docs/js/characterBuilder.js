@@ -304,6 +304,18 @@ new Vue({
     },
 
     // item picker
+    setSortStateCache(item) {
+      if (!this.itemPickerSortStateCache.has(item)) {
+        this.itemPickerSortStateCache.set(item, Enumerable.from(this.getItemStates(item)).toObject(p => p.key, p => p));
+      }
+      return this;
+    },
+    setSortElementCache(item) {
+      if (!this.itemPickerSortElementCache.has(item)) {
+        this.itemPickerSortElementCache.set(item, Enumerable.from(this.getItemElements(item)).toObject(p => p.key, p => p));
+      }
+      return this;
+    },
     getFilteredItemPickerItems() {
       const items = this.items.filter(p => 
         (!this.itemPickerFilterCategory || this.itemPickerFilterCategory === p.CATEG) &&
@@ -313,16 +325,11 @@ new Vue({
         (!this.itemPickerFilterGroupDf || !p.GROUP_DF || this.itemPickerFilterGroupDf === p.GROUP_DF)
       );
 
+      const defualt = { value: 0, skillValue :0 };
       if (this.itemPickerSort) {
         if (this.itemPickerSort in Lookup.state) {
           items.sort((a, b) => {
-            const defualt = { value: 0, skillValue :0 };
-            if (!this.itemPickerSortStateCache.has(a)) {
-              this.itemPickerSortStateCache.set(a, Enumerable.from(this.getItemStates(a)).toObject(p => p.key, p => p));
-            }
-            if (!this.itemPickerSortStateCache.has(b)) {
-              this.itemPickerSortStateCache.set(b, Enumerable.from(this.getItemStates(b)).toObject(p => p.key, p => p));
-            }
+            this.setSortStateCache(a).setSortStateCache(b);
             const _a = this.itemPickerSortStateCache.get(a)[this.itemPickerSort] || defualt;
             const _b = this.itemPickerSortStateCache.get(b)[this.itemPickerSort] || defualt;
             return (_b.value + _b.skillValue) - (_a.value + _a.skillValue);
@@ -332,13 +339,7 @@ new Vue({
           items.sort((a, b) => LogicHelper.calculateState(b.EQU[state], 80) - LogicHelper.calculateState(a.EQU[state], 80));
         } else if (this.itemPickerSort in Lookup.element) {
           items.sort((a, b) => {
-            const defualt = { value: 0, skillValue :0 };
-            if (!this.itemPickerSortElementCache.has(a)) {
-              this.itemPickerSortElementCache.set(a, Enumerable.from(this.getItemElements(a)).toObject(p => p.key, p => p));
-            }
-            if (!this.itemPickerSortElementCache.has(b)) {
-              this.itemPickerSortElementCache.set(b, Enumerable.from(this.getItemStates(b)).toObject(p => p.key, p => p));
-            }
+            this.setSortElementCache(a).setSortElementCache(b);
             const _a = this.itemPickerSortElementCache.get(a)[this.itemPickerSort] || defualt;
             const _b = this.itemPickerSortElementCache.get(b)[this.itemPickerSort] || defualt;
             return (_b.value + _b.skillValue) - (_a.value + _a.skillValue);
@@ -383,7 +384,7 @@ new Vue({
       this.resetItemPickerFilter().setDefaultItemPickerFilter();
       this.itemPickerShowRemoveIcon = false;
       this.itemPickerSortOriginal = this.itemPickerSort;
-      if (this.itemPickerSort && !this.itemPickerSort.includes('_base')) {
+      if (this.itemPickerSort && !this.itemPickerSort.includes('_base') && this.itemPickerSortOption.some(p => p.value === `${this.itemPickerSort}_base`)) {
         this.itemPickerSort += '_base';
       }
       this.itemPickerCallback = item => this.supportItemSelected = item;
