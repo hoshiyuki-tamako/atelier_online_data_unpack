@@ -815,6 +815,9 @@ new Vue({
       const strength = equipmentStates
       .map(p => p.values.filter(i => strengthStates.includes(i.key)).map(p => p.value))
       .flat()
+      .concat(
+        supportItemStates.filter(p => strengthStates.includes(p.state)).map(p => p.value)
+      )
       .reduce((a, b) => a + b, 0);
 
       const totalStates = CharacterModifier.states.map(state => ({
