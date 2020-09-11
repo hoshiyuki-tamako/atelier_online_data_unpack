@@ -107,6 +107,48 @@ class Player {
   supportModifier = [];
 }
 
+class EquipmentModifierExport {
+  quality;
+  level;
+  skillId;
+}
+
+
+class EquipmentsModifierExport {
+  weapon = new EquipmentModifierExport();
+  shield = new EquipmentModifierExport();
+  helmet = new EquipmentModifierExport();
+  cloth = new EquipmentModifierExport();
+  accessory1 = new EquipmentModifierExport();
+  accessory2 = new EquipmentModifierExport();
+  accessory3 = new EquipmentModifierExport();
+}
+
+
+class PlayerExport {
+  version = 1;
+
+  characterId;
+  equipment = {
+    weaponId: null,
+    shieldId: null,
+    helmetId: null,
+    clothId: null,
+    accessory1Id: null,
+    accessory2Id: null,
+    accessory3Id: null,
+  }
+  supportIds = [];
+
+  characterModifier = new CharacterModifier();
+  equipmentModifier = new EquipmentsModifierExport();
+  supportModifier = [];
+}
+
+class SaveConfig {
+  static localStorageKey = 'player';
+}
+
 new Vue({
   el: '#app',
   data: {
@@ -121,6 +163,8 @@ new Vue({
     items: [],
     characters: [],
 
+    itemLookup: {},
+    characterLookup: {},
     skillLookup: {},
     abnormalStateLookup: {},
     addonSkills: [],
@@ -136,23 +180,23 @@ new Vue({
 
     itemPickerSortOption: [
       {
-        label: '物理攻撃',
+        label: '物理攻撃base',
         value: 'SATK'
       },
       {
-        label: '物理防禦',
+        label: '物理防禦base',
         value: 'SDEF'
       },
       {
-        label: '魔法攻撃',
+        label: '魔法攻撃base',
         value: 'MATK'
       },
       {
-        label: '魔法防禦',
+        label: '魔法防禦base',
         value: 'MDEF'
       },
       {
-        label: '速度',
+        label: '速度base',
         value: 'SPD'
       },
       {
@@ -164,7 +208,7 @@ new Vue({
         value: 'criticalHit'
       },
     ].concat(Object.entries(Lookup.element).map(p => ({
-      label: p[1],
+      label: p[1] + 'base',
       value: p[0],
     }))),
     itemPickerShowRemoveIcon: true,
@@ -190,6 +234,10 @@ new Vue({
     mainItemAllQuality: 120,
     mainItemAllLevel: 80,
     mainItemAllSkillId: null,
+
+    importDialogVisible: false,
+    exportDialogVisible: false,
+    importString: '',
 
     // cache
     defaultItemDodgeSkillCache: new Map(),
@@ -297,6 +345,7 @@ new Vue({
       for (const modifier of this.player.supportModifier) {
         modifier.level = this.supportItemAllLevel;
       }
+      this.successNotification();
     },
     getSupportItemStates(i) {
       return Equipment.states.map(state => ({
@@ -336,24 +385,31 @@ new Vue({
       for (const modifier of Object.values(this.player.equipmentModifier)) {
         modifier.quality = this.mainItemAllQuality;
       }
+      this.successNotification();
       this.$forceUpdate();
     },
     onConfirmSetAllMainItemLevel() {
       for (const modifier of Object.values(this.player.equipmentModifier)) {
         modifier.level = this.mainItemAllLevel;
       }
+      this.successNotification();
       this.$forceUpdate();
     },
     onConfirmSetAllMainItemSkill() {
       for (const modifier of Object.values(this.player.equipmentModifier)) {
         modifier.skill = this.mainItemAllSkillId ? this.skillLookup[this.mainItemAllSkillId] : null;
       }
+      this.successNotification();
       this.$forceUpdate();
     },
 
     // character picker
     getCharacterImage(character = null) {
       character = character || this.player.character;
+      if (!character) {
+        return '';
+      }
+
       return `img/chara/Texture2D/icon_chara_all_${character.DF.toString().padStart(4, '0')}_00.png`;
     },
     getCharacterStates() {
@@ -577,10 +633,19 @@ new Vue({
       if (this.player.character) {
         this.itemPickerFilterWeaponGen = this.player.character.WEAPON.map(p => p.GEN).filter(p => p);
       }
-      this.itemPickerCallback = item => this.player.equipment.weapon = item;
+      this.itemPickerCallback = item => {
+        // two handed weapon
+        if (item && [3, 4].includes(item.WPN_KIND)) {
+          this.player.equipment.shield = null;
+        }
+        this.player.equipment.weapon = item
+      };
       this.itemPickerDialogVisible = true;
     },
     onPickShield() {
+      if (this.player.equipment.weapon && [3, 4].includes(this.player.equipment.weapon.WPN_KIND)) {
+        return;
+      }
       this.resetItemPickerFilter().setDefaultItemPickerFilter();
       this.itemPickerFilterCategory = 21;
       this.itemPickerCallback = item => this.player.equipment.shield = item;
@@ -620,6 +685,9 @@ new Vue({
         'img/icon/icon_pick_weapon.png';
     },
     getShieldImage() {
+      if (this.player.equipment.weapon && [3, 4].includes(this.player.equipment.weapon.WPN_KIND)) {
+        return 'img/icon/icon_pick_shield_disabled.png';
+      }
       return this.player.equipment.shield ? 
         `img/icon_s/Texture2D/icon_item_s_${this.player.equipment.shield.DF}.png` :
         'img/icon/icon_pick_shield.png';
@@ -759,6 +827,193 @@ new Vue({
     },
 
 
+    // import / export
+    importFromLocalStorage() {
+      try {
+        if (!localStorage) {
+          return false;
+        }
+
+        const item = localStorage.getItem(SaveConfig.localStorageKey);
+        if (item) {
+          if (this.importFromString(item)) {
+            this.$notify({
+              title: 'Success',
+              message: 'Import from local storage',
+              type: 'success'
+            });
+            return true;
+          }
+          localStorage.clear();
+          return false;
+        }
+        return false;
+      } catch(e) {
+        this.$message.error(e.toString());
+        console.error(e);
+      }
+    },
+    importFromSearchParam() {
+      const data = new URL(window.location).searchParams.get('i');
+      if (data && this.importFromString(data)) {
+        this.$notify({
+          title: 'Success',
+          message: 'Import from url',
+          type: 'success'
+        });
+        return true;
+      }
+      return false;
+    },
+    importFromString(str) {
+      try {
+        const playerExport = JSON.parse(atob(str));
+
+        console.log(playerExport);
+
+        // checking
+        if (playerExport.supportIds.length !== playerExport.supportModifier.length) {
+          this.$message({
+            message: 'Support items modifier length different',
+            type: 'warning'
+          });
+          if (playerExport.supportIds.length > playerExport.supportModifier.length) {
+            playerExport.supportModifier.push(Array.from({ length: playerExport.supportIds.length - playerExport.supportModifier.length }, _ => new EquipmentModifier()));
+          } else if (playerExport.supportModifier.length > playerExport.supportIds.length) {
+            playerExport.supportModifier.length = playerExport.supportIds.length;
+          }
+        }
+
+        // start mapping
+        const newPlayer = new Player();
+        if (playerExport.characterId) {
+          newPlayer.character = this.characterLookup[playerExport.characterId];
+        }
+        if (playerExport.equipment.weaponId) {
+          newPlayer.equipment.weapon = this.itemLookup[playerExport.equipment.weaponId];
+        }
+        if (playerExport.equipment.shieldId) {
+          newPlayer.equipment.shield = this.itemLookup[playerExport.equipment.shieldId];
+        }
+        if (playerExport.equipment.helmetId) {
+          newPlayer.equipment.helmet = this.itemLookup[playerExport.equipment.helmetId];
+        }
+        if (playerExport.equipment.clothId) {
+          newPlayer.equipment.cloth = this.itemLookup[playerExport.equipment.clothId];
+        }
+        if (playerExport.equipment.accessory1Id) {
+          newPlayer.equipment.accessory1 = this.itemLookup[playerExport.equipment.accessory1Id];
+        }
+        if (playerExport.equipment.accessory2Id) {
+          newPlayer.equipment.accessory2 = this.itemLookup[playerExport.equipment.accessory2Id];
+        }
+        if (playerExport.equipment.accessory3Id) {
+          newPlayer.equipment.accessory3 = this.itemLookup[playerExport.equipment.accessory3Id];
+        }
+        newPlayer.supportModifier = playerExport.supportModifier;
+        newPlayer.characterModifier = playerExport.characterModifier;
+
+        newPlayer.supports = playerExport.supportIds.map(p => this.itemLookup[p]);
+        
+        for (const [slot, modifier] of Object.entries(playerExport.equipmentModifier)) {
+          if (modifier.skillId) {
+            newPlayer.equipmentModifier[slot].skill = this.skillLookup[modifier.skillId];
+          }
+        }
+        console.log(newPlayer);
+        this.player = newPlayer;
+        return true;
+      } catch (e) {
+        this.$message({
+          message: 'Failed to import character',
+          type: 'warning'
+        });
+        setTimeout(() => this.$message({
+          message: e.toString(),
+          type: 'warning'
+        }));
+        console.error(e);
+        this.player = new Player();
+        return false;
+      }
+    },
+    getExportString() {
+      const playerExport = new PlayerExport();
+      if (this.player.character) {
+        playerExport.characterId = this.player.character.DF;
+      }
+      if (this.player.equipment.weapon) {
+        playerExport.equipment.weaponId = this.player.equipment.weapon.DF;
+      }
+      if (this.player.equipment.shield) {
+        playerExport.equipment.shieldId = this.player.equipment.shield.DF;
+      }
+      if (this.player.equipment.helmet) {
+        playerExport.equipment.helmetId = this.player.equipment.helmet.DF;
+      }
+      if (this.player.equipment.cloth) {
+        playerExport.equipment.clothId = this.player.equipment.cloth.DF;
+      }
+      if (this.player.equipment.accessory1) {
+        playerExport.equipment.accessory1Id = this.player.equipment.accessory1.DF;
+      }
+      if (this.player.equipment.accessory2) {
+        playerExport.equipment.accessory2Id = this.player.equipment.accessory2.DF;
+      }
+      if (this.player.equipment.accessory3) {
+        playerExport.equipment.accessory3Id = this.player.equipment.accessory3.DF;
+      }
+      playerExport.supportIds = this.player.supports.map(p => p.DF);
+
+
+      for (const [slot, modifier] of Object.entries(this.player.equipmentModifier)) {
+        if (modifier.skill) {
+          playerExport.equipmentModifier[slot].skillId = modifier.skill.id;
+        }
+      }
+
+      playerExport.characterModifier = this.player.characterModifier;
+      playerExport.supportModifier = this.player.supportModifier;
+      return btoa(JSON.stringify(playerExport));
+    },
+    getExportUrl() {
+      return `${location.origin}${location.pathname}?i=${this.getExportString()}`;
+    },
+
+    // save
+    onSave() {
+      this.save();
+      this.successNotification();
+    },
+    onClear() {
+      return this.$confirm('Are you sure to clear everything?', 'Warning', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        this.player = new Player();
+        localStorage.clear();
+        this.$notify({
+          title: 'Success',
+          message: 'Cleared player and local data',
+          type: 'success'
+        });
+      });
+    },
+    save() {
+      localStorage.setItem(SaveConfig.localStorageKey, this.getExportString());
+      return this;
+    },
+
+    // notification
+    successNotification() {
+      this.$notify({
+        title: 'Success',
+        message: 'Saved',
+        type: 'success'
+      });
+    },
+
     // helpers
     resetItemPickerFilter() {
       this.itemPickerShowRemoveIcon = true;
@@ -811,11 +1066,18 @@ new Vue({
   
         this.items = this.item.m_vList.filter(p => p.EQU_BRD);
         this.characters = this.chara.m_vList.filter(p => p.SKILL.length);
+
+        // lookups
+        this.itemLookup = Enumerable.from(this.items).toObject(p => p.DF, p => p);
+        this.characterLookup = Enumerable.from(this.chara.m_vList).toObject(p => p.DF, p => p);
         this.skillLookup = Enumerable.from(this.skill.m_vList).toObject(p => p.id, p => p);
         this.abnormalStateLookup = Enumerable.from(this.abnormalstate.m_vList).toObject(p => p.id, p => p);
         this.characterGroupDfLookup = Enumerable.from(this.characters).groupBy(p => p.GROUP_DF).toObject(p => p.key(), p => p.toArray());
         this.blazeArtLookup = Enumerable.from(this.blaze_art.m_vList).toObject(p => p.DF, p => p);
 
+        if (this.importFromSearchParam() || this.importFromLocalStorage()) {
+          // load success
+        }
         this.pageLoading = false;
       } catch (e) {
         this.$message.error({

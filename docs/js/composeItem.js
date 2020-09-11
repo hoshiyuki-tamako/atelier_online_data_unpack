@@ -188,6 +188,14 @@ new Vue({
           return true;
         }
       } catch (e) {
+        this.$message({
+          message: 'Failed to import materialOptions',
+          type: 'warning'
+        });
+        setTimeout(() => this.$message({
+          message: e.toString(),
+          type: 'warning'
+        }));
         console.error(e);
       }
 

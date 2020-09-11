@@ -91,12 +91,15 @@
         <div class="support-item-picker" v-if="supportItemSelected">
           <img class="icon-small" :src="'img/icon_s/Texture2D/icon_item_s_' + supportItemSelected.DF + '.png'" :alt="supportItemSelected.name">
           <el-button @click="itemPickerDialogVisible = true">Pick Item</el-button>
-          <el-button @click="onAddSupportItem">Add</el-button>
+          <el-button @click="onAddSupportItem" type="primary">Add</el-button>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <span>LV 全設定</span>
+          &nbsp;&nbsp;
+          <el-input-number v-model="supportItemAllLevel" :min="1" size="small" step-strictly></el-input-number>
+          <el-button @click="onSetAllSupportItemLevel" type="primary" size="small">確認</el-button>
         </div>
         <div>
           <p>
-            LV 全設定 <el-input-number v-model="supportItemAllLevel" :min="1" size="small" step-strictly></el-input-number>
-            <el-button @click="onSetAllSupportItemLevel" type="primary">確認</el-button>
           </p>
         </div>
         <div>Total: {{ player.supports.length }}</div>
@@ -179,6 +182,36 @@
         </table>
       </div>
     </el-dialog>
+
+
+
+
+    <el-dialog title="" :visible.sync="importDialogVisible" width="80%">
+      <div>
+        <el-input v-model="importString" type="textarea" :autosize="{ minRows: 4 }"></el-input>
+        <br>
+        <br>
+        <el-button @click="importFromString(importString)" icon="el-icon-check" type="success" circle></el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="" :visible.sync="exportDialogVisible" width="80%">
+      <div>
+        <h4>URL</h4>
+        <p>
+          <el-input :value="getExportUrl()" type="textarea" autosize></el-input>
+        </p>
+        <br>
+        <br>
+        <h4>String</h4>
+        <p>
+          <el-input :value="getExportString()" type="textarea" autosize></el-input>
+        </p>
+      </div>
+    </el-dialog>
+
+
+
 
 
     <el-dialog title="" :visible.sync="characterEditDialogVisible" width="80%">
@@ -572,6 +605,13 @@
 
       <div class="sub-equipment">
         <div class="sub-equipment-menu">
+          <p>
+            <el-button @click="importDialogVisible = true" type="warning" round>import</el-button>
+            <el-button @click="exportDialogVisible = true" round>export</el-button>
+            <el-button @click="onSave" type="primary" round>save</el-button>
+            <el-button @click="onClear" type="danger" round>clear</el-button>
+          </p>
+          <br>
           <p>
             <el-button @click="mainItemEditorVisible = true" type="success" icon="el-icon-edit" circle></el-button>
             <span>Main item</span>
@@ -1102,10 +1142,6 @@
     </div>
   </div>
   <script src="js/characterBuilder.js"></script>
-  <div>
-    <p>Known issue:</p>
-    <p>states multiplier not working e.g. トネリコのメイス</p>
-  </div>
 </body>
 
 </html>
