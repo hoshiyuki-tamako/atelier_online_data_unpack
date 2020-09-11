@@ -274,6 +274,8 @@ export class PageBuilder {
       fs.readdir(path.join(Option.outFolder, 'img', 'chara', 'Texture2D')),
     ]) as [Chara, string[]];
 
+    chara.m_vList = chara.m_vList.filter(p => ![3005].includes(p.DF));
+
     const pugOption = { chara, charaIcons: charaIcons.map(p => path.basename(p)) };
     await fs.writeFile(
       path.join(Option.outFolder, 'otherChara.html'),
