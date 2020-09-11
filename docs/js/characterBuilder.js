@@ -983,7 +983,11 @@ new Vue({
     // save
     onSave() {
       this.save();
-      this.successNotification();
+      this.$notify({
+        title: 'Success',
+        message: 'Saved',
+        type: 'success'
+      });
     },
     onClear() {
       return this.$confirm('Are you sure to clear everything?', 'Warning', {
@@ -1009,7 +1013,7 @@ new Vue({
     successNotification() {
       this.$notify({
         title: 'Success',
-        message: 'Saved',
+        message: '',
         type: 'success'
       });
     },
