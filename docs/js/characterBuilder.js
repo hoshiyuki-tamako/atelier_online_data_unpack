@@ -828,6 +828,12 @@ new Vue({
 
 
     // import / export
+    onImportFromString() {
+      if (this.importFromString(this.importString)) {
+        this.successNotification();
+        this.importDialogVisible = false;
+      }
+    },
     importFromLocalStorage() {
       try {
         if (!localStorage) {
