@@ -192,7 +192,7 @@ new Vue({
     // data
     player: new Player(),
 
-    skillChain: 0,
+    skillCombo: 0,
   },
   methods: {
     // global helper
