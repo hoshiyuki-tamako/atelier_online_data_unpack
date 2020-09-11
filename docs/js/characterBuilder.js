@@ -439,7 +439,7 @@ new Vue({
             0,
           };
         })
-        .filter(p => console.log(p) || p.value + p.skillValue + p.extraValue);
+        .filter(p => p.value + p.skillValue + p.extraValue);
     },
     getEquipmentDodge(slot) {
       const skills = this.getFilteredSkills(this.getEquipmentSkills(slot), 8);

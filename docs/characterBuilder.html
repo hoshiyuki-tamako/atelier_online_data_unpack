@@ -664,19 +664,23 @@
             <table>
               <tr>
                 <th>正常</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * ((1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>魔法攻撃UP中</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * ((1.3) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>上+魔法防御DOWN大</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * ((1.3 + 1.4) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>上+屬性(-100)</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * ((1.3 + 1.4 + 2) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4 + 1) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+              </tr>
+              <tr>
+                <th>全超+-</th>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.55 + .55 + 1) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
             </table>
           </div>
@@ -684,19 +688,23 @@
             <table>
               <tr>
                 <th>正常</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * ((1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>物攻増UP中+</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * ((1.35) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>上+物理防御DOWN大</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * ((1.35 + 1.4) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>上+屬性(-100)</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * ((1.35 + 1.4 + 2) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4 + 1) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+              </tr>
+              <tr>
+                <th>全超+-</th>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.55 + .55 + 1) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
             </table>
           </div>
@@ -711,19 +719,23 @@
             <table>
               <tr>
                 <th>正常</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * ((1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>魔法攻撃UP中</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * ((1.3) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>上+魔法防御DOWN大</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * ((1.3 + 1.4) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>上+屬性(-100)</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * ((1.3 + 1.4 + 2) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4 + 1) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+              </tr>
+              <tr>
+                <th>全超+-</th>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.55 + .55 + 1) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
             </table>
           </div>
@@ -731,19 +743,23 @@
             <table>
               <tr>
                 <th>正常</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * ((1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>物攻増UP中+</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * ((1.35) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>上+物理防御DOWN大</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * ((1.35 + 1.4) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
               <tr>
                 <th>上+屬性(-100)</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * ((1.35 + 1.4 + 2) + (1 + skillChain * 0.2) + (1 + skill.effectValue) + (1 + temp.skillMultiplier))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4 + 1) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+              </tr>
+              <tr>
+                <th>全超+-</th>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.55 + .55 + 1) + (skillChain * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
               </tr>
             </table>
           </div>
