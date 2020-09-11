@@ -61,6 +61,11 @@ html
               input(id="sub-status-result" value="0")
     hr
     div
+      h3 強さ
+      div
+        p sum(物攻base + 物防base + 魔攻base + 魔防base)
+    hr
+    div
       h3 調合品質
       div
         p clamp(floor(sum(品質) / count) + sum(品質特性), 1, max)

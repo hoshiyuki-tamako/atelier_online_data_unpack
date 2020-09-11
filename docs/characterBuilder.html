@@ -631,6 +631,28 @@
 
 
         <table>
+          <tr>
+            <th>
+              <v-popover placement="left-end" trigger="hover">
+                <span>強さ</span>
+                <template slot="popover">
+                  <div class="equipment-popover">
+                    強さ = sum(物攻base + 物防base + 魔攻base + 魔防base)
+                  </div>
+                </template>
+              </v-popover>
+            </th>
+            <td>
+              <v-popover placement="left-end" trigger="hover">
+                <span>{{ temp.strength }}</span>
+                <template slot="popover">
+                  <div class="equipment-popover">
+                    強さ = sum(物攻base + 物防base + 魔攻base + 魔防base)
+                  </div>
+                </template>
+              </v-popover>
+            </td>
+          </tr>
           <tr v-for="summary in temp.totalStates">
             <th>
               <v-popover placement="left-end" trigger="hover">
@@ -997,6 +1019,11 @@
     </div>
   </div>
   <script src="js/characterBuilder.js"></script>
+  <div>
+    <p>Known ISSUE:</p>
+    <p>states multiplier not working</p>
+    <p>Skill effect multiplier not split to different calculation </p>
+  </div>
 </body>
 
 </html>

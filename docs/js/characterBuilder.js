@@ -363,7 +363,7 @@ new Vue({
           foodValue = food[state] || 0;
         }
 
-        const skills = this.getFilteredSkills(this.getCharacterSkills(), Lookup.stateMapSkillEffectTarget[state]);
+        const skills = this.getFilteredSkills(this.getCharacterSkills(), Lookup.stateMapSkillEffectTarget[state], 101);
 
         return {
           state,
@@ -438,9 +438,9 @@ new Vue({
             key: p,
             label: Lookup.state[p],
             value: LogicHelper.calculateState(this.player.equipment[slot].EQU[p], this.player.equipmentModifier[slot].level),
-            skillValue: this.getSkillEffectTargetValues(skills, Lookup.stateMapSkillEffectTarget[p]),
+            skillValue: this.getSkillEffectTargetValues(skills, Lookup.stateMapSkillEffectTarget[p], 101),
             extraValue: this.player.equipmentModifier[slot].skill ?
-            this.getSkillEffectTargetValues([this.player.equipmentModifier[slot].skill], Lookup.stateMapSkillEffectTarget[p]) :
+            this.getSkillEffectTargetValues([this.player.equipmentModifier[slot].skill], Lookup.stateMapSkillEffectTarget[p], 101) :
             0,
           };
         })
@@ -496,7 +496,7 @@ new Vue({
             key: p,
             label: Lookup.state[p],
             value: LogicHelper.calculateState(item.EQU[p], level),
-            skillValue: this.getSkillEffectTargetValues(skills, Lookup.stateMapSkillEffectTarget[p]),
+            skillValue: this.getSkillEffectTargetValues(skills, Lookup.stateMapSkillEffectTarget[p], 101),
           };
         })
         .filter(p => p.value || p.skillValue);
@@ -661,6 +661,12 @@ new Vue({
       const characterElements =  this.getCharacterElements();
       const characterSkills = this.getCharacterSkills();
 
+      const strengthStates = ['SATK', 'SDEF', 'MATK', 'MDEF'];
+      const strength = equipmentStates
+      .map(p => p.values.filter(i => strengthStates.includes(i.key)).map(p => p.value))
+      .flat()
+      .reduce((a, b) => a + b, 0);
+
       const totalStates = CharacterModifier.states.map(state => ({
         label: Lookup.state[state],
         state,
@@ -698,6 +704,7 @@ new Vue({
       };
 
       return {
+        strength,
         totalStates,
         totalDodgeState,
         totalCriticalHitState,
