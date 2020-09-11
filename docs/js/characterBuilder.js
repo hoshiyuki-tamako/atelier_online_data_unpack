@@ -874,7 +874,6 @@ new Vue({
     importFromString(str) {
       try {
         const playerExport = JSON.parse(atob(str));
-
         console.log(playerExport);
 
         // checking
@@ -925,6 +924,8 @@ new Vue({
           if (modifier.skillId) {
             newPlayer.equipmentModifier[slot].skill = this.skillLookup[modifier.skillId];
           }
+          newPlayer.equipmentModifier[slot].quality = modifier.quality;
+          newPlayer.equipmentModifier[slot].level = modifier.level;
         }
         console.log(newPlayer);
         this.player = newPlayer;
@@ -976,6 +977,8 @@ new Vue({
         if (modifier.skill) {
           playerExport.equipmentModifier[slot].skillId = modifier.skill.id;
         }
+        playerExport.equipmentModifier[slot].quality = modifier.quality;
+        playerExport.equipmentModifier[slot].level = modifier.level;
       }
 
       playerExport.characterModifier = this.player.characterModifier;
