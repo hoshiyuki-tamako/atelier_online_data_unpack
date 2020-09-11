@@ -115,6 +115,7 @@ new Vue({
     item: null,
     skill: null,
     abnormalstate: null,
+    blaze_art: null,
 
     // processed data
     items: [],
@@ -125,6 +126,7 @@ new Vue({
     addonSkills: [],
     addonSkillsLookUp: {},
     characterGroupDfLookup: {},
+    blazeArtLookup: {},
 
     // state
     pageLoading: true,
@@ -205,6 +207,9 @@ new Vue({
     getFilteredSkills(skills, effectTargets = [], effect = null, triggers = []) {
       if (!Array.isArray(effectTargets)) {
         effectTargets = [effectTargets];
+      }
+      if (!Array.isArray(skills)) {
+        skills = [skills];
       }
 
       const overrideIds = skills.map(p => p.overrideID).filter(p => p);
@@ -412,6 +417,19 @@ new Vue({
           skills,
         };
       });
+    },
+    getCharacterBlazeArt() {
+      if (!(this.player.character && this.player.character.BA.length && this.player.characterModifier.level >= 70)) {
+        return null;
+      }
+
+      const blazeArtLv = this.blazeArtLookup[this.player.character.BA[0].DF].LV;
+      const blazeArt = blazeArtLv[this.player.characterModifier.blazeArtLevel - 1];
+      if (!blazeArt) {
+        return null;
+      }
+
+      return this.skillLookup[blazeArt.SKILL_DF];
     },
 
     onPickCharacter(character = null) {
@@ -651,7 +669,12 @@ new Vue({
         slot,
         values: this.getEquipmentElements(slot),
       }));
-      const equipmentSkills = Object.keys(this.player.equipment).map(p => this.getEquipmentSkills(p, true)).flat();
+      const equipmentSkills = Object.keys(this.player.equipment).map(slot => ({
+        slot,
+        skills: this.getEquipmentSkills(slot, true),
+      }));
+
+
       const supportItemStates = this.getSupportItemStatesSummary();
       const supportElements = this.getSupportItemElementSummary();
 
@@ -697,8 +720,15 @@ new Vue({
         .reduce((a, b) => a + b, 0),
       }));
 
-      const skillMultiplierSkills = this.getFilteredSkills(equipmentSkills.concat(characterSkills), [], null, [14, 32]);
+      const equipmentSkillMultiplierSkills = equipmentSkills.map(slot => ({
+        slot: slot.slot,
+        skills: this.getFilteredSkills(slot.skills, [], null, [14, 32]),
+      })).filter(p => p.skills.length);
+      const characterSkillMultiplierSkills = this.getFilteredSkills(characterSkills, [], null, [14, 32]);
+      const skillMultiplierSkills = equipmentSkillMultiplierSkills.map(p => p.skills).flat().concat(characterSkillMultiplierSkills);
       const skillMultiplier = {
+        equipmentSkillMultiplierSkills,
+        characterSkillMultiplierSkills,
         skills: skillMultiplierSkills,
         value: skillMultiplierSkills.reduce((sum, p) => sum + p.effectValue, 0),
       };
@@ -757,16 +787,18 @@ new Vue({
     //
     async load() {
       try {
-        const [chara, item, skill, abnormalstate] = await Promise.all([
+        const [chara, item, skill, abnormalstate, blaze_art] = await Promise.all([
           fetch('export/chara.json').then(p => p.json()),
           fetch('export/item.json').then(p => p.json()),
           fetch('export/skill.json').then(p => p.json()),
           fetch('export/abnormalstate.json').then(p => p.json()),
+          fetch('export/blaze_art.json').then(p => p.json()),
         ]);
         this.item = item;
         this.chara = chara;
         this.skill = skill;
         this.abnormalstate = abnormalstate;
+        this.blaze_art = blaze_art;
 
         window.addonSkills = this.addonSkills = this.skill.m_vList.filter(p => 
           p.type === 2 && 
@@ -782,6 +814,7 @@ new Vue({
         this.skillLookup = Enumerable.from(this.skill.m_vList).toObject(p => p.id, p => p);
         this.abnormalStateLookup = Enumerable.from(this.abnormalstate.m_vList).toObject(p => p.id, p => p);
         this.characterGroupDfLookup = Enumerable.from(this.characters).groupBy(p => p.GROUP_DF).toObject(p => p.key(), p => p.toArray());
+        this.blazeArtLookup = Enumerable.from(this.blaze_art.m_vList).toObject(p => p.DF, p => p);
 
         this.pageLoading = false;
       } catch (e) {
