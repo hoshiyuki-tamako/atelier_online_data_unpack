@@ -86,7 +86,7 @@
     </el-dialog>
 
 
-    <el-dialog title="" :visible.sync="supportItemEditDialogVisible" width="80%">
+    <el-dialog @close="itemPickerSort = itemPickerSortOriginal" title="" :visible.sync="supportItemEditDialogVisible" width="80%">
       <div class="support-item-edit-dialog">
         <div class="support-item-picker" v-if="supportItemSelected">
           <img class="icon-small" :src="'img/icon_s/Texture2D/icon_item_s_' + supportItemSelected.DF + '.png'" :alt="supportItemSelected.name">

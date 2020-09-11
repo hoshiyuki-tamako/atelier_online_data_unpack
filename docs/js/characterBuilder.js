@@ -251,6 +251,7 @@ new Vue({
     itemPickerDodgeSortSearchCache: new Map(),
     itemPickerCriticalHitSortSearchCache: new Map(),
 
+    itemPickerSortOriginal: null,
     supportItemEditDialogVisible: false,
     supportItemSelected: null,
     supportItemAllLevel: 80,
@@ -381,6 +382,7 @@ new Vue({
     openSupportItemEditDialog() {
       this.resetItemPickerFilter().setDefaultItemPickerFilter();
       this.itemPickerShowRemoveIcon = false;
+      this.itemPickerSortOriginal = this.itemPickerSort;
       if (this.itemPickerSort && !this.itemPickerSort.includes('_base')) {
         this.itemPickerSort += '_base';
       }
