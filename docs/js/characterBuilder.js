@@ -29,8 +29,8 @@ class Lookup {
   static elementMapSkillEffectTarget = {
     FIRE: [21, 27],
     WATER: [22, 27],
-    WIND: [23, 27],
-    EARTH: [24, 27],
+    EARTH: [23, 27],
+    WIND: [24, 27],
     LIGHT: [25, 27],
     DARK: [26, 27],
   };
@@ -188,6 +188,7 @@ new Vue({
     defaultItemDodgeSkillCache: new Map(),
     defaultItemCriticalSkillCache: new Map(),
     defaultItemElementSkillCache: new Map(),
+    imageCache: [],
 
     // data
     player: new Player(),
@@ -439,7 +440,7 @@ new Vue({
             0,
           };
         })
-        .filter(p => p.value + p.skillValue + p.extraValue);
+        .filter(p => p.value || p.skillValue || p.extraValue);
     },
     getEquipmentDodge(slot) {
       const skills = this.getFilteredSkills(this.getEquipmentSkills(slot), 8);
@@ -462,7 +463,6 @@ new Vue({
   
       const skills = this.getEquipmentSkills(slot);
       return Object.entries(Lookup.element)
-        .filter(([element]) => this.player.equipment[slot].ELM[element])
         .map(([element, label]) => ({
           key: element,
           label: label,
@@ -473,7 +473,7 @@ new Vue({
           0,
           skills,
         }))
-        .filter(p => p.value + p.skillValue + p.extraValue);
+        .filter(p => p.value || p.skillValue || p.extraValue);
     },
     getEquipmentSkills(slot, includeModifierSkill = false) {
       if (!this.player.equipment[slot]) {
@@ -484,10 +484,9 @@ new Vue({
     },
 
     // items
-    getItemStates(item, level = 80) {
-      const skills = this.getItemSkills(item, level);
+    getItemStates(item, quality = 120, level = 80) {
+      const skills = this.getItemSkills(item, quality);
       return Equipment.states
-        .filter(p => item.EQU[p])
         .map(p => {
           return {
             key: p,
@@ -496,7 +495,7 @@ new Vue({
             skillValue: this.getSkillEffectTargetValues(skills, Lookup.stateMapSkillEffectTarget[p]),
           };
         })
-        .filter(p => p.value + p.skillValue);
+        .filter(p => p.value || p.skillValue);
     },
     getItemDodge(item) {
       if (!this.defaultItemDodgeSkillCache.has(item)) {
@@ -526,15 +525,14 @@ new Vue({
       }
       const skills = this.defaultItemElementSkillCache.get(item);
       return Object.entries(Lookup.element)
-        .filter(p => item.ELM[p[0]])
-        .map(p => ({
-          key: p[0],
-          label: p[1],
-          value: item.ELM[p[0]],
-          skillValue: 0, //this.getSkillEffectTargetValues(skills, Lookup.elementMapSkillEffectTarget[p]),
+        .map(([element, label]) => ({
+          key: element,
+          label,
+          value: item.ELM[element],
+          skillValue: this.getSkillEffectTargetValues(skills, Lookup.elementMapSkillEffectTarget[element]),
           skills,
         }))
-        .filter(p => p.value + p.skillValue);
+        .filter(p => p.value || p.skillValue);
     },
     getItemSkills(item, quality = 120) {
       const allSkills = item.SPC.filter(p => p.THR <= quality);
@@ -650,7 +648,6 @@ new Vue({
         values: this.getEquipmentElements(slot),
       }));
       const equipmentSkills = Object.keys(this.player.equipment).map(p => this.getEquipmentSkills(p, true)).flat();
-
       const supportItemStates = this.getSupportItemStatesSummary();
       const supportElements = this.getSupportItemElementSummary();
 
@@ -690,7 +687,11 @@ new Vue({
         .reduce((a, b) => a + b, 0),
       }));
 
-      const skillMultiplier = this.getSkillEffectTargetValues(equipmentSkills.concat(characterSkills), [], null, [14, 32]);
+      const skillMultiplierSkills = this.getFilteredSkills(equipmentSkills.concat(characterSkills), [], null, [14, 32]);
+      const skillMultiplier = {
+        skills: skillMultiplierSkills,
+        value: skillMultiplierSkills.reduce((sum, p) => sum + p.effectValue, 0),
+      };
 
       return {
         totalStates,

@@ -468,7 +468,7 @@
                     </tr>
                     <tr v-for="element in getEquipmentElements(equipmentSlot)" :key="element.label">
                       <th>{{ element.label }}</th>
-                      <td>{{ element.value }}{{ (element.skillValue + item.extraValue) ? ` ${getNumberSignText(element.skillValue + element.extraValue)} ${element.skillValue + element.extraValue}` : '' }}</td>
+                      <td>{{ element.value }}{{ (element.skillValue + element.extraValue) ? ` ${getNumberSignText(element.skillValue + element.extraValue)} ${element.skillValue + element.extraValue}` : '' }}</td>
                     </tr>
                     <tr v-if="player.equipment[equipmentSlot].GROUP_DF">
                       <th>專用</th>
@@ -535,7 +535,7 @@
                     </tr>
                     <tr v-for="element in getEquipmentElements(equipmentSlot)" :key="element.label">
                       <th>{{ element.label }}</th>
-                      <td>{{ element.value }}{{ (element.skillValue + item.extraValue) ? ` ${getNumberSignText(element.skillValue + element.extraValue)} ${element.skillValue + element.extraValue}` : '' }}</td>
+                      <td>{{ element.value }}{{ (element.skillValue + element.extraValue) ? ` ${getNumberSignText(element.skillValue + element.extraValue)} ${element.skillValue + element.extraValue}` : '' }}</td>
                     </tr>
                     <tr v-if="item.GROUP_DF">
                       <th>專用</th>
@@ -613,7 +613,7 @@
 
 
 
-      <div class="result">
+      <div class="result" v-for="(temp, i) in [getSummaryState()]" :key="i">
         <div class="character">
           <div>
             <h4>
@@ -628,26 +628,192 @@
           </div>
         </div>
 
-        <table :set="temp = getSummaryState()">
+
+
+        <table>
           <tr v-for="summary in temp.totalStates" :key="summary.state">
-            <th>{{ summary.label }}</th>
-            <td>{{ summary.value }}</td>
+            <th>
+              <v-popover placement="left-end" trigger="hover">
+                <span>{{ summary.label }}</span>
+                <template slot="popover">
+                  <div class="equipment-popover">
+                    <h4>{{ summary.label }}</h4>
+                    <table>
+                      <tr v-for="characterStates in temp.characterStates.filter(p => p.state === summary.state)" :key="characterStates.state">
+                        <th>
+                          <img class="icon-small" v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
+                        </th>
+                        <td>base: {{ characterStates.value }} / food: {{ characterStates.foodValue }} / skill {{ characterStates.skillValue }}</td>
+                      </tr>
+                      <tr v-for="([slot, [value]]) in temp.equipmentStates.map(p => [p.slot, p.values.filter(p => p.key === summary.state)]).filter(p => p[1].length)" :key="slot">
+                        <th>
+                          <img class="icon-small" :src="getEquipmentImage(slot)" :alt="slot">
+                        </th>
+                        <td>base: {{ value.value }} / skill: {{ value.skillValue }} / extra {{ value.extraValue }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </template>
+              </v-popover>
+            </th>
+            <td>
+              <v-popover placement="left-end" trigger="hover">
+                <span>{{ summary.value }}</span>
+                <template slot="popover">
+                  <div class="equipment-popover">
+                    <h4>{{ summary.label }}</h4>
+                    <table>
+                      <tr v-for="characterStates in temp.characterStates.filter(p => p.state === summary.state)" :key="characterStates.state">
+                        <th>
+                          <img class="icon-small" v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
+                        </th>
+                        <td>base: {{ characterStates.value }} / food: {{ characterStates.foodValue }} / skill {{ characterStates.skillValue }}</td>
+                      </tr>
+                      <tr v-for="([slot, [value]]) in temp.equipmentStates.map(p => [p.slot, p.values.filter(p => p.key === summary.state)]).filter(p => p[1].length)" :key="slot">
+                        <th>
+                          <img class="icon-small" :src="getEquipmentImage(slot)" :alt="slot">
+                        </th>
+                        <td>base: {{ value.value }} / skill: {{ value.skillValue }} / extra {{ value.extraValue }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </template>
+              </v-popover>
+            </td>
           </tr>
           <tr>
-            <th>回避</th>
-            <td>{{ temp.totalDodgeState }}</td>
+            <th>
+              <v-popover placement="left-end" trigger="hover">
+                <span>回避</span>
+                <template slot="popover">
+                  <div class="equipment-popover">
+                    <h4>回避</h4>
+                    <table>
+                      <tr v-if="temp.characterDodge.value">
+                        <th>
+                          <img class="icon-small" v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
+                        </th>
+                        <td>{{ temp.characterDodge.value }}</td>
+                      </tr>
+                      <tr v-for="([slot, value]) in temp.equipmentDodges.map(p => [p.slot, p.values.value]).filter(p => p[1])" :key="slot">
+                        <th>
+                          <img class="icon-small" :src="getEquipmentImage(slot)" :alt="slot">
+                        </th>
+                        <td>{{ value }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </template>
+              </v-popover>
+            </th>
+            <td>
+              <v-popover placement="left-end" trigger="hover">
+                <span>{{ temp.totalDodgeState }}</span>
+                <template slot="popover">
+                  <div class="equipment-popover">
+                    <h4>回避</h4>
+                    <table>
+                      <tr v-if="temp.characterDodge.value">
+                        <th>
+                          <img class="icon-small" v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
+                        </th>
+                        <td>{{ temp.characterDodge.value }}</td>
+                      </tr>
+                      <tr v-for="([slot, value]) in temp.equipmentDodges.map(p => [p.slot, p.values.value]).filter(p => p[1])" :key="slot">
+                        <th>
+                          <img class="icon-small" :src="getEquipmentImage(slot)" :alt="slot">
+                        </th>
+                        <td>{{ value }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </template>
+              </v-popover>
+            </td>
           </tr>
           <tr>
-            <th>クリティカル</th>
-            <td>{{ temp.totalCriticalHitState }}</td>
+            <th>
+              <v-popover placement="left-end" trigger="hover">
+                <span>クリティカル</span>
+                <template slot="popover">
+                  <div class="equipment-popover">
+                    <h4>クリティカル</h4>
+                    <table>
+                      <tr v-if="temp.characterCriticalHit.value">
+                        <th>
+                          <img class="icon-small" v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
+                        </th>
+                        <td>{{ temp.characterCriticalHit.value }}</td>
+                      </tr>
+                      <tr v-for="([slot, value]) in temp.equipmentCriticalHit.map(p => [p.slot, p.values.value]).filter(p => p[1])" :key="slot">
+                        <th>
+                          <img class="icon-small" :src="getEquipmentImage(slot)" :alt="slot">
+                        </th>
+                        <td>{{ value }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </template>
+              </v-popover>
+            </th>
+            <td>
+              <v-popover placement="left-end" trigger="hover">
+                <span>{{ temp.totalCriticalHitState }}</span>
+                <template slot="popover">
+                  <div class="equipment-popover">
+                    <h4>クリティカル</h4>
+                    <table>
+                      <tr v-if="temp.characterCriticalHit.value">
+                        <th>
+                          <img class="icon-small" v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
+                        </th>
+                        <td>{{ temp.characterCriticalHit.value }}</td>
+                      </tr>
+                      <tr v-for="([slot, value]) in temp.equipmentCriticalHit.map(p => [p.slot, p.values.value]).filter(p => p[1])" :key="slot">
+                        <th>
+                          <img class="icon-small" :src="getEquipmentImage(slot)" :alt="slot">
+                        </th>
+                        <td>{{ value }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </template>
+              </v-popover>
+            </td>
           </tr>
           <tr v-for="element in temp.totalElements" :key="element.label">
             <th>{{ element.label }}</th>
             <td>{{ element.value }}</td>
           </tr>
           <tr>
-            <th>SKILL</th>
-            <td>{{ (100 + temp.skillMultiplier * 100).toFixed(2) }}%</td>
+            <th>
+              <v-popover placement="left-end" trigger="hover">
+                <span>SKILL</span>
+                <template v-if="temp.skillMultiplier.skills.length" slot="popover">
+                  <div class="equipment-popover">
+                    <div v-for="skill in temp.skillMultiplier.skills" :key="skill.id">
+                      <p>{{ skill.name }}</p>
+                      <p>{{ skill.detail }}</p>
+                      <p>&#x3E;</p>
+                    </div>
+                  </div>
+                </template>
+              </v-popover>
+            </th>
+            <td>
+              <v-popover placement="left-end" trigger="hover">
+                <span>{{ (100 + temp.skillMultiplier.value * 100).toFixed(2) }}%</span>
+                <template v-if="temp.skillMultiplier.skills.length" slot="popover">
+                  <div class="equipment-popover">
+                    <div v-for="(skill, i) in temp.skillMultiplier.skills" :key="i">
+                      <p>{{ skill.name }}</p>
+                      <p>{{ skill.detail }}</p>
+                      <p>&#x3E;</p>
+                    </div>
+                  </div>
+                </template>
+              </v-popover>
+            </td>
           </tr>
         </table>
         <br>
@@ -664,23 +830,23 @@
             <table>
               <tr>
                 <th>正常</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>魔法攻撃UP中</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>上+魔法防御DOWN大</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>上+屬性(-100)</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>全超+-</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.55 + .55 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.55 + .55 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
             </table>
           </div>
@@ -688,23 +854,23 @@
             <table>
               <tr>
                 <th>正常</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>物攻増UP中+</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>上+物理防御DOWN大</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>上+屬性(-100)</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>全超+-</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.55 + .55 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.55 + .55 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
             </table>
           </div>
@@ -719,23 +885,23 @@
             <table>
               <tr>
                 <th>正常</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>魔法攻撃UP中</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>上+魔法防御DOWN大</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>上+屬性(-100)</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.3 + .4 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>全超+-</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.55 + .55 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'MATK').value * (1 + ((.55 + .55 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
             </table>
           </div>
@@ -743,23 +909,23 @@
             <table>
               <tr>
                 <th>正常</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>物攻増UP中+</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>上+物理防御DOWN大</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>上+屬性(-100)</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.35 + .4 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
               <tr>
                 <th>全超+-</th>
-                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.55 + .55 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier)))) }}</td>
+                <td>{{ Math.round(temp.totalStates.find(p =&gt; p.state === 'SATK').value * (1 + ((.55 + .55 + 1) + (skillCombo * .2) + (skill.effectValue) + (temp.skillMultiplier.value)))) }}</td>
               </tr>
             </table>
           </div>
@@ -768,10 +934,6 @@
     </div>
   </div>
   <script src="js/characterBuilder.js"></script>
-  <div>
-    <p>開発中です</p>
-    <p>skill/属性/効果 may not working</p>
-  </div>
 </body>
 
 </html>
