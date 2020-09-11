@@ -65,7 +65,7 @@
                 <div class="item-popover">
                   <p>{{ material.NAME }}</p>
                   <p>{{ material.DESC }}</p>
-                  <el-link v-if="material.RSP.length" type="primary" :href="'composeItem.html?df=' + material.DF" target="_blank">調合</el-link>
+                  <el-link v-if="material.RSP.length" type="primary" :href="`composeItem.html?df=${material.DF}&quality=${materialOptions[i].quality}`" target="_blank">調合</el-link>
                 </div>
               </template>
             </v-popover>
