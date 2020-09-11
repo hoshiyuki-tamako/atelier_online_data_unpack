@@ -881,6 +881,7 @@
         <div>
           <span>Skill Combo</span>
           <el-slider v-model="skillCombo" :step="1" :max="15"></el-slider>
+          <p>*現在のskills計算公式わ推測. 誤差がある</p>
         </div>
         <div v-for="skill in getEquipmentSkills('weapon').filter(p => p.type === 1)">
           <h4>武器</h4>
