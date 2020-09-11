@@ -47,6 +47,9 @@ class Lookup {
 
 class LogicHelper {
   static calculateState(gmrb, lv = 1) {
+    if (!gmrb) {
+      return 0;
+    }
     const baseValue = ((gmrb.M - gmrb.B)/gmrb.R);
     return Math.floor(baseValue * lv + gmrb.B);
   }
@@ -56,7 +59,7 @@ class LogicHelper {
 }
 
 class Equipment {
-  static states = ['SATK', 'SDEF', 'MATK', 'MDEF', 'SPD'];
+  static states = ['HP', 'SATK', 'SDEF', 'MATK', 'MDEF', 'SPD'];
   static skillTriggers = [1, 14];
 
   weapon;
@@ -69,7 +72,7 @@ class Equipment {
 }
 
 class CharacterModifier {
-  static states = ['HP'].concat(Equipment.states);
+  static states = Equipment.states;
 
   level = 80;
   foodLevel = 80;
@@ -428,7 +431,6 @@ new Vue({
 
       const skills = this.getEquipmentSkills(slot);
       return Equipment.states
-        .filter(p => this.player.equipment[slot].EQU[p])
         .map(p => {
           return {
             key: p,
@@ -702,10 +704,16 @@ new Vue({
         equipmentStates,
         equipmentDodges,
         equipmentCriticalHit,
+        equipmentElements,
+
+        equipmentSkills,
+        supportItemStates,
+        supportElements,
 
         characterStates,
         characterDodge,
         characterCriticalHit,
+        characterElements,
         
         skillMultiplier,
       };

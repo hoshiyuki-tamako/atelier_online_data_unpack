@@ -643,13 +643,17 @@
                         <th>
                           <img class="icon-small" v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
                         </th>
-                        <td>base: {{ characterStates.value }} / food: {{ characterStates.foodValue }} / skill {{ characterStates.skillValue }}</td>
+                        <td>base {{ characterStates.value }} / food {{ characterStates.foodValue }} / skill {{ characterStates.skillValue }}</td>
                       </tr>
                       <tr v-for="([slot, [value]]) in temp.equipmentStates.map(p => [p.slot, p.values.filter(p => p.key === summary.state)]).filter(p => p[1].length)" :key="slot">
                         <th>
                           <img class="icon-small" :src="getEquipmentImage(slot)" :alt="slot">
                         </th>
-                        <td>base: {{ value.value }} / skill: {{ value.skillValue }} / extra {{ value.extraValue }}</td>
+                        <td>base {{ value.value }} / skill {{ value.skillValue }} / extra {{ value.extraValue }}</td>
+                      </tr>
+                      <tr v-for="support in temp.supportItemStates.filter(p => p.state === summary.state).filter(p => p.value)" :key="support.state">
+                        <th>Support</th>
+                        <td>{{ support.value }}</td>
                       </tr>
                     </table>
                   </div>
@@ -667,13 +671,17 @@
                         <th>
                           <img class="icon-small" v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
                         </th>
-                        <td>base: {{ characterStates.value }} / food: {{ characterStates.foodValue }} / skill {{ characterStates.skillValue }}</td>
+                        <td>base {{ characterStates.value }} / food {{ characterStates.foodValue }} / skill {{ characterStates.skillValue }}</td>
                       </tr>
                       <tr v-for="([slot, [value]]) in temp.equipmentStates.map(p => [p.slot, p.values.filter(p => p.key === summary.state)]).filter(p => p[1].length)" :key="slot">
                         <th>
                           <img class="icon-small" :src="getEquipmentImage(slot)" :alt="slot">
                         </th>
-                        <td>base: {{ value.value }} / skill: {{ value.skillValue }} / extra {{ value.extraValue }}</td>
+                        <td>base {{ value.value }} / skill {{ value.skillValue }} / extra {{ value.extraValue }}</td>
+                      </tr>
+                      <tr v-for="support in temp.supportItemStates.filter(p => p.state === summary.state).filter(p => p.value)" :key="support.state">
+                        <th>Support</th>
+                        <td>{{ support.value }}</td>
                       </tr>
                     </table>
                   </div>
@@ -782,8 +790,62 @@
             </td>
           </tr>
           <tr v-for="element in temp.totalElements" :key="element.label">
-            <th>{{ element.label }}</th>
-            <td>{{ element.value }}</td>
+            <th>
+              <v-popover placement="left-end" trigger="hover">
+                <span>{{ element.label }}</span>
+                <template slot="popover">
+                  <div class="equipment-popover">
+                    <h4>{{ element.label }}</h4>
+                    <table v-for="([characterElement], i) in [temp.characterElements.filter(p => p.key === element.element)]" :key="i">
+                      <tr v-if="characterElement.value">
+                        <th>
+                          <img class="icon-small" v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
+                        </th>
+                        <td>{{ characterElement.value }}</td>
+                      </tr>
+                      <tr v-for="([slot, [value]]) in temp.equipmentElements.map(p => [p.slot, p.values.filter(i => i.key === element.element)]).filter(p => p[1].length)" :key="slot">
+                        <th>
+                          <img class="icon-small" :src="getEquipmentImage(slot)" :alt="slot">
+                        </th>
+                        <td>base {{ value.value }} / skill {{ value.skillValue }} / extra {{ value.extraValue }}</td>
+                      </tr>
+                      <tr v-for="support in temp.supportElements.filter(i => i.element === element.element).filter(p => p.value)" :key="support.element">
+                        <th>Support</th>
+                        <td>{{ support.value }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </template>
+              </v-popover>
+            </th>
+            <td>
+              <v-popover placement="left-end" trigger="hover">
+                <span>{{ element.value }}</span>
+                <template slot="popover">
+                  <div class="equipment-popover">
+                    <h4>{{ element.label }}</h4>
+                    <table v-for="([characterElement], i) in [temp.characterElements.filter(p => p.key === element.element)]" :key="i">
+                      <tr v-if="characterElement.value">
+                        <th>
+                          <img class="icon-small" v-if="player.character" :src="getCharacterImage()" :alt="player.character.NAME">
+                        </th>
+                        <td>{{ characterElement.value }}</td>
+                      </tr>
+                      <tr v-for="([slot, [value]]) in temp.equipmentElements.map(p => [p.slot, p.values.filter(i => i.key === element.element)]).filter(p => p[1].length)" :key="slot">
+                        <th>
+                          <img class="icon-small" :src="getEquipmentImage(slot)" :alt="slot">
+                        </th>
+                        <td>base {{ value.value }} / skill {{ value.skillValue }} / extra {{ value.extraValue }}</td>
+                      </tr>
+                      <tr v-for="support in temp.supportElements.filter(i => i.element === element.element).filter(p => p.value)" :key="support.element">
+                        <th>Support</th>
+                        <td>{{ support.value }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </template>
+              </v-popover>
+            </td>
           </tr>
           <tr>
             <th>
