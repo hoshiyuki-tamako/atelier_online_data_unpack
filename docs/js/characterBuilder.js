@@ -80,14 +80,6 @@ class EquipmentModifier {
   quality = 120;
   level = 80;
   skill;
-
-  set skillId(id) {
-    this.skill = window.addonSkills.find(p => p.id === id);
-  }
-
-  get skillId() {
-    return this.skill ? this.skill.id : null;
-  }
 }
 
 class EquipmentsModifier {
@@ -126,6 +118,8 @@ new Vue({
     skillLookup: {},
     abnormalStateLookup: {},
     addonSkills: [],
+    addonSkillsLookUp: {},
+    characterGroupDfLookup: {},
 
     // state
     pageLoading: true,
@@ -185,6 +179,11 @@ new Vue({
     supportItemSelected: null,
     supportItemAllLevel: 80,
 
+    mainItemEditorVisible: false,
+    mainItemAllQuality: 120,
+    mainItemAllLevel: 80,
+    mainItemAllSkillId: null,
+
     // cache
     defaultItemDodgeSkillCache: new Map(),
     defaultItemCriticalSkillCache: new Map(),
@@ -192,6 +191,8 @@ new Vue({
 
     // data
     player: new Player(),
+
+    skillChain: 0,
   },
   methods: {
     // global helper
@@ -199,6 +200,7 @@ new Vue({
       if (!Array.isArray(effectTargets)) {
         effectTargets = [effectTargets];
       }
+
       const overrideIds = skills.map(p => p.overrideID).filter(p => p);
       return skills
       .filter(p => !overrideIds.includes(p.id))
@@ -318,6 +320,26 @@ new Vue({
       .filter(p => p.value);
     },
 
+    // main item editor
+    onConfirmSetAllMainItemQuality() {
+      for (const modifier of Object.values(this.player.equipmentModifier)) {
+        modifier.quality = this.mainItemAllQuality;
+      }
+      this.$forceUpdate();
+    },
+    onConfirmSetAllMainItemLevel() {
+      for (const modifier of Object.values(this.player.equipmentModifier)) {
+        modifier.level = this.mainItemAllLevel;
+      }
+      this.$forceUpdate();
+    },
+    onConfirmSetAllMainItemSkill() {
+      for (const modifier of Object.values(this.player.equipmentModifier)) {
+        modifier.skill = this.mainItemAllSkillId ? this.skillLookup[this.mainItemAllSkillId] : null;
+      }
+      this.$forceUpdate();
+    },
+
     // character picker
     getCharacterImage(character = null) {
       character = character || this.player.character;
@@ -394,6 +416,10 @@ new Vue({
     },
 
     // equipment
+    setEquipmentModifierSkill(value, slot) {
+      this.player.equipmentModifier[slot].skill = value;
+    },
+
     getEquipmentStates(slot) {
       if (!this.player.equipment[slot]) {
         return [];
@@ -409,11 +435,11 @@ new Vue({
             value: LogicHelper.calculateState(this.player.equipment[slot].EQU[p], this.player.equipmentModifier[slot].level),
             skillValue: this.getSkillEffectTargetValues(skills, Lookup.stateMapSkillEffectTarget[p]),
             extraValue: this.player.equipmentModifier[slot].skill ?
-            this.getSkillEffectTargetValues([this.player.equipmentModifier[slot].skill], Lookup.elementMapSkillEffectTarget[p]) :
+            this.getSkillEffectTargetValues([this.player.equipmentModifier[slot].skill], Lookup.stateMapSkillEffectTarget[p]) :
             0,
           };
         })
-        .filter(p => p.value + p.skillValue + p.extraValue);
+        .filter(p => console.log(p) || p.value + p.skillValue + p.extraValue);
     },
     getEquipmentDodge(slot) {
       const skills = this.getFilteredSkills(this.getEquipmentSkills(slot), 8);
@@ -436,24 +462,25 @@ new Vue({
   
       const skills = this.getEquipmentSkills(slot);
       return Object.entries(Lookup.element)
-        .filter(p => this.player.equipment[slot].ELM[p[0]])
-        .map(p => ({
-          key: p[0],
-          label: p[1],
-          value: this.player.equipment[slot].ELM[p[0]],
-          skillValue: 0, //this.getSkillEffectTargetValues(skills, Lookup.elementMapSkillEffectTarget[p]),
+        .filter(([element]) => this.player.equipment[slot].ELM[element])
+        .map(([element, label]) => ({
+          key: element,
+          label: label,
+          value: this.player.equipment[slot].ELM[element],
+          skillValue: this.getSkillEffectTargetValues(skills, Lookup.elementMapSkillEffectTarget[element]),
           extraValue: this.player.equipmentModifier[slot].skill ?
-          this.getSkillEffectTargetValues([this.player.equipmentModifier[slot].skill], Lookup.elementMapSkillEffectTarget[p]) :
+          this.getSkillEffectTargetValues([this.player.equipmentModifier[slot].skill], Lookup.elementMapSkillEffectTarget[element]) :
           0,
           skills,
         }))
         .filter(p => p.value + p.skillValue + p.extraValue);
     },
-    getEquipmentSkills(slot) {
+    getEquipmentSkills(slot, includeModifierSkill = false) {
       if (!this.player.equipment[slot]) {
         return [];
       }
-      return this.getItemSkills(this.player.equipment[slot], this.player.equipmentModifier[slot].quality);
+      const skills = includeModifierSkill && this.player.equipmentModifier[slot].skill ? [this.player.equipmentModifier[slot].skill] : [];
+      return skills.concat(this.getItemSkills(this.player.equipment[slot], this.player.equipmentModifier[slot].quality));
     },
 
     // items
@@ -516,6 +543,14 @@ new Vue({
         .filter(p => p);
     },
 
+    
+    onPickEquipment(slot) {
+      return this['onPick' + slot.capitalize()]();
+    },
+    getEquipmentImage(slot) {
+      return this['get' + slot.capitalize() + 'Image']();
+    },
+
     onPickWeapon() {
       this.resetItemPickerFilter().setDefaultItemPickerFilter();
       this.itemPickerFilterCategory = 20;
@@ -549,6 +584,15 @@ new Vue({
       this.itemPickerCallback = item => this.player.equipment['accessory' + i] = item;
       this.itemPickerDialogVisible = true;
     },
+    onPickAccessory1() {
+      this.onPickAccessory(1);
+    },
+    onPickAccessory2() {
+      this.onPickAccessory(2);
+    },
+    onPickAccessory3() {
+      this.onPickAccessory(3);
+    },
 
     getWeaponImage() {
       return this.player.equipment.weapon ? 
@@ -576,6 +620,15 @@ new Vue({
         `img/icon_s/Texture2D/icon_item_s_${this.player.equipment[name].DF}.png` :
         'img/icon/icon_pick_accessory.png';
     },
+    getAccessory1Image() {
+      return this.getAccessoryImage(1);
+    },
+    getAccessory2Image() {
+      return this.getAccessoryImage(2);
+    },
+    getAccessory3Image() {
+      return this.getAccessoryImage(3);
+    },
 
 
     // summary
@@ -596,7 +649,7 @@ new Vue({
         slot,
         values: this.getEquipmentElements(slot),
       }));
-      const equipmentSkills = Object.keys(this.player.equipment).map(this.getEquipmentSkills.bind(this)).flat();
+      const equipmentSkills = Object.keys(this.player.equipment).map(p => this.getEquipmentSkills(p, true)).flat();
 
       const supportItemStates = this.getSupportItemStatesSummary();
       const supportElements = this.getSupportItemElementSummary();
@@ -637,7 +690,7 @@ new Vue({
         .reduce((a, b) => a + b, 0),
       }));
 
-      const skillMultiplier = this.getSkillEffectTargetValues(equipmentSkills.concat(characterSkills), 10);
+      const skillMultiplier = this.getSkillEffectTargetValues(equipmentSkills.concat(characterSkills), [], null, [14, 32]);
 
       return {
         totalStates,
@@ -697,12 +750,20 @@ new Vue({
         this.skill = skill;
         this.abnormalstate = abnormalstate;
 
-        window.addonSkills = this.addonSkills = this.skill.m_vList.filter(p => p.type === 2 && Equipment.skillTriggers.includes(p.trigger));
+        window.addonSkills = this.addonSkills = this.skill.m_vList.filter(p => 
+          p.type === 2 && 
+          Equipment.skillTriggers.includes(p.trigger)  &&
+          p.name.includes('強化') && 
+          !p.name.includes('【') &&
+          !p.name.includes('】')
+        );
+        window.addonSkillsLookUp = this.addonSkillsLookUp = Enumerable.from(this.addonSkills).toObject(p => p.id, p => p);
   
         this.items = this.item.m_vList.filter(p => p.EQU_BRD);
         this.characters = this.chara.m_vList.filter(p => p.SKILL.length);
         this.skillLookup = Enumerable.from(this.skill.m_vList).toObject(p => p.id, p => p);
         this.abnormalStateLookup = Enumerable.from(this.abnormalstate.m_vList).toObject(p => p.id, p => p);
+        this.characterGroupDfLookup = Enumerable.from(this.characters).groupBy(p => p.GROUP_DF).toObject(p => p.key(), p => p.toArray());
 
         this.pageLoading = false;
       } catch (e) {

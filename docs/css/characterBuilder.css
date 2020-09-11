@@ -110,6 +110,10 @@
   text-align: center;
 }
 
+.skill-addon-select {
+  width: 240px;
+}
+
 /* support equipment */
 .sub-equipment, .result {
   width: 425px;
