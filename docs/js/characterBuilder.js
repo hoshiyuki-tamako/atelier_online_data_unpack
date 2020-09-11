@@ -1,3 +1,5 @@
+ELEMENT.locale(ELEMENT.lang.en);
+
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VTooltip)
 
