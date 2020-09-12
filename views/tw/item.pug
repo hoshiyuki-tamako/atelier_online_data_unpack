@@ -136,6 +136,14 @@ html
 
 
           div.item-container-right
+            - const quests = quest.m_vList.filter(p => p.RWD_ITEM.some(i => i.DF === _item.DF))
+            - if (quests.length)
+              h4 ----- 任務報酬 -----
+              - for (const _quest of quests)
+                p
+                  a(href="quest.html#DF-" + _quest.DF target="_blank")= _quest.NAME
+              br
+
             - const _fieldItem = fieldItem.List.find(p => p.iItemId === _item.DF)
             - if (_fieldItem)
               h4 ---- 戰鬥用 ----

@@ -84,7 +84,6 @@ export class PageBuilder {
     private spawnerDataManager: SpawnerDataManager,
     private lookup: any
   ) {
-
   }
 
   public async indexTw() {
@@ -371,13 +370,14 @@ export class PageBuilder {
   }
 
   public async item() {
-    const [item, skill, chara, fieldItem, abnormalState] = await Promise.all([
+    const [item, skill, chara, fieldItem, abnormalState, quest] = await Promise.all([
       this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.item)),
       this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.skill)),
       this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chara)),
       this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.fieldItem)),
       this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.abnormalstate)),
-    ]) as [Item, Skill, Chara, FieldItem, AbnormalState];
+      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.quest)),
+    ]) as [Item, Skill, Chara, FieldItem, AbnormalState, Quest];
 
     const itemIndex = Enumerable.from(item.m_vList)
       .groupBy(p => p.CATEG)
@@ -388,7 +388,7 @@ export class PageBuilder {
       }))
       .toArray();
     const itemsOrderByCategory = item.m_vList.sort((a, b) => a.CATEG - b.CATEG);
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, LogicHelper, itemIndex, itemsOrderByCategory, item, skill, chara, fieldItem, abnormalState };
+    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, LogicHelper, itemIndex, itemsOrderByCategory, item, skill, chara, fieldItem, abnormalState, quest };
     await fs.writeFile(
       path.join(this.exportFileManager.outFolder, 'item.html'),
       minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'item.pug'), pugOption), Option.minifyOption),
