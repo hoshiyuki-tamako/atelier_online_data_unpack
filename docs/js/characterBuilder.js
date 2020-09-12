@@ -178,7 +178,6 @@ new Vue({
     skillLookup: {},
     abnormalStateLookup: {},
     addonSkills: [],
-    addonSkillsLookUp: {},
     characterGroupDfLookup: {},
     blazeArtLookup: {},
 
@@ -1137,6 +1136,7 @@ new Vue({
     resetItemPickerFilter() {
       this.itemPickerShowRemoveIcon = true;
       this.itemPickerShowSort = true;
+      this.itemPickerShowStateType = 0;
 
       this.itemPickerFilterCategory = null;
       this.itemPickerFilterKeyword = '';
@@ -1174,14 +1174,13 @@ new Vue({
         this.abnormalstate = abnormalstate;
         this.blaze_art = blaze_art;
 
-        window.addonSkills = this.addonSkills = this.skill.m_vList.filter(p => 
+        this.addonSkills = this.skill.m_vList.filter(p => 
           p.type === 2 && 
           Equipment.skillTriggers.includes(p.trigger)  &&
           p.name.includes('強化') && 
           !p.name.includes('【') &&
           !p.name.includes('】')
         );
-        window.addonSkillsLookUp = this.addonSkillsLookUp = Enumerable.from(this.addonSkills).toObject(p => p.id, p => p);
   
         this.items = this.item.m_vList.filter(p => p.EQU_BRD);
         this.characters = this.chara.m_vList.filter(p => p.SKILL.length);
