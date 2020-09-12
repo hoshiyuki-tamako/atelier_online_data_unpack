@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title 他
+    title 其他
     link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
     style.
       table th {
@@ -54,20 +54,20 @@ html
   body
     div.categories-container
       div
-        a(href="#advent-battle") 降臨バタル
+        a(href="#advent-battle") 降臨戰鬥
       div
         a(href="#tips") Tips
       div
-        a(href="#treasure-text") 宝文字
+        a(href="#treasure-text") 寶物角色文字
       div
-        a(href="#chat") チャット
+        a(href="#chat") 對話
     br
     br
     br
     br
 
     div#advent-battle
-      h3 降臨バタル
+      h3 降臨戰鬥
       - for (const _adventBattle of adventBattle.RankingList)
         - for (const _enemyList of _adventBattle.EnemyList)
           div.item-container
@@ -81,7 +81,7 @@ html
               table
                 tr
                   th 課題
-                  th ポイント
+                  th 點數
                 - for (const score of _enemyList.ScoreList)
                   tr
                     td= score.name
@@ -104,7 +104,7 @@ html
 
     hr
     div.container#treasure-text
-      h3 宝文字
+      h3 寶物角色文字
       table.treasure-text-table
         - for (const _treasure of treasure.m_vList)
           tr
@@ -119,7 +119,7 @@ html
 
     hr
     div.container#chat
-      h3 チャット
+      h3 對話
       img(src= exportFileManager.rootFolderRelativePath + "img/icon/Texture2D/icon_stamp.png" alt="stamp")
       table
         - for (const _chat of chat.List)

@@ -149,6 +149,13 @@ export class PageBuilder {
         },
       },
       {
+        href: "zone.html",
+        title: "Zone",
+        img: {
+          src: "../img/icon_s/Texture2D/icon_item_s_10500014.png",
+        },
+      },
+      {
         href: "area.html",
         title: "地區",
         img: {
@@ -178,7 +185,15 @@ export class PageBuilder {
           src: "../img/other/Texture2D/item_texture_0018.png",
         },
       },
+      {
+        href: "other.html",
+        title: "其他",
+        img: {
+          src: "../img/icon_s/Texture2D/icon_item_s_10950055.png",
+        },
+      },
 
+      
       {
         href: "../characterBuilder.html",
         title: "角色建立(日版)",
