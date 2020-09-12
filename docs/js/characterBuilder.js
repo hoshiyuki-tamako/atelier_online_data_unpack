@@ -651,7 +651,7 @@ new Vue({
             value: LogicHelper.calculateState(item.EQU[p], level),
           };
         })
-        .filter(p => p.value || p.skillValue);
+        .filter(p => p.value);
     },
     getItemSupportElements(item) {
       return Object.entries(Lookup.element)
@@ -660,7 +660,7 @@ new Vue({
           label,
           value: item.ELM[element],
         }))
-        .filter(p => p.value || p.skillValue);
+        .filter(p => p.value);
     },
     getItemStates(item, quality = 120, level = 80) {
       const skills = this.getItemSkills(item, quality);
