@@ -19,7 +19,7 @@ Info for developer
   "CATEG": 11, // Category ID, see Enums for all the types
   "GEN": 1001, // weapon type, relationship to chara.WEAPON[].GEN
   "PRIO": 10010001, // previous item, for sorting
-  "KANA": "ジュウコウセキ", // name
+  "KANA": "ジュウコウセキ", // use for translate other languages
   "ICON": 1001,
   "NAME": "重鉱石", // name
   "DESC": "［材料］リブルムの「茨の結界」などで採掘できる非常に重く頑丈な鉱物を含んだ石。", // description
