@@ -103,6 +103,7 @@ html
             p DF: #{_quest.DF}
             p QUEST_NO: #{_quest.QUEST_NO}
             p QUEST_SUB_NO: #{_quest.QUEST_SUB_NO}
+            p 種類: #{Lookup.questCategory[_quest.CATEG] || `CATEG=${_quest.CATEG}`}
             p 解放章節: #{_quest.CHAPTER ? _quest.CHAPTER : '-'}
             p 重要任務: #{_quest.KEY_QUEST ? "✓" : "x"}
             p 重要: #{_quest.IMPORTANT ? "✓" : "x"}
