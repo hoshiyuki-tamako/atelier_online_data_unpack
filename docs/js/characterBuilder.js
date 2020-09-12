@@ -393,6 +393,11 @@ new Vue({
       }
       this.supportItemEditDialogVisible = true;
     },
+    onCloseSupportItemDialog() {
+      if (this.itemPickerSortOriginal) {
+        this.itemPickerSort = this.itemPickerSortOriginal;
+      }
+    },
     onAddSupportItem() {
       this.player.supports.push(this.supportItemSelected);
       this.player.supportModifier.push(new EquipmentModifier());
