@@ -148,6 +148,14 @@ export class PageBuilder {
           src: "../img/fx/Texture2D/FX_smoke.png",
         },
       },
+      {
+        href: "area.html",
+        title: "地區",
+        img: {
+          src: "../img/map/Texture2D/MapArea_04_001_ALL.png",
+        },
+      },
+
 
       {
         href: "wealth.html",

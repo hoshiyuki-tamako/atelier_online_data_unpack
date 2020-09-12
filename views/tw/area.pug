@@ -85,7 +85,7 @@ html
 
             - const dungeonInfos = dungeonInfo.List.filter(p => p.iAreaId === _areaDetail.iAreaID)
             - if (dungeonInfos.length)
-              h4 ---- ダンジョン ----
+              h4 ---- 地牢 ----
               div.area-dungeons-container
                 - for (const [i, _dungeonInfo] of dungeonInfos.entries())
                   span(id="iDungeonId-" + _dungeonInfo.iDungeonId)
