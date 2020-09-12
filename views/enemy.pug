@@ -68,10 +68,10 @@ html
     div
       h2 種類
       div.category-indexes-container
-        - for(const [i, kind] of enemy.ModelList.entries())
+        - for(const kind of enemy.KindList)
           div.category-index-container
-            a(href="#iKind-" + i)
-              h3= kind.sName
+            a(href="#iKind-" + kind.iKind)
+              h3= kind.strName
     br
     br
     br
@@ -79,7 +79,7 @@ html
 
     div
       - for(const [eKind, _enemies] of Enumerable.from(enemy.m_vList).groupBy(p => p.eKind).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
-        - const strName = enemy.ModelList[eKind].sName
+        - const strName = enemy.KindList.find(i => i.iKind === eKind).strName
         h2(id="iKind-" + eKind)= strName
         div.items-index-container
           - for (const _enemy of _enemies)

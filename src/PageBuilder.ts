@@ -136,7 +136,7 @@ export class PageBuilder {
       },
       {
         href: "effect.html",
-        title: "効果",
+        title: "效果",
         img: {
           src: "../img/fx/Texture2D/FX_Skill2005_02.png",
         },
@@ -181,14 +181,14 @@ export class PageBuilder {
 
       {
         href: "../characterBuilder.html",
-        title: "キャラクタービルダー",
+        title: "角色建立(日版)",
         img: {
           src: "../img/other/Texture2D/item_texture_0024.png",
         },
       },
       {
         href: "../composeItem.html",
-        title: "調合アイテム",
+        title: "鍊金/調合物品(日版)",
         img: {
           src: "../img/icon/icon_bowl.png",
         },
