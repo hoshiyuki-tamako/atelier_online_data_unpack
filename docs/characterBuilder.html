@@ -8,8 +8,8 @@
   <script src="js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/linq@3.2.3/linq.min.js" integrity="sha256-wNfOgqZN3b4Ddw/AMdNgAqUulgfVw9e96maWCY30eBU=" crossorigin="anonymous"></script>
 
-  <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
   <script src="//unpkg.com/element-ui/lib/umd/locale/en.js"></script>
@@ -26,7 +26,8 @@
       <div class="item-picker-container">
         <el-select v-if="itemPickerShowSort" v-model="itemPickerSort" placeholder="Sort" filterable clearable>
           <el-option v-for="item in itemPickerSortOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
-        </el-select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </el-select>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <span>show info</span>
         <el-switch v-model="itemPickerShowStates"></el-switch>
         <el-input v-model="itemPickerFilterKeyword" placeholder="名前 / DF"></el-input>
@@ -39,7 +40,7 @@
               <p>{{ item.NAME }}</p>
               <img class="icon-small" :src="'img/icon_s/Texture2D/icon_item_s_' + item.DF + '.png'">
               <template v-if="itemPickerShowStates" slot="popover">
-                <div class="equipment-popover">
+                <div v-if="itemPickerShowStateType === 0" class="equipment-popover">
                   <table>
                     <tr v-for="_item in getItemStates(item)">
                       <th>{{ _item.label }}</th>
@@ -78,6 +79,27 @@
                     <p>&#x3E;</p>
                   </div>
                 </div>
+
+                <div v-else-if="itemPickerShowStateType === 1" class="equipment-popover">
+                  <table>
+                    <tr v-for="_item in getItemSupportStates(item)">
+                      <th>{{ _item.label }}</th>
+                      <td>+{{ LogicHelper.calculateSupportState(_item.value) }}</td>
+                    </tr>
+                    <tr v-for="element in getItemSupportElements(item)">
+                      <th>{{ element.label }}</th>
+                      <td>+{{ LogicHelper.calculateSupportState(element.value) }}</td>
+                    </tr>
+                    <tr v-if="item.GROUP_DF">
+                      <th>專用</th>
+                      <td>
+                        <p v-for="character in characterGroupDfLookup[item.GROUP_DF]">
+                          <img class="icon-small" :src="`img/chara/Texture2D/icon_chara_all_${character.DF.toString().padStart(4, '0')}_00.png`" :alt="character.NAME">
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
               </template>
             </v-popover>
           </div>
@@ -97,10 +119,6 @@
           &nbsp;&nbsp;
           <el-input-number v-model="supportItemAllLevel" :min="1" size="small" step-strictly></el-input-number>
           <el-button @click="onSetAllSupportItemLevel" type="primary" size="small">確認</el-button>
-        </div>
-        <div>
-          <p>
-          </p>
         </div>
         <div>Total: {{ player.supports.length }}</div>
         <table>

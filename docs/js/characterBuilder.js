@@ -150,6 +150,15 @@ class SaveConfig {
   static localStorageKey = 'player';
 }
 
+Vue.mixin({
+  data: function() {
+    return {
+      LogicHelper,
+    };
+  },
+});
+
+
 new Vue({
   el: '#app',
   data: {
@@ -241,13 +250,16 @@ new Vue({
     itemPickerShowSort: true,
     itemPickerSort: null,
     itemPickerShowStates: false,
+    itemPickerShowStateType: 0, // 0 = full state, 1 = support only
     itemPickerDialogVisible: false,
+
     itemPickerFilterCategory: null,
     itemPickerFilterKeyword: '',
     itemPickerFilterCharacterGender: null, // gen_id, EQU_GND
     itemPickerFilterWeaponGen: [], // [gen_id], GEN
     itemPickerFilterGroupDf: null,
     itemPickerCallback: null, // (item: unknown?) => void
+
 
     itemPickerDodgeSortSearchCache: new Map(),
     itemPickerCriticalHitSortSearchCache: new Map(),
@@ -384,6 +396,7 @@ new Vue({
     openSupportItemEditDialog() {
       this.resetItemPickerFilter().setDefaultItemPickerFilter();
       this.itemPickerShowRemoveIcon = false;
+      this.itemPickerShowStateType = 1;
       this.itemPickerSortOriginal = this.itemPickerSort;
       if (this.itemPickerSort && !this.itemPickerSort.includes('_base') && this.itemPickerSortOption.some(p => p.value === `${this.itemPickerSort}_base`)) {
         this.itemPickerSort += '_base';
@@ -398,6 +411,7 @@ new Vue({
       if (this.itemPickerSortOriginal) {
         this.itemPickerSort = this.itemPickerSortOriginal;
       }
+      this.itemPickerShowStateType = 0;
     },
     onAddSupportItem() {
       this.player.supports.push(this.supportItemSelected);
@@ -628,6 +642,26 @@ new Vue({
     },
 
     // items
+    getItemSupportStates(item, level = 80) {
+      return Equipment.states
+        .map(p => {
+          return {
+            key: p,
+            label: Lookup.state[p],
+            value: LogicHelper.calculateState(item.EQU[p], level),
+          };
+        })
+        .filter(p => p.value || p.skillValue);
+    },
+    getItemSupportElements(item) {
+      return Object.entries(Lookup.element)
+        .map(([element, label]) => ({
+          key: element,
+          label,
+          value: item.ELM[element],
+        }))
+        .filter(p => p.value || p.skillValue);
+    },
     getItemStates(item, quality = 120, level = 80) {
       const skills = this.getItemSkills(item, quality);
       return Equipment.states
@@ -948,7 +982,6 @@ new Vue({
     importFromString(str) {
       try {
         const playerExport = JSON.parse(atob(str));
-        console.log(playerExport);
 
         // checking
         if (playerExport.supportIds.length !== playerExport.supportModifier.length) {
@@ -1001,7 +1034,6 @@ new Vue({
           newPlayer.equipmentModifier[slot].quality = modifier.quality;
           newPlayer.equipmentModifier[slot].level = modifier.level;
         }
-        console.log(newPlayer);
         this.player = newPlayer;
         return true;
       } catch (e) {
