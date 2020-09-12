@@ -13,7 +13,7 @@ Info for developer
 
 ## Item
 
-```json
+```ts
 {
   "DF": 10010001, // id of the item
   "CATEG": 11, // Category ID, see Enums for all the types
@@ -214,7 +214,7 @@ Info for developer
 
 ## Skill
 
-```json
+```ts
 {
   "id": 1,
   "name": "ダンシングブレード",
@@ -255,7 +255,7 @@ Info for developer
 
 ## Abnormal State
 
-```json
+```ts
 {
   "id": 1,
   "name": "眠り",
@@ -279,7 +279,7 @@ Info for developer
 
 ## Abnormal State Effect
 
-```json
+```ts
 {
   "id": 1001,
   "name": "行動不能",
@@ -291,7 +291,7 @@ Info for developer
 
 ## Character
 
-```json
+```ts
     {
       "DF": 4, // id
       "CATEG": 1, // character category
@@ -451,7 +451,7 @@ Info for developer
 
 ## Blaze Art
 
-```json
+```ts
 {
   "DF": 1, // id
   "LV": [ // blaze art levels
@@ -465,7 +465,7 @@ Info for developer
 
 ## Degree
 
-```json
+```ts
 {
   "DF": 1,
   "STP": 1,
@@ -480,7 +480,7 @@ Info for developer
 
 ## Wealth
 
-```json
+```ts
 {
   "DF": 1,
   "NAME": "コール",
@@ -494,7 +494,7 @@ Info for developer
 
 ## Quest
 
-```json
+```ts
 {
   "DF": 100001001,
   "CATEG": 1, // category, see enum EQuestCategory for more info
@@ -626,7 +626,7 @@ Info for developer
 
 ## Enemy
 
-```json
+```ts
 {
   "DF": 101, // id
   "bBoss": 0, // is boss
@@ -746,7 +746,7 @@ Info for developer
 
 ## Area Info
 
-```json
+```ts
 {
   "iAreaId": 1, // relationship to iAreaID. note that its ID for other file.
   "iAreaNameId": 1, // relationship to iAreaNameId.
@@ -775,7 +775,7 @@ Info for developer
 
 ## Area Detail
 
-```json
+```ts
 {
   "iAreaID": 1,
   "iLevel": 1,
@@ -802,7 +802,7 @@ Info for developer
 
 ## FieldName
 
-```json
+```ts
 {
   "iAreaNameId": 1,
   "strAreaName": "オルビュース",
@@ -812,7 +812,7 @@ Info for developer
 
 ## Gate Info
 
-```json
+```ts
 {
   "iUnlockGateId": -2,
   "iArea": 1, // relationship to area.iAreaID
@@ -832,7 +832,7 @@ Info for developer
 
 seems they merge normal area and dungeon together
 
-```json
+```ts
 {
   "iDungeonId": 1,
   "iAreaNameId": 17, // relationship to fieldname.id
