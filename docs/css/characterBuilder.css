@@ -114,6 +114,12 @@
   width: 240px;
 }
 
+/* control buttons */
+.control-buttons {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 /* support equipment */
 .sub-equipment, .result {
   width: 425px;
