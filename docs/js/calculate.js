@@ -29,7 +29,8 @@ window.addEventListener('load', () => {
 
   const calculate = function() {
     const V = +inputV.value;
-    inputResult.value = Math.round(V * 0.05);
+    const result = V * 0.05;
+    inputResult.value = result >= 0 ?  Math.ceil(result) : Math.floor(result);
   };
 
   inputV.addEventListener('input', calculate);

@@ -11,6 +11,7 @@ export class LogicHelper {
     return Math.floor(baseValue * lv + gmrb.B) || 0;
   }
   public static calculateSupportState(value: number) {
-    return Math.ceil(value * .05);
+    const result = value * .05;
+    return result >= 0 ? Math.ceil(result) : Math.floor(result);
   }
 }
