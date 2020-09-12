@@ -139,7 +139,7 @@ html
             - const _fieldItem = fieldItem.List.find(p => p.iItemId === _item.DF)
             - if (_fieldItem)
               h4 ---- 戰鬥用 ----
-              p 目標: #{Lookup.FieldItemRange[_fieldItem.eRange]}
+              p 目標: #{Lookup.fieldItemRange[_fieldItem.eRange]}
               p 效果: #{Lookup.fieldItemUse[_fieldItem.eUse]}
               - for (const [i, stateId] of _fieldItem.eStateList.filter(p => p).entries())
                 - const _abnormalState = abnormalState.m_vList.find(p => p.id === stateId)

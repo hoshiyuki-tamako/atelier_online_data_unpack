@@ -30,10 +30,11 @@ export class LookupChinese {
     2: '回復',
   };
 
-  public static FieldItemRange = {
-    0: 'none',
+  public static fieldItemRange = {
+    0: '-',
     1: '1人',
     2: '全人',
+    3: '自',
   };
 
   public static weaponKind = {
@@ -190,10 +191,11 @@ export class Lookup {
     2: '回復',
   };
 
-  public static FieldItemRange = {
-    0: 'none',
+  public static fieldItemRange = {
+    0: '-',
     1: '1人',
     2: '全人',
+    3: '自',
   };
 
   public static weaponKind = {

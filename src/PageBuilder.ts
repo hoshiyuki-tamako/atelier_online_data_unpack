@@ -427,7 +427,7 @@ export class PageBuilder {
     const enemiesOrderByCategory = Enumerable.from(enemy.m_vList).orderBy(p => p.eKind).thenBy(p => p.iCategory).toArray();
     const charasOrderByCategory = Enumerable.from(chara.m_vList).orderBy(p => p.CATEG).toArray();
 
-    const pugOption = { exportFileManager: this.exportFileManager, Enumerable, skill, item, enemy, chara, blazeArt, abnormalState, itemsOrderByCategory, enemiesOrderByCategory, charasOrderByCategory,
+    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, Enumerable, skill, item, enemy, chara, blazeArt, abnormalState, itemsOrderByCategory, enemiesOrderByCategory, charasOrderByCategory,
       skillIcons: skillIcons.map(p => path.basename(p)).filter(p => !p.includes('#')) };
     await fs.writeFile(
       path.join(this.exportFileManager.outFolder, 'skill.html'),

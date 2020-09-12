@@ -25,6 +25,7 @@ html
             th 名前
             th 詳細
             th 数値
+            th 對象
             th 効果 (自)
             th 効果
             th 画像
@@ -36,6 +37,7 @@ html
               td= s.name
               td= s.detail
               td.nowrap-cell= `${s.effectValue}, ${s.effectValue2}`
+              td= Lookup.fieldItemRange[s.targetScope]
               td
                 - for (const [i, _state] of s.stateOwn.entries())
                   - const effect = abnormalState.m_vList.find(p => p.id === _state.id)
