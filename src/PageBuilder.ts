@@ -353,13 +353,13 @@ export class PageBuilder {
           src: "img/other/Texture2D/item_texture_0025.png",
         },
       },
-      {
-        href: "unusedItem.html",
-        title: "未使用アイテム",
-        img: {
-          src: "img/icon_s/Texture2D/icon_item_s_20020010.png",
-        },
-      },
+      // {
+      //   href: "unusedItem.html",
+      //   title: "未使用アイテム",
+      //   img: {
+      //     src: "img/icon_s/Texture2D/icon_item_s_20020010.png",
+      //   },
+      // },
     ];
 
     const pugOption = { _, moment, pages };
