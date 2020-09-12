@@ -16,7 +16,7 @@ Info for developer
 ```ts
 {
   "DF": 10010001, // id of the item
-  "CATEG": 11, // Category ID, see Enums for all the types
+  "CATEG": 11, // Category ID, see Enums ECategory for all the types
   "GEN": 1001, // weapon type, relationship to chara.WEAPON[].GEN
   "PRIO": 10010001, // previous item, for sorting
   "KANA": "ジュウコウセキ", // use for translate other languages
@@ -204,7 +204,7 @@ Info for developer
     "DARK": 0
   },
   "JOB": [],
-  "WPN_KIND": 0,
+  "WPN_KIND": 0, // see Lookup.weaponKind
   "GROUP_DF": 0, // Special weapon for character, relationship to chara.GROUP_DF
   "CEIL_RWD_ITEM": [],
   "RCP_TYPE": 0,
@@ -445,7 +445,7 @@ Info for developer
           "DF": 5008 // relationship to blaze_art.DF
         }
       ],
-      "GROUP_DF": 4 // item group, use for character only special item
+      "GROUP_DF": 4 // relationship to item.GORUP_DF, use for checking character only special item
     }
 ```
 
@@ -486,8 +486,8 @@ Info for developer
   "NAME": "コール",
   "DESC": "ブレセイルで流通している通貨",
   "ICON": 1,
-  "CHARA": 0,
-  "SORT": 1,
+  "CHARA": 0, // relationship to chara.DF
+  "SORT": 1, // sorting
   "CATEG": 0
 }
 ```
@@ -572,7 +572,7 @@ Info for developer
       "DF": 100001001
     }
   ],
-  "ENM": [
+  "ENM": [ // required to kill enemy
     {
       "DF": 100010003, // relationship to enemy.DF
       "CATEG": 0,
@@ -586,7 +586,7 @@ Info for developer
   "MIX": [],
   "SKL": [],
   "ACT_SKL": [],
-  "DLV": [ // delivery
+  "DLV": [ // delivery item
     {
       "DF": 10220001, // relationship to item.DF
       "CATEG": 0,
@@ -748,8 +748,8 @@ Info for developer
 
 ```ts
 {
-  "iAreaId": 1, // relationship to iAreaID. note that its ID for other file.
-  "iAreaNameId": 1, // relationship to iAreaNameId.
+  "iAreaId": 1, // relationship to areaDetail.iAreaID. note that its ID for other file.
+  "iAreaNameId": 1, // relationship to fieldname.iAreaNameId.
   "iHardMode": 0,
   "iStartPortalID": 0,
   "cMapColor": {
@@ -791,7 +791,7 @@ Info for developer
     10020002,
     10310002
   ],
-  "iEnemyIDList": [  // note that this notes doesn't show all real items that can spawn, for real full list use SpawnList_*.txt
+  "iEnemyIDList": [  // note that this notes doesn't show all real enemy that can spawn, for real full list use SpawnList_*.txt
     3101, // relationship to enemy.DF
     201,
     301,
