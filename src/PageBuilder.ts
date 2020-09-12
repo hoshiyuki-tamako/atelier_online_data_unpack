@@ -9,7 +9,7 @@ import pug from 'pug';
 import { eChatTab } from './Enums';
 import { ExportFileManager } from './ExportFileManager';
 import { LogicHelper } from './LogicHelper';
-import { Lookup } from './Lookup';
+import { Lookup, LookupChinese } from './Lookup';
 import { AbnormalState } from './master/abnormalState';
 import { AbnormalStateEffect } from './master/abnormalStateEffect';
 import { AdventBattle } from './master/adventBattle';
@@ -48,15 +48,15 @@ export class PageBuilder {
 
   public static async main () {
     await Promise.all(['tw', 'jp'].map(async region => {
+      const lookup = region === 'tw' ? LookupChinese : Lookup;
       const exportFileManager = new ExportFileManager().setRegion(region);
       const spawnerDataManager = new SpawnerDataManager(exportFileManager);
-
       await Promise.all([
         exportFileManager.preLoadFiles(),
         spawnerDataManager.loadFromCache(),
       ]);
 
-      const that = new this(exportFileManager, spawnerDataManager);
+      const that = new this(exportFileManager, spawnerDataManager, lookup);
       await Promise.all([
         region === 'tw' ? that.indexTw() : that.index(),
         that.item(),
@@ -81,7 +81,8 @@ export class PageBuilder {
 
   public constructor(
     private exportFileManager: ExportFileManager,
-    private spawnerDataManager: SpawnerDataManager
+    private spawnerDataManager: SpawnerDataManager,
+    private lookup: any
   ) {
 
   }
@@ -364,7 +365,7 @@ export class PageBuilder {
       }))
       .toArray();
     const itemsOrderByCategory = item.m_vList.sort((a, b) => a.CATEG - b.CATEG);
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup, LogicHelper, itemIndex, itemsOrderByCategory, item, skill, chara, fieldItem, abnormalState };
+    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, LogicHelper, itemIndex, itemsOrderByCategory, item, skill, chara, fieldItem, abnormalState };
     await fs.writeFile(
       path.join(this.exportFileManager.outFolder, 'item.html'),
       minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'item.pug'), pugOption), Option.minifyOption),
@@ -381,7 +382,7 @@ export class PageBuilder {
       fs.readdir(path.join(this.exportFileManager.htmlRoot, 'img', 'chara', 'Texture2D')),
     ]) as [Item, Skill, Chara, BlazeArt, Quest, string[]];
 
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup, LogicHelper, Enumerable, item, skill, chara, blazeArt, quest, charaIcons: charaIcons.map(p => path.basename(p)) };
+    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, LogicHelper, Enumerable, item, skill, chara, blazeArt, quest, charaIcons: charaIcons.map(p => path.basename(p)) };
     await fs.writeFile(
       path.join(this.exportFileManager.outFolder, 'chara.html'),
       minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'chara.pug'), pugOption), Option.minifyOption),
@@ -464,7 +465,7 @@ export class PageBuilder {
       return [... new Set(areaIds)];
     };
 
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup, LogicHelper, Enumerable, enemy, skill, spawnerData, getAreaIds, areaInfo, fieldName, areaDetail };
+    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, LogicHelper, Enumerable, enemy, skill, spawnerData, getAreaIds, areaInfo, fieldName, areaDetail };
     await fs.writeFile(
       path.join(this.exportFileManager.outFolder, 'enemy.html'),
       minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'enemy.pug'), pugOption), Option.minifyOption),
@@ -495,7 +496,7 @@ export class PageBuilder {
       this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.degree)),
     ]) as [Quest, Item, Chara, Enemy, Wealth, AreaInfo, FieldName, Degree];
 
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName, degree };
+    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName, degree };
     await fs.writeFile(
       path.join(this.exportFileManager.outFolder, 'quest.html'),
       minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'quest.pug'), pugOption), Option.minifyOption),
@@ -730,7 +731,7 @@ export class PageBuilder {
     .toArray();
 
     // start render
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup, LogicHelper, chara, byItemState, byItemElement, byCharacter, byEnemyState, byEnemyElement, itemStates, characterStates, enemyStates };
+    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, LogicHelper, chara, byItemState, byItemElement, byCharacter, byEnemyState, byEnemyElement, itemStates, characterStates, enemyStates };
     await fs.writeFile(
       path.join(this.exportFileManager.outFolder, 'totalRanking.html'),
       minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'totalRanking.pug'), pugOption), Option.minifyOption),
