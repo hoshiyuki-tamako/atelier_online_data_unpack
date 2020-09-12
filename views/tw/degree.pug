@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+    title 稱號
+    style.
+      th {
+        white-space: nowrap;
+      }
+      td, th {
+        text-align: center;
+      }
+  body
+    div
+      table
+        thead
+          tr
+            th DF
+            th 名稱
+            th 詳情
+            th 畫像
+        tbody
+          - for (const _degree of degree.List)
+            tr
+              td= _degree.DF
+              td= _degree.NAME
+              td= _degree.DESC
+              td
+                - if (_degree.TYP)
+                  img(src= exportFileManager.rootFolderRelativePath + "img/icon_degree/Texture2D/icon_degree_" + `${_degree.TYP.toString().padStart(2, "0")}${_degree.RTY.toString().padStart(2, "0")}` + ".png" alt= _degree.NAME)

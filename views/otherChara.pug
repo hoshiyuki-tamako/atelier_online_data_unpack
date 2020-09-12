@@ -2,7 +2,7 @@ doctype html
 html
   head
     title 他のキャラクター
-    link(rel="stylesheet" href="css/main.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
     style.
       .items-index-container {
         display: flex;
@@ -47,7 +47,7 @@ html
         div.item-index-container
           a(href="#DF-" + _chara.DF)
             p #{_chara.NAME}
-            img(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+            img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
     br
     br
     br
@@ -61,7 +61,7 @@ html
             - for (const id of [...Array(10).keys()])
               - const iconFilename = `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png`
               - if (charaIcons.includes(iconFilename))
-                img.icon-full(src="img/chara/Texture2D/" + iconFilename alt= _chara.NAME)
+                img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/" + iconFilename alt= _chara.NAME)
             p= _chara.DESC
             br
             p DF: #{_chara.DF}

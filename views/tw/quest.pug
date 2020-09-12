@@ -1,0 +1,184 @@
+doctype html
+html
+  head
+    title 任務
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/reset.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/wealth.css")
+    style.
+      .categories-index-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .category-index-container {
+        padding: 12px;
+      }
+
+      .items-index-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .item-index-container {
+        white-space: nowrap;
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+        text-align: center;
+      }
+      .item-index-container img {
+        width: 120px;
+      }
+
+
+      .item-container {
+        display: flex;
+        padding: 12px;
+      }
+      .item-container-left {
+        min-width: 300px;
+        max-width: 300px;
+        padding: 12px;
+      }
+      .item-container-right {
+        padding: 12px;
+      }
+
+
+
+
+
+
+      .quest-kill-container img {
+        width: 120px;
+      }
+      .quest-reward-item-container {
+        display: flex;
+        align-items: center;
+      }
+      .quest-reward-item-container img {
+        width: 60px;
+      }
+  body
+    h2 任務
+    div.categories-index-container
+      - for(const category of Enumerable.from(quest.m_vList).groupBy(p => p.CATEG).orderBy(p => p.key()).select(p => p.key()))
+        div.category-index-container
+          a(href="#CATEG-" + category)
+            h3= Lookup.questCategory[category] || `CATEG=${category}`
+    br
+    br
+    br
+    br
+
+    div
+      - for (const [category, _quests] of Enumerable.from(quest.m_vList).groupBy(p => p.CATEG).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]))
+        h3(id="CATEG-" + category)= Lookup.questCategory[category] || `CATEG=${category}`
+        div.items-index-container
+          - for (const _quest of _quests)
+            div.item-index-container
+              a(href="#DF-" + _quest.DF)
+                p= _quest.NAME
+                - if (_quest.CHARA)
+                  img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
+        br
+        br
+    br
+    br
+    hr
+
+    div
+      - for (const _quest of quest.m_vList)
+        div.item-container(id="DF-" + _quest.DF)
+          div.item-container-left
+            - if (_quest.CHARA)
+              div
+                a(href="chara.html#DF-" + _quest.CHARA target="_blank")
+                 img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
+            h3 #{_quest.NAME}
+            p= _quest.DESC
+            br
+            p 達成條件:
+            p= _quest.CONDITION
+            br
+            p DF: #{_quest.DF}
+            p QUEST_NO: #{_quest.QUEST_NO}
+            p QUEST_SUB_NO: #{_quest.QUEST_SUB_NO}
+            p 解放章節: #{_quest.CHAPTER ? _quest.CHAPTER : '-'}
+            p 重要任務: #{_quest.KEY_QUEST ? "✓" : "x"}
+            p 重要: #{_quest.IMPORTANT ? "✓" : "x"}
+            p 挑戰: #{_quest.IMPORTANT ? "✓" : "x"}
+            p 區域: 
+              - if (_quest.AREA)
+                - const _area = areaInfo.List.find(p => p.iAreaId === _quest.AREA)
+                - const _fieldName = fieldName.List.find(p => p.iAreaNameId === _area.iAreaNameId)
+                span #{_fieldName.strAreaName}
+              - else
+                span -
+          div.item-container-right
+            - if (_quest.COST.WTH.CNT)
+              h4 ----- 消費 -----
+              - const _wealth = wealth.m_vList.find(p => p.DF === _quest.COST.WTH.DF)
+              span.wealth-container
+                img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png" alt= _wealth.NAME)
+                span= _quest.COST.WTH.CNT
+            -if (_quest.ENM.length)
+              h4 ----- 討伐 -----
+              div.quest-kill-container
+                - for (const enm of _quest.ENM)
+                  - const _enemy = enemy.m_vList.find(i => i.DF === enm.DF);
+                  - if (_enemy)
+                    a(href="enemy.html#DF-" + _enemy.DF target="_blank")
+                      span #{_quest.ENM.BDR}
+                      img(src= exportFileManager.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+                  - else if (enm.DF)
+                    p enemy not found: DF=#{enm.DF}
+                  - else
+                    p -
+
+            -if (_quest.DLV.length)
+              h4 ----- 納品/報告 -----
+              - for (const dlv of _quest.DLV)
+                - const _item = item.m_vList.find(item => item.DF === dlv.DF);
+                - if (!_item)
+                  - if (dlv.DF)
+                    p cannot find item: DF=#{dlv.DF}
+                  - else
+                    p -
+                - else
+                  - const href = _item.RSP.length ? `composeItem.html?df=${_item.DF}&quality=${dlv.QTY}` : `item.html#DF-${_item.DF}`
+                  a.quest-reward-item-container(href= href target="_blank")
+                    p 品質#{dlv.QTY} / #{dlv.BDR}個
+                    img(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+
+            - if (_quest.RWD_ITEM.length || _quest.RWD_WTH.length)
+              h4 ----- 報酬 -----
+              - if (_quest.RWD_ITEM.length)
+                - for (const rwd of _quest.RWD_ITEM)
+                  - const _item = item.m_vList.find(item => item.DF === rwd.DF);
+                  - if (!_item)
+                    - if (rwd.DF)
+                      p cannot find item: DF=#{rwd.DF}
+                    - else
+                      p -
+                  - else
+                    a.quest-reward-item-container(href="item.html#DF-" + _item.DF target="_blank")
+                      p 品質#{rwd.QTY} / #{rwd.CNT}個
+                      img(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+
+              - if (_quest.RWD_WTH.length)
+                - for (const rwd of _quest.RWD_WTH)
+                  - const _wealth = wealth.m_vList.find(p => p.DF === rwd.DF)
+                  span.wealth-container
+                    img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png")
+                    span= rwd.CNT
+              - if (_quest.RNK_PT)
+                span.wealth-container
+                  img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00009.png" alt="アカデミーポイント")
+                  span= _quest.RNK_PT
+
+            - if (_quest.UNLOCK.length)
+              h4 -----必須稱號 -----
+              - for (const unlock of _quest.UNLOCK)
+                - const _degree = degree.List.find(p => p.DF === unlock.DF)
+                p 步 #{unlock.STP} - #{_degree.NAME}
+        hr

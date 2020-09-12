@@ -2,9 +2,9 @@ doctype html
 html
   head
     title キャラクター
-    link(rel="stylesheet" href="css/reset.css")
-    link(rel="stylesheet" href="css/main.css")
-    link(rel="stylesheet" href="css/wealth.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/reset.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/wealth.css")
     style.
       th {
         white-space: nowrap;
@@ -69,7 +69,7 @@ html
         div.item-index-container
           a(href="#DF-" + _chara.DF)
             p #{_chara.NAME}
-            img(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+            img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
     br
     br
     br
@@ -84,7 +84,7 @@ html
             - for (const id of [...Array(10).keys()])
               - const iconFilename = `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png`
               - if (charaIcons.includes(iconFilename))
-                img.icon-full(src="img/chara/Texture2D/" + iconFilename alt= _chara.NAME)
+                img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/" + iconFilename alt= _chara.NAME)
             p= _chara.DESC
             br
             p DF: #{_chara.DF}
@@ -100,7 +100,7 @@ html
               p 武器種類: #{_chara.WEAPON.map(p => Lookup.weaponGen[p.GEN] || p.GEN).join(", ")}
             - for (const grow of _chara.GROW)
               p.wealth-container
-                img(src="img/icon_item01/Texture2D/icon_item01_00006.png" alt="限界キャンディ")
+                img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00006.png" alt="限界キャンディ")
                 span #{grow.STONE}
                 span #{new Array(grow.STAR).fill('⭐').join('')}
           div.item-container-right
@@ -109,7 +109,7 @@ html
               h4 ----- 専用アイテム -----
               - for (const _item of characterOnlyItems)
                 a(href="item.html#DF-" + _item.DF target="_blank")
-                  img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+                  img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
             h4 ----- スキル -----
             - for (const [lv, skills] of Enumerable.from(_chara.SKILL).groupBy(p => p.LV).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
@@ -244,7 +244,7 @@ html
                   - const href = _item.RSP.length ? `composeItem.html?df=${_item.DF}&quality=${fd.QTY}` : `item.html#DF-${_item.DF}`;
                   a.chara-food-consume(href= href target="_blank")
                     span 品質 #{fd.QTY}
-                    img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+                    img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
               table
                 tr
                   td HP

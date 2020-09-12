@@ -2,7 +2,7 @@ doctype html
 html
   head
     title スキル
-    link(rel="stylesheet" href="css/main.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
     style.
       th {
         text-align: center;
@@ -25,8 +25,8 @@ html
             th 名前
             th 詳細
             th 数値
-            th 効果 (友)
-            th 効果 (敵)
+            th 効果 (自)
+            th 効果
             th 画像
             th アイテム/人物/敵
         tbody
@@ -50,14 +50,14 @@ html
                     p &#x3E;
               td
                 - if (s.iconPath)
-                  img.icon-small(src="img/icon_skill/Texture2D/" + `${s.iconPath}.png` alt= s.name)
+                  img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_skill/Texture2D/" + `${s.iconPath}.png` alt= s.name)
               td.example-cell
                 - for (const _item of itemsOrderByCategory.filter(p => p.SPC.some(i => i.SKILL.some(j => j.DF === s.id))))
                   a(href="item.html#DF-" + _item.DF target="_blank")
-                    img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.name)
+                    img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.name)
                 - for (const _enemy of enemiesOrderByCategory.filter(p => p.sParam.SKILL.some(i => i.DF === s.id)))
                   a(href="enemy.html#DF-" + _enemy.DF target="_blank")
-                    img.icon-small(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+                    img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
                 - for (const _chara of charasOrderByCategory.filter(p => p.SKILL.some(i => i.DF === s.id) || p.BA.some(i => { const ba = blazeArt.m_vList.find(j => j.DF === i.DF); return ba ? ba.LV.some(k => k.SKILL_DF === s.id) : false })))
                   a(href="chara.html#DF-" + _chara.DF target="_blank")
-                    img.icon-small(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+                    img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)

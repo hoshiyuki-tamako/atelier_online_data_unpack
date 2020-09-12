@@ -1,0 +1,80 @@
+doctype html
+html
+  head
+    title Blaze Art
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
+    script(src= exportFileManager.rootFolderRelativePath + "js/blazeArt.js")
+    style.
+      th {
+        white-space: nowrap;
+      }
+      td, th {
+        text-align: center;
+      }
+      .blaze-art-character-cell {
+        text-align: left;
+      }
+
+      tr td:not(:last-child) {
+        border-right: 1px solid gray;
+      }
+      .blaze-art-indexes-container{
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .blaze-art-indexes-container img {
+        width: 120px;
+      }
+      .blaze-art-index-container {
+        text-align: center;
+      }
+
+      .blaze-art-character-cell {
+        width: 30%;
+      }
+      .blaze-art-character-cell img {
+        width: 120px;
+      }
+  body
+    div
+      h3 Blaze Art (BA)
+      ul
+        li LV 1 - 100 EXP
+        li LV 2 - 400 EXP
+        li LV 3 - 1200 EXP
+        li LV 4 - 3600 EXP
+        li LV 5 - 0 EXP
+    hr
+    div.blaze-art-indexes-container
+      - for (const _chara of chara.m_vList.filter(p => p.BA.length))
+        div.blaze-art-index-container
+          a.scroll-to-first-ba(href="#" data-df= _chara.DF)
+            p= _chara.NAME
+            img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+    br
+    br
+    br
+    br
+
+    div
+      table
+        tr
+          th DF
+          th EXP
+          th LV
+          th 名稱
+          th 詳情
+          th 角色
+        - for (const _blazeArt of blazeArt.m_vList)
+          - for (const [lv, _lv] of _blazeArt.LV.entries())
+            - const _skill = skill.m_vList.find(p => p.id === _lv.SKILL_DF)
+            tr
+              td.nowrap-cell= _blazeArt.DF
+              td.nowrap-cell= _lv.EXP_PT
+              td.nowrap-cell= lv + 1
+              td.nowrap-cell= _skill.name
+              td= _skill.detail
+              td.blaze-art-character-cell
+                - for (const _chara of chara.m_vList.filter(p => p.BA.some(i => i.DF === _blazeArt.DF)))
+                  a(class="chara-DF-" + _chara.DF href="chara.html#DF-" + _chara.DF target="_blank")
+                    img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)

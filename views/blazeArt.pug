@@ -2,8 +2,8 @@ doctype html
 html
   head
     title ブレイズアーツ
-    link(rel="stylesheet" href="css/main.css")
-    script(src="js/blazeArt.js")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
+    script(src= exportFileManager.rootFolderRelativePath + "js/blazeArt.js")
     style.
       th {
         white-space: nowrap;
@@ -50,7 +50,7 @@ html
         div.blaze-art-index-container
           a.scroll-to-first-ba(href="#" data-df= _chara.DF)
             p= _chara.NAME
-            img(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+            img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
     br
     br
     br
@@ -77,4 +77,4 @@ html
               td.blaze-art-character-cell
                 - for (const _chara of chara.m_vList.filter(p => p.BA.some(i => i.DF === _blazeArt.DF)))
                   a(class="chara-DF-" + _chara.DF href="chara.html#DF-" + _chara.DF target="_blank")
-                    img(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+                    img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)

@@ -2,9 +2,9 @@ doctype html
 html
   head
     title クェスト
-    link(rel="stylesheet" href="css/reset.css")
-    link(rel="stylesheet" href="css/main.css")
-    link(rel="stylesheet" href="css/wealth.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/reset.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/wealth.css")
     style.
       .categories-index-container {
         display: flex;
@@ -79,7 +79,7 @@ html
               a(href="#DF-" + _quest.DF)
                 p= _quest.NAME
                 - if (_quest.CHARA)
-                  img(src="img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
+                  img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
         br
         br
     br
@@ -93,7 +93,7 @@ html
             - if (_quest.CHARA)
               div
                 a(href="chara.html#DF-" + _quest.CHARA target="_blank")
-                 img.icon-full(src="img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
+                 img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
             h3 #{_quest.NAME}
             p= _quest.DESC
             br
@@ -119,7 +119,7 @@ html
               h4 ----- 消費 -----
               - const _wealth = wealth.m_vList.find(p => p.DF === _quest.COST.WTH.DF)
               span.wealth-container
-                img(src="img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png" alt= _wealth.NAME)
+                img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png" alt= _wealth.NAME)
                 span= _quest.COST.WTH.CNT
             -if (_quest.ENM.length)
               h4 ----- 討伐 -----
@@ -129,7 +129,7 @@ html
                   - if (_enemy)
                     a(href="enemy.html#DF-" + _enemy.DF target="_blank")
                       span #{_quest.ENM.BDR}
-                      img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+                      img(src= exportFileManager.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
                   - else if (enm.DF)
                     p enemy not found: DF=#{enm.DF}
                   - else
@@ -148,7 +148,7 @@ html
                   - const href = _item.RSP.length ? `composeItem.html?df=${_item.DF}&quality=${dlv.QTY}` : `item.html#DF-${_item.DF}`
                   a.quest-reward-item-container(href= href target="_blank")
                     p 品質#{dlv.QTY} / #{dlv.BDR}個
-                    img(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+                    img(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
             - if (_quest.RWD_ITEM.length || _quest.RWD_WTH.length)
               h4 ----- 報酬 -----
@@ -163,17 +163,17 @@ html
                   - else
                     a.quest-reward-item-container(href="item.html#DF-" + _item.DF target="_blank")
                       p 品質#{rwd.QTY} / #{rwd.CNT}個
-                      img(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+                      img(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
               - if (_quest.RWD_WTH.length)
                 - for (const rwd of _quest.RWD_WTH)
                   - const _wealth = wealth.m_vList.find(p => p.DF === rwd.DF)
                   span.wealth-container
-                    img(src="img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png")
+                    img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png")
                     span= rwd.CNT
               - if (_quest.RNK_PT)
                 span.wealth-container
-                  img(src="img/icon_item01/Texture2D/icon_item01_00009.png" alt="アカデミーポイント")
+                  img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00009.png" alt="アカデミーポイント")
                   span= _quest.RNK_PT
 
             - if (_quest.UNLOCK.length)

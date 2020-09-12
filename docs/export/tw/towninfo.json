@@ -1,0 +1,150 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 0,
+    "m_PathID": -4196334306061227957
+  },
+  "m_Name": "townInfo",
+  "List": [
+    {
+      "iTownId": 1,
+      "iAreaNameId": 2,
+      "iAreaId": 1,
+      "eMusic_Day": 13,
+      "eMusic_Night": 13,
+      "clsExitList": [
+        {
+          "iTownId": 1,
+          "eExit": 0,
+          "iExitArea": 1,
+          "iExitStage": 1,
+          "iExitSpawn": 4,
+          "iExitTown": 0
+        }
+      ]
+    },
+    {
+      "iTownId": 2,
+      "iAreaNameId": 8,
+      "iAreaId": 2,
+      "eMusic_Day": 13,
+      "eMusic_Night": 13,
+      "clsExitList": [
+        {
+          "iTownId": 2,
+          "eExit": 0,
+          "iExitArea": 2,
+          "iExitStage": 3,
+          "iExitSpawn": 3,
+          "iExitTown": 0
+        }
+      ]
+    },
+    {
+      "iTownId": 3,
+      "iAreaNameId": 29,
+      "iAreaId": 3,
+      "eMusic_Day": 39,
+      "eMusic_Night": 39,
+      "clsExitList": [
+        {
+          "iTownId": 3,
+          "eExit": 0,
+          "iExitArea": 3,
+          "iExitStage": 1,
+          "iExitSpawn": 14,
+          "iExitTown": 0
+        }
+      ]
+    },
+    {
+      "iTownId": 4,
+      "iAreaNameId": 30,
+      "iAreaId": 5,
+      "eMusic_Day": 13,
+      "eMusic_Night": 13,
+      "clsExitList": [
+        {
+          "iTownId": 4,
+          "eExit": 0,
+          "iExitArea": 5,
+          "iExitStage": 1,
+          "iExitSpawn": 2,
+          "iExitTown": 0
+        }
+      ]
+    },
+    {
+      "iTownId": 5,
+      "iAreaNameId": 31,
+      "iAreaId": 5,
+      "eMusic_Day": 13,
+      "eMusic_Night": 13,
+      "clsExitList": [
+        {
+          "iTownId": 5,
+          "eExit": 0,
+          "iExitArea": 5,
+          "iExitStage": 2,
+          "iExitSpawn": 2,
+          "iExitTown": 0
+        }
+      ]
+    },
+    {
+      "iTownId": 6,
+      "iAreaNameId": 50,
+      "iAreaId": 6,
+      "eMusic_Day": 13,
+      "eMusic_Night": 13,
+      "clsExitList": [
+        {
+          "iTownId": 6,
+          "eExit": 0,
+          "iExitArea": 6,
+          "iExitStage": 2,
+          "iExitSpawn": 2,
+          "iExitTown": 0
+        }
+      ]
+    },
+    {
+      "iTownId": 7,
+      "iAreaNameId": 58,
+      "iAreaId": 7,
+      "eMusic_Day": 13,
+      "eMusic_Night": 13,
+      "clsExitList": [
+        {
+          "iTownId": 7,
+          "eExit": 0,
+          "iExitArea": 7,
+          "iExitStage": 1,
+          "iExitSpawn": 1,
+          "iExitTown": 0
+        }
+      ]
+    },
+    {
+      "iTownId": 8,
+      "iAreaNameId": 59,
+      "iAreaId": 7,
+      "eMusic_Day": 13,
+      "eMusic_Night": 13,
+      "clsExitList": [
+        {
+          "iTownId": 8,
+          "eExit": 0,
+          "iExitArea": 7,
+          "iExitStage": 3,
+          "iExitSpawn": 1,
+          "iExitTown": 0
+        }
+      ]
+    }
+  ]
+}

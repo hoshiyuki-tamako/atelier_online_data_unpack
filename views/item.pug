@@ -2,9 +2,9 @@ doctype html
 html
   head
     title アイテム / 裝備 / 料理
-    link(rel="stylesheet" href="css/reset.css")
-    link(rel="stylesheet" href="css/main.css")
-    link(rel="stylesheet" href="css/wealth.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/reset.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/wealth.css")
     style.
       th {
         white-space: nowrap;
@@ -90,7 +90,7 @@ html
             div.item-index-container
               a(href="#DF-" + i.DF)
                 p #{i.NAME}
-                img(src="img/icon_s/Texture2D/icon_item_s_" + i.DF + ".png" alt= i.NAME)
+                img(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + i.DF + ".png" alt= i.NAME)
         br
         br
     br
@@ -103,9 +103,9 @@ html
             h3.item-name= _item.NAME
             - if (_item.RSP.length)
               a(href="composeItem.html?df=" + _item.DF target="_blank")
-                img.icon-full(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+                img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
             - else
-              img.icon-full(src="img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+              img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
             p= _item.DESC
             br
@@ -114,7 +114,7 @@ html
             p
               span.wealth-container
                 span 売却
-                img(src="img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
+                img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
                 span= _item.RST.MN
             - if (_item.EQU_BRD)
               p 性別: 
@@ -132,7 +132,7 @@ html
                 p キャラクター專用
                 p
                   a(href="chara.html#DF-" + _chara.DF target="_blank")
-                    img.icon-small(src="img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+                    img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
 
 
           div.item-container-right
@@ -154,14 +154,14 @@ html
                 p 錬金 LV #{_item.ALT.LV}
                 p
                   span.wealth-container
-                    img(src="img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
+                    img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
                     span= _item.ALT.CST
               table
                 tr
                   - for (const rsp of _item.RSP)
                     td
                       a(href="#DF-" + rsp.DF)
-                        img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF)
+                        img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF)
                     td x#{rsp.NC}
 
 
@@ -172,7 +172,7 @@ html
                 - for (const otherItem of makeItem)
                   div
                     a(href="#DF-" + otherItem.DF)
-                      img.icon-small(src="img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF)
+                      img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF)
 
             - if (_item.SPC.length)
               - for (const spc of _item.SPC)

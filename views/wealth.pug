@@ -35,8 +35,8 @@ html
                 - if (_wealth.CHARA)
                   div.quest-character-container
                     a(href="chara.html#DF-" + _wealth.CHARA)
-                    img.item-index-img(src="img/chara/Texture2D/icon_chara_all_" + _wealth.CHARA.toString().padStart(4, "0") + "_00.png" alt= _wealth.CHARA)
+                    img.item-index-img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _wealth.CHARA.toString().padStart(4, "0") + "_00.png" alt= _wealth.CHARA)
                 - else
                   div
               td.wealth-image-cell
-                img(src="img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png")
+                img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png")

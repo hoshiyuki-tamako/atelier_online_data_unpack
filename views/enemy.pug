@@ -2,9 +2,9 @@ doctype html
 html
   head
     title 敵
-    link(rel="stylesheet" href="css/reset.css")
-    link(rel="stylesheet" href="css/main.css")
-    link(rel="stylesheet" href="css/wealth.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/reset.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
+    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/wealth.css")
     style.
       th {
         white-space: nowrap;
@@ -86,7 +86,7 @@ html
             div.item-index-container
               a(href="#DF-" + _enemy.DF)
                 p= _enemy.strName
-                img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+                img(src= exportFileManager.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
       br
       br
     br
@@ -98,7 +98,7 @@ html
         div.item-container(id="DF-" + _enemy.DF)
           div.item-container-left
             h3.item-name= _enemy.strName
-            img.icon-full(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+            img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
             p= _enemy.strDesc
             br
             p DF: #{_enemy.DF}

@@ -64,14 +64,14 @@ html
                 - for (const id of _areaDetail.iItemIDList)
                   - const _item = item.m_vList.find(i => i.DF === id)
                     a(href="item.html#DF-" + id target="_blank")
-                      img(src="img/icon_s/Texture2D/icon_item_s_" + id + ".png" alt= _item.NAME)
+                      img(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + id + ".png" alt= _item.NAME)
             - if (_areaDetail.iEnemyIDList.length)
               h4 ---- 敵 ----
               div.area-enemies-container
                 - for (const id of _areaDetail.iEnemyIDList)
                   - const _enemy = enemy.m_vList.find(i => i.DF === id)
                     a(href="enemy.html#DF-" + _enemy.DF target="_blank")
-                      img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+                      img(src= exportFileManager.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
 
             - const filteredNormalSpawnerData = Object.keys(spawnerData).filter(p => !p.includes('Dun') && p.includes(`SpawnList_${_areaDetail.iAreaID.toString().padStart(2, '0')}_`)).map(p => spawnerData[p]).flat().filter(p => p.spawnerKind === 3);
             - if (filteredNormalSpawnerData.length)
@@ -81,7 +81,7 @@ html
                   - const _enemy = enemy.m_vList.find(i => i.DF === spawn.DF)
                   - if (_enemy)
                     a(href="enemy.html#DF-" + _enemy.DF target="_blank")
-                      img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+                      img(src= exportFileManager.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
 
             - const dungeonInfos = dungeonInfo.List.filter(p => p.iAreaId === _areaDetail.iAreaID)
             - if (dungeonInfos.length)
@@ -110,7 +110,7 @@ html
                     - const _enemy = enemy.m_vList.find(i => i.DF === spawn.DF)
                     - if (_enemy)
                       a(href="enemy.html#DF-" + _enemy.DF target="_blank")
-                        img(src="img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+                        img(src= exportFileManager.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
 
             - const townInfos = townInfo.List.filter(p => p.iAreaId === _areaDetail.iAreaID)
             - if (townInfos.length)
@@ -122,7 +122,7 @@ html
                     p #{_fieldName.strAreaName} #{_fieldName.strAreaNameSub.trim() ? `/ ${_fieldName.strAreaNameSub}` : ''}
                     p
                       - for (const townIcon of townIcons.filter(p => p.startsWith(`Map_Town_${_townInfo.iTownId.toString().padStart(2, "0")}`)))
-                        img(src="img/map_town/Texture2D/" + townIcon alt='')
+                        img(src= exportFileManager.rootFolderRelativePath + "img/map_town/Texture2D/" + townIcon alt='')
 
             - const gateInfos = gateInfo.List.filter(p => p.iArea === _areaDetail.iAreaID)
             - if (gateInfos.length)

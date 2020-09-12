@@ -1,0 +1,80 @@
+doctype html
+html
+  head
+    title 鍊金工房 Online ～布雷賽爾的鍊金術士～ 資料庫
+    style.
+      .indexes-container {
+        display: flex;
+        flex-direction: column;
+      }
+      .index-row-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .index-container {
+        width: 200px;
+        height: 200px;
+        text-align: center;
+        overflow: hidden;
+        text-align: center;
+      }
+      .index-container img {
+        width: 100px;
+      }
+  body
+    div
+      p
+        span Game Version 3.12.1 (日本語) 
+          a(href="..") link
+        br
+        span Game Version 3.5.0 (中文)
+      p Updated #{moment().utc().format('YYYY-MM-DD')}
+      p
+        span Twitter 
+        a(href="https://twitter.com/hoshiyuki_git" target="_blank") @hoshiyuki_git
+    hr
+    div.indexes-container
+      - for (const row of _.chunk(pages, 5))
+        div.index-row-container
+          - for (const page of row)
+            div.index-container
+              a(href= page.href target="_blank")
+                p= page.title
+                - if (page.img && page.img.src)
+                  img(src= page.img.src alt= page.title)
+    hr
+    div
+      h3 其他人的攻略網站
+      br
+      div
+        p ブレセイル観光局
+        p
+          a(href="https://bresail-kanko.info/index.html" target="_blank") https://bresail-kanko.info/index.html
+        p
+          a(href="https://twitter.com/bresail_kanko" target="_blank") https://twitter.com/bresail_kanko
+        p
+          a(href="https://twitter.com/re_dream5" target="_blank") https://twitter.com/re_dream5
+      hr
+      div
+        p アトリエオンライン攻略日記〜シャオンのアトリエ〜
+        p
+          a(href="https://ameblo.jp/shana12151014/" target="_blank") https://ameblo.jp/shana12151014/
+        p
+          a(href="https://twitter.com/_shaon" target="_blank") https://twitter.com/_shaon
+      hr
+      div
+        p かぴ
+        p
+          a(href="https://twitter.com/kapi_atorie" target="_blank") https://twitter.com/kapi_atorie
+      hr
+      div
+        p アトリエオンライン攻略Wikiまとめ【ブレセイルの錬金術士】
+        p
+          a(href="https://atelieronline.gamerch.com/" target="_blank") https://atelieronline.gamerch.com/
+      hr
+      div
+        p 煉金工坊OL 資料庫
+        p
+          a(href="https://forum.gamer.com.tw/C.php?bsn=33099&snA=883&tnum=1" target="_blank") https://forum.gamer.com.tw/C.php?bsn=33099&snA=883&tnum=1
+        p
+          a(href="https://docs.google.com/spreadsheets/d/1GzUq1eeawlkqm6tVz1e36Fx2anNgPjIAKdwg20g8pCg/edit?usp=sharing" target="_blank" ) https://docs.google.com/spreadsheets/d/1GzUq1eeawlkqm6tVz1e36Fx2anNgPjIAKdwg20g8pCg/edit?usp=sharing
