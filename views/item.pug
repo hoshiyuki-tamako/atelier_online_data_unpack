@@ -125,6 +125,7 @@ html
             br
             p DF: #{_item.DF}
             p 種類: #{Lookup.itemCategory[_item.CATEG]}
+            p おすすめ錬金 LV #{_item.ALT ? _item.ALT.LV : '-'}
             p
               span.wealth-container
                 span 売却
@@ -172,8 +173,7 @@ html
 
             - if (_item.RSP.length)
               h4 ----- 調合條件 -----
-              - if (_item.ALT.LV)
-                p 錬金 LV #{_item.ALT.LV}
+              - if (_item.ALT.CST)
                 p
                   span.wealth-container
                     img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")

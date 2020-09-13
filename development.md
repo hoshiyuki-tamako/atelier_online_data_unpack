@@ -50,8 +50,8 @@ Info for developer
   ],
   "ALT": { // compose item
     "CST": 0, // エーテル cost
-    "LV": 0, // alchemy level
-    "EXP": 0
+    "LV": 0, // suggested alchemy level
+    "EXP": 0 // received wealth point
   },
   "EQU": { // equipment spec
     "EB": {

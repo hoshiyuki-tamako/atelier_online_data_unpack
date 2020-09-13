@@ -124,6 +124,7 @@ html
             br
             p DF: #{_item.DF}
             p 種類: #{Lookup.itemCategory[_item.CATEG]}
+            p 建議錬金 LV #{_item.ALT ? _item.ALT.LV : '-'}
             p
               span.wealth-container
                 span 賣出
