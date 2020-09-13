@@ -624,13 +624,14 @@ export class PageBuilder {
   }
 
   public async blazeArt() {
-    const [blazeArt, skill, chara] = await Promise.all([
+    const [blazeArt, skill, chara, abnormalState] = await Promise.all([
       this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.blazeArt)),
       this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.skill)),
       this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chara)),
-    ]) as [BlazeArt, Skill, Chara];
+      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.abnormalstate)),
+    ]) as [BlazeArt, Skill, Chara, AbnormalState];
 
-    const pugOption = { exportFileManager: this.exportFileManager, blazeArt, skill, chara };
+    const pugOption = { exportFileManager: this.exportFileManager, blazeArt, skill, chara, abnormalState };
     await fs.writeFile(
       path.join(this.exportFileManager.outFolder, 'blazeArt.html'),
       await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'blazeArt.pug'), pugOption), Option.minifyOption),

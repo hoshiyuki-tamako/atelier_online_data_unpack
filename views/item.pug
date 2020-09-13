@@ -122,6 +122,9 @@ html
               img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
             p= _item.DESC
+            - if(_item.RSP.length)
+              p
+                a(href="composeItem.html?df=" + _item.DF target="_blank") 調合
             br
             p DF: #{_item.DF}
             p 種類: #{Lookup.itemCategory[_item.CATEG]}

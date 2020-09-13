@@ -13,19 +13,6 @@ html
     script(src= exportFileManager.rootFolderRelativePath + "js/scrollTopButton.js")
 
     style.
-      th {
-        white-space: nowrap;
-      }
-      td, th {
-        text-align: center;
-      }
-      .blaze-art-character-cell {
-        text-align: left;
-      }
-
-      tr td:not(:last-child) {
-        border-right: 1px solid gray;
-      }
       .blaze-art-indexes-container{
         display: flex;
         flex-wrap: wrap;
@@ -37,11 +24,17 @@ html
         text-align: center;
       }
 
-      .blaze-art-character-cell {
-        width: 30%;
+      .item-container {
+        display: flex;
+        padding: 12px;
       }
-      .blaze-art-character-cell img {
-        width: 120px;
+      .item-container-left {
+        min-width: 200px;
+        max-width: 200px;
+        padding: 12px;
+      }
+      .item-container-right {
+        padding: 12px;
       }
   body
     div
@@ -65,24 +58,35 @@ html
     br
 
     div
-      table
-        tr
-          th DF
-          th EXP
-          th LV
-          th 名稱
-          th 詳情
-          th 角色
-        - for (const _blazeArt of blazeArt.m_vList)
-          - for (const [lv, _lv] of _blazeArt.LV.entries())
-            - const _skill = skill.m_vList.find(p => p.id === _lv.SKILL_DF)
-            tr
-              td.nowrap-cell= _blazeArt.DF
-              td.nowrap-cell= _lv.EXP_PT
-              td.nowrap-cell= lv + 1
-              td.nowrap-cell= _skill.name
-              td= _skill.detail
-              td.blaze-art-character-cell
-                - for (const _chara of chara.m_vList.filter(p => p.BA.some(i => i.DF === _blazeArt.DF)))
-                  a(class="chara-DF-" + _chara.DF href="chara.html#DF-" + _chara.DF target="_blank")
-                    img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+      - for (const _blazeArt of blazeArt.m_vList)
+        div.item-container
+          div.item-container-left
+            p DF: #{_blazeArt.DF}
+
+          div.item-container-right
+            div 
+              - for (const _chara of chara.m_vList.filter(p => p.BA.some(i => i.DF === _blazeArt.DF)))
+                a(class="chara-DF-" + _chara.DF href="chara.html#DF-" + _chara.DF target="_blank")
+                  img.icon-middle(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+            div
+              - const allBlazeArts = [... _blazeArt.LV.map(p => [p.EXP_PT, skill.m_vList.find(i => i.id === p.SKILL_DF)]).entries()]
+              - for (const [i, [exp, _skill]] of allBlazeArts)
+                p LV #{i + 1} / 次 LV #{exp} EXP
+                p= _skill.name
+                p= _skill.detail
+                - if (_skill.stateOwn.length)
+                  div
+                    h5 追加効果 (自)
+                    - for (const [i, _state] of _skill.stateOwn.entries())
+                      - const effect = abnormalState.m_vList.find(p => p.id === _state.id)
+                      p #{_state.rate * 100}% #{effect.name}
+  
+                - if (_skill.state.length)
+                  div
+                    h5 追加効果
+                    - for (const [i, _state] of _skill.state.entries())
+                      - const effect = abnormalState.m_vList.find(p => p.id === _state.id)
+                      p #{_state.rate * 100}% #{effect.name}
+                - if (allBlazeArts.length !== (i + 1))
+                  hr
+        hr

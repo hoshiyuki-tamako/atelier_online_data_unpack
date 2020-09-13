@@ -78,7 +78,7 @@ html
         flex-wrap: wrap;
       }
 
-            .item-levels {
+      .item-levels {
         display: flex;
         flex-wrap: wrap;
       }
@@ -121,6 +121,9 @@ html
               img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
             p= _item.DESC
+            - if(_item.RSP.length)
+              p
+                a(href="../composeItem.html?locale=zh_TW&df=" + _item.DF target="_blank") 調合
             br
             p DF: #{_item.DF}
             p 種類: #{Lookup.itemCategory[_item.CATEG]}
@@ -242,37 +245,39 @@ html
                       th= Lookup.element[element] || element
                       td= value
 
-              - for (const lv of [1, 60, 80])
-                h4 ----- LV #{lv} -----
-                table
-                  tr
-                    th= Lookup.state.SATK
-                    td= LogicHelper.calculateState(_item.EQU.SATK, lv)
-                  tr
-                    th= Lookup.state.SDEF
-                    td= LogicHelper.calculateState(_item.EQU.SDEF, lv)
-                  tr
-                    th= Lookup.state.MATK
-                    td= LogicHelper.calculateState(_item.EQU.MATK, lv)
-                  tr
-                    th= Lookup.state.MDEF
-                    td= LogicHelper.calculateState(_item.EQU.MDEF, lv)
-                  tr
-                    th= Lookup.state.SPD
-                    td= LogicHelper.calculateState(_item.EQU.SPD, lv)
-                  tr
-                    th= Lookup.state.SDA
-                    td= LogicHelper.calculateState(_item.EQU.SDA, lv)
-                  tr
-                    th= Lookup.state.LDA
-                    td= LogicHelper.calculateState(_item.EQU.LDA, lv)
-                  tr
-                    th= Lookup.state.QTH
-                    td= LogicHelper.calculateState(_item.EQU.QTH, lv)
-                  tr
-                    th= Lookup.state.DDG
-                    td= LogicHelper.calculateState(_item.EQU.DDG, lv)
-                  tr
-                    th= Lookup.state.SADD
-                    td= LogicHelper.calculateState(_item.EQU.SADD, lv)
+              div.item-levels
+                - for (const lv of [1, 60, 80])
+                  div
+                    h4 ----- LV #{lv} -----
+                    table
+                      tr
+                        th= Lookup.state.SATK
+                        td= LogicHelper.calculateState(_item.EQU.SATK, lv)
+                      tr
+                        th= Lookup.state.SDEF
+                        td= LogicHelper.calculateState(_item.EQU.SDEF, lv)
+                      tr
+                        th= Lookup.state.MATK
+                        td= LogicHelper.calculateState(_item.EQU.MATK, lv)
+                      tr
+                        th= Lookup.state.MDEF
+                        td= LogicHelper.calculateState(_item.EQU.MDEF, lv)
+                      tr
+                        th= Lookup.state.SPD
+                        td= LogicHelper.calculateState(_item.EQU.SPD, lv)
+                      tr
+                        th= Lookup.state.SDA
+                        td= LogicHelper.calculateState(_item.EQU.SDA, lv)
+                      tr
+                        th= Lookup.state.LDA
+                        td= LogicHelper.calculateState(_item.EQU.LDA, lv)
+                      tr
+                        th= Lookup.state.QTH
+                        td= LogicHelper.calculateState(_item.EQU.QTH, lv)
+                      tr
+                        th= Lookup.state.DDG
+                        td= LogicHelper.calculateState(_item.EQU.DDG, lv)
+                      tr
+                        th= Lookup.state.SADD
+                        td= LogicHelper.calculateState(_item.EQU.SADD, lv)
         hr
