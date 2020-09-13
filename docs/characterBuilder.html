@@ -256,7 +256,7 @@
               </tr>
               <tr>
                 <th>食事 LV</th>
-                <td><el-input-number v-model="player.characterModifier.foodLevel" :min="1" :max="player.characterModifier.level" size="small" step-strictly></el-input-number></td>
+                <td><el-input-number v-model="player.characterModifier.foodLevel" :min="0" :max="player.characterModifier.level" size="small" step-strictly></el-input-number></td>
               </tr>
               <tr>
                 <th>BlazeArt LV</th>
@@ -278,7 +278,7 @@
                             <th>base</th>
                             <td>{{ characterState.value }}</td>
                           </tr>
-                          <tr>
+                          <tr v-if="characterState.foodValue">
                             <th>food</th>
                             <td>{{ characterState.foodValue }}</td>
                           </tr>
@@ -305,7 +305,7 @@
                             <th>base</th>
                             <td>{{ characterState.value }}</td>
                           </tr>
-                          <tr>
+                          <tr v-if="characterState.foodValue">
                             <th>food</th>
                             <td>{{ characterState.foodValue }}</td>
                           </tr>
