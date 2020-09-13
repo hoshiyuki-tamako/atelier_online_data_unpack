@@ -30,10 +30,41 @@ class Lookup {
   };
 }
 
+class LookupChinese {
+  static itemCategory = {
+    0: 'none',
+    11: '材料',
+    12: '攻撃＆探索',
+    13: '攻撃',
+    14: '能力增強',
+    15: '探索',
+    16: '料理',
+
+    // 17: 'Unique'
+
+    20: '武器',
+    21: '盾',
+    31: '頭裝備',
+    32: '身體裝備',
+    40: '飾物',
+    50: '經驗値',
+    51: '武器強化',
+    52: '防具強化',
+    53: '飾物強化',
+    54: '限界突破',
+    55: '萬能強化',
+    56: 'BlazeArt經驗值',
+  };
+}
+
 new Vue({
   el: '#app',
   data: {
-    // data
+    // settings
+    locale: 'jp',
+    itemCategoryLookup: Lookup.itemCategory,
+
+    // raw data
     item: null,
     skill: null,
     abnormalState: null,
@@ -45,6 +76,7 @@ new Vue({
     // state
     composeLoading: true,
 
+    // dialog
     itemPickerDialogVisible: false,
     itemPickerFilterCategory: null,
     itemPickerFilterKeyword: '',
@@ -128,24 +160,34 @@ new Vue({
       if (!this.compose) {
         return '';
       }
-      return `${location.origin}${location.pathname}?df=${this.compose.DF}&materialOptions=${btoa(JSON.stringify(this.materialOptions))}`;
+      return `${location.origin}${location.pathname}?locale=${this.locale}&df=${this.compose.DF}&materialOptions=${btoa(JSON.stringify(this.materialOptions))}`;
     },
 
     //
     async load() {
       try {
-        const [item, skill, abnormalState] = await Promise.all([
+        this.locale = new URL(window.location).searchParams.get("locale") || 'jp';
+        const exports = this.locale === 'tw' ? [
+          fetch('export/tw/item.json').then(p => p.json()),
+          fetch('export/tw/skill.json').then(p => p.json()),
+          fetch('export/tw/abnormalstate.json').then(p => p.json())
+        ] :[
           fetch('export/item.json').then(p => p.json()),
           fetch('export/skill.json').then(p => p.json()),
           fetch('export/abnormalstate.json').then(p => p.json())
-        ]);
+        ];
+        if (this.locale === 'tw') {
+          this.itemCategoryLookup = LookupChinese.itemCategory;
+        }
+
+        const [item, skill, abnormalState] = await Promise.all(exports);
         this.item = item;
         this.skill = skill;
         this.abnormalState = abnormalState;
         this.items = this.item.m_vList.filter(p => p.RSP.length);
         this.items.sort((a, b) => a.CATEG - b.CATEG);
         this.itemCategories = [... new Set(this.items.map(p => p.CATEG))].map(p => ({
-          label: Lookup.itemCategory[p],
+          label: this.itemCategoryLookup[p],
           value: p,
         }));
   
@@ -161,6 +203,7 @@ new Vue({
           duration: 0,
           showClose: true,
         });
+        console.error(e);
       }
     },
     tryPickItemFromSearchParams() {

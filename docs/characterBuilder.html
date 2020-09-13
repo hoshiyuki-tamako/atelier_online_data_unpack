@@ -8,8 +8,8 @@
   <script src="js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/linq@3.2.3/linq.min.js" integrity="sha256-wNfOgqZN3b4Ddw/AMdNgAqUulgfVw9e96maWCY30eBU=" crossorigin="anonymous"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
   <script src="//unpkg.com/element-ui/lib/umd/locale/en.js"></script>
@@ -56,7 +56,7 @@
                       <td>{{ info.value }}</td>
                     </tr>
                     <tr v-for="(info, i) in [getItemCriticalHit(item)].filter(p => p.skills.length)">
-                      <th>クリティカル</th>
+                      <th>{{ lookup.skillEffectTarget[9] }}</th>
                       <td>{{ info.value }}</td>
                     </tr>
                     <tr v-for="element in getItemElements(item)">
@@ -371,7 +371,7 @@
               <tr>
                 <th>
                   <v-popover placement="right-end" trigger="hover">
-                    <span>クリティカル</span>
+                    <span>{{ lookup.skillEffectTarget[9] }}</span>
                     <template v-if="getCharacterCriticalHitWithDetail().skills.length" slot="popover">
                       <div class="character-state-popover">
                         <table>
@@ -520,7 +520,7 @@
                       <td>{{ getEquipmentDodge(equipmentSlot).value }}</td>
                     </tr>
                     <tr v-if="getEquipmentCriticalHit(equipmentSlot).skills.length">
-                      <th>クリティカル</th>
+                      <th>{{ lookup.skillEffectTarget[9] }}</th>
                       <td>{{ getEquipmentCriticalHit(equipmentSlot).value }}</td>
                     </tr>
                     <tr v-for="element in getEquipmentElements(equipmentSlot)">
@@ -587,7 +587,7 @@
                       <td>{{ getEquipmentDodge(equipmentSlot).value }}</td>
                     </tr>
                     <tr v-if="getEquipmentCriticalHit(equipmentSlot).skills.length">
-                      <th>クリティカル</th>
+                      <th>{{ lookup.skillEffectTarget[9] }}</th>
                       <td>{{ getEquipmentCriticalHit(equipmentSlot).value }}</td>
                     </tr>
                     <tr v-for="element in getEquipmentElements(equipmentSlot)">
@@ -699,10 +699,10 @@
           <tr>
             <th>
               <v-popover placement="left-end" trigger="hover">
-                <span>強さ</span>
+                <span>{{ strengthText }}</span>
                 <template slot="popover">
                   <div class="equipment-popover">
-                    強さ = sum(物攻base + 物防base + 魔攻base + 魔防base)
+                    {{ strengthText }} = sum(物攻base + 物防base + 魔攻base + 魔防base)
                   </div>
                 </template>
               </v-popover>
@@ -712,7 +712,7 @@
                 <span>{{ temp.strength }}</span>
                 <template slot="popover">
                   <div class="equipment-popover">
-                    強さ = sum(物攻base + 物防base + 魔攻base + 魔防base)
+                    {{ strengthText }} = sum(物攻base + 物防base + 魔攻base + 魔防base)
                   </div>
                 </template>
               </v-popover>
@@ -829,10 +829,10 @@
           <tr>
             <th>
               <v-popover placement="left-end" trigger="hover">
-                <span>クリティカル</span>
+                <span>{{ lookup.skillEffectTarget[9] }}</span>
                 <template slot="popover">
                   <div class="equipment-popover">
-                    <h4>クリティカル</h4>
+                    <h4>{{ lookup.skillEffectTarget[9] }}</h4>
                     <table>
                       <tr v-if="temp.characterCriticalHit.value">
                         <th>
@@ -856,7 +856,7 @@
                 <span>{{ temp.totalCriticalHitState }}</span>
                 <template slot="popover">
                   <div class="equipment-popover">
-                    <h4>クリティカル</h4>
+                    <h4>{{ lookup.skillEffectTarget[9] }}</h4>
                     <table>
                       <tr v-if="temp.characterCriticalHit.value">
                         <th>
@@ -991,7 +991,7 @@
         <div>
           <span>Skill Combo</span>
           <el-slider v-model="skillCombo" :step="1" :max="15"></el-slider>
-          <small>*現在のskills計算公式わ推測. 誤差があります</small>
+          <small>{{ skillInfoText }}</small>
         </div>
         <br>
         <div v-for="skill in [getCharacterBlazeArt()].filter(p => p)">

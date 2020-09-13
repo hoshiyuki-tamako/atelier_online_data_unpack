@@ -45,7 +45,197 @@ class Lookup {
     MDEF: 5,
     SPD: 6,
   };
+
+  static skillEffectTarget = {
+    0: 'none',
+    1: 'HP',
+    2: '物攻強化',
+    3: '魔攻強化',
+    4: '物防強化',
+    5: '魔防強化',
+    6: '素早さ',
+    7: '命中率',
+
+    8: '回避',
+    9: 'クリティカル',
+    10: 'SKILL',
+
+
+    21: '火属性値増加',
+    22: '水属性値増加',
+    23: '土属性値増加',
+    24: '風属性値増加',
+    25: '光属性値増加',
+    26: '闇属性値増加',
+    27: '火、土、風、水、光、闇の属性'
+  };
 }
+
+class LookupChinese {
+  static itemCategory = {
+    0: 'none',
+    11: '材料',
+    12: '攻撃＆探索',
+    13: '攻撃',
+    14: '能力增強',
+    15: '探索',
+    16: '料理',
+
+    // 17: 'Unique'
+
+    20: '武器',
+    21: '盾',
+    31: '頭裝備',
+    32: '身體裝備',
+    40: '飾物',
+    50: '經驗値',
+    51: '武器強化',
+    52: '防具強化',
+    53: '飾物強化',
+    54: '限界突破',
+    55: '萬能強化',
+    56: 'BlazeArt經驗值',
+  };
+
+  static fieldItemUse = {
+    0: 'none',
+    1: 'HP回復',
+    2: '回復',
+  };
+
+  static fieldItemRange = {
+    0: '-',
+    1: '1人',
+    2: '全人',
+    3: '自',
+  };
+
+  static weaponKind = {
+    1: '剣',
+    3: '槍',
+    4: '弓',
+    5: '杖',
+    7: '大剣',
+    9: '錘',
+    12: '盾',
+  };
+
+  static weaponGen = {
+    0: '全種類',
+    2001: '剣',
+    2003: '槍',
+    2004: '弓',
+    2005: '杖',
+    2006: '大剣',
+    2007: '大剣',
+    2009: '錘',
+    2012: '盾',
+  };
+
+  // element look up
+  static element = {
+    FIRE: '火',
+    WATER: '水',
+    WIND: '風',
+    EARTH: '土',
+    LIGHT: '光',
+    DARK: '闇',
+  };
+
+  // state look up
+  static state = {
+    EXP: 'EXP',
+    HP: 'HP',
+    SATK: '物理攻撃',
+    SDEF: '物理防禦',
+    MATK: '魔法攻撃',
+    MDEF: '魔法防禦',
+    SPD: '速度',
+    SDA: 'SP上限?',
+    LDA: 'LDA',
+    QTH: 'SP回復量?',
+    DDG: '回避',
+    SADD: 'SADD',
+  };
+
+  // quest look up
+  static questCategory = {
+    0: 'none',
+    1: '主線',
+    2: '次要',
+    3: '依頼',
+    4: '公認試験',
+    5: '角色',
+    6: '活動 Special',
+    7: '活動 Normal',
+    8: '活動 Extra',
+  };
+
+  // skill look up
+  static skillEffect = {
+    101: '属性値増加',
+    135: 'Monster Zone Effect',
+    139: 'Zone Effect',
+  };
+
+  static skillEffectTarget = {
+    0: 'none',
+    1: 'HP',
+    2: '物攻強化',
+    3: '魔攻強化',
+    4: '物防強化',
+    5: '魔防強化',
+    6: '速度',
+    7: '命中率',
+
+    8: '回避',
+    9: '暴擊',
+    10: 'SKILL',
+
+    21: '火属性値増加',
+    22: '水属性値増加',
+    23: '土属性値増加',
+    24: '風属性値増加',
+    25: '光属性値増加',
+    26: '闇属性値増加',
+    27: '火、土、風、水、光、闇の属性'
+  };
+
+  static elementMapSkillEffectTarget = {
+    FIRE: [21, 27],
+    WATER: [22, 27],
+    EARTH: [23, 27],
+    WIND: [24, 27],
+    LIGHT: [25, 27],
+    DARK: [26, 27],
+  };
+
+  static stateMapSkillEffectTarget = {
+    HP: 1,
+    SATK: 2,
+    MATK: 3,
+    SDEF: 4,
+    MDEF: 5,
+    SPD: 6,
+  };
+
+  // enemy look up
+  static enemySize = {
+    0: 'Small',
+    1: 'Medium',
+    2: 'Large',
+  };
+
+  static enemyEAttackTargetKind = {
+    0: 'Single',
+    1: 'All',
+  };
+}
+
+
+
+
+
 
 class LogicHelper {
   static calculateState(gmrb, lv = 1) {
@@ -148,6 +338,12 @@ class PlayerExport {
 
 class SaveConfig {
   static localStorageKey = 'player';
+  static getLocalStorageKeyWithLocale(locale) {
+    if (locale === 'tw') {
+      return `tw_${this.localStorageKey}`;
+    }
+    return this.localStorageKey;
+  }
 }
 
 Vue.mixin({
@@ -162,6 +358,12 @@ Vue.mixin({
 new Vue({
   el: '#app',
   data: {
+    // settings
+    locale: 'jp',
+    lookup: Lookup,
+    skillInfoText: '*現在のskills計算公式わ推測. 誤差があります',
+    strengthText: '強さ',
+
     // data
     chara: null,
     item: null,
@@ -187,64 +389,7 @@ new Vue({
     // dialog
     characterEditDialogVisible: false,
 
-    itemPickerSortOption: [
-      {
-        label: '物理攻撃',
-        value: 'SATK'
-      },
-      {
-        label: '物理防禦',
-        value: 'SDEF'
-      },
-      {
-        label: '魔法攻撃',
-        value: 'MATK'
-      },
-      {
-        label: '魔法防禦',
-        value: 'MDEF'
-      },
-      {
-        label: '速度',
-        value: 'SPD'
-      },
-      {
-        label: '物理攻撃base(support)',
-        value: 'SATK_base'
-      },
-      {
-        label: '物理防禦base(support)',
-        value: 'SDEF_base'
-      },
-      {
-        label: '魔法攻撃base(support)',
-        value: 'MATK_base'
-      },
-      {
-        label: '魔法防禦base(support)',
-        value: 'MDEF_base'
-      },
-      {
-        label: '速度base(support)',
-        value: 'SPD_base'
-      },
-      {
-        label: '回避',
-        value: 'dodge'
-      },
-      {
-        label: 'クリティカル',
-        value: 'criticalHit'
-      },
-    ]
-    .concat(Object.entries(Lookup.element).map(([value, label]) => ({
-      label,
-      value,
-    })))
-    .concat(Object.entries(Lookup.element).map(([value, label]) => ({
-      label: `${label}base(support)`,
-      value: `${value}_base`,
-    }))),
+    itemPickerSortOption: [],
     itemPickerShowRemoveIcon: true,
     itemPickerShowSort: true,
     itemPickerSort: null,
@@ -344,24 +489,24 @@ new Vue({
 
       const defualt = { value: 0, skillValue :0 };
       if (this.itemPickerSort) {
-        if (this.itemPickerSort in Lookup.state) {
+        if (this.itemPickerSort in this.lookup.state) {
           items.sort((a, b) => {
             this.setSortStateCache(a).setSortStateCache(b);
             const _a = this.itemPickerSortStateCache.get(a)[this.itemPickerSort] || defualt;
             const _b = this.itemPickerSortStateCache.get(b)[this.itemPickerSort] || defualt;
             return (_b.value + _b.skillValue) - (_a.value + _a.skillValue);
           });
-        } else if (this.itemPickerSort.replace('_base', '') in Lookup.state) {
+        } else if (this.itemPickerSort.replace('_base', '') in this.lookup.state) {
           const state = this.itemPickerSort.replace('_base', '');
           items.sort((a, b) => LogicHelper.calculateState(b.EQU[state], 80) - LogicHelper.calculateState(a.EQU[state], 80));
-        } else if (this.itemPickerSort in Lookup.element) {
+        } else if (this.itemPickerSort in this.lookup.element) {
           items.sort((a, b) => {
             this.setSortElementCache(a).setSortElementCache(b);
             const _a = this.itemPickerSortElementCache.get(a)[this.itemPickerSort] || defualt;
             const _b = this.itemPickerSortElementCache.get(b)[this.itemPickerSort] || defualt;
             return (_b.value + _b.skillValue) - (_a.value + _a.skillValue);
           });
-        } else if (this.itemPickerSort.replace('_base', '') in Lookup.element) {
+        } else if (this.itemPickerSort.replace('_base', '') in this.lookup.element) {
           const element = this.itemPickerSort.replace('_base', '');
           items.sort((a, b) => b.ELM[element] - a.ELM[element]);
         } else if (this.itemPickerSort === 'dodge') {
@@ -434,7 +579,7 @@ new Vue({
     getSupportItemStates(i) {
       return Equipment.states.map(state => ({
         state,
-        label: Lookup.state[state],
+        label: this.lookup.state[state],
         value: LogicHelper.calculateSupportState(LogicHelper.calculateState(this.player.supports[i].EQU[state], this.player.supportModifier[i].level)),
       }))
       .filter(p => p.value);
@@ -442,13 +587,13 @@ new Vue({
     getSupportItemStatesSummary() {
       return Equipment.states.map(state => ({
         state,
-        label: Lookup.state[state],
+        label: this.lookup.state[state],
         value: this.player.supports.map((support, i) => LogicHelper.calculateSupportState(LogicHelper.calculateState(support.EQU[state], this.player.supportModifier[i].level))).reduce((a, b) => a + b, 0),
       }))
       .filter(p => p.value);
     },
     getSupportItemElements(i) {
-      return Object.entries(Lookup.element).map(([element, label]) => ({
+      return Object.entries(this.lookup.element).map(([element, label]) => ({
         element,
         label,
         value: LogicHelper.calculateSupportState(this.player.supports[i].ELM[element]),
@@ -456,7 +601,7 @@ new Vue({
       .filter(p => p.value);
     },
     getSupportItemElementSummary() {
-      return Object.entries(Lookup.element).map(([element, label]) => ({
+      return Object.entries(this.lookup.element).map(([element, label]) => ({
         element,
         label,
         value: this.player.supports.map(i => LogicHelper.calculateSupportState(i.ELM[element])).reduce((a, b) => a + b, 0),
@@ -508,11 +653,11 @@ new Vue({
           foodValue = food[state] || 0;
         }
 
-        const skills = this.getFilteredSkills(this.getCharacterSkills(), Lookup.stateMapSkillEffectTarget[state], 101);
+        const skills = this.getFilteredSkills(this.getCharacterSkills(), this.lookup.stateMapSkillEffectTarget[state], 101);
 
         return {
           state,
-          label: Lookup.state[state],
+          label: this.lookup.state[state],
           value: LogicHelper.calculateState(this.player.character.SPEC[state], this.player.characterModifier.level),
           foodValue,
           skillValue: skills.reduce((sum, p) => sum + p.effectValue, 0),
@@ -544,12 +689,12 @@ new Vue({
       };
     },
     getCharacterSkillStateWithDetail(state) {
-      return this.getFilteredSkills(this.getCharacterSkills(), Lookup.stateMapSkillEffectTarget[state]);
+      return this.getFilteredSkills(this.getCharacterSkills(), this.lookup.stateMapSkillEffectTarget[state]);
     },
     getCharacterElements() {
       const characterSkills = this.getCharacterSkills();
-      return Object.entries(Lookup.element).map(p => {
-        const skills = this.getFilteredSkills(characterSkills, Lookup.elementMapSkillEffectTarget[p[0]], 101);
+      return Object.entries(this.lookup.element).map(p => {
+        const skills = this.getFilteredSkills(characterSkills, this.lookup.elementMapSkillEffectTarget[p[0]], 101);
         return {
           key: p[0],
           label: p[1],
@@ -594,11 +739,11 @@ new Vue({
         .map(p => {
           return {
             key: p,
-            label: Lookup.state[p],
+            label: this.lookup.state[p],
             value: LogicHelper.calculateState(this.player.equipment[slot].EQU[p], this.player.equipmentModifier[slot].level),
-            skillValue: this.getSkillEffectTargetValues(skills, Lookup.stateMapSkillEffectTarget[p], 101),
+            skillValue: this.getSkillEffectTargetValues(skills, this.lookup.stateMapSkillEffectTarget[p], 101),
             extraValue: this.player.equipmentModifier[slot].skill ?
-            this.getSkillEffectTargetValues([this.player.equipmentModifier[slot].skill], Lookup.stateMapSkillEffectTarget[p], 101) :
+            this.getSkillEffectTargetValues([this.player.equipmentModifier[slot].skill], this.lookup.stateMapSkillEffectTarget[p], 101) :
             0,
           };
         })
@@ -624,14 +769,14 @@ new Vue({
       }
   
       const skills = this.getEquipmentSkills(slot);
-      return Object.entries(Lookup.element)
+      return Object.entries(this.lookup.element)
         .map(([element, label]) => ({
           key: element,
           label: label,
           value: this.player.equipment[slot].ELM[element],
-          skillValue: this.getSkillEffectTargetValues(skills, Lookup.elementMapSkillEffectTarget[element]),
+          skillValue: this.getSkillEffectTargetValues(skills, this.lookup.elementMapSkillEffectTarget[element]),
           extraValue: this.player.equipmentModifier[slot].skill ?
-          this.getSkillEffectTargetValues([this.player.equipmentModifier[slot].skill], Lookup.elementMapSkillEffectTarget[element]) :
+          this.getSkillEffectTargetValues([this.player.equipmentModifier[slot].skill], this.lookup.elementMapSkillEffectTarget[element]) :
           0,
           skills,
         }))
@@ -651,14 +796,14 @@ new Vue({
         .map(p => {
           return {
             key: p,
-            label: Lookup.state[p],
+            label: this.lookup.state[p],
             value: LogicHelper.calculateState(item.EQU[p], level),
           };
         })
         .filter(p => p.value);
     },
     getItemSupportElements(item) {
-      return Object.entries(Lookup.element)
+      return Object.entries(this.lookup.element)
         .map(([element, label]) => ({
           key: element,
           label,
@@ -672,9 +817,9 @@ new Vue({
         .map(p => {
           return {
             key: p,
-            label: Lookup.state[p],
+            label: this.lookup.state[p],
             value: LogicHelper.calculateState(item.EQU[p], level),
-            skillValue: this.getSkillEffectTargetValues(skills, Lookup.stateMapSkillEffectTarget[p], 101),
+            skillValue: this.getSkillEffectTargetValues(skills, this.lookup.stateMapSkillEffectTarget[p], 101),
           };
         })
         .filter(p => p.value || p.skillValue);
@@ -706,12 +851,12 @@ new Vue({
         this.defaultItemElementSkillCache.set(item, this.getItemSkills(item));
       }
       const skills = this.defaultItemElementSkillCache.get(item);
-      return Object.entries(Lookup.element)
+      return Object.entries(this.lookup.element)
         .map(([element, label]) => ({
           key: element,
           label,
           value: item.ELM[element],
-          skillValue: this.getSkillEffectTargetValues(skills, Lookup.elementMapSkillEffectTarget[element]),
+          skillValue: this.getSkillEffectTargetValues(skills, this.lookup.elementMapSkillEffectTarget[element]),
           skills,
         }))
         .filter(p => p.value || p.skillValue);
@@ -866,7 +1011,7 @@ new Vue({
       .reduce((a, b) => a + b, 0);
 
       const totalStates = CharacterModifier.states.map(state => ({
-        label: Lookup.state[state],
+        label: this.lookup.state[state],
         state,
         value: equipmentStates
         .map(p => p.values.filter(p => p.key === state).reduce((sum, i) => sum + i.value + i.skillValue + i.extraValue, 0))
@@ -881,7 +1026,7 @@ new Vue({
       const totalStatesLookup = Enumerable.from(totalStates).toObject(p => p.state, p => p);
       const totalDodgeState = characterDodge.value + equipmentDodges.map(p => p.values.value).reduce((sum, a) => sum + a, 0);
       const totalCriticalHitState = characterCriticalHit.value + equipmentCriticalHit.map(p => p.values.value).reduce((sum, a) => sum + a, 0);
-      const totalElements = Object.entries(Lookup.element).map(([element, label]) => ({
+      const totalElements = Object.entries(this.lookup.element).map(([element, label]) => ({
         element,
         label,
         value: equipmentElements
@@ -955,7 +1100,7 @@ new Vue({
           return false;
         }
 
-        const item = localStorage.getItem(SaveConfig.localStorageKey);
+        const item = localStorage.getItem(SaveConfig.getLocalStorageKeyWithLocale(this.locale));
         if (item) {
           if (this.importFromString(item)) {
             this.$notify({
@@ -1099,7 +1244,7 @@ new Vue({
       return btoa(JSON.stringify(playerExport));
     },
     getExportUrl() {
-      return `${location.origin}${location.pathname}?i=${this.getExportString()}`;
+      return `${location.origin}${location.pathname}?locale=${this.locale}&i=${this.getExportString()}`;
     },
 
     // save
@@ -1127,7 +1272,7 @@ new Vue({
       });
     },
     save() {
-      localStorage.setItem(SaveConfig.localStorageKey, this.getExportString());
+      localStorage.setItem(SaveConfig.getLocalStorageKeyWithLocale(this.locale), this.getExportString());
       return this;
     },
 
@@ -1166,16 +1311,94 @@ new Vue({
       return number > 0 ? '+' : '';
     },
 
+    buildItemPickerSortOptions() {
+      this.itemPickerSortOption = [
+        {
+          label: '物理攻撃',
+          value: 'SATK'
+        },
+        {
+          label: '物理防禦',
+          value: 'SDEF'
+        },
+        {
+          label: '魔法攻撃',
+          value: 'MATK'
+        },
+        {
+          label: '魔法防禦',
+          value: 'MDEF'
+        },
+        {
+          label: '速度',
+          value: 'SPD'
+        },
+        {
+          label: '物理攻撃base(support)',
+          value: 'SATK_base'
+        },
+        {
+          label: '物理防禦base(support)',
+          value: 'SDEF_base'
+        },
+        {
+          label: '魔法攻撃base(support)',
+          value: 'MATK_base'
+        },
+        {
+          label: '魔法防禦base(support)',
+          value: 'MDEF_base'
+        },
+        {
+          label: '速度base(support)',
+          value: 'SPD_base'
+        },
+        {
+          label: '回避',
+          value: 'dodge'
+        },
+        {
+          label: this.lookup.skillEffectTarget[9],
+          value: 'criticalHit'
+        },
+      ]
+      .concat(Object.entries(this.lookup.element).map(([value, label]) => ({
+        label,
+        value,
+      })))
+      .concat(Object.entries(this.lookup.element).map(([value, label]) => ({
+        label: `${label}base(support)`,
+        value: `${value}_base`,
+      })));
+    },
+
     //
     async load() {
       try {
-        const [chara, item, skill, abnormalstate, blaze_art] = await Promise.all([
+        this.locale  = new URL(window.location).searchParams.get("locale") || 'jp';
+        const exports = this.locale === 'tw' ? [
+          fetch('export/tw/chara.json').then(p => p.json()),
+          fetch('export/tw/item.json').then(p => p.json()),
+          fetch('export/tw/skill.json').then(p => p.json()),
+          fetch('export/tw/abnormalstate.json').then(p => p.json()),
+          fetch('export/tw/blaze_art.json').then(p => p.json()),
+        ] : [
           fetch('export/chara.json').then(p => p.json()),
           fetch('export/item.json').then(p => p.json()),
           fetch('export/skill.json').then(p => p.json()),
           fetch('export/abnormalstate.json').then(p => p.json()),
           fetch('export/blaze_art.json').then(p => p.json()),
-        ]);
+        ];
+        if (this.locale === 'tw') {
+          this.lookup = LookupChinese;
+          this.skillInfoText = "當前技能計算公式是猜測，有誤差";
+          this.strengthText = "強度";
+          document.title = "角色建立";
+        }
+
+        this.buildItemPickerSortOptions();
+
+        const [chara, item, skill, abnormalstate, blaze_art] = await Promise.all(exports);
         this.item = item;
         this.chara = chara;
         this.skill = skill;

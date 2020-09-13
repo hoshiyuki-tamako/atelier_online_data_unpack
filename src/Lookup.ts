@@ -112,11 +112,11 @@ export class LookupChinese {
     3: '魔攻強化',
     4: '物防強化',
     5: '魔防強化',
-    6: '素早さ',
+    6: '速度',
     7: '命中率',
 
     8: '回避',
-    9: 'クリティカル',
+    9: '暴擊',
     10: 'SKILL',
 
     21: '火属性値増加',
@@ -131,8 +131,8 @@ export class LookupChinese {
   public static elementMapSkillEffectTarget = {
     FIRE: [21, 27],
     WATER: [22, 27],
-    WIND: [23, 27],
-    EARTH: [24, 27],
+    EARTH: [23, 27],
+    WIND: [24, 27],
     LIGHT: [25, 27],
     DARK: [26, 27],
   };
@@ -140,8 +140,8 @@ export class LookupChinese {
   public static stateMapSkillEffectTarget = {
     HP: 1,
     SATK: 2,
-    SDEF: 4,
     MATK: 3,
+    SDEF: 4,
     MDEF: 5,
     SPD: 6,
   };
@@ -293,8 +293,8 @@ export class Lookup {
   public static elementMapSkillEffectTarget = {
     FIRE: [21, 27],
     WATER: [22, 27],
-    WIND: [23, 27],
-    EARTH: [24, 27],
+    EARTH: [23, 27],
+    WIND: [24, 27],
     LIGHT: [25, 27],
     DARK: [26, 27],
   };
@@ -302,8 +302,8 @@ export class Lookup {
   public static stateMapSkillEffectTarget = {
     HP: 1,
     SATK: 2,
-    SDEF: 4,
     MATK: 3,
+    SDEF: 4,
     MDEF: 5,
     SPD: 6,
   };
