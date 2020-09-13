@@ -284,6 +284,8 @@ new Vue({
     itemPickerSortStateCache: new Map(),
     itemPickerSortElementCache: new Map(),
 
+    skillFilterCache: {},
+
     // data
     player: new Player(),
 
@@ -298,18 +300,21 @@ new Vue({
       if (!Array.isArray(skills)) {
         skills = [skills];
       }
-
-      const overrideIds = skills.map(p => p.overrideID).filter(p => p);
-      return skills
-      .filter(p => !overrideIds.includes(p.id))
-      .map(p => [p].concat(p.combSkillList))
-      .flat()
-      .filter(p =>
-        !overrideIds.includes(p.id) &&
-        (!effect || p.effect === effect) &&
-        (!effectTargets.length || effectTargets.includes(p.effectTarget)) &&
-        (!triggers.length || triggers.includes(p.trigger))
-      );
+      const key = `${skills.map(p => p.id)}|${effectTargets}|${effect}|${triggers}`;
+      if (!this.skillFilterCache[key]) {
+        const overrideIds = skills.map(p => p.overrideID).filter(p => p);
+        return this.skillFilterCache[key] = skills
+        .filter(p => !overrideIds.includes(p.id))
+        .map(p => [p].concat(p.combSkillList))
+        .flat()
+        .filter(p =>
+          !overrideIds.includes(p.id) &&
+          (!effect || p.effect === effect) &&
+          (!effectTargets.length || effectTargets.includes(p.effectTarget)) &&
+          (!triggers.length || triggers.includes(p.trigger))
+        );
+      }
+      return this.skillFilterCache[key];
     },
     getSkillEffectTargetValues(skills, effectTargets = [], effect = null, triggers = []) {
       return this.getFilteredSkills(skills, effectTargets, effect, triggers).reduce((sum, skill) => sum + skill.effectValue, 0);
@@ -873,6 +878,7 @@ new Vue({
         )
         .reduce((sum, a) => sum + a, 0),
       }));
+      const totalStatesLookup = Enumerable.from(totalStates).toObject(p => p.state, p => p);
       const totalDodgeState = characterDodge.value + equipmentDodges.map(p => p.values.value).reduce((sum, a) => sum + a, 0);
       const totalCriticalHitState = characterCriticalHit.value + equipmentCriticalHit.map(p => p.values.value).reduce((sum, a) => sum + a, 0);
       const totalElements = Object.entries(Lookup.element).map(([element, label]) => ({
@@ -909,6 +915,8 @@ new Vue({
         totalDodgeState,
         totalCriticalHitState,
         totalElements,
+
+        totalStatesLookup,
 
         equipmentStates,
         equipmentDodges,
