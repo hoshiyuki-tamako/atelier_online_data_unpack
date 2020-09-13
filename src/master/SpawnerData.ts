@@ -1,10 +1,9 @@
-import { ExportFileManager } from './../ExportFileManager';
 import csv from 'csvtojson';
 import fs from 'fs-extra';
 import path from 'path';
 
-import { Option } from '../Option';
 import { eSpawnerKind } from './../Enums';
+import { ExportFileManager } from './../ExportFileManager';
 
 export class SpawnerDataManager {
   public spawnerDataCache: { [s: string]: SpawnerData[] } = {};
