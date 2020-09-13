@@ -339,8 +339,8 @@ class PlayerExport {
 class SaveConfig {
   static localStorageKey = 'player';
   static getLocalStorageKeyWithLocale(locale) {
-    if (locale === 'tw') {
-      return `tw_${this.localStorageKey}`;
+    if (locale === 'zh_TW') {
+      return `zh_TW_${this.localStorageKey}`;
     }
     return this.localStorageKey;
   }
@@ -359,7 +359,7 @@ new Vue({
   el: '#app',
   data: {
     // settings
-    locale: 'jp',
+    locale: 'ja_JP',
     lookup: Lookup,
     skillInfoText: '*現在のskills計算公式わ推測. 誤差があります',
     strengthText: '強さ',
@@ -1375,8 +1375,8 @@ new Vue({
     //
     async load() {
       try {
-        this.locale  = new URL(window.location).searchParams.get("locale") || 'jp';
-        const exports = this.locale === 'tw' ? [
+        this.locale  = new URL(window.location).searchParams.get("locale") || 'ja_JP';
+        const exports = this.locale === 'zh_TW' ? [
           fetch('export/tw/chara.json').then(p => p.json()),
           fetch('export/tw/item.json').then(p => p.json()),
           fetch('export/tw/skill.json').then(p => p.json()),
@@ -1389,7 +1389,7 @@ new Vue({
           fetch('export/abnormalstate.json').then(p => p.json()),
           fetch('export/blaze_art.json').then(p => p.json()),
         ];
-        if (this.locale === 'tw') {
+        if (this.locale === 'zh_TW') {
           this.lookup = LookupChinese;
           this.skillInfoText = "當前技能計算公式是猜測，有誤差";
           this.strengthText = "強度";

@@ -205,14 +205,14 @@ export class PageBuilder {
 
       
       {
-        href: "../characterBuilder.html?locale=tw",
+        href: "../characterBuilder.html?locale=zh_TW",
         title: "角色建立",
         img: {
           src: "../img/other/Texture2D/item_texture_0024.png",
         },
       },
       {
-        href: "../composeItem.html?locale=tw",
+        href: "../composeItem.html?locale=zh_TW",
         title: "鍊金/調合物品",
         img: {
           src: "../img/icon/icon_bowl.png",

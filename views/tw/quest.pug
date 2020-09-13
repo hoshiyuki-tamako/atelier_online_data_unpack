@@ -146,7 +146,7 @@ html
                   - else
                     p -
                 - else
-                  - const href = _item.RSP.length ? `${exportFileManager.rootFolderRelativePath}composeItem.html?df=${_item.DF}&quality=${dlv.QTY}` : `item.html#DF-${_item.DF}`
+                  - const href = _item.RSP.length ? `${exportFileManager.rootFolderRelativePath}composeItem.html?locale=zh_TW&df=${_item.DF}&quality=${dlv.QTY}` : `item.html#DF-${_item.DF}`
                   a.quest-reward-item-container(href= href target="_blank")
                     p 品質#{dlv.QTY} / #{dlv.BDR}個
                     img(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)

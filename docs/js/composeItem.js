@@ -61,7 +61,7 @@ new Vue({
   el: '#app',
   data: {
     // settings
-    locale: 'jp',
+    locale: 'ja_JP',
     itemCategoryLookup: Lookup.itemCategory,
 
     // raw data
@@ -166,8 +166,8 @@ new Vue({
     //
     async load() {
       try {
-        this.locale = new URL(window.location).searchParams.get("locale") || 'jp';
-        const exports = this.locale === 'tw' ? [
+        this.locale = new URL(window.location).searchParams.get("locale") || 'ja_JP';
+        const exports = this.locale === 'zh_TW' ? [
           fetch('export/tw/item.json').then(p => p.json()),
           fetch('export/tw/skill.json').then(p => p.json()),
           fetch('export/tw/abnormalstate.json').then(p => p.json())
@@ -176,7 +176,7 @@ new Vue({
           fetch('export/skill.json').then(p => p.json()),
           fetch('export/abnormalstate.json').then(p => p.json())
         ];
-        if (this.locale === 'tw') {
+        if (this.locale === 'zh_TW') {
           this.itemCategoryLookup = LookupChinese.itemCategory;
         }
 
