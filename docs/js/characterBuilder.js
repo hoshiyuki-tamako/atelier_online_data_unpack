@@ -318,6 +318,7 @@ class EquipmentsModifierExport {
 
 class PlayerExport {
   version = 1;
+  locale = 'ja_JP';
 
   characterId;
   equipment = {
@@ -1204,6 +1205,7 @@ new Vue({
     },
     getExportString() {
       const playerExport = new PlayerExport();
+      playerExport.locale = this.locale;
       if (this.player.character) {
         playerExport.characterId = this.player.character.DF;
       }
@@ -1263,7 +1265,7 @@ new Vue({
         type: 'warning'
       }).then(() => {
         this.player = new Player();
-        localStorage.clear();
+        localStorage.removeItem(SaveConfig.getLocalStorageKeyWithLocale(this.locale));
         this.$notify({
           title: 'Success',
           message: 'Cleared player and local data',
