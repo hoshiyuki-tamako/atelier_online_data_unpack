@@ -53,9 +53,15 @@ html
       }
 
 
+      .chara-levels {
+        display: flex;
+        flex-wrap: wrap;
+      }
 
-      .chara-food-item-container {
-        width: 20%
+
+      .chara-food-items {
+        display: flex;
+        flex-wrap: wrap;
       }
       .chara-food-consume {
         display: flex;
@@ -136,80 +142,83 @@ html
                   p &#x3E;
 
 
-            - for (const lv of [1, 60, 80])
-              h4 ----- LV #{lv} -----
-              table
-                tr
-                  th HP
-                  td= LogicHelper.calculateState(_chara.SPEC.HP, lv)
-                tr
-                  th= Lookup.state.SATK
-                  td= LogicHelper.calculateState(_chara.SPEC.SATK, lv)
-                tr
-                  th= Lookup.state.SDEF
-                  td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv)
-                tr
-                  th= Lookup.state.MATK
-                  td= LogicHelper.calculateState(_chara.SPEC.MATK, lv)
-                tr
-                  th= Lookup.state.MDEF
-                  td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv)
-                tr
-                  th= Lookup.state.SPD
-                  td= LogicHelper.calculateState(_chara.SPEC.SPD, lv)
-                tr
-                  th= Lookup.state.SDA
-                  td= LogicHelper.calculateState(_chara.SPEC.SDA, lv)
-                tr
-                  th= Lookup.state.LDA
-                  td= LogicHelper.calculateState(_chara.SPEC.LDA, lv)
-                tr
-                  th= Lookup.state.QTH
-                  td= LogicHelper.calculateState(_chara.SPEC.QTH, lv)
-                tr
-                  th= Lookup.state.DDG
-                  td= LogicHelper.calculateState(_chara.SPEC.DDG, lv)
-                tr
-                  th= Lookup.state.SADD
-                  td= LogicHelper.calculateState(_chara.SPEC.SADD, lv)
+            div.chara-levels
+              - for (const lv of [1, 60, 80])
+                div
+                  h4 ----- LV #{lv} -----
+                  table
+                    tr
+                      th HP
+                      td= LogicHelper.calculateState(_chara.SPEC.HP, lv)
+                    tr
+                      th= Lookup.state.SATK
+                      td= LogicHelper.calculateState(_chara.SPEC.SATK, lv)
+                    tr
+                      th= Lookup.state.SDEF
+                      td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv)
+                    tr
+                      th= Lookup.state.MATK
+                      td= LogicHelper.calculateState(_chara.SPEC.MATK, lv)
+                    tr
+                      th= Lookup.state.MDEF
+                      td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv)
+                    tr
+                      th= Lookup.state.SPD
+                      td= LogicHelper.calculateState(_chara.SPEC.SPD, lv)
+                    tr
+                      th= Lookup.state.SDA
+                      td= LogicHelper.calculateState(_chara.SPEC.SDA, lv)
+                    tr
+                      th= Lookup.state.LDA
+                      td= LogicHelper.calculateState(_chara.SPEC.LDA, lv)
+                    tr
+                      th= Lookup.state.QTH
+                      td= LogicHelper.calculateState(_chara.SPEC.QTH, lv)
+                    tr
+                      th= Lookup.state.DDG
+                      td= LogicHelper.calculateState(_chara.SPEC.DDG, lv)
+                    tr
+                      th= Lookup.state.SADD
+                      td= LogicHelper.calculateState(_chara.SPEC.SADD, lv)
 
-            - const lv = 80
-            - const maxDfm = _chara.FDM[_chara.FDM.length - 1];
-            h4 ----- LV #{lv} 完食 -----
-            table
-              tr
-                th HP
-                td= LogicHelper.calculateState(_chara.SPEC.HP, lv) + maxDfm.HP
-              tr
-                th= Lookup.state.SATK
-                td= LogicHelper.calculateState(_chara.SPEC.SATK, lv) + maxDfm.SATK
-              tr
-                th= Lookup.state.SDEF
-                td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv) + maxDfm.SDEF
-              tr
-                th= Lookup.state.MATK
-                td= LogicHelper.calculateState(_chara.SPEC.MATK, lv) + maxDfm.MATK
-              tr
-                th= Lookup.state.MDEF
-                td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv) + maxDfm.MDEF
-              tr
-                th= Lookup.state.SPD
-                td= LogicHelper.calculateState(_chara.SPEC.SPD, lv) + maxDfm.SPD
-              tr
-                th= Lookup.state.SDA
-                td= LogicHelper.calculateState(_chara.SPEC.SDA, lv) + maxDfm.SDA
-              tr
-                th= Lookup.state.LDA
-                td= LogicHelper.calculateState(_chara.SPEC.LDA, lv) + maxDfm.LDA
-              tr
-                th= Lookup.state.QTH
-                td= LogicHelper.calculateState(_chara.SPEC.QTH, lv) + maxDfm.QTH
-              tr
-                th= Lookup.state.DDG
-                td= LogicHelper.calculateState(_chara.SPEC.DDG, lv) + maxDfm.DDG
-              tr
-                th= Lookup.state.SADD
-                td= LogicHelper.calculateState(_chara.SPEC.SADD, lv) + maxDfm.SADD
+              div
+                - const lv = 80
+                - const maxDfm = _chara.FDM[_chara.FDM.length - 1];
+                h4 ----- LV #{lv} 完食 -----
+                table
+                  tr
+                    th HP
+                    td= LogicHelper.calculateState(_chara.SPEC.HP, lv) + maxDfm.HP
+                  tr
+                    th= Lookup.state.SATK
+                    td= LogicHelper.calculateState(_chara.SPEC.SATK, lv) + maxDfm.SATK
+                  tr
+                    th= Lookup.state.SDEF
+                    td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv) + maxDfm.SDEF
+                  tr
+                    th= Lookup.state.MATK
+                    td= LogicHelper.calculateState(_chara.SPEC.MATK, lv) + maxDfm.MATK
+                  tr
+                    th= Lookup.state.MDEF
+                    td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv) + maxDfm.MDEF
+                  tr
+                    th= Lookup.state.SPD
+                    td= LogicHelper.calculateState(_chara.SPEC.SPD, lv) + maxDfm.SPD
+                  tr
+                    th= Lookup.state.SDA
+                    td= LogicHelper.calculateState(_chara.SPEC.SDA, lv) + maxDfm.SDA
+                  tr
+                    th= Lookup.state.LDA
+                    td= LogicHelper.calculateState(_chara.SPEC.LDA, lv) + maxDfm.LDA
+                  tr
+                    th= Lookup.state.QTH
+                    td= LogicHelper.calculateState(_chara.SPEC.QTH, lv) + maxDfm.QTH
+                  tr
+                    th= Lookup.state.DDG
+                    td= LogicHelper.calculateState(_chara.SPEC.DDG, lv) + maxDfm.DDG
+                  tr
+                    th= Lookup.state.SADD
+                    td= LogicHelper.calculateState(_chara.SPEC.SADD, lv) + maxDfm.SADD
 
             - if (_chara.BA.length)
               h4 ----- Blaze Art (BA) -----
@@ -236,49 +245,51 @@ html
                         td= `${s.effectValue}, ${s.effectValue2}`
 
             h4 ----- 食物 -----
-            - for (const fdm of _chara.FDM)
-              h5 --- LV #{fdm.NO} ---
-              - for (const fd of fdm.FD)
-                div.chara-food-item-container
-                  - const _item = item.m_vList.find(i => i.DF === fd.DF)
-                  - const href = _item.RSP.length ? `composeItem.html?df=${_item.DF}&quality=${fd.QTY}` : `item.html#DF-${_item.DF}`;
-                  a.chara-food-consume(href= href target="_blank")
-                    span 品質 #{fd.QTY}
-                    img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
-              table
-                tr
-                  td HP
-                  td= fdm.HP
-                tr
-                  td= Lookup.state.SATK
-                  td= fdm.SATK
-                tr
-                  td= Lookup.state.SDEF
-                  td= fdm.SDEF
-                tr
-                  td= Lookup.state.MATK
-                  td= fdm.MATK
-                tr
-                  td= Lookup.state.MDEF
-                  td= fdm.MDEF
-                tr
-                  td= Lookup.state.SPD
-                  td= fdm.SPD
-                tr
-                  td= Lookup.state.SDA
-                  td= fdm.SDA
-                tr
-                  td= Lookup.state.LDA
-                  td= fdm.LDA
-                tr
-                  td= Lookup.state.QTH
-                  td= fdm.QTH
-                tr
-                  td= Lookup.state.DDG
-                  td= fdm.DDG
-                tr
-                  td= Lookup.state.SADD
-                  td= fdm.SADD
+            div.chara-food-items 
+              - for (const fdm of _chara.FDM)
+                div
+                  h5 --- LV #{fdm.NO} ---
+                  - for (const fd of fdm.FD)
+                    div
+                      - const _item = item.m_vList.find(i => i.DF === fd.DF)
+                      - const href = _item.RSP.length ? `composeItem.html?df=${_item.DF}&quality=${fd.QTY}` : `item.html#DF-${_item.DF}`;
+                      a.chara-food-consume(href= href target="_blank")
+                        span(style="whitespace: nowrap") 品質 #{fd.QTY}
+                        img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+                  table
+                    tr
+                      td HP
+                      td= fdm.HP
+                    tr
+                      td= Lookup.state.SATK
+                      td= fdm.SATK
+                    tr
+                      td= Lookup.state.SDEF
+                      td= fdm.SDEF
+                    tr
+                      td= Lookup.state.MATK
+                      td= fdm.MATK
+                    tr
+                      td= Lookup.state.MDEF
+                      td= fdm.MDEF
+                    tr
+                      td= Lookup.state.SPD
+                      td= fdm.SPD
+                    tr
+                      td= Lookup.state.SDA
+                      td= fdm.SDA
+                    tr
+                      td= Lookup.state.LDA
+                      td= fdm.LDA
+                    tr
+                      td= Lookup.state.QTH
+                      td= fdm.QTH
+                    tr
+                      td= Lookup.state.DDG
+                      td= fdm.DDG
+                    tr
+                      td= Lookup.state.SADD
+                      td= fdm.SADD
 
             h4 ----- 任務 -----
             - for (const qst of _chara.QST)

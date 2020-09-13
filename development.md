@@ -504,8 +504,8 @@ Info for developer
   "KANA": "オルビュースノタンサク",
   "DESC": "オルビュースの探索をしに行こう",
   "CONDITION": "「アカデミー正門前」に行く",
-  "QUEST_NO": 1,
-  "QUEST_SUB_NO": 0,
+  "QUEST_NO": 1, // quest number, for checking next step
+  "QUEST_SUB_NO": 0, // step of current quest, one quest can have multiple step
   "CHAPTER": 1,
   "CHARA": 0, // character that related to this quest
   "NPC": 1010,

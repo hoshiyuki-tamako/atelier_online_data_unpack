@@ -69,6 +69,11 @@ html
         display: flex;
         flex-wrap: wrap;
       }
+
+            .item-levels {
+        display: flex;
+        flex-wrap: wrap;
+      }
   body
     div
       h2 種類
@@ -220,13 +225,14 @@ html
                   - if (spc.SKILL.length !== (i + 1))
                     p &#x3E;
 
-            - if (_item.EQU_BRD && Object.values(_item.ELM).filter(p => p).length)
-              h4 ----- 屬性 -----
-              table
-                - for (const [element, value] of Object.entries(_item.ELM).filter(p => p[1]))
-                  tr
-                    th= Lookup.element[element] || element
-                    td= value
+            - if (_item.EQU_BRD)
+              - if (Object.values(_item.ELM).filter(p => p).length)
+                h4 ----- 屬性 -----
+                table
+                  - for (const [element, value] of Object.entries(_item.ELM).filter(p => p[1]))
+                    tr
+                      th= Lookup.element[element] || element
+                      td= value
 
               - for (const lv of [1, 60, 80])
                 h4 ----- LV #{lv} -----

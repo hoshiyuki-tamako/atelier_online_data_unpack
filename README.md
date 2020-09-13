@@ -6,6 +6,8 @@
 
 All files in `./docs/img` `./docs/models` `./docs/export` are NOT license in MIT as those were not belongs to me
 
+For developer, see `./development.md`
+
 ### Below files were not auto generated
 
 - `./docs/3d.html`

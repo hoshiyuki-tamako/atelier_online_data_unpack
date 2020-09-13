@@ -101,8 +101,8 @@ html
             p= _quest.CONDITION
             br
             p DF: #{_quest.DF}
-            p QUEST_NO: #{_quest.QUEST_NO}
-            p QUEST_SUB_NO: #{_quest.QUEST_SUB_NO}
+            p クェスト号: #{_quest.QUEST_NO}
+            p クェストステップ: #{_quest.QUEST_SUB_NO}
             p 種類: #{Lookup.questCategory[_quest.CATEG] || `CATEG=${_quest.CATEG}`}
             p 解放チャプター: #{_quest.CHAPTER ? _quest.CHAPTER : '-'}
             p キークェスト: #{_quest.KEY_QUEST ? "✓" : "x"}

@@ -69,6 +69,12 @@ html
         display: flex;
         flex-wrap: wrap;
       }
+
+
+      .item-levels {
+        display: flex;
+        flex-wrap: wrap;
+      }
   body
     div
       h2 種類
@@ -184,15 +190,10 @@ html
 
             - if (_item.SPC.length)
               - for (const spc of _item.SPC)
-                h4 ----- スキル/効果 (品質 #{spc.THR}) -----
-                - for (const [i, spcSkill] of spc.SKILL.entries())
-                  - const _skill = skill.m_vList.find(s => s.id === spcSkill.DF);
-                  - if (!_skill)
-                    - if (spcSkill.DF)
-                      p skill not found: DF=#{spcSkill.DF}
-                    - else
-                      p -
-                  - else
+                - const _skills = spc.SKILL.map(p => skill.m_vList.find(s => s.id === p.DF)).filter(p => p);
+                - if (_skills.length)
+                  h4 ----- スキル/効果 (品質 #{spc.THR}) -----
+                  - for (const _skill of _skills)
                     table
                       tr
                         th 名前
@@ -217,48 +218,51 @@ html
                             - for (const _state of _skill.state)
                               - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
                               p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_state.rate}ターン
-                  - if (spc.SKILL.length !== (i + 1))
-                    p &#x3E;
+                    - if (_skills.length !== (i + 1))
+                      p &#x3E;
 
-            - if (_item.EQU_BRD && Object.values(_item.ELM).filter(p => p).length)
-              h4 ----- 屬性 -----
-              table
-                - for (const [element, value] of Object.entries(_item.ELM).filter(p => p[1]))
-                  tr
-                    th= Lookup.element[element] || element
-                    td= value
-
-              - for (const lv of [1, 60, 80])
-                h4 ----- LV #{lv} -----
+            - if (_item.EQU_BRD)
+              - if (Object.values(_item.ELM).filter(p => p).length)
+                h4 ----- 屬性 -----
                 table
-                  tr
-                    th= Lookup.state.SATK
-                    td= LogicHelper.calculateState(_item.EQU.SATK, lv)
-                  tr
-                    th= Lookup.state.SDEF
-                    td= LogicHelper.calculateState(_item.EQU.SDEF, lv)
-                  tr
-                    th= Lookup.state.MATK
-                    td= LogicHelper.calculateState(_item.EQU.MATK, lv)
-                  tr
-                    th= Lookup.state.MDEF
-                    td= LogicHelper.calculateState(_item.EQU.MDEF, lv)
-                  tr
-                    th= Lookup.state.SPD
-                    td= LogicHelper.calculateState(_item.EQU.SPD, lv)
-                  tr
-                    th= Lookup.state.SDA
-                    td= LogicHelper.calculateState(_item.EQU.SDA, lv)
-                  tr
-                    th= Lookup.state.LDA
-                    td= LogicHelper.calculateState(_item.EQU.LDA, lv)
-                  tr
-                    th= Lookup.state.QTH
-                    td= LogicHelper.calculateState(_item.EQU.QTH, lv)
-                  tr
-                    th= Lookup.state.DDG
-                    td= LogicHelper.calculateState(_item.EQU.DDG, lv)
-                  tr
-                    th= Lookup.state.SADD
-                    td= LogicHelper.calculateState(_item.EQU.SADD, lv)
+                  - for (const [element, value] of Object.entries(_item.ELM).filter(p => p[1]))
+                    tr
+                      th= Lookup.element[element] || element
+                      td= value
+
+              div.item-levels
+                - for (const lv of [1, 60, 80])
+                  div
+                    h4 ----- LV #{lv} -----
+                    table
+                      tr
+                        th= Lookup.state.SATK
+                        td= LogicHelper.calculateState(_item.EQU.SATK, lv)
+                      tr
+                        th= Lookup.state.SDEF
+                        td= LogicHelper.calculateState(_item.EQU.SDEF, lv)
+                      tr
+                        th= Lookup.state.MATK
+                        td= LogicHelper.calculateState(_item.EQU.MATK, lv)
+                      tr
+                        th= Lookup.state.MDEF
+                        td= LogicHelper.calculateState(_item.EQU.MDEF, lv)
+                      tr
+                        th= Lookup.state.SPD
+                        td= LogicHelper.calculateState(_item.EQU.SPD, lv)
+                      tr
+                        th= Lookup.state.SDA
+                        td= LogicHelper.calculateState(_item.EQU.SDA, lv)
+                      tr
+                        th= Lookup.state.LDA
+                        td= LogicHelper.calculateState(_item.EQU.LDA, lv)
+                      tr
+                        th= Lookup.state.QTH
+                        td= LogicHelper.calculateState(_item.EQU.QTH, lv)
+                      tr
+                        th= Lookup.state.DDG
+                        td= LogicHelper.calculateState(_item.EQU.DDG, lv)
+                      tr
+                        th= Lookup.state.SADD
+                        td= LogicHelper.calculateState(_item.EQU.SADD, lv)
         hr

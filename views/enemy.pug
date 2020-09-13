@@ -64,6 +64,11 @@ html
       .item-container-right {
         padding: 12px;
       }
+
+      .levels {
+        display: flex;
+        flex-wrap: wrap;
+      }
   body
     div
       h2 種類
@@ -121,12 +126,6 @@ html
                 p
                   a(href="area.html#iAreaID-" + area.iAreaId target="_blank")= _fieldName.strAreaName
             br
-            h4 ----- 屬性 -----
-            table
-              - for (const [element, value] of Object.entries(_enemy.sParam.ELM).filter(p => p[1]))
-                tr
-                  th= Lookup.element[element] || element
-                  td= value
             - if (_enemy.sParam.SKILL.length)
               h4 ----- スキル/効果 -----
               - for (const [i, _skill] of _enemy.sParam.SKILL.entries())
@@ -146,44 +145,51 @@ html
                       td= `${s.effectValue}, ${s.effectValue2}`
                   - if (_enemy.sParam.SKILL.length !== (i + 1))
                     p &#x3E;
-
-            - for (const lv of [1, 60, 80, 120])
-              h4 ----- LV #{lv} -----
-              table
+            h4 ----- 屬性 -----
+            table
+              - for (const [element, value] of Object.entries(_enemy.sParam.ELM).filter(p => p[1]))
                 tr
-                  th= Lookup.state.EXP
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.EXP, lv)
-                tr
-                  th= Lookup.state.HP
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.HP, lv)
-                tr
-                  th= Lookup.state.SATK
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.SATK, lv)
-                tr
-                  th= Lookup.state.SDEF
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDEF, lv)
-                tr
-                  th= Lookup.state.MATK
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.MATK, lv)
-                tr
-                  th= Lookup.state.MDEF
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.MDEF, lv)
-                tr
-                  th= Lookup.state.SPD
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.SPD, lv)
-                tr
-                  th= Lookup.state.SDA
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDA, lv)
-                tr
-                  th= Lookup.state.LDA
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.LDA, lv)
-                tr
-                  th= Lookup.state.QTH
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.QTH, lv)
-                tr
-                  th= Lookup.state.DDG
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.DDG, lv)
-                tr
-                  th= Lookup.state.SADD
-                  td= LogicHelper.calculateState(_enemy.sParam.SPEC.SADD, lv)
+                  th= Lookup.element[element] || element
+                  td= value
+            div.levels
+              - for (const lv of [1, 60, 80, 120])
+                div
+                  h4 ----- LV #{lv} -----
+                  table
+                    tr
+                      th= Lookup.state.EXP
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.EXP, lv)
+                    tr
+                      th= Lookup.state.HP
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.HP, lv)
+                    tr
+                      th= Lookup.state.SATK
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.SATK, lv)
+                    tr
+                      th= Lookup.state.SDEF
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDEF, lv)
+                    tr
+                      th= Lookup.state.MATK
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.MATK, lv)
+                    tr
+                      th= Lookup.state.MDEF
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.MDEF, lv)
+                    tr
+                      th= Lookup.state.SPD
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.SPD, lv)
+                    tr
+                      th= Lookup.state.SDA
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.SDA, lv)
+                    tr
+                      th= Lookup.state.LDA
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.LDA, lv)
+                    tr
+                      th= Lookup.state.QTH
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.QTH, lv)
+                    tr
+                      th= Lookup.state.DDG
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.DDG, lv)
+                    tr
+                      th= Lookup.state.SADD
+                      td= LogicHelper.calculateState(_enemy.sParam.SPEC.SADD, lv)
         hr
