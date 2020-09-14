@@ -8,7 +8,7 @@ Info for developer
 
 ## General
 
-- DF = id
+- DF = id *Note if a column is `DF` it can have duplicate `DF` in the same array
 - MDL = model ID
 
 ## Item
@@ -114,7 +114,7 @@ Info for developer
       "R": 0,
       "B": 0
     },
-    "SADD": {
+    "SADD": { // SP recover value
       "G": 0.0,
       "M": 0,
       "R": 0,
@@ -203,12 +203,24 @@ Info for developer
     "LIGHT": 0,
     "DARK": 0
   },
-  "JOB": [],
+  "JOB": [ // character job, see enum EJobKind
+    3
+  ],
   "WPN_KIND": 0, // see Lookup.weaponKind
   "GROUP_DF": 0, // Special weapon for character, relationship to chara.GROUP_DF
-  "CEIL_RWD_ITEM": [],
-  "RCP_TYPE": 0, // legendary recipe
-  "LRCP_CHARA": []
+  "CEIL_RWD_ITEM": [ // 專用 item
+    {
+      "DF": 10950037,
+      "CNT": 1,
+      "QTY": 10
+    }
+  ],
+  "RCP_TYPE": 0, // 0 = normal, 1 = legendary recipe
+  "LRCP_CHARA": [ // legendary recipe characters
+    {
+      "DF": 5027 // relationship to chara.DF
+    }
+  ]
 }
 ```
 
@@ -224,7 +236,7 @@ Info for developer
   "trigger": 1, // EBattleEffectTrigger
   "effect": 1, // see enum EBattleEffectKind
   "effectValue": 2.0, // value of the effect
-  "effectValue2": 0.0,
+  "effectValue2": 0.0, // some type using this as 'damage reflect', some type using this as turn if effectValue is a DF/id
   "effectTarget": 0, // see enum EBattleEffectTarget
   "state": [ // abnormalState
     {
@@ -232,23 +244,31 @@ Info for developer
       "rate": 1.0 // success rate
     }
   ],
-  "stateOwn": [], // same as above, but apply to caster itself
+  "stateOwn": [ // structure as above, but apply to caster itself
+    {
+      "id": 3092,
+      "rate": 1.0
+    }
+  ],
   "targetTeam": 1,
   "targetScope": 1, // EBattleTargetAreaDefine
-  "element": 0,
-  "shield": 0,
-  "spAdd": 2.0,
-  "coolTime": 0,
+  "element": 0, // fx effect?
+  "shield": 0, // fx effect?
+  "spAdd": 2.0, //
+  "coolTime": 0, // how many turn before this skill can be use again, mostly use for enemy
   "iconPath": "icon_skill_01111", // the icon image
   "overrideID": 0, // remove skill that may match in a skills list, relationship to skill.id
-  "markID": 0,
-  "skillLV": 0,
+  "markID": 0, // effect icon that show above player/on the item special effect icon
+  "skillLV": 0, // skill level, technically anything that != 0 can be apply to item as a skill
   "rarity": 1,
   "category": 0,
   "specialVoiceID": 0,
-  "enemyList": [],
-  "enemyListJ": [],
-  "combSkillListJ": [],
+  "enemyList": [ // skills that automatic apply when battle with that enemy
+    800001004, // relationship to enemy.DF
+    800001006
+  ],
+  "enemyListJ": [], // not in use
+  "combSkillListJ": [], // not in use
   "combSkillList": [] // same as skill[], required to check this array when fetching skill value as skill can have other child skill
 },
 ```
@@ -268,7 +288,7 @@ Info for developer
   "naturalheal": 1,
   "icon": "icon_abnormal_status_1001",
   "telop": "{0}は目を覚ました！",
-  "skillLow": 0,
+  "skillLow": 0, // this value show 
   "skillHigh": 0,
   "stateList": [],
   "effectListJ": [],
@@ -299,7 +319,7 @@ Info for developer
       "DESC": "アニスヒソップの説明。",
       "GEN": 2, // gender
       "ICON": "./chara.png",
-      "BTST": 2,
+      "BTST": 2, // Job kind, see enum eJobKind
       "EXC": 8,
       "SKILL": [ // skills, note that it can have duplicated / overrideID skill, make sure remove before process
         {
@@ -378,7 +398,7 @@ Info for developer
       "FDM": [ // food
         {
           "NO": 1, // sort order
-          "GRD": 1,
+          "GRD": 1, // item count of "FD": []
           "FD": [ // item
             {
               "DF": 10830001, // relationship to item.DF
@@ -467,10 +487,10 @@ Info for developer
 
 ```ts
 {
-  "DF": 1,
-  "STP": 1,
-  "TYP": 1,
-  "RTY": 1,
+  "DF": 1, // DF can have duplicate
+  "STP": 1, // Step of the degree
+  "TYP": 1, // type of the degree
+  "RTY": 1, // rarity
   "NAME": "新人ぷに狩人",
   "DESC": "ぷに族のモンスターを初めて討伐する",
   "PRIO": 6010, // previous item, use for sorting
@@ -521,9 +541,9 @@ Info for developer
   "LAST": 0,
   "INVISIBLE": 0,
   "IMPORTANT": 0,
-  "PARTY_IN": 0,
+  "PARTY_IN": 0, // required character in party. relationship to chara.DF
   "KEY_QUEST": 0,
-  "OFFICIAL_EXAMINATION": 0,
+  "OFFICIAL_EXAMINATION": 0, // the icon that above the quest in 3d world
   "CHALLENGE": 0,
   "COST": { // required cost to accept the quest
     "WTH": {
@@ -567,9 +587,9 @@ Info for developer
       "CNT": 100 // amount
     }
   ],
-  "FLG_ON": [
+  "FLG_ON": [ // for some reason this value is always point to itself?
     {
-      "DF": 100001001
+      "DF": 100001001 // relationship to quest.DF
     }
   ],
   "ENM": [ // required to kill enemy
@@ -581,11 +601,11 @@ Info for developer
       "AREA": 0
     }
   ],
-  "BTL": [],
-  "QST": [],
-  "MIX": [],
-  "SKL": [],
-  "ACT_SKL": [],
+  "BTL": [], // not in use
+  "QST": [], // not in use
+  "MIX": [], // not in use
+  "SKL": [], // not in use
+  "ACT_SKL": [], // not in use
   "DLV": [ // delivery item
     {
       "DF": 10220001, // relationship to item.DF
@@ -595,21 +615,37 @@ Info for developer
       "AREA": 0
     }
   ],
-  "ALC": [],
-  "GET": [],
-  "PIC": [],
-  "REG": [
+  "ALC": [], // not in use
+  "GET": [ // gather
     {
-      "DF": 1,
+      "DF": 10090001, // relationship to item.DF
+      "CATEG": 0,
+      "BDR": 5, // count
+      "QTY": 0, // quality
+      "AREA": 0
+    }
+  ],
+  "PIC": [], // not in use
+  "REG": [ // required enter
+    {
+      "DF": 1, // relationship to areaDetail.iAreaID
       "CATEG": 0,
       "BDR": 1,
       "QTY": 0,
       "AREA": 0
     }
   ],
-  "DUN": [],
-  "ARR": [],
-  "SPE": [
+  "DUN": [ // required enter dungeon
+    {
+      "DF": 10002, // relationship to dungeonInfo.iDungeonId
+      "CATEG": 0,
+      "BDR": 1,
+      "QTY": 0,
+      "AREA": 0
+    }
+  ],
+  "ARR": [], // not in use
+  "SPE": [ // speak
     {
       "DF": 0,
       "CATEG": 0,
@@ -618,9 +654,33 @@ Info for developer
       "AREA": 0
     }
   ],
-  "VIL": [],
-  "TALK": [],
-  "ARA": []
+  "VIL": [ // 村
+    {
+      "DF": 1,
+      "CATEG": 0,
+      "BDR": 1,
+      "QTY": 0,
+      "AREA": 0
+    }
+  ],
+  "TALK": [ // talk
+    {
+      "DF": 0,
+      "CATEG": 0,
+      "BDR": 1,
+      "QTY": 0,
+      "AREA": 0
+    }
+  ],
+  "ARA": [ // arrive area?
+    {
+      "DF": 15004,
+      "CATEG": 0,
+      "BDR": 1,
+      "QTY": 0,
+      "AREA": 2
+    }
+  ]
 }
 ```
 
