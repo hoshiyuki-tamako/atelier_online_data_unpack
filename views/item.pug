@@ -130,7 +130,7 @@ html
             p #{that.i18nService.i18n.__("種類")}: #{that.lookup.itemCategory[_item.CATEG]}
             p #{that.i18nService.i18n.__("レシピ種類")}: #{_item.RCP_TYPE === 1 ? that.i18nService.i18n.__('レジェンドレシピ') : that.i18nService.i18n.__('一般レシピ')}
             - if (_item.JOB.length)
-              p= _item.JOB.map(p => that.lookup.eJobKindLookup[p] || p).join(", ")
+              p #{that.i18nService.i18n.__("職業")}: #{_item.JOB.map(p => that.lookup.eJobKindLookup[p] || p).join(", ")}
             p #{that.i18nService.i18n.__("おすすめ錬金 LV")} #{_item.ALT ? _item.ALT.LV : '-'}
             p
               span.wealth-container

@@ -20,9 +20,9 @@ class Lookup {
     SPD: '速度',
     SDA: 'SP上限?',
     LDA: 'LDA',
-    QTH: 'SP回復量?',
+    QTH: 'QTH',
     DDG: '回避',
-    SADD: 'SADD',
+    SADD: 'SP回復量?',
   };
 
   static element = {
@@ -159,9 +159,9 @@ class LookupChinese {
     SPD: '速度',
     SDA: 'SP上限?',
     LDA: 'LDA',
-    QTH: 'SP回復量?',
+    QTH: 'QTH',
     DDG: '回避',
-    SADD: 'SADD',
+    SADD: 'SP回復量?',
   };
 
   // quest look up
