@@ -48,12 +48,12 @@ html
     hr
 
     div
-      h3 #{that.i18nService.i18n.__("裝備")}
+      h3 #{that.i18nService.i18n.__("サブ裝備")}
       div.category-indexes-container
         - for (const state of itemStates)
           div.category-index-container
             h3
-              a(href="#item-state-" + state)= that.lookup.state[state] || that.i18nService.i18n.__("全屬性")
+              a(href="#item-state-" + state)= that.lookup.state[state] || that.i18nService.i18n.__("総戦闘力")
       div.category-indexes-container
         - for (const element of Object.keys(byItemElement))
           div.category-index-container
@@ -66,7 +66,7 @@ html
         - for (const state of characterStates)
           div.category-index-container
             h3
-              a(href="#chara-" + state)=  that.lookup.state[state] || that.i18nService.i18n.__("全屬性")
+              a(href="#chara-" + state)=  that.lookup.state[state] || that.i18nService.i18n.__("総戦闘力")
     hr
     div
       h3 #{that.i18nService.i18n.__("敵")}
@@ -74,7 +74,7 @@ html
         - for (const state of enemyStates)
           div.category-index-container
             h3
-              a(href="#enemy-state-" + state)=  that.lookup.state[state] || that.i18nService.i18n.__("全屬性")
+              a(href="#enemy-state-" + state)=  that.lookup.state[state] || that.i18nService.i18n.__("総戦闘力")
       div.category-indexes-container
         - for (const element of Object.keys(byEnemyElement))
           div.category-index-container
@@ -83,7 +83,7 @@ html
     hr
     div
       - for (const state of itemStates)
-        h3(id="item-state-" + state)= that.lookup.state[state] || that.i18nService.i18n.__("全屬性")
+        h3(id="item-state-" + state)= that.lookup.state[state] || that.i18nService.i18n.__("総戦闘力")
         table
           thead
             tr
