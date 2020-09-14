@@ -6,7 +6,7 @@ Vue.use(VueI18n)
 const i18n = new VueI18n({
   locale: 'ja-JP',
   fallbackLocale: 'ja-JP',
-})
+});
 
 
 class Lookup {
@@ -183,11 +183,13 @@ new Vue({
     //
     async load() {
       try {
-        this.$i18n.locale = (new URL(window.location).searchParams.get("locale") || 'ja-JP').replace('_', '-');
-        if (this.$i18n.locale === 'zh-TW') {
-          this.itemCategoryLookup = LookupChinese.itemCategory;
-        }
+        this.setLocaleFromParam();
 
+        const localeFiles = [
+          this.$i18n.locale === 'zh-TW' ?
+          fetch('locales/zh-TW.json').then(p => p.json()) :
+          fetch('locales/ja-JP.json').then(p => p.json())
+        ];
         const exports = this.$i18n.locale === 'zh-TW' ? [
           fetch('export/tw/item.json').then(p => p.json()),
           fetch('export/tw/skill.json').then(p => p.json()),
@@ -198,13 +200,9 @@ new Vue({
           fetch('export/abnormalstate.json').then(p => p.json())
         ];
 
-        const [messages, item, skill, abnormalState] = await Promise.all([
-          this.$i18n.locale === 'zh-TW' ?
-          fetch('locales/zh-TW.json').then(p => p.json()) :
-          fetch('locales/ja-JP.json').then(p => p.json())
-        ].concat(exports));
+        const [messages, item, skill, abnormalState] = await Promise.all(localeFiles.concat(exports));
 
-        this.$i18n.setLocaleMessage(this.$i18n.locale, messages)
+        this.$i18n.setLocaleMessage(this.$i18n.locale, messages);
 
         this.item = item;
         this.skill = skill;
@@ -229,6 +227,12 @@ new Vue({
           showClose: true,
         });
         console.error(e);
+      }
+    },
+    setLocaleFromParam() {
+      this.$i18n.locale = (new URL(window.location).searchParams.get("locale") || 'ja-JP').replace('_', '-');
+      if (this.$i18n.locale === 'zh-TW') {
+        this.itemCategoryLookup = LookupChinese.itemCategory;
       }
     },
     tryPickItemFromSearchParams() {

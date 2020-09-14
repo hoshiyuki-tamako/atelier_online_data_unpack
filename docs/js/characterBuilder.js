@@ -2,6 +2,12 @@ ELEMENT.locale(ELEMENT.lang.en);
 
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VTooltip)
+Vue.use(VueI18n)
+
+const i18n = new VueI18n({
+  locale: 'ja-JP',
+  fallbackLocale: 'ja-JP',
+});
 
 class Lookup {
   static state = {
@@ -316,31 +322,36 @@ class EquipmentsModifierExport {
 }
 
 
+class EquipmentExport {
+  weaponId;
+  shieldId;
+  helmetId;
+  clothId;
+  accessory1Id;
+  accessory2Id;
+  accessory3Id;
+}
+
 class PlayerExport {
   version = 1;
   locale = 'ja_JP';
 
   characterId;
-  equipment = {
-    weaponId: null,
-    shieldId: null,
-    helmetId: null,
-    clothId: null,
-    accessory1Id: null,
-    accessory2Id: null,
-    accessory3Id: null,
-  }
+  equipment = new EquipmentExport();
   supportIds = [];
 
   characterModifier = new CharacterModifier();
   equipmentModifier = new EquipmentsModifierExport();
   supportModifier = [];
+
+  skillCombo;
 }
+
 
 class SaveConfig {
   static localStorageKey = 'player';
   static getLocalStorageKeyWithLocale(locale) {
-    if (locale === 'zh_TW') {
+    if (locale === 'zh-TW') {
       return `zh_TW_${this.localStorageKey}`;
     }
     return this.localStorageKey;
@@ -357,10 +368,11 @@ Vue.mixin({
 
 
 new Vue({
+  i18n,
   el: '#app',
   data: {
     // settings
-    locale: 'ja_JP',
+    locale: 'ja-JP',
     lookup: Lookup,
     skillInfoText: '*現在のskills計算公式わ推測. 誤差があります',
     strengthText: '強さ',
@@ -1101,7 +1113,7 @@ new Vue({
           return false;
         }
 
-        const item = localStorage.getItem(SaveConfig.getLocalStorageKeyWithLocale(this.locale));
+        const item = localStorage.getItem(SaveConfig.getLocalStorageKeyWithLocale(this.$i18n.locale));
         if (item) {
           if (this.importFromString(item)) {
             this.$notify({
@@ -1150,6 +1162,7 @@ new Vue({
         }
 
         // start mapping
+        // player data
         const newPlayer = new Player();
         if (playerExport.characterId) {
           newPlayer.character = this.characterLookup[playerExport.characterId];
@@ -1187,7 +1200,13 @@ new Vue({
           newPlayer.equipmentModifier[slot].quality = modifier.quality;
           newPlayer.equipmentModifier[slot].level = modifier.level;
         }
+
         this.player = newPlayer;
+
+        // other data
+        if (playerExport.skillCombo && +playerExport.skillCombo > 0) {
+          this.skillCombo = playerExport.skillCombo;
+        }
         return true;
       } catch (e) {
         this.$message({
@@ -1205,7 +1224,7 @@ new Vue({
     },
     getExportString() {
       const playerExport = new PlayerExport();
-      playerExport.locale = this.locale;
+      playerExport.locale = this.$i18n.locale;
       if (this.player.character) {
         playerExport.characterId = this.player.character.DF;
       }
@@ -1232,7 +1251,6 @@ new Vue({
       }
       playerExport.supportIds = this.player.supports.map(p => p.DF);
 
-
       for (const [slot, modifier] of Object.entries(this.player.equipmentModifier)) {
         if (modifier.skill) {
           playerExport.equipmentModifier[slot].skillId = modifier.skill.id;
@@ -1243,10 +1261,16 @@ new Vue({
 
       playerExport.characterModifier = this.player.characterModifier;
       playerExport.supportModifier = this.player.supportModifier;
+
+      // other data
+      if (this.skillCombo) {
+        playerExport.skillCombo = this.skillCombo;
+      }
+
       return btoa(JSON.stringify(playerExport));
     },
     getExportUrl() {
-      return `${location.origin}${location.pathname}?locale=${this.locale}&i=${this.getExportString()}`;
+      return `${location.origin}${location.pathname}?locale=${this.$i18n.locale}&i=${this.getExportString()}`;
     },
 
     // save
@@ -1265,7 +1289,7 @@ new Vue({
         type: 'warning'
       }).then(() => {
         this.player = new Player();
-        localStorage.removeItem(SaveConfig.getLocalStorageKeyWithLocale(this.locale));
+        localStorage.removeItem(SaveConfig.getLocalStorageKeyWithLocale(this.$i18n.locale));
         this.$notify({
           title: 'Success',
           message: 'Cleared player and local data',
@@ -1274,7 +1298,7 @@ new Vue({
       });
     },
     save() {
-      localStorage.setItem(SaveConfig.getLocalStorageKeyWithLocale(this.locale), this.getExportString());
+      localStorage.setItem(SaveConfig.getLocalStorageKeyWithLocale(this.$i18n.locale), this.getExportString());
       return this;
     },
 
@@ -1377,8 +1401,14 @@ new Vue({
     //
     async load() {
       try {
-        this.locale  = new URL(window.location).searchParams.get("locale") || 'ja_JP';
-        const exports = this.locale === 'zh_TW' ? [
+        this.setLocaleFromParam();
+
+        const localeFiles = [
+          this.$i18n.locale === 'zh-TW' ?
+          fetch('locales/zh-TW.json').then(p => p.json()) :
+          fetch('locales/ja-JP.json').then(p => p.json())
+        ];
+        const exports = this.$i18n.locale === 'zh-TW' ? [
           fetch('export/tw/chara.json').then(p => p.json()),
           fetch('export/tw/item.json').then(p => p.json()),
           fetch('export/tw/skill.json').then(p => p.json()),
@@ -1391,16 +1421,13 @@ new Vue({
           fetch('export/abnormalstate.json').then(p => p.json()),
           fetch('export/blaze_art.json').then(p => p.json()),
         ];
-        if (this.locale === 'zh_TW') {
-          this.lookup = LookupChinese;
-          this.skillInfoText = "當前技能計算公式是猜測，有誤差";
-          this.strengthText = "強度";
-          document.title = "角色建立";
-        }
 
         this.buildItemPickerSortOptions();
 
-        const [chara, item, skill, abnormalstate, blaze_art] = await Promise.all(exports);
+        const [messages, chara, item, skill, abnormalstate, blaze_art] = await Promise.all(localeFiles.concat(exports));
+
+        this.$i18n.setLocaleMessage(this.$i18n.locale, messages);
+
         this.item = item;
         this.chara = chara;
         this.skill = skill;
@@ -1436,6 +1463,15 @@ new Vue({
           duration: 0,
           showClose: true,
         });
+      }
+    },
+    setLocaleFromParam() {
+      this.$i18n.locale = (new URL(window.location).searchParams.get("locale") || 'ja-JP').replace('_', '-');
+      if (this.$i18n.locale === 'zh-TW') {
+        this.lookup = LookupChinese;
+        this.skillInfoText = "當前技能計算公式是猜測，有誤差";
+        this.strengthText = "強度";
+        document.title = "角色建立";
       }
     },
   },
