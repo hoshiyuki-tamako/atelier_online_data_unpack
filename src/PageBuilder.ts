@@ -196,6 +196,13 @@ export class PageBuilder {
         },
       },
       {
+        href: "../calculate.html",
+        title: "計算/公式(日版)",
+        img: {
+          src: "../img/other/Texture2D/item_texture_0010.png",
+        },
+      },
+      {
         href: "other.html",
         title: "其他",
         img: {
