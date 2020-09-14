@@ -207,7 +207,7 @@ Info for developer
   "WPN_KIND": 0, // see Lookup.weaponKind
   "GROUP_DF": 0, // Special weapon for character, relationship to chara.GROUP_DF
   "CEIL_RWD_ITEM": [],
-  "RCP_TYPE": 0,
+  "RCP_TYPE": 0, // legendary recipe
   "LRCP_CHARA": []
 }
 ```
@@ -631,23 +631,23 @@ Info for developer
   "DF": 101, // id
   "bBoss": 0, // is boss
   "eAttackTargetKind": 0, // single or area attack, see Enum eAttackTargetKind
-  "sNormalAttackFile": "NormalAttack_Enemy_01",
+  "sNormalAttackFile": "NormalAttack_Enemy_01", // the asset that contains effect and attack param / photon api command
   "sBossStartFile": "",
   "sBossEndFile": "",
   "eKind": 1, // enemy type
   "iCategory": 1, // enemy type of category
-  "musicID": 0,
+  "musicID": 0, // e.g. boss battle music
   "strName": "灼熱のエレメント",
   "strAnotherName": "",
-  "eSize": 0,
-  "bAura": 0,
-  "fViewRadius": 5.0,
-  "fViewCos": -1.0,
-  "fMoveRadius": 20.0,
-  "fMoveSpeed": 2.0,
-  "fHitRadius": 1.2,
-  "bOnlyOnline": 0,
-  "fCullingSide": 8.0,
+  "eSize": 0, // size of the monster
+  "bAura": 0, // aura effect
+  "fViewRadius": 5.0, // view distance
+  "fViewCos": -1.0, // view in 3D space, Math.round(Math.acos(fViewCos) * (180/Math.PI), 2)
+  "fMoveRadius": 20.0, // how far it will move around
+  "fMoveSpeed": 2.0, // moving speed when on MapArea
+  "fHitRadius": 1.2, // hit radius on MapArea
+  "bOnlyOnline": 0, // is the monster only appear online mode
+  "fCullingSide": 8.0, // see game engine documentation unity Occlusion culling
   "strDesc": "",
   "sParam": {
     "MDL": "001_01",
