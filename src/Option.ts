@@ -2,7 +2,6 @@ import { Options } from 'html-minifier';
 
 export class Option {
 
-  // settings
   public static minifyOption = {
     minifyCSS: true,
     minifyURLs: true,

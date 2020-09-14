@@ -1,17 +1,17 @@
 doctype html
 html
   head
-    title キャラクター
-    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/reset.css")
-    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
-    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/wealth.css")
+    title #{that.i18nService.i18n.__("キャラクター")}
+    link(rel="stylesheet" href= that.exportService.rootFolderRelativePath + "css/reset.css")
+    link(rel="stylesheet" href= that.exportService.rootFolderRelativePath + "css/main.css")
+    link(rel="stylesheet" href= that.exportService.rootFolderRelativePath + "css/wealth.css")
 
     //- scroll top button for mobile
     script(src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/material-scrolltop/1.0.2/material-scrolltop.min.js" integrity="sha512-U5XMCa20kp0+xaI+DDNcEjTrwecJ5jkWGUB9Ye4cRkGWgfQ03dnXu+eFr7BtjyjPSBCBngip9MlTgHjuSrxXAA==" crossorigin="anonymous")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-scrolltop/1.0.2/material-scrolltop.min.css" integrity="sha512-V5Tr6yGfJc51zNqUUn+CydMuxKdQBf52F6EX89kityPpmSBduIBl39xsmcoKcmlLds+O8l+qN6FtgSjBSIMspA==" crossorigin="anonymous")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js" integrity="sha512-hSVyGuXBHmZy+A+P21DRUAuc7UTfcqc0geieb/H1ZmqiJAoDTfzFYIOBAMTcFUWU/PwLPEoREYG/77ckPB6oSw==" crossorigin="anonymous")
-    script(src= exportFileManager.rootFolderRelativePath + "js/scrollTopButton.js")
+    script(src= that.exportService.rootFolderRelativePath + "js/scrollTopButton.js")
 
     style.
       th {
@@ -77,13 +77,13 @@ html
         flex-basis: auto;
       }
   body
-    h3 キャラクター
+    h3 #{that.i18nService.i18n.__("キャラクター")}
     div.items-index-container
       - for (const _chara of chara.m_vList.filter(p => p.SKILL.length))
         div.item-index-container
           a(href="#DF-" + _chara.DF)
             p #{_chara.NAME}
-            img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+            img(src= that.exportService.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
     br
     br
     br
@@ -98,11 +98,12 @@ html
             - for (const id of [...Array(10).keys()])
               - const iconFilename = `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png`
               - if (charaIcons.includes(iconFilename))
-                img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/" + iconFilename alt= _chara.NAME)
+                img.icon-full(src= that.exportService.rootFolderRelativePath + "img/chara/Texture2D/" + iconFilename alt= _chara.NAME)
             p= _chara.DESC
             br
             p DF: #{_chara.DF}
-            p 性別: 
+            p #{that.i18nService.i18n.__("職業")}: #{that.lookup.eJobKindLookup[_chara.BTST] || _chara.BTST}
+            p #{that.i18nService.i18n.__("性別")}: 
               - if (!_chara.GEN)
                 span ♂ ♀
               - else if (_chara.GEN === 1)
@@ -111,66 +112,56 @@ html
                 span ♀ 
 
             - if (_chara.WEAPON.length)
-              p 武器種類: #{_chara.WEAPON.map(p => Lookup.weaponGen[p.GEN] || p.GEN).join(", ")}
+              p #{that.i18nService.i18n.__("武器種類")}: #{_chara.WEAPON.map(p => that.lookup.weaponGen[p.GEN] || p.GEN).join(", ")}
             - for (const grow of _chara.GROW)
               p.wealth-container
-                img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00006.png" alt="限界キャンディ")
+                img(src= that.exportService.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00006.png" alt= that.i18nService.i18n.__("限界キャンディ"))
                 span #{grow.STONE}
                 span #{new Array(grow.STAR).fill('⭐').join('')}
           div.item-container-right
             - const characterOnlyItems = item.m_vList.filter(p => p.GROUP_DF === _chara.GROUP_DF);
             - if (characterOnlyItems.length)
-              h4 ----- 専用アイテム -----
+              h4 ----- #{that.i18nService.i18n.__("専用アイテム")} -----
               - for (const _item of characterOnlyItems)
                 a(href="item.html#DF-" + _item.DF target="_blank")
-                  img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+                  img.icon-small(src= that.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
-            h4 ----- スキル -----
+            h4 ----- #{that.i18nService.i18n.__("スキル")} -----
             - for (const [lv, skills] of Enumerable.from(_chara.SKILL).groupBy(p => p.LV).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]).toArray())
               h4 --- LV #{lv} ---
               - for (const [i, _s] of skills.entries())
                 - const _skill = skill.m_vList.find(s => s.id === _s.DF)
-                - if (!_skill)
-                  - if (_s.DF)
-                    p skill not found: DF=#{_s.DF}
-                  - else
-                    p -
-                - else
+                - if (_skill)
                   table
                     tr
-                      th 名前
+                      th #{that.i18nService.i18n.__("名前")}
                       td= _skill.name
                     tr
-                      th 詳細
+                      th #{that.i18nService.i18n.__("詳細")}
                       td= _skill.detail
                     tr
-                      th 数値
+                      th #{that.i18nService.i18n.__("数値")}
                       td= `${_skill.effectValue}, ${_skill.effectValue2}`
-                - if (skills.length !== (i + 1))
-                  p &#x3E;
+                  - if (skills.length !== (i + 1))
+                    p &#x3E;
 
             - if (_chara.BA.length)
-              h4 ----- ブレイズアーツ (BA) -----
+              h4 ----- #{that.i18nService.i18n.__("ブレイズアーツ")} (BA) -----
               - for (const ba of _chara.BA)
                 - const thatBa = blazeArt.m_vList.find(b => b.DF === ba.DF);
                 - for (const [lv, _ba] of thatBa.LV.entries())
                   - const s = skill.m_vList.find(s => s.id === _ba.SKILL_DF);
-                  - if (!s)
-                    - if (s.DF)
-                      p skill not found: DF=#{s.DF}
-                    - else
-                      p -
-                  - else
+                  - if (s)
                     h4 --- LV #{ba.LV} / BA LV #{lv + 1}  ---
                     table
                       tr
-                        th 名前
+                        th #{that.i18nService.i18n.__("名前")}
                         td= s.name
                       tr
-                        th 詳細
+                        th #{that.i18nService.i18n.__("詳細")}
                         td= s.detail
                       tr
-                        th 数値
+                        th #{that.i18nService.i18n.__("数値")}
                         td= `${s.effectValue}, ${s.effectValue2}`
 
             div.chara-levels
@@ -180,78 +171,78 @@ html
                   table
                     tr
                       th HP
-                      td= LogicHelper.calculateState(_chara.SPEC.HP, lv)
+                      td= that.logicService.state(_chara.SPEC.HP, lv)
                     tr
-                      th= Lookup.state.SATK
-                      td= LogicHelper.calculateState(_chara.SPEC.SATK, lv)
+                      th= that.lookup.state.SATK
+                      td= that.logicService.state(_chara.SPEC.SATK, lv)
                     tr
-                      th= Lookup.state.SDEF
-                      td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv)
+                      th= that.lookup.state.SDEF
+                      td= that.logicService.state(_chara.SPEC.SDEF, lv)
                     tr
-                      th= Lookup.state.MATK
-                      td= LogicHelper.calculateState(_chara.SPEC.MATK, lv)
+                      th= that.lookup.state.MATK
+                      td= that.logicService.state(_chara.SPEC.MATK, lv)
                     tr
-                      th= Lookup.state.MDEF
-                      td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv)
+                      th= that.lookup.state.MDEF
+                      td= that.logicService.state(_chara.SPEC.MDEF, lv)
                     tr
-                      th= Lookup.state.SPD
-                      td= LogicHelper.calculateState(_chara.SPEC.SPD, lv)
+                      th= that.lookup.state.SPD
+                      td= that.logicService.state(_chara.SPEC.SPD, lv)
                     tr
-                      th= Lookup.state.SDA
-                      td= LogicHelper.calculateState(_chara.SPEC.SDA, lv)
+                      th= that.lookup.state.SDA
+                      td= that.logicService.state(_chara.SPEC.SDA, lv)
                     tr
-                      th= Lookup.state.LDA
-                      td= LogicHelper.calculateState(_chara.SPEC.LDA, lv)
+                      th= that.lookup.state.LDA
+                      td= that.logicService.state(_chara.SPEC.LDA, lv)
                     tr
-                      th= Lookup.state.QTH
-                      td= LogicHelper.calculateState(_chara.SPEC.QTH, lv)
+                      th= that.lookup.state.QTH
+                      td= that.logicService.state(_chara.SPEC.QTH, lv)
                     tr
-                      th= Lookup.state.DDG
-                      td= LogicHelper.calculateState(_chara.SPEC.DDG, lv)
+                      th= that.lookup.state.DDG
+                      td= that.logicService.state(_chara.SPEC.DDG, lv)
                     tr
-                      th= Lookup.state.SADD
-                      td= LogicHelper.calculateState(_chara.SPEC.SADD, lv)
+                      th= that.lookup.state.SADD
+                      td= that.logicService.state(_chara.SPEC.SADD, lv)
 
               div
                 - const lv = 80
                 - const maxDfm = _chara.FDM[_chara.FDM.length - 1];
-                h4 ----- LV #{lv} 完食 -----
+                h4 ----- LV #{lv} #{that.i18nService.i18n.__("完食")} -----
                 table
                   tr
                     th HP
-                    td= LogicHelper.calculateState(_chara.SPEC.HP, lv) + maxDfm.HP
+                    td= that.logicService.state(_chara.SPEC.HP, lv) + maxDfm.HP
                   tr
-                    th= Lookup.state.SATK
-                    td= LogicHelper.calculateState(_chara.SPEC.SATK, lv) + maxDfm.SATK
+                    th= that.lookup.state.SATK
+                    td= that.logicService.state(_chara.SPEC.SATK, lv) + maxDfm.SATK
                   tr
-                    th= Lookup.state.SDEF
-                    td= LogicHelper.calculateState(_chara.SPEC.SDEF, lv) + maxDfm.SDEF
+                    th= that.lookup.state.SDEF
+                    td= that.logicService.state(_chara.SPEC.SDEF, lv) + maxDfm.SDEF
                   tr
-                    th= Lookup.state.MATK
-                    td= LogicHelper.calculateState(_chara.SPEC.MATK, lv) + maxDfm.MATK
+                    th= that.lookup.state.MATK
+                    td= that.logicService.state(_chara.SPEC.MATK, lv) + maxDfm.MATK
                   tr
-                    th= Lookup.state.MDEF
-                    td= LogicHelper.calculateState(_chara.SPEC.MDEF, lv) + maxDfm.MDEF
+                    th= that.lookup.state.MDEF
+                    td= that.logicService.state(_chara.SPEC.MDEF, lv) + maxDfm.MDEF
                   tr
-                    th= Lookup.state.SPD
-                    td= LogicHelper.calculateState(_chara.SPEC.SPD, lv) + maxDfm.SPD
+                    th= that.lookup.state.SPD
+                    td= that.logicService.state(_chara.SPEC.SPD, lv) + maxDfm.SPD
                   tr
-                    th= Lookup.state.SDA
-                    td= LogicHelper.calculateState(_chara.SPEC.SDA, lv) + maxDfm.SDA
+                    th= that.lookup.state.SDA
+                    td= that.logicService.state(_chara.SPEC.SDA, lv) + maxDfm.SDA
                   tr
-                    th= Lookup.state.LDA
-                    td= LogicHelper.calculateState(_chara.SPEC.LDA, lv) + maxDfm.LDA
+                    th= that.lookup.state.LDA
+                    td= that.logicService.state(_chara.SPEC.LDA, lv) + maxDfm.LDA
                   tr
-                    th= Lookup.state.QTH
-                    td= LogicHelper.calculateState(_chara.SPEC.QTH, lv) + maxDfm.QTH
+                    th= that.lookup.state.QTH
+                    td= that.logicService.state(_chara.SPEC.QTH, lv) + maxDfm.QTH
                   tr
-                    th= Lookup.state.DDG
-                    td= LogicHelper.calculateState(_chara.SPEC.DDG, lv) + maxDfm.DDG
+                    th= that.lookup.state.DDG
+                    td= that.logicService.state(_chara.SPEC.DDG, lv) + maxDfm.DDG
                   tr
-                    th= Lookup.state.SADD
-                    td= LogicHelper.calculateState(_chara.SPEC.SADD, lv) + maxDfm.SADD
+                    th= that.lookup.state.SADD
+                    td= that.logicService.state(_chara.SPEC.SADD, lv) + maxDfm.SADD
 
-            h4 ----- 食事 -----
+            h4 ----- #{that.i18nService.i18n.__("食事")} -----
             div.chara-food-items 
               - for (const fdm of _chara.FDM)
                 div
@@ -259,46 +250,46 @@ html
                   - for (const fd of fdm.FD)
                     div
                       - const _item = item.m_vList.find(i => i.DF === fd.DF)
-                      - const href = _item.RSP.length ? `composeItem.html?df=${_item.DF}&quality=${fd.QTY}` : `item.html#DF-${_item.DF}`;
+                      - const href = _item.RSP.length ? `${that.exportService.rootFolderRelativePath}composeItem.html?locale=${that.i18nService.i18n.getLocale()}&df=${_item.DF}&quality=${fd.QTY}` : `item.html#DF-${_item.DF}`;
                       a.chara-food-consume(href= href target="_blank")
-                        span(style="whitespace: nowrap") 品質 #{fd.QTY}
-                        img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+                        span(style="whitespace: nowrap") #{that.i18nService.i18n.__("品質")} #{fd.QTY}
+                        img.icon-small(src= that.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
                   table
                     tr
                       td HP
                       td= fdm.HP
                     tr
-                      td= Lookup.state.SATK
+                      td= that.lookup.state.SATK
                       td= fdm.SATK
                     tr
-                      td= Lookup.state.SDEF
+                      td= that.lookup.state.SDEF
                       td= fdm.SDEF
                     tr
-                      td= Lookup.state.MATK
+                      td= that.lookup.state.MATK
                       td= fdm.MATK
                     tr
-                      td= Lookup.state.MDEF
+                      td= that.lookup.state.MDEF
                       td= fdm.MDEF
                     tr
-                      td= Lookup.state.SPD
+                      td= that.lookup.state.SPD
                       td= fdm.SPD
                     tr
-                      td= Lookup.state.SDA
+                      td= that.lookup.state.SDA
                       td= fdm.SDA
                     tr
-                      td= Lookup.state.LDA
+                      td= that.lookup.state.LDA
                       td= fdm.LDA
                     tr
-                      td= Lookup.state.QTH
+                      td= that.lookup.state.QTH
                       td= fdm.QTH
                     tr
-                      td= Lookup.state.DDG
+                      td= that.lookup.state.DDG
                       td= fdm.DDG
                     tr
-                      td= Lookup.state.SADD
+                      td= that.lookup.state.SADD
                       td= fdm.SADD
 
-            h4 ----- クェスト -----
+            h4 ----- #{that.i18nService.i18n.__("クェスト")} -----
             - for (const qst of _chara.QST)
               - const q = quest.m_vList.find(i => i.DF === qst.QUEST_DF)
               - if (q)

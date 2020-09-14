@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title 称号
+    title #{that.i18nService.i18n.__("称号")}
     style.
       th {
         white-space: nowrap;
@@ -15,15 +15,19 @@ html
         thead
           tr
             th DF
-            th 名前
-            th 詳細
-            th 画像
+            th #{that.i18nService.i18n.__("ステップ")}
+            th #{that.i18nService.i18n.__("レア度")}
+            th #{that.i18nService.i18n.__("名前")}
+            th #{that.i18nService.i18n.__("詳細")}
+            th #{that.i18nService.i18n.__("画像")}
         tbody
           - for (const _degree of degree.List)
             tr
               td= _degree.DF
+              td= _degree.STP
+              td= _degree.RTY
               td= _degree.NAME
               td= _degree.DESC
               td
                 - if (_degree.TYP)
-                  img(src= exportFileManager.rootFolderRelativePath + "img/icon_degree/Texture2D/icon_degree_" + `${_degree.TYP.toString().padStart(2, "0")}${_degree.RTY.toString().padStart(2, "0")}` + ".png" alt= _degree.NAME)
+                  img(src= that.exportService.rootFolderRelativePath + "img/icon_degree/Texture2D/icon_degree_" + `${_degree.TYP.toString().padStart(2, "0")}${_degree.RTY.toString().padStart(2, "0")}` + ".png" alt= _degree.NAME)

@@ -1,6 +1,12 @@
 ELEMENT.locale(ELEMENT.lang.en);
 
 Vue.use(VTooltip);
+Vue.use(VueI18n)
+
+const i18n = new VueI18n({
+  locale: 'ja-JP',
+  fallbackLocale: 'ja-JP',
+})
 
 
 class Lookup {
@@ -58,10 +64,10 @@ class LookupChinese {
 }
 
 new Vue({
+  i18n,
   el: '#app',
   data: {
     // settings
-    locale: 'ja_JP',
     itemCategoryLookup: Lookup.itemCategory,
 
     // raw data
@@ -154,20 +160,35 @@ new Vue({
     getAbnormalState(id) {
       return this.abnormalState.m_vList.find(p => p.id === id);
     },
+
+    getComposeMaterialUrl(material, materialOption) {
+      return `composeItem.html?locale=${this.$i18n.locale}&df=${material.DF}&quality=${materialOption.quality}`;
+    },
+    getComposeItemUrl() {
+      let folder = '';
+      if (this.$i18n.locale === 'zh-TW') {
+        folder = 'tw/';
+      }
+      return `${folder}item.html#DF-${this.getPickedItem().DF}`
+    },
     
     // export
     getExportUrl() {
       if (!this.compose) {
         return '';
       }
-      return `${location.origin}${location.pathname}?locale=${this.locale}&df=${this.compose.DF}&materialOptions=${btoa(JSON.stringify(this.materialOptions))}`;
+      return `${location.origin}${location.pathname}?locale=${this.$i18n.locale}&df=${this.compose.DF}&materialOptions=${btoa(JSON.stringify(this.materialOptions))}`;
     },
 
     //
     async load() {
       try {
-        this.locale = new URL(window.location).searchParams.get("locale") || 'ja_JP';
-        const exports = this.locale === 'zh_TW' ? [
+        this.$i18n.locale = (new URL(window.location).searchParams.get("locale") || 'ja-JP').replace('_', '-');
+        if (this.$i18n.locale === 'zh-TW') {
+          this.itemCategoryLookup = LookupChinese.itemCategory;
+        }
+
+        const exports = this.$i18n.locale === 'zh-TW' ? [
           fetch('export/tw/item.json').then(p => p.json()),
           fetch('export/tw/skill.json').then(p => p.json()),
           fetch('export/tw/abnormalstate.json').then(p => p.json())
@@ -176,11 +197,15 @@ new Vue({
           fetch('export/skill.json').then(p => p.json()),
           fetch('export/abnormalstate.json').then(p => p.json())
         ];
-        if (this.locale === 'zh_TW') {
-          this.itemCategoryLookup = LookupChinese.itemCategory;
-        }
 
-        const [item, skill, abnormalState] = await Promise.all(exports);
+        const [messages, item, skill, abnormalState] = await Promise.all([
+          this.$i18n.locale === 'zh-TW' ?
+          fetch('locales/zh-TW.json').then(p => p.json()) :
+          fetch('locales/ja-JP.json').then(p => p.json())
+        ].concat(exports));
+
+        this.$i18n.setLocaleMessage(this.$i18n.locale, messages)
+
         this.item = item;
         this.skill = skill;
         this.abnormalState = abnormalState;

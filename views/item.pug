@@ -1,17 +1,17 @@
 doctype html
 html
   head
-    title アイテム / 裝備 / 料理
-    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/reset.css")
-    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
-    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/wealth.css")
+    title #{that.i18nService.i18n.__("アイテム / 裝備 / 料理")}
+    link(rel="stylesheet" href= that.exportService.rootFolderRelativePath + "css/reset.css")
+    link(rel="stylesheet" href= that.exportService.rootFolderRelativePath + "css/main.css")
+    link(rel="stylesheet" href= that.exportService.rootFolderRelativePath + "css/wealth.css")
 
     //- scroll top button for mobile
     script(src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/material-scrolltop/1.0.2/material-scrolltop.min.js" integrity="sha512-U5XMCa20kp0+xaI+DDNcEjTrwecJ5jkWGUB9Ye4cRkGWgfQ03dnXu+eFr7BtjyjPSBCBngip9MlTgHjuSrxXAA==" crossorigin="anonymous")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-scrolltop/1.0.2/material-scrolltop.min.css" integrity="sha512-V5Tr6yGfJc51zNqUUn+CydMuxKdQBf52F6EX89kityPpmSBduIBl39xsmcoKcmlLds+O8l+qN6FtgSjBSIMspA==" crossorigin="anonymous")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js" integrity="sha512-hSVyGuXBHmZy+A+P21DRUAuc7UTfcqc0geieb/H1ZmqiJAoDTfzFYIOBAMTcFUWU/PwLPEoREYG/77ckPB6oSw==" crossorigin="anonymous")
-    script(src= exportFileManager.rootFolderRelativePath + "js/scrollTopButton.js")
+    script(src= that.exportService.rootFolderRelativePath + "js/scrollTopButton.js")
 
     style.
       th {
@@ -85,12 +85,12 @@ html
       }
   body
     div
-      h2 種類
+      h2 #{that.i18nService.i18n.__("種類")}
       div.category-indexes-container
         - for(const ii of itemIndex)
           div.category-index-container
             h3
-              a(href="#CATEG-" + ii.CATEG)= Lookup.itemCategory[ii.CATEG] || `CATEG=${ii.CATEG}`
+              a(href="#CATEG-" + ii.CATEG)= that.lookup.itemCategory[ii.CATEG] || `CATEG=${ii.CATEG}`
     br
     br
     br
@@ -98,13 +98,13 @@ html
 
     div
       - for(const ii of itemIndex)
-        h2(id="CATEG-" + ii.CATEG)= Lookup.itemCategory[ii.CATEG] || `CATEG=${ii.CATEG}`
+        h2(id="CATEG-" + ii.CATEG)= that.lookup.itemCategory[ii.CATEG] || `CATEG=${ii.CATEG}`
         div.items-index-container
           - for (const i of ii.items)
             div.item-index-container
               a(href="#DF-" + i.DF)
                 p #{i.NAME}
-                img(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + i.DF + ".png" alt= i.NAME)
+                img(src= that.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + i.DF + ".png" alt= i.NAME)
         br
         br
     br
@@ -116,26 +116,29 @@ html
           div.item-container-left
             h3.item-name= _item.NAME
             - if (_item.RSP.length)
-              a(href="composeItem.html?df=" + _item.DF target="_blank")
-                img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+              a(href= `${that.exportService.rootFolderRelativePath}composeItem.html?locale=${that.i18nService.i18n.getLocale()}&df=${_item.DF}` target="_blank")
+                img.icon-full(src= that.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
             - else
-              img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+              img.icon-full(src= that.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
             p= _item.DESC
             - if(_item.RSP.length)
               p
-                a(href="composeItem.html?df=" + _item.DF target="_blank") 調合
+                a(href= `${that.exportService.rootFolderRelativePath}composeItem.html?locale=${that.i18nService.i18n.getLocale()}&df=${_item.DF}` target="_blank") #{that.i18nService.i18n.__('調合')}
             br
             p DF: #{_item.DF}
-            p 種類: #{Lookup.itemCategory[_item.CATEG]}
-            p おすすめ錬金 LV #{_item.ALT ? _item.ALT.LV : '-'}
+            p #{that.i18nService.i18n.__("種類")}: #{that.lookup.itemCategory[_item.CATEG]}
+            p #{that.i18nService.i18n.__("レシピ種類")}: #{_item.RCP_TYPE === 1 ? that.i18nService.i18n.__('レジェンドレシピ') : that.i18nService.i18n.__('一般レシピ')}
+            - if (_item.JOB.length)
+              p= _item.JOB.map(p => that.lookup.eJobKindLookup[p] || p).join(", ")
+            p #{that.i18nService.i18n.__("おすすめ錬金 LV")} #{_item.ALT ? _item.ALT.LV : '-'}
             p
               span.wealth-container
-                span 売却
-                img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
+                span= that.i18nService.i18n.__('売却')
+                img(src= that.exportService.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
                 span= _item.RST.MN
             - if (_item.EQU_BRD)
-              p 性別: 
+              p #{that.i18nService.i18n.__('性別')}:
                 - if (!_item.EQU_GND.length || _item.EQU_GND.some(p => !p.GEN))
                   span ♂ ♀
                 - else 
@@ -144,19 +147,28 @@ html
                   - if (_item.EQU_GND.some(p => p.GEN === 2 && p.ENB))
                     span ♀ 
               - if (_item.WPN_KIND)
-                p 武器種類: #{Lookup.weaponKind[_item.WPN_KIND] || _item.WPN_KIND}
+                p #{that.i18nService.i18n.__('武器種類')}: #{that.lookup.weaponKind[_item.WPN_KIND] || _item.WPN_KIND}
               - if (_item.GROUP_DF)
                 - const _chara = chara.m_vList.find(p => p.GROUP_DF === _item.GROUP_DF)
-                p キャラクター專用
+                p #{that.i18nService.i18n.__('キャラクター專用')}
                 p
                   a(href="chara.html#DF-" + _chara.DF target="_blank")
-                    img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+                    img.icon-small(src= that.exportService.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
 
 
           div.item-container-right
+            - if (_item.LRCP_CHARA.length)
+              h4 ----- #{that.i18nService.i18n.__('レジェンドレシピ')} -----
+              - for (const lrcp of _item.LRCP_CHARA)
+                - const _chara = chara.m_vList.find(p => p.DF === lrcp.DF)
+                - if (_chara)
+                  p
+                    a(href="chara.html#DF-" + _chara.DF target="_blank")
+                      img.icon-middle(src= that.exportService.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _chara.DF.toString().padStart(4, "0") + "_00.png" alt= _chara.NAME)
+
             - const quests = quest.m_vList.filter(p => p.RWD_ITEM.some(i => i.DF === _item.DF))
             - if (quests.length)
-              h4 ----- クェスト報酬 -----
+              h4 ----- #{that.i18nService.i18n.__('クェスト報酬')} -----
               - for (const _quest of quests)
                 p
                   a(href="quest.html#DF-" + _quest.DF target="_blank")= _quest.NAME
@@ -164,81 +176,81 @@ html
 
             - const _fieldItem = fieldItem.List.find(p => p.iItemId === _item.DF)
             - if (_fieldItem)
-              h4 ---- 戦闘用 ----
-              p 目標: #{Lookup.fieldItemRange[_fieldItem.eRange]}
-              p 効果: #{Lookup.fieldItemUse[_fieldItem.eUse]}
+              h4 ---- #{that.i18nService.i18n.__('戦闘用')} ----
+              p #{that.i18nService.i18n.__('目標')}: #{that.lookup.fieldItemRange[_fieldItem.eRange]}
+              p #{that.i18nService.i18n.__('効果')}: #{that.lookup.fieldItemUse[_fieldItem.eUse]}
               - for (const [i, stateId] of _fieldItem.eStateList.filter(p => p).entries())
                 - const _abnormalState = abnormalState.m_vList.find(p => p.id === stateId)
                 p= _abnormalState.name
-                p #{_abnormalState.turn} ターン
+                p #{_abnormalState.turn} #{that.i18nService.i18n.__('ターン')}
                 - if (_fieldItem.eStateList.length !== (i + 1))
                   p &gt;
 
             - if (_item.RSP.length)
-              h4 ----- 調合條件 -----
+              h4 ----- #{that.i18nService.i18n.__('調合條件')} -----
               - if (_item.ALT.CST)
                 p
                   span.wealth-container
-                    img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル")
+                    img(src= that.exportService.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00002.png" alt= that.i18nService.i18n.__('エーテル'))
                     span= _item.ALT.CST
               table
                 tr
                   - for (const rsp of _item.RSP)
                     td
                       a(href="#DF-" + rsp.DF)
-                        img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF)
+                        img.icon-small(src= that.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + rsp.DF + ".png" alt= rsp.DF)
                     td x#{rsp.NC}
 
 
             - const makeItem = itemsOrderByCategory.filter(p => p.RSP.some(j => j.DF === _item.DF))
             - if (makeItem.length)
-              h4 ----- 材料 -----
+              h4 ----- #{that.i18nService.i18n.__('材料')} -----
               div.item-making-container
                 - for (const otherItem of makeItem)
                   div
                     a(href="#DF-" + otherItem.DF)
-                      img.icon-small(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF)
+                      img.icon-small(src= that.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + otherItem.DF + ".png" alt= otherItem.DF)
 
             - if (_item.SPC.length)
               - for (const spc of _item.SPC)
                 - const _skills = spc.SKILL.map(p => skill.m_vList.find(s => s.id === p.DF)).filter(p => p);
                 - if (_skills.length)
-                  h4 ----- スキル/効果 (品質 #{spc.THR}) -----
+                  h4 ----- #{that.i18nService.i18n.__('スキル')}/#{that.i18nService.i18n.__('効果')} (#{that.i18nService.i18n.__('品質')} #{spc.THR}) -----
                   - for (const _skill of _skills)
                     table
                       tr
-                        th 名前
+                        th #{that.i18nService.i18n.__('名前')}
                         td= _skill.name
                       tr
-                        th 詳細
+                        th #{that.i18nService.i18n.__('詳細')}
                         td= _skill.detail
                       tr
-                        th 数値
+                        th #{that.i18nService.i18n.__('数値')}
                         td= `${_skill.effectValue}, ${_skill.effectValue2}`
                       - if (_skill.stateOwn.length)
                         tr
-                          th 追加状態 (自)
+                          th #{that.i18nService.i18n.__('追加状態 (自)')}
                           td
                             - for (const _state of _skill.stateOwn)
                               - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
-                              p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_state.rate}ターン
+                              p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_state.rate}#{that.i18nService.i18n.__('ターン')}
                       - if (_skill.state.length)
                         tr
-                          th 追加状態
+                          th #{that.i18nService.i18n.__('追加状態')}
                           td
                             - for (const _state of _skill.state)
                               - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
-                              p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_state.rate}ターン
+                              p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_state.turn}#{that.i18nService.i18n.__('ターン')}
                     - if (_skills.length !== (i + 1))
                       p &#x3E;
 
             - if (_item.EQU_BRD)
               - if (Object.values(_item.ELM).filter(p => p).length)
-                h4 ----- 屬性 -----
+                h4 ----- #{that.i18nService.i18n.__('屬性')} -----
                 table
                   - for (const [element, value] of Object.entries(_item.ELM).filter(p => p[1]))
                     tr
-                      th= Lookup.element[element] || element
+                      th= that.lookup.element[element] || element
                       td= value
 
               div.item-levels
@@ -247,33 +259,33 @@ html
                     h4 ----- LV #{lv} -----
                     table
                       tr
-                        th= Lookup.state.SATK
-                        td= LogicHelper.calculateState(_item.EQU.SATK, lv)
+                        th= that.lookup.state.SATK
+                        td= that.logicService.state(_item.EQU.SATK, lv)
                       tr
-                        th= Lookup.state.SDEF
-                        td= LogicHelper.calculateState(_item.EQU.SDEF, lv)
+                        th= that.lookup.state.SDEF
+                        td= that.logicService.state(_item.EQU.SDEF, lv)
                       tr
-                        th= Lookup.state.MATK
-                        td= LogicHelper.calculateState(_item.EQU.MATK, lv)
+                        th= that.lookup.state.MATK
+                        td= that.logicService.state(_item.EQU.MATK, lv)
                       tr
-                        th= Lookup.state.MDEF
-                        td= LogicHelper.calculateState(_item.EQU.MDEF, lv)
+                        th= that.lookup.state.MDEF
+                        td= that.logicService.state(_item.EQU.MDEF, lv)
                       tr
-                        th= Lookup.state.SPD
-                        td= LogicHelper.calculateState(_item.EQU.SPD, lv)
+                        th= that.lookup.state.SPD
+                        td= that.logicService.state(_item.EQU.SPD, lv)
                       tr
-                        th= Lookup.state.SDA
-                        td= LogicHelper.calculateState(_item.EQU.SDA, lv)
+                        th= that.lookup.state.SDA
+                        td= that.logicService.state(_item.EQU.SDA, lv)
                       tr
-                        th= Lookup.state.LDA
-                        td= LogicHelper.calculateState(_item.EQU.LDA, lv)
+                        th= that.lookup.state.LDA
+                        td= that.logicService.state(_item.EQU.LDA, lv)
                       tr
-                        th= Lookup.state.QTH
-                        td= LogicHelper.calculateState(_item.EQU.QTH, lv)
+                        th= that.lookup.state.QTH
+                        td= that.logicService.state(_item.EQU.QTH, lv)
                       tr
-                        th= Lookup.state.DDG
-                        td= LogicHelper.calculateState(_item.EQU.DDG, lv)
+                        th= that.lookup.state.DDG
+                        td= that.logicService.state(_item.EQU.DDG, lv)
                       tr
-                        th= Lookup.state.SADD
-                        td= LogicHelper.calculateState(_item.EQU.SADD, lv)
+                        th= that.lookup.state.SADD
+                        td= that.logicService.state(_item.EQU.SADD, lv)
         hr

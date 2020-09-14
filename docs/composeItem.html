@@ -9,10 +9,12 @@
 
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js" integrity="sha256-ur/YlHMU96MxHEsy3fHGszZHas7NzH4RQlD4tDVvFhw=" crossorigin="anonymous"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
   <script src="//unpkg.com/element-ui/lib/umd/locale/en.js"></script>
+  <script src="https://unpkg.com/vue-i18n/dist/vue-i18n.js"></script>
 
   <script src="https://unpkg.com/v-tooltip"></script>
 </head>
@@ -25,7 +27,7 @@
         <el-select v-model="itemPickerFilterCategory" style="width: 140px" placeholder="種類" size="small" filterable clearable>
           <el-option v-for="itemCategory in itemCategories" :key="itemCategory.value" :label="itemCategory.label" :value="itemCategory.value"></el-option>
         </el-select>
-        <el-input v-model="itemPickerFilterKeyword" placeholder="名前 / DF"></el-input>
+        <el-input v-model="itemPickerFilterKeyword" :placeholder="$t('名前') + ' / DF'"></el-input>
         <div class="item-picker-items">
           <div @click="onPickItem(item)" v-for="item in getFilteredItemPickerItems()" :key="item.DF">
             <p>{{ item.NAME }}</p>
@@ -55,7 +57,7 @@
               </div>
               <div>
                 <el-select v-model="materialOptions[i].addonQuality" style="width: 140px" placeholder="品質特性" size="small" filterable>
-                  <el-option v-for="v in [...new Array(16).keys()]" :key="v" :label="`品質特性 ${v}`" :value="v"></el-option>
+                  <el-option v-for="v in new Array(16).keys()" :key="v" :label="`品質特性 ${v}`" :value="v"></el-option>
                 </el-select>
               </div>
               <div>
@@ -65,7 +67,7 @@
                 <div class="item-popover">
                   <p>{{ material.NAME }}</p>
                   <p>{{ material.DESC }}</p>
-                  <el-link v-if="material.RSP.length" type="primary" :href="`composeItem.html?locale=${locale}&df=${material.DF}&quality=${materialOptions[i].quality}`" target="_blank">調合</el-link>
+                  <el-link v-if="material.RSP.length" type="primary" :href="getComposeMaterialUrl(material, materialOptions[i])" target="_blank">{{ $t('調合') }}</el-link>
                 </div>
               </template>
             </v-popover>
@@ -76,9 +78,9 @@
        
         <div @click="onPickItemOpen" class="compose-item">
           <div class="compose-requirement">
-            <p>
-              <span v-if="getPickedItem().ALT && getPickedItem().ALT.CST" class="wealth-container">
-                <img src="img/icon_item01/Texture2D/icon_item01_00002.png" alt="エーテル"/>
+            <p v-for="pickedItem in [getPickedItem()]">
+              <span v-if="pickedItem.ALT && pickedItem.ALT.CST" class="wealth-container">
+                <img src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="$t('エーテル')"/>
                 <span>{{ getPickedItem().ALT.CST }}</span>
               </span>
             </p>
@@ -94,7 +96,7 @@
               <div class="item-popover">
                 <p>{{ getPickedItem().NAME }}</p>
                 <p>{{ getPickedItem().DESC }}</p>
-                <el-link type="primary" :href="'item.html#DF-' + getPickedItem().DF" target="_blank">アイテム</el-link>
+                <el-link type="primary" :href="getComposeItemUrl()" target="_blank">{{ $t('アイテム') }}</el-link>
               </div>
             </template>
           </v-popover>
@@ -103,7 +105,7 @@
       </div>
 
       <div class="compose-result">
-        <h3>品質 {{ getQuality() }}</h3>
+        <h3>{{ $t('品質') }} {{ getQuality() }}</h3>
         <h4>{{ getPickedItem().NAME }}</h4>
         <div class="compose-result-image-container">
           <img class="compose-result-image" @click="onPickItemOpen" :src="getPickedItemUrl()" :alt="getPickedItem().NAME">
@@ -114,30 +116,30 @@
         <div class="compose-result-skill" v-for="_skill in getPickedItemSkills()" :key="_skill.id">
           <table>
             <tr>
-              <th>名前</th>
+              <th>{{ $t('名前') }}</th>
               <td>{{ _skill.name }}</td>
             </tr>
             <tr>
-              <th>詳細</th>
+              <th>{{ $t('詳細') }}</th>
               <td>{{ _skill.detail }}</td>
             </tr>
             <tr>
-              <th>数値</th>
+              <th>{{ $t('数値') }}</th>
               <td>{{ `${_skill.effectValue}, ${_skill.effectValue2}` }}</td>
             </tr>
             <tr v-if="_skill.stateOwn.length">
-              <th>追加状態 (自)</th>
+              <th>{{ $t('追加状態 (自)') }}</th>
               <td>
                 <p v-for="state in _skill.stateOwn" :key="state.id">
-                  {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }}, {{state.rate}}ターン
+                  {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }}, {{state.rate}}{{ $t('ターン') }}
                 </p>
               </td>
             </tr>
             <tr v-if="_skill.state.length">
-              <th>追加状態</th>
+              <th>{{ $t('追加状態') }}</th>
               <td>
                 <p v-for="state in _skill.state" :key="state.id">
-                  {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }}, {{state.rate}}ターン
+                  {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }}, {{state.rate}}{{ $t('ターン') }}
                 </p>
               </td>
             </tr>

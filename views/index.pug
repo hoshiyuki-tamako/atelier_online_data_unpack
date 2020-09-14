@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title アトリエオンライン資料庫
+    title #{that.i18nService.i18n.__("アトリエオンライン資料庫")}
     style.
       .indexes-container {
         display: flex;
@@ -25,26 +25,29 @@ html
     div
       p
         span Game Version 3.12.1 (日本語) 
+          - if (that.i18nService.i18n.getLocale() !== 'ja-JP')
+            a(href="..") link
         br
         span Game Version 3.5.0 (中文) 
-          a(href="tw") link
-      p Updated #{moment().utc().format('YYYY-MM-DD')}
+          - if (that.i18nService.i18n.getLocale() !== 'zh-TW')
+            a(href="tw") link
+      p Updated #{updateDate}
       p
         span Twitter 
         a(href="https://twitter.com/hoshiyuki_git" target="_blank") @hoshiyuki_git
     hr
     div.indexes-container
-      - for (const row of _.chunk(pages, 5))
+      - for (const row of pageChunks)
         div.index-row-container
           - for (const page of row)
             div.index-container
               a(href= page.href target="_blank")
-                p= page.title
+                p= that.i18nService.i18n.__(page.title)
                 - if (page.img && page.img.src)
-                  img(src= page.img.src alt= page.title)
+                  img(src= page.img.src alt= that.i18nService.i18n.__(page.title))
     hr
     div
-      h3 他人の攻略サイト
+      h3 #{that.i18nService.i18n.__("他人の攻略サイト")}
       br
       div
         p ブレセイル観光局

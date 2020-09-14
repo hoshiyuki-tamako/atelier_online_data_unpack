@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title 異常状態
+    title #{that.i18nService.i18n.__("異常状態")}
     style.
       tr td {
         border-bottom: 1px solid black;
@@ -13,10 +13,10 @@ html
         thead
           tr
             th ID
-            th 名前
-            th テクスト
-            th ターン
-            th 効果
+            th #{that.i18nService.i18n.__("名前")}
+            th #{that.i18nService.i18n.__("テクスト")}
+            th #{that.i18nService.i18n.__("ターン")}
+            th #{that.i18nService.i18n.__("効果")}
         tbody
           - for (const _abnormalState of abnormalState.m_vList)
             tr

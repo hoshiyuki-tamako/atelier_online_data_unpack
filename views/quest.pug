@@ -1,17 +1,17 @@
 doctype html
 html
   head
-    title クェスト
-    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/reset.css")
-    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/main.css")
-    link(rel="stylesheet" href= exportFileManager.rootFolderRelativePath + "css/wealth.css")
+    title #{that.i18nService.i18n.__("クェスト")}
+    link(rel="stylesheet" href= that.exportService.rootFolderRelativePath + "css/reset.css")
+    link(rel="stylesheet" href= that.exportService.rootFolderRelativePath + "css/main.css")
+    link(rel="stylesheet" href= that.exportService.rootFolderRelativePath + "css/wealth.css")
 
     //- scroll top button for mobile
     script(src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/material-scrolltop/1.0.2/material-scrolltop.min.js" integrity="sha512-U5XMCa20kp0+xaI+DDNcEjTrwecJ5jkWGUB9Ye4cRkGWgfQ03dnXu+eFr7BtjyjPSBCBngip9MlTgHjuSrxXAA==" crossorigin="anonymous")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-scrolltop/1.0.2/material-scrolltop.min.css" integrity="sha512-V5Tr6yGfJc51zNqUUn+CydMuxKdQBf52F6EX89kityPpmSBduIBl39xsmcoKcmlLds+O8l+qN6FtgSjBSIMspA==" crossorigin="anonymous")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js" integrity="sha512-hSVyGuXBHmZy+A+P21DRUAuc7UTfcqc0geieb/H1ZmqiJAoDTfzFYIOBAMTcFUWU/PwLPEoREYG/77ckPB6oSw==" crossorigin="anonymous")
-    script(src= exportFileManager.rootFolderRelativePath + "js/scrollTopButton.js")
+    script(src= that.exportService.rootFolderRelativePath + "js/scrollTopButton.js")
 
     style.
       .categories-index-container {
@@ -55,7 +55,10 @@ html
 
 
 
-
+      .quest-kill-container {
+        display: flex;
+        align-items: center;
+      }
       .quest-kill-container img {
         width: 120px;
       }
@@ -67,12 +70,12 @@ html
         width: 60px;
       }
   body
-    h2 クェスト
+    h2 #{that.i18nService.i18n.__("クェスト")}
     div.categories-index-container
       - for(const category of Enumerable.from(quest.m_vList).groupBy(p => p.CATEG).orderBy(p => p.key()).select(p => p.key()))
         div.category-index-container
           a(href="#CATEG-" + category)
-            h3= Lookup.questCategory[category] || `CATEG=${category}`
+            h3= that.lookup.questCategory[category] || `CATEG=${category}`
     br
     br
     br
@@ -80,14 +83,14 @@ html
 
     div
       - for (const [category, _quests] of Enumerable.from(quest.m_vList).groupBy(p => p.CATEG).orderBy(p => p.key()).select(p => [p.key(), p.toArray()]))
-        h3(id="CATEG-" + category)= Lookup.questCategory[category] || `CATEG=${category}`
+        h3(id="CATEG-" + category)= that.lookup.questCategory[category] || `CATEG=${category}`
         div.items-index-container
           - for (const _quest of _quests)
             div.item-index-container
               a(href="#DF-" + _quest.DF)
                 p= _quest.NAME
                 - if (_quest.CHARA)
-                  img(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
+                  img(src= that.exportService.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
         br
         br
     br
@@ -101,22 +104,22 @@ html
             - if (_quest.CHARA)
               div
                 a(href="chara.html#DF-" + _quest.CHARA target="_blank")
-                 img.icon-full(src= exportFileManager.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
+                 img.icon-full(src= that.exportService.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
             h3 #{_quest.NAME}
             p= _quest.DESC
             br
-            p 達成條件:
+            p #{that.i18nService.i18n.__("達成條件")}:
             p= _quest.CONDITION
             br
             p DF: #{_quest.DF}
-            p クェスト号: #{_quest.QUEST_NO}
-            p クェストステップ: #{_quest.QUEST_SUB_NO}
-            p 種類: #{Lookup.questCategory[_quest.CATEG] || `CATEG=${_quest.CATEG}`}
-            p 解放チャプター: #{_quest.CHAPTER ? _quest.CHAPTER : '-'}
-            p キークェスト: #{_quest.KEY_QUEST ? "✓" : "x"}
-            p 重要: #{_quest.IMPORTANT ? "✓" : "x"}
-            p 挑戦: #{_quest.IMPORTANT ? "✓" : "x"}
-            p 区域: 
+            p #{that.i18nService.i18n.__("クェスト号")}: #{_quest.QUEST_NO}
+            p #{that.i18nService.i18n.__("クェストステップ")}: #{_quest.QUEST_SUB_NO}
+            p #{that.i18nService.i18n.__("種類")}: #{that.lookup.questCategory[_quest.CATEG] || `CATEG=${_quest.CATEG}`}
+            p #{that.i18nService.i18n.__("解放チャプター")}: #{_quest.CHAPTER ? _quest.CHAPTER : '-'}
+            p #{that.i18nService.i18n.__("キークェスト")}: #{_quest.KEY_QUEST ? "✓" : "x"}
+            p #{that.i18nService.i18n.__("重要")}: #{_quest.IMPORTANT ? "✓" : "x"}
+            p #{that.i18nService.i18n.__("挑戦")}: #{_quest.IMPORTANT ? "✓" : "x"}
+            p #{that.i18nService.i18n.__("区域")}: 
               - if (_quest.AREA)
                 - const _area = areaInfo.List.find(p => p.iAreaId === _quest.AREA)
                 - const _fieldName = fieldName.List.find(p => p.iAreaNameId === _area.iAreaNameId)
@@ -125,27 +128,36 @@ html
                 span -
           div.item-container-right
             - if (_quest.COST.WTH.CNT)
-              h4 ----- 消費 -----
+              h4 ----- #{that.i18nService.i18n.__("消費")} -----
               - const _wealth = wealth.m_vList.find(p => p.DF === _quest.COST.WTH.DF)
               span.wealth-container
-                img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png" alt= _wealth.NAME)
+                img(src= that.exportService.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png" alt= _wealth.NAME)
                 span= _quest.COST.WTH.CNT
+
             -if (_quest.ENM.length)
-              h4 ----- 討伐 -----
+              h4 ----- #{that.i18nService.i18n.__("討伐")} -----
               div.quest-kill-container
                 - for (const enm of _quest.ENM)
                   - const _enemy = enemy.m_vList.find(i => i.DF === enm.DF);
                   - if (_enemy)
                     a(href="enemy.html#DF-" + _enemy.DF target="_blank")
-                      span #{_quest.ENM.BDR}
-                      img(src= exportFileManager.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
-                  - else if (enm.DF)
-                    p enemy not found: DF=#{enm.DF}
+                      img(src= that.exportService.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+                    span x #{enm.BDR}
                   - else
                     p -
 
+            -if (_quest.GET.length)
+              h4 ----- #{that.i18nService.i18n.__("調合入手")} -----
+              - for (const get of _quest.GET)
+                - const _item = item.m_vList.find(item => item.DF === get.DF);
+                - if (_item)
+                  - const href = _item.RSP.length ? `${that.exportService.rootFolderRelativePath}composeItem.html?locale=${that.i18nService.i18n.getLocale()}&df=${_item.DF}&quality=${get.QTY}` : `item.html#DF-${_item.DF}`
+                  a.quest-reward-item-container(href= href target="_blank")
+                    p #{that.i18nService.i18n.__("品質")}#{get.QTY} / #{get.BDR}#{that.i18nService.i18n.__("個")}
+                    img(src= that.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+
             -if (_quest.DLV.length)
-              h4 ----- 納品/報告 -----
+              h4 ----- #{that.i18nService.i18n.__("納品")}/#{that.i18nService.i18n.__("報告")} -----
               - for (const dlv of _quest.DLV)
                 - const _item = item.m_vList.find(item => item.DF === dlv.DF);
                 - if (!_item)
@@ -154,13 +166,13 @@ html
                   - else
                     p -
                 - else
-                  - const href = _item.RSP.length ? `composeItem.html?df=${_item.DF}&quality=${dlv.QTY}` : `item.html#DF-${_item.DF}`
+                  - const href = _item.RSP.length ? `${that.exportService.rootFolderRelativePath}composeItem.html?locale=${that.i18nService.i18n.getLocale()}&df=${_item.DF}&quality=${dlv.QTY}` : `item.html#DF-${_item.DF}`
                   a.quest-reward-item-container(href= href target="_blank")
-                    p 品質#{dlv.QTY} / #{dlv.BDR}個
-                    img(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+                    p #{that.i18nService.i18n.__("品質")}#{dlv.QTY} / #{dlv.BDR}#{that.i18nService.i18n.__("個")}
+                    img(src= that.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
             - if (_quest.RWD_ITEM.length || _quest.RWD_WTH.length)
-              h4 ----- 報酬 -----
+              h4 ----- #{that.i18nService.i18n.__("報酬")} -----
               - if (_quest.RWD_ITEM.length)
                 - for (const rwd of _quest.RWD_ITEM)
                   - const _item = item.m_vList.find(item => item.DF === rwd.DF);
@@ -171,23 +183,29 @@ html
                       p -
                   - else
                     a.quest-reward-item-container(href="item.html#DF-" + _item.DF target="_blank")
-                      p 品質#{rwd.QTY} / #{rwd.CNT}個
-                      img(src= exportFileManager.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
+                      p #{that.i18nService.i18n.__("品質")}#{rwd.QTY} / #{rwd.CNT}#{that.i18nService.i18n.__("個")}
+                      img(src= that.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_" + _item.DF + ".png" alt= _item.NAME)
 
               - if (_quest.RWD_WTH.length)
                 - for (const rwd of _quest.RWD_WTH)
                   - const _wealth = wealth.m_vList.find(p => p.DF === rwd.DF)
                   span.wealth-container
-                    img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png")
+                    img(src= that.exportService.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_" + _wealth.ICON.toString().padStart(5, '0') + ".png")
                     span= rwd.CNT
               - if (_quest.RNK_PT)
                 span.wealth-container
-                  img(src= exportFileManager.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00009.png" alt="アカデミーポイント")
+                  img(src= that.exportService.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00009.png" alt= that.i18nService.i18n.__("アカデミーポイント"))
                   span= _quest.RNK_PT
 
             - if (_quest.UNLOCK.length)
-              h4 -----必須称号 -----
+              h4 ----- #{that.i18nService.i18n.__("必要称号")} -----
               - for (const unlock of _quest.UNLOCK)
-                - const _degree = degree.List.find(p => p.DF === unlock.DF)
-                p ステップ #{unlock.STP} - #{_degree.NAME}
+                - const _degree = degree.List.find(p => p.DF === unlock.DF && p.STP === unlock.STP)
+                p #{_degree.NAME}
+
+            - if (_quest.PARTY_IN)
+              h4 ----- #{that.i18nService.i18n.__("必要キャラクター")} -----
+              div
+                a(href="chara.html#DF-" + _quest.PARTY_IN target="_blank")
+                 img.icon-middle(src= that.exportService.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.PARTY_IN.toString().padStart(4, "0") + "_00.png" alt= _quest.PARTY_IN)
         hr

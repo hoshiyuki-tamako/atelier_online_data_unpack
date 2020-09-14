@@ -1,3 +1,6 @@
+import { LogicService } from './services/LogicService';
+import { I18nService } from './services/I18nService';
+import { ExportService } from './services/ExportService';
 import fs from 'fs-extra';
 import { Options } from 'html-minifier';
 import Enumerable from 'linq';
@@ -7,10 +10,8 @@ import path from 'path';
 import pug from 'pug';
 import { Worker } from 'worker_threads';
 
-import { eChatTab } from './Enums';
-import { ExportFileManager } from './ExportFileManager';
-import { LogicHelper } from './LogicHelper';
-import { Lookup, LookupChinese } from './Lookup';
+import { eChatTab } from './data/Enums';
+import { Lookup, LookupChinese } from './data/Lookup';
 import { AbnormalState } from './master/abnormalState';
 import { AbnormalStateEffect } from './master/abnormalStateEffect';
 import { AdventBattle } from './master/adventBattle';
@@ -40,18 +41,15 @@ import { Option } from './Option';
 export class PageBuilder {
 
   public static async main () {
-    await Promise.all(['tw', 'jp'].map(async region => {
-      const lookup = region === 'tw' ? LookupChinese : Lookup;
-      const exportFileManager = new ExportFileManager().setRegion(region);
-      const spawnerDataManager = new SpawnerDataManager(exportFileManager);
+    await Promise.all(['zh-TW', 'ja-JP'].map(async locale => {
+      const that = new this(
+        new I18nService().setLocale(locale),
+        await new ExportService().setLocale(locale).preLoadFiles(),
+        locale === 'zh-TW' ? LookupChinese : Lookup,
+        new LogicService(),
+      );
       await Promise.all([
-        exportFileManager.preLoadFiles(),
-        spawnerDataManager.loadFromCache(),
-      ]);
-
-      const that = new this(exportFileManager, spawnerDataManager, lookup);
-      await Promise.all([
-        region === 'tw' ? that.indexTw() : that.index(),
+        that.index(),
         that.item(),
         that.chara(),
         that.otherChara(),
@@ -62,20 +60,21 @@ export class PageBuilder {
         that.quest(),
         that.wealth(),
         that.zone(),
-        that.unusedItem(),
         that.area(),
         that.blazeArt(),
         that.calculate(),
         that.other(),
         that.totalRanking(),
+        // that.unusedItem(),
       ]);
     }));
   }
 
   public constructor(
-    private exportFileManager: ExportFileManager,
-    private spawnerDataManager: SpawnerDataManager,
-    private lookup: Lookup | LookupChinese
+    private i18nService: I18nService,
+    private exportService: ExportService,
+    private lookup: Lookup | LookupChinese,
+    private logicService: LogicService,
   ) {
   }
 
@@ -97,178 +96,41 @@ export class PageBuilder {
   }
 
   // pages
-  public async indexTw() {
-    const pages = [
-      {
-        href: "item.html",
-        title: "物品 / 裝備 / 料理",
-        img: {
-          src: "../img/icon_s/Texture2D/icon_item_s_10010001.png",
-        },
-      },
-      {
-        href: "chara.html",
-        title: "角色",
-        img: {
-          src: "../img/chara/Texture2D/icon_chara_all_0001.png",
-        },
-      },
-      {
-        href: "otherChara.html",
-        title: "其他角色",
-        img: {
-          src: "../img/chara/Texture2D/icon_chara_all_20001.png",
-        },
-      },
-      {
-        href: "blazeArt.html",
-        title: "Blaze Art",
-        img: {
-          src: "../img/icon_s/Texture2D/icon_item_s_56010003.png",
-        },
-      },
-      {
-        href: "enemy.html",
-        title: "敵",
-        img: {
-          src: "../img/enemy/Texture2D/enemy_tex_031_06.png",
-        },
-      },
-
-
-
-      {
-        href: "skill.html",
-        title: "技能",
-        img: {
-          src: "../img/icon_skill/Texture2D/icon_skill_00003.png",
-        },
-      },
-      {
-        href: "effect.html",
-        title: "效果",
-        img: {
-          src: "../img/fx/Texture2D/FX_Skill2005_02.png",
-        },
-      },
-      {
-        href: "abnormalEffect.html",
-        title: "異常状態",
-        img: {
-          src: "../img/fx/Texture2D/FX_smoke.png",
-        },
-      },
-      {
-        href: "zone.html",
-        title: "Zone",
-        img: {
-          src: "../img/icon_s/Texture2D/icon_item_s_10500014.png",
-        },
-      },
-      {
-        href: "area.html",
-        title: "地區",
-        img: {
-          src: "../img/map/Texture2D/MapArea_04_001_ALL.png",
-        },
-      },
-
-
-      {
-        href: "wealth.html",
-        title: "重要物品",
-        img: {
-          src: "../img/icon_item01/Texture2D/icon_item01_00001.png",
-        },
-      },
-      {
-        href: "degree.html",
-        title: "稱號",
-        img: {
-          src: "../img/icon_degree/Texture2D/icon_degree_0605.png",
-        },
-      },
-      {
-        href: "quest.html",
-        title: "任務",
-        img: {
-          src: "../img/other/Texture2D/item_texture_0018.png",
-        },
-      },
-      {
-        href: "../calculate.html",
-        title: "計算/公式(日版)",
-        img: {
-          src: "../img/other/Texture2D/item_texture_0010.png",
-        },
-      },
-      {
-        href: "other.html",
-        title: "其他",
-        img: {
-          src: "../img/icon_s/Texture2D/icon_item_s_10950055.png",
-        },
-      },
-
-      
-      {
-        href: "../characterBuilder.html?locale=zh_TW",
-        title: "角色建立",
-        img: {
-          src: "../img/other/Texture2D/item_texture_0024.png",
-        },
-      },
-      {
-        href: "../composeItem.html?locale=zh_TW",
-        title: "鍊金/調合物品",
-        img: {
-          src: "../img/icon/icon_bowl.png",
-        },
-      },
-    ];
-
-    const pugOption = { _, moment, pages };
-    await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'index.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'index.pug'), pugOption), Option.minifyOption),
-    );
-  }
-
   public async index() {
     const pages = [
       {
         href: "item.html",
         title: "アイテム / 裝備 / 料理",
         img: {
-          src: "img/icon_s/Texture2D/icon_item_s_10010001.png",
+          src: this.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_10010001.png",
         },
       },
       {
         href: "chara.html",
         title: "キャラクター",
         img: {
-          src: "img/chara/Texture2D/icon_chara_all_0001.png",
+          src: this.exportService.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_0001.png",
         },
       },
       {
         href: "otherChara.html",
         title: "他のキャラクター",
         img: {
-          src: "img/chara/Texture2D/icon_chara_all_20001.png",
+          src: this.exportService.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_20001.png",
         },
       },
       {
         href: "blazeArt.html",
         title: "ブレイズアーツ",
         img: {
-          src: "img/icon_s/Texture2D/icon_item_s_56010003.png",
+          src: this.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_56010003.png",
         },
       },
       {
         href: "enemy.html",
         title: "敵",
         img: {
-          src: "img/enemy/Texture2D/enemy_tex_031_06.png",
+          src: this.exportService.rootFolderRelativePath + "img/enemy/Texture2D/enemy_tex_031_06.png",
         },
       },
 
@@ -278,35 +140,35 @@ export class PageBuilder {
         href: "skill.html",
         title: "スキル",
         img: {
-          src: "img/icon_skill/Texture2D/icon_skill_00003.png",
+          src: this.exportService.rootFolderRelativePath + "img/icon_skill/Texture2D/icon_skill_00003.png",
         },
       },
       {
         href: "effect.html",
         title: "効果",
         img: {
-          src: "img/fx/Texture2D/FX_Skill2005_02.png",
+          src: this.exportService.rootFolderRelativePath + "img/fx/Texture2D/FX_Skill2005_02.png",
         },
       },
       {
         href: "abnormalEffect.html",
         title: "異常状態",
         img: {
-          src: "img/fx/Texture2D/FX_smoke.png",
+          src: this.exportService.rootFolderRelativePath + "img/fx/Texture2D/FX_smoke.png",
         },
       },
       {
         href: "zone.html",
         title: "ゾーン",
         img: {
-          src: "img/icon_s/Texture2D/icon_item_s_10500014.png",
+          src: this.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_10500014.png",
         },
       },
       {
         href: "area.html",
         title: "区域",
         img: {
-          src: "img/map/Texture2D/MapArea_04_001_ALL.png",
+          src: this.exportService.rootFolderRelativePath + "img/map/Texture2D/MapArea_04_001_ALL.png",
         },
       },
 
@@ -318,57 +180,57 @@ export class PageBuilder {
         href: "wealth.html",
         title: "大事なもの",
         img: {
-          src: "img/icon_item01/Texture2D/icon_item01_00001.png",
+          src: this.exportService.rootFolderRelativePath + "img/icon_item01/Texture2D/icon_item01_00001.png",
         },
       },
       {
         href: "degree.html",
         title: "称号",
         img: {
-          src: "img/icon_degree/Texture2D/icon_degree_0605.png",
+          src: this.exportService.rootFolderRelativePath + "img/icon_degree/Texture2D/icon_degree_0605.png",
         },
       },
       {
         href: "quest.html",
         title: "クェスト",
         img: {
-          src: "img/other/Texture2D/item_texture_0018.png",
+          src: this.exportService.rootFolderRelativePath + "img/other/Texture2D/item_texture_0018.png",
         },
       },
       {
         href: "calculate.html",
-        title: "計算/公式",
+        title: this.i18nService.i18n.getLocale() === 'zh-TW' ? "計算/公式(日版)" : "計算/公式",
         img: {
-          src: "img/other/Texture2D/item_texture_0010.png",
+          src: this.exportService.rootFolderRelativePath + "img/other/Texture2D/item_texture_0010.png",
         },
       },
       {
         href: "other.html",
         title: "他",
         img: {
-          src: "img/icon_s/Texture2D/icon_item_s_10950055.png",
+          src: this.exportService.rootFolderRelativePath + "img/icon_s/Texture2D/icon_item_s_10950055.png",
         },
       },
 
       {
-        href: "characterBuilder.html",
+        href: `${this.exportService.rootFolderRelativePath}characterBuilder.html?locale=${this.i18nService.i18n.getLocale()}`,
         title: "キャラクタービルダー",
         img: {
-          src: "img/other/Texture2D/item_texture_0024.png",
+          src: this.exportService.rootFolderRelativePath + "img/other/Texture2D/item_texture_0024.png",
         },
       },
       {
-        href: "composeItem.html",
+        href: `${this.exportService.rootFolderRelativePath}composeItem.html?locale=${this.i18nService.i18n.getLocale()}`,
         title: "調合アイテム",
         img: {
-          src: "img/icon/icon_bowl.png",
+          src: this.exportService.rootFolderRelativePath + "img/icon/icon_bowl.png",
         },
       },
       {
         href: "totalRanking.html",
         title: "値ランキング",
         img: {
-          src: "img/other/Texture2D/item_texture_0025.png",
+          src: this.exportService.rootFolderRelativePath + "img/other/Texture2D/item_texture_0025.png",
         },
       },
       // {
@@ -379,22 +241,23 @@ export class PageBuilder {
       //   },
       // },
     ];
-
-    const pugOption = { _, moment, pages };
+    const pageChunks = _.chunk(pages, 5);
+    const updateDate = moment().utc().format('YYYY-MM-DD');
+    const pugOption = { that: this, pageChunks, updateDate };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'index.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'index.pug'), pugOption), Option.minifyOption),
+      this.exportService.getExportViewOutFilePath('index.html'),
+      await this.minify(pug.renderFile(this.exportService.getExportViewPath('index.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async item() {
     const [item, skill, chara, fieldItem, abnormalState, quest] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.item)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.skill)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chara)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.fieldItem)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.abnormalstate)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.quest)),
+      this.exportService.data(this.exportService.exportDataFilenameMap.item),
+      this.exportService.data(this.exportService.exportDataFilenameMap.skill),
+      this.exportService.data(this.exportService.exportDataFilenameMap.chara),
+      this.exportService.data(this.exportService.exportDataFilenameMap.fieldItem),
+      this.exportService.data(this.exportService.exportDataFilenameMap.abnormalstate),
+      this.exportService.data(this.exportService.exportDataFilenameMap.quest),
     ]) as [Item, Skill, Chara, FieldItem, AbnormalState, Quest];
 
     const itemIndex = Enumerable.from(item.m_vList)
@@ -406,91 +269,91 @@ export class PageBuilder {
       }))
       .toArray();
     const itemsOrderByCategory = item.m_vList.sort((a, b) => a.CATEG - b.CATEG);
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, LogicHelper, itemIndex, itemsOrderByCategory, item, skill, chara, fieldItem, abnormalState, quest };
+    const pugOption = { that: this, itemIndex, itemsOrderByCategory, item, skill, chara, fieldItem, abnormalState, quest };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'item.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'item.pug'), pugOption), Option.minifyOption),
+      this.exportService.getExportViewOutFilePath('item.html'),
+      await this.minify(pug.renderFile(this.exportService.getExportViewPath('item.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async chara() {
     const [item, skill, chara, blazeArt, quest, charaIcons] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.item)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.skill)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chara)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.blazeArt)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.quest)),
-      fs.readdir(path.join(this.exportFileManager.htmlRoot, 'img', 'chara', 'Texture2D')),
+      this.exportService.data(this.exportService.exportDataFilenameMap.item),
+      this.exportService.data(this.exportService.exportDataFilenameMap.skill),
+      this.exportService.data(this.exportService.exportDataFilenameMap.chara),
+      this.exportService.data(this.exportService.exportDataFilenameMap.blazeArt),
+      this.exportService.data(this.exportService.exportDataFilenameMap.quest),
+      fs.readdir(path.join(this.exportService.htmlRoot, 'img', 'chara', 'Texture2D')),
     ]) as [Item, Skill, Chara, BlazeArt, Quest, string[]];
 
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, LogicHelper, Enumerable, item, skill, chara, blazeArt, quest, charaIcons: charaIcons.map(p => path.basename(p)) };
+    const pugOption = { that: this, Enumerable, item, skill, chara, blazeArt, quest, charaIcons: charaIcons.map(p => path.basename(p)) };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'chara.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'chara.pug'), pugOption), Option.minifyOption),
+      this.exportService.getExportViewOutFilePath('chara.html'),
+      await this.minify(pug.renderFile(this.exportService.getExportViewPath('chara.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async otherChara() {
     const [chara, charaIcons] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chara)),
-      fs.readdir(path.join(this.exportFileManager.htmlRoot, 'img', 'chara', 'Texture2D')),
+      this.exportService.data(this.exportService.exportDataFilenameMap.chara),
+      fs.readdir(path.join(this.exportService.htmlRoot, 'img', 'chara', 'Texture2D')),
     ]) as [Chara, string[]];
 
     chara.m_vList = chara.m_vList.filter(p => ![3005].includes(p.DF));
 
-    const pugOption = { exportFileManager: this.exportFileManager, chara, charaIcons: charaIcons.map(p => path.basename(p)) };
+    const pugOption = { that: this, chara, charaIcons: charaIcons.map(p => path.basename(p)) };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'otherChara.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'otherChara.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'otherChara.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'otherChara.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async skill() {
     const [skill, item, enemy, chara, blazeArt, abnormalState, skillIcons] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.skill)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.item)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.enemy)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chara)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.blazeArt)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.abnormalstate)),
-      fs.readdir(path.join(this.exportFileManager.htmlRoot, 'img', 'icon_skill', 'Texture2D')),
+      this.exportService.data(this.exportService.exportDataFilenameMap.skill),
+      this.exportService.data(this.exportService.exportDataFilenameMap.item),
+      this.exportService.data(this.exportService.exportDataFilenameMap.enemy),
+      this.exportService.data(this.exportService.exportDataFilenameMap.chara),
+      this.exportService.data(this.exportService.exportDataFilenameMap.blazeArt),
+      this.exportService.data(this.exportService.exportDataFilenameMap.abnormalstate),
+      fs.readdir(path.join(this.exportService.htmlRoot, 'img', 'icon_skill', 'Texture2D')),
     ]) as [Skill, Item, Enemy, Chara, BlazeArt, AbnormalState, string[]];
 
     const itemsOrderByCategory = Enumerable.from(item.m_vList).orderBy(p => p.CATEG).toArray();
     const enemiesOrderByCategory = Enumerable.from(enemy.m_vList).orderBy(p => p.eKind).thenBy(p => p.iCategory).toArray();
     const charasOrderByCategory = Enumerable.from(chara.m_vList).orderBy(p => p.CATEG).toArray();
 
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, Enumerable, skill, item, enemy, chara, blazeArt, abnormalState, itemsOrderByCategory, enemiesOrderByCategory, charasOrderByCategory,
+    const pugOption = { that: this, Enumerable, skill, item, enemy, chara, blazeArt, abnormalState, itemsOrderByCategory, enemiesOrderByCategory, charasOrderByCategory,
       skillIcons: skillIcons.map(p => path.basename(p)).filter(p => !p.includes('#')) };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'skill.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'skill.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'skill.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'skill.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async abnormalEffect() {
     const [abnormalState, abnormalStateEffect] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.abnormalstate)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.abnormalstateeffect)),
+      this.exportService.data(this.exportService.exportDataFilenameMap.abnormalstate),
+      this.exportService.data(this.exportService.exportDataFilenameMap.abnormalstateeffect),
     ]) as [AbnormalState, AbnormalStateEffect];
 
-    const pugOption = { exportFileManager: this.exportFileManager, abnormalState, abnormalStateEffect };
+    const pugOption = { that: this, abnormalState, abnormalStateEffect };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'abnormalEffect.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'abnormalEffect.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'abnormalEffect.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'abnormalEffect.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async enemy() {
-    const [enemy, skill, spawnerData, areaInfo, fieldName, areaDetail] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.enemy)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.skill)),
-      this.spawnerDataManager.loadFromCache(),
-
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.areaInfo)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.fieldname)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.areaDetail)),
-    ]) as [Enemy, Skill, { [k: string]: SpawnerData[] }, AreaInfo, FieldName, AreaDetail];
+    const [enemy, skill, spawnerData, areaInfo, fieldName, areaDetail, abnormalState] = await Promise.all([
+      this.exportService.data(this.exportService.exportDataFilenameMap.enemy),
+      this.exportService.data(this.exportService.exportDataFilenameMap.skill),
+      this.exportService.spawnerDataManager.loadFromCache(),
+      this.exportService.data(this.exportService.exportDataFilenameMap.areaInfo),
+      this.exportService.data(this.exportService.exportDataFilenameMap.fieldname),
+      this.exportService.data(this.exportService.exportDataFilenameMap.areaDetail),
+      this.exportService.data(this.exportService.exportDataFilenameMap.abnormalstate),
+    ]) as [Enemy, Skill, { [k: string]: SpawnerData[] }, AreaInfo, FieldName, AreaDetail, AbnormalState];
 
     const getAreaIds = (enemy: EnemyMVList) => {
       const spawnerDataAreaIds = Object.entries(spawnerData).map(p => ({
@@ -506,48 +369,48 @@ export class PageBuilder {
       return [... new Set(areaIds)];
     };
 
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, LogicHelper, Enumerable, enemy, skill, spawnerData, getAreaIds, areaInfo, fieldName, areaDetail };
+    const pugOption = { that: this, Enumerable, enemy, skill, spawnerData, getAreaIds, areaInfo, fieldName, areaDetail, abnormalState };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'enemy.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'enemy.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'enemy.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'enemy.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async degree() {
     const [degree] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.degree)),
+      this.exportService.data(this.exportService.exportDataFilenameMap.degree),
     ]) as [Degree];
 
-    const pugOption = { exportFileManager: this.exportFileManager, degree };
+    const pugOption = { that: this, degree };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'degree.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'degree.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'degree.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'degree.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async quest() {
     const [quest, item, chara, enemy, wealth, areaInfo, fieldName, degree] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.quest)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.item)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chara)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.enemy)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.wealth)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.areaInfo)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.fieldname)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.degree)),
+      this.exportService.data(this.exportService.exportDataFilenameMap.quest),
+      this.exportService.data(this.exportService.exportDataFilenameMap.item),
+      this.exportService.data(this.exportService.exportDataFilenameMap.chara),
+      this.exportService.data(this.exportService.exportDataFilenameMap.enemy),
+      this.exportService.data(this.exportService.exportDataFilenameMap.wealth),
+      this.exportService.data(this.exportService.exportDataFilenameMap.areaInfo),
+      this.exportService.data(this.exportService.exportDataFilenameMap.fieldname),
+      this.exportService.data(this.exportService.exportDataFilenameMap.degree),
     ]) as [Quest, Item, Chara, Enemy, Wealth, AreaInfo, FieldName, Degree];
 
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName, degree };
+    const pugOption = { that: this, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName, degree };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'quest.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'quest.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'quest.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'quest.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async wealth() {
     const [wealth, icons] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.wealth)),
-      fs.readdir(path.join(this.exportFileManager.htmlRoot, 'img', 'icon_item01', 'Texture2D')),
+      this.exportService.data(this.exportService.exportDataFilenameMap.wealth),
+      fs.readdir(path.join(this.exportService.htmlRoot, 'img', 'icon_item01', 'Texture2D')),
     ]) as [Wealth, string[]];
 
     wealth.m_vList.sort((a, b) => a.SORT - b.SORT);
@@ -555,126 +418,100 @@ export class PageBuilder {
       .map(p => path.basename(p))
       .filter(p => !p.includes("#"))
       .map(p => +p.split('_')[2].split('.')[0]);
-    const pugOption = { exportFileManager: this.exportFileManager, wealth, wealthIcons };
+    const pugOption = { that: this, wealth, wealthIcons };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'wealth.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'wealth.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'wealth.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'wealth.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async zone() {
     const [zone, zoneEffect, item, skill, enemy] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.zone)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.zoneeffect)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.item)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.skill)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.enemy)),
+      this.exportService.data(this.exportService.exportDataFilenameMap.zone),
+      this.exportService.data(this.exportService.exportDataFilenameMap.zoneeffect),
+      this.exportService.data(this.exportService.exportDataFilenameMap.item),
+      this.exportService.data(this.exportService.exportDataFilenameMap.skill),
+      this.exportService.data(this.exportService.exportDataFilenameMap.enemy),
     ]) as [Zone, ZoneEffect, Item, Skill, Enemy];
 
     const itemsOrderByCategory = Enumerable.from(item.m_vList).orderBy(p => p.CATEG).toArray();
     const enemiesOrderByCategory = Enumerable.from(enemy.m_vList).orderBy(p => p.eKind).thenBy(p => p.iCategory).toArray();
     const skillLoopUp = Enumerable.from(skill.m_vList).toObject(p => p.id, p => p);
 
-    const pugOption = { exportFileManager: this.exportFileManager, zone, zoneEffect, item, skill, itemsOrderByCategory, enemiesOrderByCategory, skillLoopUp };
+    const pugOption = { that: this, zone, zoneEffect, item, skill, itemsOrderByCategory, enemiesOrderByCategory, skillLoopUp };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'zone.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'zone.pug'), pugOption), Option.minifyOption),
-    );
-  }
-
-  public async unusedItem() {
-    const [item, itemIcons, models] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.item)),
-      fs.readdir(path.join(this.exportFileManager.htmlRoot, 'img', 'icon_s', 'Texture2D')),
-      fs.readdir(path.join(this.exportFileManager.htmlRoot, 'models', 'unused-weapons')),
-    ]) as [Item, string[], string[]];
-
-    const generatedItemIcons = item.m_vList.map(p => `icon_item_s_${p.DF}.png`);
-    const pugOption = {
-      Option,
-      itemIcons: itemIcons
-      .map(p => path.basename(p))
-      .filter(p => !p.includes("#"))
-      .filter(p => !generatedItemIcons.includes(p))
-      .map(p => ({
-        id: +p.split('_')[3].split('.')[0],
-        src: p,
-      })),
-      models: models.map(p => path.basename(p)),
-    };
-    await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'unusedItem.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'unusedItem.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'zone.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'zone.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async area() {
     const [fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, gateInfo, item, enemy, spawnerData, townIcons] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.fieldname)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.areaDetail)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.areaInfo)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.townInfo)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.dungeonInfo)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.gateinfo)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.item)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.enemy)),
-      this.spawnerDataManager.loadFromCache(),
-      fs.readdir(path.join(this.exportFileManager.htmlRoot, 'img', 'Map_Town', 'Texture2D')),
+      this.exportService.data(this.exportService.exportDataFilenameMap.fieldname),
+      this.exportService.data(this.exportService.exportDataFilenameMap.areaDetail),
+      this.exportService.data(this.exportService.exportDataFilenameMap.areaInfo),
+      this.exportService.data(this.exportService.exportDataFilenameMap.townInfo),
+      this.exportService.data(this.exportService.exportDataFilenameMap.dungeonInfo),
+      this.exportService.data(this.exportService.exportDataFilenameMap.gateinfo),
+      this.exportService.data(this.exportService.exportDataFilenameMap.item),
+      this.exportService.data(this.exportService.exportDataFilenameMap.enemy),
+      this.exportService.spawnerDataManager.loadFromCache(),
+      fs.readdir(path.join(this.exportService.htmlRoot, 'img', 'Map_Town', 'Texture2D')),
     ]) as [FieldName, AreaDetail, AreaInfo, TownInfo, DungeonInfo, GateInfo, Item, Enemy, { [k: string]: SpawnerData[] }, string[]];
-    const pugOption = { exportFileManager: this.exportFileManager, fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, gateInfo, item, enemy, spawnerData,
+    const pugOption = { that: this, fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, gateInfo, item, enemy, spawnerData,
       townIcons: townIcons.map(p => path.basename(p))
       .filter(p => !p.includes('#') && !p.endsWith('_02.png')) };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'area.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'area.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'area.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'area.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async blazeArt() {
     const [blazeArt, skill, chara, abnormalState] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.blazeArt)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.skill)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chara)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.abnormalstate)),
+      this.exportService.data(this.exportService.exportDataFilenameMap.blazeArt),
+      this.exportService.data(this.exportService.exportDataFilenameMap.skill),
+      this.exportService.data(this.exportService.exportDataFilenameMap.chara),
+      this.exportService.data(this.exportService.exportDataFilenameMap.abnormalstate),
     ]) as [BlazeArt, Skill, Chara, AbnormalState];
 
-    const pugOption = { exportFileManager: this.exportFileManager, blazeArt, skill, chara, abnormalState };
+    const pugOption = { that: this, blazeArt, skill, chara, abnormalState };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'blazeArt.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'blazeArt.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'blazeArt.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'blazeArt.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async calculate() {
-    const pugOption = { Option };
+    const pugOption = { that: this };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'calculate.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'calculate.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'calculate.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'calculate.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async other() {
     const [tips, treasure, chara, adventBattle, enemy, chat] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.tips)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.treasure)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chara)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.adventbattle)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.enemy)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chat)),
+      this.exportService.data(this.exportService.exportDataFilenameMap.tips),
+      this.exportService.data(this.exportService.exportDataFilenameMap.treasure),
+      this.exportService.data(this.exportService.exportDataFilenameMap.chara),
+      this.exportService.data(this.exportService.exportDataFilenameMap.adventbattle),
+      this.exportService.data(this.exportService.exportDataFilenameMap.enemy),
+      this.exportService.data(this.exportService.exportDataFilenameMap.chat),
     ]) as [Tips, Treasure, Chara, AdventBattle, Enemy, Chat];
 
-    const pugOption = { exportFileManager: this.exportFileManager, eChatTab, tips, treasure, chara, adventBattle, enemy, chat };
+    const pugOption = { that: this, eChatTab, tips, treasure, chara, adventBattle, enemy, chat };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'other.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'other.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'other.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'other.pug'), pugOption), Option.minifyOption),
     );
   }
 
   public async totalRanking() {
     const [item, chara, enemy] = await Promise.all([
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.item)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.chara)),
-      this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.enemy)),
+      this.exportService.data(this.exportService.exportDataFilenameMap.item),
+      this.exportService.data(this.exportService.exportDataFilenameMap.chara),
+      this.exportService.data(this.exportService.exportDataFilenameMap.enemy),
     ]) as [Item, Chara, Enemy];
 
     const lv = 80;
@@ -687,12 +524,12 @@ export class PageBuilder {
     const itemStates = ['SATK', 'SDEF', 'MATK', 'MDEF', 'SPD'];
     for (const state of itemStates) {
       byItemState[state] = Enumerable.from(equipments)
-      .orderByDescending(p => LogicHelper.calculateState(p.EQU[state], lv))
+      .orderByDescending(p => this.logicService.state(p.EQU[state], lv))
       .take(100)
       .toArray();
     }
     byItemState.total = Enumerable.from(equipments)
-    .orderByDescending(p => itemStates.map(i => LogicHelper.calculateState(p.EQU[i], lv)).reduce((a, b) => a + b, 0))
+    .orderByDescending(p => itemStates.map(i => this.logicService.state(p.EQU[i], lv)).reduce((a, b) => a + b, 0))
     .take(100)
     .toArray();
     itemStates.unshift('total');
@@ -720,7 +557,7 @@ export class PageBuilder {
     for (const state of characterStates) {
       byCharacter[state] = Enumerable.from(battleCharacters)
       .orderByDescending(p =>
-        LogicHelper.calculateState(p.SPEC[state], lv) + (p.FDM[p.FDM.length - 1][state] ? p.FDM[p.FDM.length - 1][state] : 0)
+        this.logicService.state(p.SPEC[state], lv) + (p.FDM[p.FDM.length - 1][state] ? p.FDM[p.FDM.length - 1][state] : 0)
       )
       .take(100)
       .toArray();
@@ -728,7 +565,7 @@ export class PageBuilder {
     byCharacter.total = Enumerable.from(battleCharacters)
     .orderByDescending(p => 
       characterStates
-      .map(i => LogicHelper.calculateState(p.SPEC[i], lv) + (p.FDM[p.FDM.length - 1][i] ? p.FDM[p.FDM.length - 1][i] : 0))
+      .map(i => this.logicService.state(p.SPEC[i], lv) + (p.FDM[p.FDM.length - 1][i] ? p.FDM[p.FDM.length - 1][i] : 0))
       .reduce((a, b) => a + b, 0)
     )
     .take(100)
@@ -743,14 +580,14 @@ export class PageBuilder {
 
     for (const state of enemyStates) {
       byEnemyState[state] = Enumerable.from(enemy.m_vList)
-      .orderByDescending(p => LogicHelper.calculateState(p.sParam.SPEC[state], enemyLv))
+      .orderByDescending(p => this.logicService.state(p.sParam.SPEC[state], enemyLv))
       .take(100)
       .toArray();
     }
     byEnemyState.total = Enumerable.from(enemy.m_vList)
     .orderByDescending(p => 
       enemyStates
-      .map(i => LogicHelper.calculateState(p.sParam.SPEC[i], enemyLv))
+      .map(i => this.logicService.state(p.sParam.SPEC[i], enemyLv))
       .reduce((a, b) => a + b, 0)
     )
     .take(100)
@@ -759,25 +596,51 @@ export class PageBuilder {
 
     for (const element of Object.keys(Lookup.element)) {
       byEnemyElement[element] = Enumerable.from(enemy.m_vList)
-      .orderByDescending(p => LogicHelper.calculateState(p.sParam.ELM[element], enemyLv))
+      .orderByDescending(p => this.logicService.state(p.sParam.ELM[element], enemyLv))
       .take(100)
       .toArray();
     }
     byEnemyElement.total = Enumerable.from(enemy.m_vList)
     .orderByDescending(p => 
       Object.keys(Lookup.element)
-      .map(i => LogicHelper.calculateState(p.sParam.ELM[i], enemyLv))
+      .map(i => this.logicService.state(p.sParam.ELM[i], enemyLv))
       .reduce((a, b) => a + b, 0)
     )
     .take(100)
     .toArray();
 
     // start render
-    const pugOption = { exportFileManager: this.exportFileManager, Lookup: this.lookup, LogicHelper, chara, byItemState, byItemElement, byCharacter, byEnemyState, byEnemyElement, itemStates, characterStates, enemyStates };
+    const pugOption = { that: this, chara, byItemState, byItemElement, byCharacter, byEnemyState, byEnemyElement, itemStates, characterStates, enemyStates };
     await fs.writeFile(
-      path.join(this.exportFileManager.outFolder, 'totalRanking.html'),
-      await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'totalRanking.pug'), pugOption), Option.minifyOption),
+      path.join(this.exportService.outFolder, 'totalRanking.html'),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'totalRanking.pug'), pugOption), Option.minifyOption),
     );
   }
+
+    // public async unusedItem() {
+  //   const [item, itemIcons, models] = await Promise.all([
+  //     this.exportFileManager.loadFileFromCache(this.exportFileManager.getExportFilePath(this.exportFileManager.exportDataFilenameMap.item)),
+  //     fs.readdir(path.join(this.exportFileManager.htmlRoot, 'img', 'icon_s', 'Texture2D')),
+  //     fs.readdir(path.join(this.exportFileManager.htmlRoot, 'models', 'unused-weapons')),
+  //   ]) as [Item, string[], string[]];
+
+  //   const generatedItemIcons = item.m_vList.map(p => `icon_item_s_${p.DF}.png`);
+  //   const pugOption = {
+  //     Option,
+  //     itemIcons: itemIcons
+  //     .map(p => path.basename(p))
+  //     .filter(p => !p.includes("#"))
+  //     .filter(p => !generatedItemIcons.includes(p))
+  //     .map(p => ({
+  //       id: +p.split('_')[3].split('.')[0],
+  //       src: p,
+  //     })),
+  //     models: models.map(p => path.basename(p)),
+  //   };
+  //   await fs.writeFile(
+  //     path.join(this.exportFileManager.outFolder, 'unusedItem.html'),
+  //     await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'unusedItem.pug'), pugOption), Option.minifyOption),
+  //   );
+  // }
 
 }

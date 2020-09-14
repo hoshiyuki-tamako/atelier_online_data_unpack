@@ -1,14 +1,15 @@
+import { ExportService } from './../services/ExportService';
 import csv from 'csvtojson';
 import fs from 'fs-extra';
 import path from 'path';
 
-import { eSpawnerKind } from './../Enums';
-import { ExportFileManager } from './../ExportFileManager';
+import { eSpawnerKind } from '../data/Enums';
 
 export class SpawnerDataManager {
+
   public spawnerDataCache: { [s: string]: SpawnerData[] } = {};
 
-  public constructor(private exportFileManager: ExportFileManager) {
+  public constructor(private exportService: ExportService) {
   }
 
   public async loadFromCache() {
@@ -16,11 +17,11 @@ export class SpawnerDataManager {
       return this.spawnerDataCache;
     }
 
-    const filePaths = await fs.readdir(this.exportFileManager.spawnDataFolder);
+    const filePaths = await fs.readdir(this.exportService.spawnDataFolder);
     return this.spawnerDataCache = Object.fromEntries(
       await Promise.all(
           filePaths
-          .map(p => path.join(this.exportFileManager.spawnDataFolder, p))
+          .map(p => path.join(this.exportService.spawnDataFolder, p))
           .map(async p => [p, await this.fromCsv(p)] as [string, SpawnerData[]])
         )
       );
@@ -47,5 +48,5 @@ export class SpawnerData
   public spawnerKind: eSpawnerKind;
   //
   public ctrlFlag: number;
-	public optionData: string;
+  public optionData: string;
 }
