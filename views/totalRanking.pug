@@ -58,7 +58,7 @@ html
         - for (const element of Object.keys(byItemElement))
           div.category-index-container
             h3
-              a(href="#item-element-" + element)= that.lookup.element[element] || that.i18nService.i18n.__("全屬性")
+              a(href="#item-element-" + element)= that.lookup.element[element] || that.i18nService.i18n.__("全属性")
     hr
     div
       h3 #{that.i18nService.i18n.__("キャラクター")}
@@ -79,7 +79,7 @@ html
         - for (const element of Object.keys(byEnemyElement))
           div.category-index-container
             h3
-              a(href="#enemy-element-" + element)= that.lookup.element[element] || that.i18nService.i18n.__("全屬性")
+              a(href="#enemy-element-" + element)= that.lookup.element[element] || that.i18nService.i18n.__("全属性")
     hr
     div
       - for (const state of itemStates)
@@ -136,7 +136,7 @@ html
         hr
     div
       - for (const element of Object.keys(byItemElement))
-        h3(id="item-element-" + element)= that.lookup.element[element] || that.i18nService.i18n.__("全屬性")
+        h3(id="item-element-" + element)= that.lookup.element[element] || that.i18nService.i18n.__("全属性")
         table
           thead
             tr
@@ -288,7 +288,7 @@ html
 
     div
       - for (const element of Object.keys(byItemElement))
-        h3(id="enemy-element-" + element)= that.lookup.element[element] || that.i18nService.i18n.__("全屬性")
+        h3(id="enemy-element-" + element)= that.lookup.element[element] || that.i18nService.i18n.__("全属性")
         table
           thead
             tr

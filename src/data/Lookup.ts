@@ -68,6 +68,15 @@ export class LookupChinese {
     LIGHT: '光',
     DARK: '闇',
   };
+  public static eBattleElementKindLookUp = {
+    0: '無屬性',
+    1: '火屬性',
+    2: '水屬性',
+    3: '風屬性',
+    4: '土屬性',
+    5: '光屬性',
+    6: '闇屬性',
+  };
 
   // state look up
   public static state = {
@@ -239,6 +248,15 @@ export class Lookup {
     EARTH: '土',
     LIGHT: '光',
     DARK: '闇',
+  };
+  public static eBattleElementKindLookUp = {
+    0: '無属性',
+    1: '火属性',
+    2: '水属性',
+    3: '風属性',
+    4: '土属性',
+    5: '光属性',
+    6: '闇属性',
   };
 
   // state look up

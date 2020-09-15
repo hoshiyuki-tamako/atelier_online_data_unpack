@@ -74,6 +74,8 @@ html
                 p LV #{i + 1} / #{that.i18nService.i18n.__("次")} LV #{exp} EXP
                 p= _skill.name
                 p= _skill.detail
+                br
+                p #{that.lookup.eBattleElementKindLookUp[_skill.element]}
                 - if (_skill.stateOwn.length)
                   div
                     h5 #{that.i18nService.i18n.__("追加状態 (自)")}

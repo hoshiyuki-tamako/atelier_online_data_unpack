@@ -128,9 +128,16 @@ html
             br
             p DF: #{_item.DF}
             p #{that.i18nService.i18n.__("種類")}: #{that.lookup.itemCategory[_item.CATEG]}
-            p #{that.i18nService.i18n.__("レシピ種類")}: #{_item.RCP_TYPE === 1 ? that.i18nService.i18n.__('レジェンドレシピ') : that.i18nService.i18n.__('一般レシピ')}
+            - if (_item.WPN_KIND)
+                p #{that.i18nService.i18n.__('武器種類')}: #{that.lookup.weaponKind[_item.WPN_KIND] || _item.WPN_KIND}
+                - const attackSkill = _item.SPC.map(p => p.SKILL).flat().map(p => skill.m_vList.find(s => s.id === p.DF && s.type === 2 && s.effect === 119)).filter(p => p)[0];
+                - if (attackSkill)
+                  p #{that.i18nService.i18n.__("攻撃属性")}: #{that.lookup.eBattleElementKindLookUp[attackSkill.effectValue]}
+                - else
+                  p #{that.i18nService.i18n.__("攻撃属性")}: #{that.lookup.eBattleElementKindLookUp[0]}
             - if (_item.JOB.length)
               p #{that.i18nService.i18n.__("職業")}: #{_item.JOB.map(p => that.lookup.eJobKindLookup[p] || p).join(", ")}
+            p #{that.i18nService.i18n.__("レシピ種類")}: #{_item.RCP_TYPE === 1 ? that.i18nService.i18n.__('レジェンドレシピ') : that.i18nService.i18n.__('一般レシピ')}
             p #{that.i18nService.i18n.__("おすすめ錬金 LV")} #{_item.ALT ? _item.ALT.LV : '-'}
             p
               span.wealth-container
@@ -146,8 +153,6 @@ html
                     span ♂ 
                   - if (_item.EQU_GND.some(p => p.GEN === 2 && p.ENB))
                     span ♀ 
-              - if (_item.WPN_KIND)
-                p #{that.i18nService.i18n.__('武器種類')}: #{that.lookup.weaponKind[_item.WPN_KIND] || _item.WPN_KIND}
               - if (_item.GROUP_DF)
                 - const _chara = chara.m_vList.find(p => p.GROUP_DF === _item.GROUP_DF)
                 p #{that.i18nService.i18n.__('キャラクター專用')}
@@ -246,7 +251,7 @@ html
 
             - if (_item.EQU_BRD)
               - if (Object.values(_item.ELM).filter(p => p).length)
-                h4 ----- #{that.i18nService.i18n.__('屬性')} -----
+                h4 ----- #{that.i18nService.i18n.__('属性')} -----
                 table
                   - for (const [element, value] of Object.entries(_item.ELM).filter(p => p[1]))
                     tr
