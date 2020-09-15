@@ -5,6 +5,7 @@ Info for developer
 ## Notes
 
 - Make sure to unpack both downloaded asset and APK asset as seems some item is not included in the downloaded asset
+- Below data is custom made example, please see real data for correct data value
 
 ## General
 
@@ -925,3 +926,42 @@ seems they merge normal area and dungeon together
 some of the field see enum for more info
 
 - id/DF, eSpawnerKind, pos_x, pos_y, pos_z, rot_x, rot_y, rot_z, option?, flag?, ?
+
+## Zone
+
+```ts
+ {
+  "id": 101,
+  "name": "烈炎領域 等級1",
+  "effectlist": [
+    1101, // relationship to zoneeffect.id
+    2201,
+    2003
+  ],
+  "effect": "Effect/Particle/FX_FilterFire",
+  "strongZonelist": [
+    102, // relationship to zone.id
+    103,
+    104,
+    105
+  ],
+  "weakZonelist": [
+    102, // relationship to zone.id
+    103,
+    104,
+    105
+  ]
+}
+```
+
+## Zone effect
+
+```ts
+{
+  "id": 1101,
+  "name": "火屬性傷害增加10%",
+  "effect": 1,
+  "value": 0.1,
+  "element": 1 // see enum EElement
+},
+```
