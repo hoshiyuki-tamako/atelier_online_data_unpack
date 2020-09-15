@@ -115,7 +115,7 @@ Info for developer
       "R": 0,
       "B": 0
     },
-    "SADD": { // SP recover value
+    "SADD": {
       "G": 0.0,
       "M": 0,
       "R": 0,
