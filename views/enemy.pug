@@ -136,36 +136,36 @@ html
             br
             - if (_enemy.sParam.SKILL.length)
               h4 ----- #{that.i18nService.i18n.__("スキル")}/#{that.i18nService.i18n.__("効果")} -----
-              - for (const [i, _skill] of _enemy.sParam.SKILL.entries())
-                - const s = skill.m_vList.find(s => s.id === _skill.DF);
-                - if (s)
+              - for (const [i, _s] of _enemy.sParam.SKILL.entries())
+                - const _skill = skill.m_vList.find(s => s.id === _s.DF);
+                - if (_skill)
                   table
                     tr
                       th #{that.i18nService.i18n.__("名前")}
-                      td= s.name
+                      td= _skill.name
                     tr
                       th #{that.i18nService.i18n.__("詳細")}
-                      td= s.detail
+                      td= _skill.detail
                     tr
                       th #{that.i18nService.i18n.__("数値")}
-                      td= `${s.effectValue}, ${s.effectValue2}`
-                    - if (s.stateOwn.length)
+                      td= `${_skill.effectValue}, ${_skill.effectValue2}`
+                    - if (_skill.stateOwn.length)
                       tr
                         th #{that.i18nService.i18n.__('追加状態 (自)')}
-                        - for (const [i, _state] of s.stateOwn.entries())
-                          - const effect = abnormalState.m_vList.find(p => p.id === _state.id)
-                          td
-                            p #{(_state.rate * 100).toFixed(2)}% #{effect.name}
-
-                    - if (s.state.length)
+                        td
+                          - for (const _state of _skill.stateOwn)
+                            - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
+                            p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_abnormalState.turn}#{that.i18nService.i18n.__('ターン')}
+                    - if (_skill.state.length)
                       tr
                         th #{that.i18nService.i18n.__('追加状態')}
-                        - for (const [i, _state] of s.state.entries())
-                          - const effect = abnormalState.m_vList.find(p => p.id === _state.id)
-                          td
-                            p #{(_state.rate * 100).toFixed(2)}% #{effect.name}
-                            - if (s.state.length !== (i + 1))
-                              p &#x3E;
+                        td
+                          - for (const _state of _skill.state)
+                            - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
+                            p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_abnormalState.turn}#{that.i18nService.i18n.__('ターン')}
+                - if (_enemy.sParam.SKILL.length !== (i + 1))
+                  p &#x3E;
+
             h4 ----- #{that.i18nService.i18n.__("屬性")} -----
             table
               - for (const [element, value] of Object.entries(_enemy.sParam.ELM).filter(p => p[1]))

@@ -95,7 +95,7 @@ html
         div.item-container(id="DF-" + _chara.DF)
           div.item-container-left
             h3.item-name= _chara.NAME
-            - for (const id of [...Array(10).keys()])
+            - for (const id of Array(10).keys())
               - const iconFilename = `icon_chara_all_${_chara.DF.toString().padStart(4, "0")}_${id.toString().padStart(2, "0")}.png`
               - if (charaIcons.includes(iconFilename))
                 img.icon-full(src= that.exportService.rootFolderRelativePath + "img/chara/Texture2D/" + iconFilename alt= _chara.NAME)
@@ -142,6 +142,20 @@ html
                     tr
                       th #{that.i18nService.i18n.__("数値")}
                       td= `${_skill.effectValue}, ${_skill.effectValue2}`
+                    - if (_skill.stateOwn.length)
+                      tr
+                        th #{that.i18nService.i18n.__('追加状態 (自)')}
+                        td
+                          - for (const _state of _skill.stateOwn)
+                            - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
+                            p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_abnormalState.turn}#{that.i18nService.i18n.__('ターン')}
+                    - if (_skill.state.length)
+                      tr
+                        th #{that.i18nService.i18n.__('追加状態')}
+                        td
+                          - for (const _state of _skill.state)
+                            - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
+                            p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_abnormalState.turn}#{that.i18nService.i18n.__('ターン')}
                   - if (skills.length !== (i + 1))
                     p &#x3E;
 

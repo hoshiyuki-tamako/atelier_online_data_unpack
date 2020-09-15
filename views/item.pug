@@ -233,14 +233,14 @@ html
                           td
                             - for (const _state of _skill.stateOwn)
                               - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
-                              p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_state.rate}#{that.i18nService.i18n.__('ターン')}
+                              p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_abnormalState.turn}#{that.i18nService.i18n.__('ターン')}
                       - if (_skill.state.length)
                         tr
                           th #{that.i18nService.i18n.__('追加状態')}
                           td
                             - for (const _state of _skill.state)
                               - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
-                              p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_state.turn}#{that.i18nService.i18n.__('ターン')}
+                              p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_abnormalState.turn}#{that.i18nService.i18n.__('ターン')}
                     - if (_skills.length !== (i + 1))
                       p &#x3E;
 

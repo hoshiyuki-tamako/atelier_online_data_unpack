@@ -1,8 +1,4 @@
-import { LogicService } from './services/LogicService';
-import { I18nService } from './services/I18nService';
-import { ExportService } from './services/ExportService';
 import fs from 'fs-extra';
-import { Options } from 'html-minifier';
 import Enumerable from 'linq';
 import _ from 'lodash';
 import moment from 'moment';
@@ -29,7 +25,7 @@ import { GateInfo } from './master/gateInfo';
 import { Item, MVList as ItemMVList } from './master/item';
 import { Quest } from './master/quest';
 import { Skill } from './master/skill';
-import { SpawnerData, SpawnerDataManager } from './master/SpawnerData';
+import { SpawnerData } from './master/SpawnerData';
 import { Tips } from './master/tips';
 import { TownInfo } from './master/townInfo';
 import { Treasure } from './master/treasure';
@@ -37,6 +33,9 @@ import { Wealth } from './master/wealth';
 import { Zone } from './master/zone';
 import { ZoneEffect } from './master/zoneEffect';
 import { Option } from './Option';
+import { ExportService } from './services/ExportService';
+import { I18nService } from './services/I18nService';
+import { LogicService } from './services/LogicService';
 
 export class PageBuilder {
 
@@ -79,7 +78,7 @@ export class PageBuilder {
   }
 
   // helper
-  async minify(html: string, options: Options) {
+  async minify(html: string, options = Option.minifyOption) {
     if (process.env.NODE_ENV === 'production') {
       return new Promise((resolve, reject) => {
         const worker = new Worker('./src/worker.js', {
@@ -246,7 +245,7 @@ export class PageBuilder {
     const pugOption = { that: this, pageChunks, updateDate };
     await fs.writeFile(
       this.exportService.getExportViewOutFilePath('index.html'),
-      await this.minify(pug.renderFile(this.exportService.getExportViewPath('index.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(this.exportService.getExportViewPath('index.pug'), pugOption)),
     );
   }
 
@@ -272,24 +271,25 @@ export class PageBuilder {
     const pugOption = { that: this, itemIndex, itemsOrderByCategory, item, skill, chara, fieldItem, abnormalState, quest };
     await fs.writeFile(
       this.exportService.getExportViewOutFilePath('item.html'),
-      await this.minify(pug.renderFile(this.exportService.getExportViewPath('item.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(this.exportService.getExportViewPath('item.pug'), pugOption)),
     );
   }
 
   public async chara() {
-    const [item, skill, chara, blazeArt, quest, charaIcons] = await Promise.all([
+    const [item, skill, chara, blazeArt, quest, abnormalState, charaIcons] = await Promise.all([
       this.exportService.data(this.exportService.exportDataFilenameMap.item),
       this.exportService.data(this.exportService.exportDataFilenameMap.skill),
       this.exportService.data(this.exportService.exportDataFilenameMap.chara),
       this.exportService.data(this.exportService.exportDataFilenameMap.blazeArt),
       this.exportService.data(this.exportService.exportDataFilenameMap.quest),
+      this.exportService.data(this.exportService.exportDataFilenameMap.abnormalstate),
       fs.readdir(path.join(this.exportService.htmlRoot, 'img', 'chara', 'Texture2D')),
-    ]) as [Item, Skill, Chara, BlazeArt, Quest, string[]];
+    ]) as [Item, Skill, Chara, BlazeArt, Quest, AbnormalState, string[]];
 
-    const pugOption = { that: this, Enumerable, item, skill, chara, blazeArt, quest, charaIcons: charaIcons.map(p => path.basename(p)) };
+    const pugOption = { that: this, Enumerable, item, skill, chara, blazeArt, quest, abnormalState, charaIcons: charaIcons.map(p => path.basename(p)) };
     await fs.writeFile(
       this.exportService.getExportViewOutFilePath('chara.html'),
-      await this.minify(pug.renderFile(this.exportService.getExportViewPath('chara.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(this.exportService.getExportViewPath('chara.pug'), pugOption)),
     );
   }
 
@@ -304,7 +304,7 @@ export class PageBuilder {
     const pugOption = { that: this, chara, charaIcons: charaIcons.map(p => path.basename(p)) };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'otherChara.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'otherChara.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'otherChara.pug'), pugOption)),
     );
   }
 
@@ -327,7 +327,7 @@ export class PageBuilder {
       skillIcons: skillIcons.map(p => path.basename(p)).filter(p => !p.includes('#')) };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'skill.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'skill.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'skill.pug'), pugOption)),
     );
   }
 
@@ -340,7 +340,7 @@ export class PageBuilder {
     const pugOption = { that: this, abnormalState, abnormalStateEffect };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'abnormalEffect.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'abnormalEffect.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'abnormalEffect.pug'), pugOption)),
     );
   }
 
@@ -372,7 +372,7 @@ export class PageBuilder {
     const pugOption = { that: this, Enumerable, enemy, skill, spawnerData, getAreaIds, areaInfo, fieldName, areaDetail, abnormalState };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'enemy.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'enemy.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'enemy.pug'), pugOption)),
     );
   }
 
@@ -384,7 +384,7 @@ export class PageBuilder {
     const pugOption = { that: this, degree };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'degree.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'degree.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'degree.pug'), pugOption)),
     );
   }
 
@@ -403,7 +403,7 @@ export class PageBuilder {
     const pugOption = { that: this, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName, degree };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'quest.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'quest.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'quest.pug'), pugOption)),
     );
   }
 
@@ -421,7 +421,7 @@ export class PageBuilder {
     const pugOption = { that: this, wealth, wealthIcons };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'wealth.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'wealth.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'wealth.pug'), pugOption)),
     );
   }
 
@@ -441,7 +441,7 @@ export class PageBuilder {
     const pugOption = { that: this, zone, zoneEffect, item, skill, itemsOrderByCategory, enemiesOrderByCategory, skillLoopUp };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'zone.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'zone.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'zone.pug'), pugOption)),
     );
   }
 
@@ -463,7 +463,7 @@ export class PageBuilder {
       .filter(p => !p.includes('#') && !p.endsWith('_02.png')) };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'area.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'area.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'area.pug'), pugOption)),
     );
   }
 
@@ -478,7 +478,7 @@ export class PageBuilder {
     const pugOption = { that: this, blazeArt, skill, chara, abnormalState };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'blazeArt.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'blazeArt.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'blazeArt.pug'), pugOption)),
     );
   }
 
@@ -486,7 +486,7 @@ export class PageBuilder {
     const pugOption = { that: this };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'calculate.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'calculate.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'calculate.pug'), pugOption)),
     );
   }
 
@@ -503,7 +503,7 @@ export class PageBuilder {
     const pugOption = { that: this, eChatTab, tips, treasure, chara, adventBattle, enemy, chat };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'other.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'other.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'other.pug'), pugOption)),
     );
   }
 
@@ -613,7 +613,7 @@ export class PageBuilder {
     const pugOption = { that: this, chara, byItemState, byItemElement, byCharacter, byEnemyState, byEnemyElement, itemStates, characterStates, enemyStates };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'totalRanking.html'),
-      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'totalRanking.pug'), pugOption), Option.minifyOption),
+      await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'totalRanking.pug'), pugOption)),
     );
   }
 
@@ -639,7 +639,7 @@ export class PageBuilder {
   //   };
   //   await fs.writeFile(
   //     path.join(this.exportFileManager.outFolder, 'unusedItem.html'),
-  //     await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'unusedItem.pug'), pugOption), Option.minifyOption),
+  //     await this.minify(pug.renderFile(path.join(this.exportFileManager.viewFolder, 'unusedItem.pug'), pugOption)),
   //   );
   // }
 
