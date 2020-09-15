@@ -42,6 +42,7 @@ export class ExportService {
     adventbattle: 'adventbattle.json',
     fieldItem: 'fieldItem.json',
     chat: 'chat.json',
+    extraquest: 'extraquest.json',
   };
 
   public exportJsonContent = {} as { [filename: string]: unknown };
@@ -86,7 +87,13 @@ export class ExportService {
   }
 
   public async data(filename: string) {
-    return this.exportJsonContent[filename] = this.exportJsonContent[filename] || await fs.readJSON(this.getExportFilePath(filename));
+    if (!this.exportJsonContent[filename]) {
+      const filePath = this.getExportFilePath(filename);
+      if (await fs.pathExists(filePath)) {
+        this.exportJsonContent[filename] = await fs.readJSON(filePath);
+      }
+    }
+    return this.exportJsonContent[filename];
   }
 
 }

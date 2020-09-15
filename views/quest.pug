@@ -74,8 +74,13 @@ html
     div.categories-index-container
       - for(const category of Enumerable.from(quest.m_vList).groupBy(p => p.CATEG).orderBy(p => p.key()).select(p => p.key()))
         div.category-index-container
-          a(href="#CATEG-" + category)
-            h3= that.lookup.questCategory[category] || `CATEG=${category}`
+          h3
+            a(href="#CATEG-" + category)= that.lookup.questCategory[category] || `CATEG=${category}`
+      - if (extraQuest)
+        div.category-index-container
+          h3
+            a(href="#ex-quest") #{that.i18nService.i18n.__("EXクェスト")}
+
     br
     br
     br
@@ -93,6 +98,18 @@ html
                   img(src= that.exportService.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
         br
         br
+    - if (extraQuest)
+      div
+        h3#ex-quest #{that.i18nService.i18n.__("EXクェスト")}
+        div.items-index-container
+          - for (const _extraQuest of extraQuest.List)
+            - const _quest = quest.m_vList.find(p => p.DF === _extraQuest.iQuestDf)
+            - if (_quest)
+              div.item-index-container
+                a(href="#DF-" + _quest.DF)
+                  p= _quest.NAME
+                  - if (_quest.CHARA)
+                    img(src= that.exportService.rootFolderRelativePath + "img/chara/Texture2D/icon_chara_all_" + _quest.CHARA.toString().padStart(4, "0") + "_00.png" alt= _quest.CHARA)
     br
     br
     hr

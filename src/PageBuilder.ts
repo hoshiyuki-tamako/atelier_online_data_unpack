@@ -19,6 +19,7 @@ import { Chat } from './master/chat';
 import { Degree } from './master/degree';
 import { DungeonInfo } from './master/dungeonInfo';
 import { Enemy, MVList as EnemyMVList } from './master/enemy';
+import { ExtraQuest } from './master/extraQuest';
 import { FieldItem } from './master/fieldItem';
 import { FieldName } from './master/fieldName';
 import { GateInfo } from './master/gateInfo';
@@ -389,7 +390,7 @@ export class PageBuilder {
   }
 
   public async quest() {
-    const [quest, item, chara, enemy, wealth, areaInfo, fieldName, degree] = await Promise.all([
+    const [quest, item, chara, enemy, wealth, areaInfo, fieldName, degree, extraQuest] = await Promise.all([
       this.exportService.data(this.exportService.exportDataFilenameMap.quest),
       this.exportService.data(this.exportService.exportDataFilenameMap.item),
       this.exportService.data(this.exportService.exportDataFilenameMap.chara),
@@ -398,9 +399,10 @@ export class PageBuilder {
       this.exportService.data(this.exportService.exportDataFilenameMap.areaInfo),
       this.exportService.data(this.exportService.exportDataFilenameMap.fieldname),
       this.exportService.data(this.exportService.exportDataFilenameMap.degree),
-    ]) as [Quest, Item, Chara, Enemy, Wealth, AreaInfo, FieldName, Degree];
+      this.exportService.data(this.exportService.exportDataFilenameMap.extraquest),
+    ]) as [Quest, Item, Chara, Enemy, Wealth, AreaInfo, FieldName, Degree, ExtraQuest];
 
-    const pugOption = { that: this, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName, degree };
+    const pugOption = { that: this, Enumerable, quest, item, chara, enemy, wealth, areaInfo, fieldName, degree, extraQuest };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'quest.html'),
       await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'quest.pug'), pugOption)),

@@ -685,6 +685,27 @@ Info for developer
 }
 ```
 
+## Extra Quest
+
+```ts
+{
+  "iDf": 1,
+  "iPosID": 1111,
+  "iDungeonID": 8000001, // relationship to dungeonInfo.iDungeonId
+  "iFieldDf": 102,
+  "iQuestDf": 121212121, // relationship to quest.DF
+  "arKeyCharaDf": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "sNormalADV": "EXQT_001_020",
+  "sGoodADV": "EXQT_001_020",
+  "sTrueADV": "EXQT_001_020"
+}
+```
+
 ## Enemy
 
 ```ts
