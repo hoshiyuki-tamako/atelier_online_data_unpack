@@ -149,20 +149,28 @@ html
                     tr
                       th #{that.i18nService.i18n.__("数値")}
                       td= `${_skill.effectValue}, ${_skill.effectValue2}`
-                    - if (_skill.stateOwn.length)
+                    - if (_skill.type === 1)
+                      - const attackSkill = _skill.combSkillList.find(p => p.effect === 1) || _skill
                       tr
-                        th #{that.i18nService.i18n.__('追加状態 (自)')}
-                        td
-                          - for (const _state of _skill.stateOwn)
-                            - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
-                            p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_abnormalState.turn}#{that.i18nService.i18n.__('ターン')}
-                    - if (_skill.state.length)
+                        th #{that.i18nService.i18n.__("属性")}
+                        td #{that.lookup.eBattleElementKind[attackSkill.element]}
                       tr
-                        th #{that.i18nService.i18n.__('追加状態')}
-                        td
-                          - for (const _state of _skill.state)
-                            - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
-                            p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_abnormalState.turn}#{that.i18nService.i18n.__('ターン')}
+                        th #{that.i18nService.i18n.__("對象")}
+                        td #{that.lookup.targetTeam[attackSkill.targetTeam]}#{that.lookup.fieldItemRange[attackSkill.targetScope]}
+                      - if (attackSkill.stateOwn.length)
+                        tr
+                          th #{that.i18nService.i18n.__('追加状態 (自)')}
+                          td
+                            - for (const _state of attackSkill.stateOwn)
+                              - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
+                              p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_abnormalState.turn}#{that.i18nService.i18n.__('ターン')}
+                      - if (attackSkill.state.length)
+                        tr
+                          th #{that.i18nService.i18n.__('追加状態')}
+                          td
+                            - for (const _state of attackSkill.state)
+                              - const _abnormalState = abnormalState.m_vList.find(p => p.id === _state.id)
+                              p #{(_state.rate * 100).toFixed()}% #{_abnormalState.name} #{_abnormalState.turn}#{that.i18nService.i18n.__('ターン')}
                 - if (_enemy.sParam.SKILL.length !== (i + 1))
                   p &#x3E;
 

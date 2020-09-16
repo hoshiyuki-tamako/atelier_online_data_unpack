@@ -131,7 +131,7 @@
               <th>{{ $t('追加状態 (自)') }}</th>
               <td>
                 <p v-for="state in _skill.stateOwn" :key="state.id">
-                  {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }}, {{state.rate}}{{ $t('ターン') }}
+                  {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }} {{state.rate}}{{ $t('ターン') }}
                 </p>
               </td>
             </tr>
@@ -139,7 +139,7 @@
               <th>{{ $t('追加状態') }}</th>
               <td>
                 <p v-for="state in _skill.state" :key="state.id">
-                  {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }}, {{state.rate}}{{ $t('ターン') }}
+                  {{ state.rate * 100 }}% {{ getAbnormalState(state.id).name }} {{state.rate}}{{ $t('ターン') }}
                 </p>
               </td>
             </tr>

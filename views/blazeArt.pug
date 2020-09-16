@@ -75,18 +75,20 @@ html
                 p= _skill.name
                 p= _skill.detail
                 br
-                p #{that.lookup.eBattleElementKindLookUp[_skill.element]}
-                - if (_skill.stateOwn.length)
+                - const attackSkill = _skill.combSkillList.find(p => p.effect === 1) || _skill
+                p #{that.i18nService.i18n.__("属性")}: #{that.lookup.eBattleElementKind[attackSkill.element]}
+                p #{that.i18nService.i18n.__("對象")}: #{that.lookup.targetTeam[attackSkill.targetTeam]}#{that.lookup.fieldItemRange[attackSkill.targetScope]}
+                - if (attackSkill.stateOwn.length)
                   div
                     h5 #{that.i18nService.i18n.__("追加状態 (自)")}
-                    - for (const [i, _state] of _skill.stateOwn.entries())
+                    - for (const [i, _state] of attackSkill.stateOwn.entries())
                       - const effect = abnormalState.m_vList.find(p => p.id === _state.id)
                       p #{(_state.rate * 100).toFixed(2)}% #{effect.name}
   
-                - if (_skill.state.length)
+                - if (attackSkill.state.length)
                   div
                     h5 #{that.i18nService.i18n.__("追加状態")}
-                    - for (const [i, _state] of _skill.state.entries())
+                    - for (const [i, _state] of attackSkill.state.entries())
                       - const effect = abnormalState.m_vList.find(p => p.id === _state.id)
                       p #{(_state.rate * 100).toFixed(2)}% #{effect.name}
                 - if (allBlazeArts.length !== (i + 1))

@@ -31,10 +31,14 @@ export class LookupChinese {
   };
 
   public static fieldItemRange = {
-    0: '-',
-    1: '1人',
-    2: '全人',
-    3: '自',
+    0: '',
+    1: '一人',
+    2: '全部人',
+    3: '自已',
+  };
+  public static targetTeam = {
+    0: '友',
+    1: '敵',
   };
 
   public static weaponKind = {
@@ -68,7 +72,7 @@ export class LookupChinese {
     LIGHT: '光',
     DARK: '闇',
   };
-  public static eBattleElementKindLookUp = {
+  public static eBattleElementKind = {
     0: '無屬性',
     1: '火屬性',
     2: '水屬性',
@@ -212,10 +216,14 @@ export class Lookup {
   };
 
   public static fieldItemRange = {
-    0: '-',
+    0: '',
     1: '1人',
     2: '全人',
-    3: '自',
+    3: '自分',
+  };
+  public static targetTeam = {
+    0: '友',
+    1: '敵',
   };
 
   public static weaponKind = {
@@ -249,7 +257,7 @@ export class Lookup {
     LIGHT: '光',
     DARK: '闇',
   };
-  public static eBattleElementKindLookUp = {
+  public static eBattleElementKind = {
     0: '無属性',
     1: '火属性',
     2: '水属性',
