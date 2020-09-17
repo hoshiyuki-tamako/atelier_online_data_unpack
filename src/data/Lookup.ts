@@ -171,7 +171,7 @@ export class LookupChinese {
     1: 'All',
   };
 
-  public static eJobKindLookup = {
+  public static eJobKind = {
     0: '-',
     1: '錬金術師',
     2: '魔法使',
@@ -357,7 +357,7 @@ export class Lookup {
     1: 'All',
   };
 
-  public static eJobKindLookup = {
+  public static eJobKind = {
     0: '-',
     1: '錬金術師',
     2: '魔法使い',

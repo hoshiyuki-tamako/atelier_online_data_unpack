@@ -102,7 +102,7 @@ html
             p= _chara.DESC
             br
             p DF: #{_chara.DF}
-            p #{that.i18nService.i18n.__("職業")}: #{that.lookup.eJobKindLookup[_chara.BTST] || _chara.BTST}
+            p #{that.i18nService.i18n.__("職業")}: #{that.lookup.eJobKind[_chara.BTST] || _chara.BTST}
             p #{that.i18nService.i18n.__("性別")}: 
               - if (!_chara.GEN)
                 span ♂ ♀
