@@ -253,8 +253,8 @@ Info for developer
   ],
   "targetTeam": 1,
   "targetScope": 1, // EBattleTargetAreaDefine
-  "element": 0, // fx effect?
-  "shield": 0, // fx effect?
+  "element": 0, // element of the skill, normally use for skill.type == 1 && skill.effect == 1
+  "shield": 0,
   "spAdd": 2.0, // sp recover rate, when weapon normal attack will recover this amount for the skill to be able to active
   "coolTime": 0, // how many turn before this skill can be use again, mostly use for enemy
   "iconPath": "icon_skill_01111", // the icon image
