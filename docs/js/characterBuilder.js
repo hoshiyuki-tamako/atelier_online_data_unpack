@@ -535,10 +535,10 @@ new Vue({
         } else if (this.itemPickerSort === 'criticalHit') {
           items.sort((a, b) => {
             if(!this.itemPickerCriticalHitSortSearchCache.has(b)) {
-              this.itemPickerCriticalHitSortSearchCache.set(b, this.getSkillEffectTargetValues(this.getItemSkills(b, 80), 9));
+              this.itemPickerCriticalHitSortSearchCache.set(b, this.getSkillEffectTargetValues(this.getItemSkills(b, 120), 9));
             }
             if(!this.itemPickerCriticalHitSortSearchCache.has(a)) {
-              this.itemPickerCriticalHitSortSearchCache.set(a, this.getSkillEffectTargetValues(this.getItemSkills(a, 80), 9));
+              this.itemPickerCriticalHitSortSearchCache.set(a, this.getSkillEffectTargetValues(this.getItemSkills(a, 120), 9));
             }
             return this.itemPickerCriticalHitSortSearchCache.get(b) - this.itemPickerCriticalHitSortSearchCache.get(a);
           });
