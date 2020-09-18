@@ -85,11 +85,11 @@
                   <table>
                     <tr v-for="_item in getItemSupportStates(item)">
                       <th>{{ _item.label }}</th>
-                      <td>+{{ LogicHelper.calculateSupportState(_item.value) }}</td>
+                      <td>{{ getNumberSignText(LogicHelper.calculateSupportState(_item.value)) }}{{ LogicHelper.calculateSupportState(_item.value) }}</td>
                     </tr>
                     <tr v-for="element in getItemSupportElements(item)">
                       <th>{{ element.label }}</th>
-                      <td>+{{ LogicHelper.calculateSupportState(element.value) }}</td>
+                      <td>{{ getNumberSignText(LogicHelper.calculateSupportState(element.value)) }}{{ LogicHelper.calculateSupportState(element.value) }}</td>
                     </tr>
                     <tr v-if="item.GROUP_DF">
                       <th>專用</th>
