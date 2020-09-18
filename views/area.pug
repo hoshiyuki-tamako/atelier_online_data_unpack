@@ -64,8 +64,8 @@ html
             - if (_fieldName)
               h3 #{_fieldName.strAreaName} #{_fieldName.strAreaNameSub.trim() ? `/ ${_fieldName.strAreaNameSub}` : ''}
             - if (areaImages.includes(`${_areaDetail.iAreaID}.png`))
-              a(href= modelUrlMap[_areaDetail.iAreaID] target="_blank")
-                img(src=`img/map/${_areaDetail.iAreaID}.png` alt= _areaDetail.iAreaID style="width: 80%")
+              a(href= that.exportService.rootFolderRelativePath + modelUrlMap[_areaDetail.iAreaID] target="_blank")
+                img(src=`${that.exportService.rootFolderRelativePath}img/map/${_areaDetail.iAreaID}.png` alt= _areaDetail.iAreaID style="width: 80%")
             p iAreaID: #{_areaDetail.iAreaID}
             p LV: #{_areaDetail.iLevel}
 
