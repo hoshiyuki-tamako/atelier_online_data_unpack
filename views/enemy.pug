@@ -111,7 +111,8 @@ html
         div.item-container(id="DF-" + _enemy.DF)
           div.item-container-left
             h3.item-name= _enemy.strName
-            img.icon-full(src= that.exportService.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
+              //- a(href= that.exportService.rootFolderRelativePath + `3d/enemy.html?mdl=${_enemy.sParam.MDL}` target="_blank")
+              img.icon-full(src= that.exportService.rootFolderRelativePath + "img/enemy/Texture2D/" + `enemy_tex_${_enemy.sParam.MDL}.png` alt= _enemy.strName)
             p= _enemy.strDesc
             br
             p DF: #{_enemy.DF}
