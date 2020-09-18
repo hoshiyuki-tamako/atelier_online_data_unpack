@@ -448,7 +448,7 @@ export class PageBuilder {
   }
 
   public async area() {
-    const [fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, gateInfo, item, enemy, spawnerData, townIcons] = await Promise.all([
+    const [fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, gateInfo, item, enemy, spawnerData, townIcons, areaImages] = await Promise.all([
       this.exportService.data(this.exportService.exportDataFilenameMap.fieldname),
       this.exportService.data(this.exportService.exportDataFilenameMap.areaDetail),
       this.exportService.data(this.exportService.exportDataFilenameMap.areaInfo),
@@ -459,10 +459,22 @@ export class PageBuilder {
       this.exportService.data(this.exportService.exportDataFilenameMap.enemy),
       this.exportService.spawnerDataManager.loadFromCache(),
       fs.readdir(path.join(this.exportService.htmlRoot, 'img', 'Map_Town', 'Texture2D')),
-    ]) as [FieldName, AreaDetail, AreaInfo, TownInfo, DungeonInfo, GateInfo, Item, Enemy, { [k: string]: SpawnerData[] }, string[]];
+      fs.readdir(path.join(this.exportService.htmlRoot, 'img', 'map')),
+    ]) as [FieldName, AreaDetail, AreaInfo, TownInfo, DungeonInfo, GateInfo, Item, Enemy, { [k: string]: SpawnerData[] }, string[], string[]];
+    const modelUrlMap = {
+      1: '3d/mapArea.html?iAreaId=1&iDungeonId=0',
+      2: '3d/mapArea.html?iAreaId=2&iDungeonId=20102',
+      3: '3d/mapArea.html?iAreaId=3&iDungeonId=0',
+      5: '3d/mapArea.html?iAreaId=5&iDungeonId=0',
+      10: '3d/mapArea.html?iAreaId=10&iDungeonId=0',
+    };
+
     const pugOption = { that: this, fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, gateInfo, item, enemy, spawnerData,
       townIcons: townIcons.map(p => path.basename(p))
-      .filter(p => !p.includes('#') && !p.endsWith('_02.png')) };
+      .filter(p => !p.includes('#') && !p.endsWith('_02.png')),
+      areaImages: areaImages.map(p => path.basename(p)),
+      modelUrlMap,
+    };
     await fs.writeFile(
       path.join(this.exportService.outFolder, 'area.html'),
       await this.minify(pug.renderFile(path.join(this.exportService.viewFolder, 'area.pug'), pugOption)),

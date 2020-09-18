@@ -133,7 +133,7 @@ html
                 - const elementChangeSkill = _item.SPC.map(p => p.SKILL).flat().map(p => skill.m_vList.find(s => s.id === p.DF && s.type === 2 && s.effect === 119)).filter(p => p)[0];
                 p #{that.i18nService.i18n.__("攻撃属性")}: #{that.lookup.eBattleElementKind[elementChangeSkill ? elementChangeSkill.effectValue : 0]}
             - if (_item.JOB.length)
-              p #{that.i18nService.i18n.__("職業")}: #{_item.JOB.map(p => that.lookup.eJobKindLookup[p] || p).join(", ")}
+              p #{that.i18nService.i18n.__("職業")}: #{_item.JOB.map(p => that.lookup.eJobKind[p] || p).join(", ")}
             p #{that.i18nService.i18n.__("レシピ種類")}: #{_item.RCP_TYPE === 1 ? that.i18nService.i18n.__('レジェンドレシピ') : that.i18nService.i18n.__('一般レシピ')}
             p #{that.i18nService.i18n.__("おすすめ錬金 LV")} #{_item.ALT ? _item.ALT.LV : '-'}
             p
