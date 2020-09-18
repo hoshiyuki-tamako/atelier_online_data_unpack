@@ -21,7 +21,7 @@
     const params = new URL(window.location).searchParams;
     const iAreaId = params.get("iAreaId");
     const iDungeonId = params.get("iDungeonId");
-    let fbx = `../models/MapArea/${iAreaId}`;
+    let fbx = `../models/maparea/${iAreaId}`;
     if (iDungeonId) {
       fbx += `/${iDungeonId}`;
     }
