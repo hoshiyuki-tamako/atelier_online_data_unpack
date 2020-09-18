@@ -525,10 +525,10 @@ new Vue({
         } else if (this.itemPickerSort === 'dodge') {
           items.sort((a, b) => {
             if(!this.itemPickerDodgeSortSearchCache.has(b)) {
-              this.itemPickerDodgeSortSearchCache.set(b, this.getSkillEffectTargetValues(this.getItemSkills(b, 80), 8));
+              this.itemPickerDodgeSortSearchCache.set(b, this.getSkillEffectTargetValues(this.getItemSkills(b, 120), 8));
             }
             if(!this.itemPickerDodgeSortSearchCache.has(a)) {
-              this.itemPickerDodgeSortSearchCache.set(a, this.getSkillEffectTargetValues(this.getItemSkills(a, 80), 8));
+              this.itemPickerDodgeSortSearchCache.set(a, this.getSkillEffectTargetValues(this.getItemSkills(a, 120), 8));
             }
             return this.itemPickerDodgeSortSearchCache.get(b) - this.itemPickerDodgeSortSearchCache.get(a);
           });
