@@ -192221,6 +192221,713 @@
       "VIL": [],
       "TALK": [],
       "ARA": []
+    },
+    {
+      "DF": 800054001,
+      "CATEG": 6,
+      "TYPE": 5017,
+      "GROUP": 4,
+      "NAME": "教えて、シスル先生！",
+      "KANA": "オシエテ、シスルセンセイ",
+      "DESC": "「ヘーゼル」が「シスル」と何か企んでいる気がする……。どんなことを話しているのか聞いてみよう",
+      "CONDITION": "アカデミーの「ヘーゼル」に話しかける",
+      "QUEST_NO": 1,
+      "QUEST_SUB_NO": 1,
+      "CHAPTER": 0,
+      "CHARA": 0,
+      "NPC": 1010,
+      "DESTINATION": -1,
+      "AREA": 1,
+      "RNK_PT": 20,
+      "UNLOCK": [
+        {
+          "DF": 1001,
+          "STP": 1
+        }
+      ],
+      "LAST": 0,
+      "INVISIBLE": 0,
+      "IMPORTANT": 0,
+      "PARTY_IN": 0,
+      "KEY_QUEST": 0,
+      "OFFICIAL_EXAMINATION": 0,
+      "CHALLENGE": 0,
+      "COST": {
+        "WTH": {
+          "DF": 0,
+          "CNT": 0
+        }
+      },
+      "EVENT": 54,
+      "NPC_FD": [
+        {
+          "DF": 1,
+          "STEP": 2,
+          "MESSAGE": "",
+          "FD": 0,
+          "POS": 4,
+          "ADV": "",
+          "PLC": 1,
+          "PLC_ID": 0,
+          "CHA_ID": 3006
+        },
+        {
+          "DF": 2,
+          "STEP": 3,
+          "MESSAGE": "",
+          "FD": 0,
+          "POS": 0,
+          "ADV": "EV_054_001_010",
+          "PLC": 0,
+          "PLC_ID": 0,
+          "CHA_ID": 0
+        }
+      ],
+      "RWD_ITEM": [],
+      "RWD_WTH": [
+        {
+          "DF": 1,
+          "CNT": 30
+        },
+        {
+          "DF": 2,
+          "CNT": 100
+        },
+        {
+          "DF": 97,
+          "CNT": 3
+        }
+      ],
+      "FLG_ON": [
+        {
+          "DF": 800054001
+        }
+      ],
+      "ENM": [],
+      "BTL": [],
+      "QST": [],
+      "MIX": [],
+      "SKL": [],
+      "ACT_SKL": [],
+      "DLV": [],
+      "ALC": [],
+      "GET": [],
+      "PIC": [],
+      "REG": [],
+      "DUN": [],
+      "ARR": [],
+      "SPE": [],
+      "VIL": [],
+      "TALK": [
+        {
+          "DF": 0,
+          "CATEG": 0,
+          "BDR": 1,
+          "QTY": 0,
+          "AREA": 0
+        }
+      ],
+      "ARA": []
+    },
+    {
+      "DF": 800054002,
+      "CATEG": 7,
+      "TYPE": 5001,
+      "GROUP": 4,
+      "NAME": "【チケット】程々！戦闘修行！",
+      "KANA": "チケットホドホドセントウシュギョウ",
+      "DESC": "強くなるための程々な修行だよ。「アークウーズ」と戦って基礎を固めよう！　※「シスルの特訓チケット」を消費　※チケットはショップで購入可能",
+      "CONDITION": "【リブルム】「ローズヒップ邸」にいる「アークウーズ」を討伐",
+      "QUEST_NO": 2,
+      "QUEST_SUB_NO": 1,
+      "CHAPTER": 0,
+      "CHARA": 0,
+      "NPC": 1010,
+      "DESTINATION": 5,
+      "AREA": 2,
+      "RNK_PT": 20,
+      "UNLOCK": [],
+      "LAST": 0,
+      "INVISIBLE": 0,
+      "IMPORTANT": 0,
+      "PARTY_IN": 0,
+      "KEY_QUEST": 0,
+      "OFFICIAL_EXAMINATION": 0,
+      "CHALLENGE": 0,
+      "COST": {
+        "WTH": {
+          "DF": 97,
+          "CNT": 1
+        }
+      },
+      "EVENT": 54,
+      "NPC_FD": [],
+      "RWD_ITEM": [],
+      "RWD_WTH": [
+        {
+          "DF": 2,
+          "CNT": 100
+        },
+        {
+          "DF": 96,
+          "CNT": 50
+        }
+      ],
+      "FLG_ON": [
+        {
+          "DF": 800054002
+        }
+      ],
+      "ENM": [
+        {
+          "DF": 800054001,
+          "CATEG": 0,
+          "BDR": 1,
+          "QTY": 0,
+          "AREA": 0
+        }
+      ],
+      "BTL": [],
+      "QST": [],
+      "MIX": [],
+      "SKL": [],
+      "ACT_SKL": [],
+      "DLV": [],
+      "ALC": [],
+      "GET": [],
+      "PIC": [],
+      "REG": [],
+      "DUN": [],
+      "ARR": [],
+      "SPE": [],
+      "VIL": [],
+      "TALK": [],
+      "ARA": []
+    },
+    {
+      "DF": 800054003,
+      "CATEG": 7,
+      "TYPE": 5001,
+      "GROUP": 4,
+      "NAME": "【チケット】濃厚！戦闘修行！",
+      "KANA": "チケットノウコウセントウシュギョウ",
+      "DESC": "強くなるための濃厚な修行だね。「ヘルウーズ」を倒して経験を積もう！　※「シスルの特訓チケット」を消費　※チケットはショップで購入可能",
+      "CONDITION": "【リブルム】「ローズヒップ邸」にいる「ヘルウーズ」を討伐",
+      "QUEST_NO": 3,
+      "QUEST_SUB_NO": 1,
+      "CHAPTER": 0,
+      "CHARA": 0,
+      "NPC": 1010,
+      "DESTINATION": 5,
+      "AREA": 2,
+      "RNK_PT": 25,
+      "UNLOCK": [],
+      "LAST": 0,
+      "INVISIBLE": 0,
+      "IMPORTANT": 0,
+      "PARTY_IN": 0,
+      "KEY_QUEST": 0,
+      "OFFICIAL_EXAMINATION": 0,
+      "CHALLENGE": 0,
+      "COST": {
+        "WTH": {
+          "DF": 97,
+          "CNT": 1
+        }
+      },
+      "EVENT": 54,
+      "NPC_FD": [],
+      "RWD_ITEM": [],
+      "RWD_WTH": [
+        {
+          "DF": 2,
+          "CNT": 100
+        },
+        {
+          "DF": 96,
+          "CNT": 75
+        }
+      ],
+      "FLG_ON": [
+        {
+          "DF": 800054003
+        }
+      ],
+      "ENM": [
+        {
+          "DF": 800054002,
+          "CATEG": 0,
+          "BDR": 1,
+          "QTY": 0,
+          "AREA": 0
+        }
+      ],
+      "BTL": [],
+      "QST": [],
+      "MIX": [],
+      "SKL": [],
+      "ACT_SKL": [],
+      "DLV": [],
+      "ALC": [],
+      "GET": [],
+      "PIC": [],
+      "REG": [],
+      "DUN": [],
+      "ARR": [],
+      "SPE": [],
+      "VIL": [],
+      "TALK": [],
+      "ARA": []
+    },
+    {
+      "DF": 800054004,
+      "CATEG": 7,
+      "TYPE": 5001,
+      "GROUP": 4,
+      "NAME": "【チケット】究極！戦闘修行！",
+      "KANA": "チケットキュウキョクセントウシュギョウ",
+      "DESC": "究極の修行だよ！　「リコリス」と「ラジアータ」の分身と、全力勝負っ！　※「シスルの特訓チケット」を消費　※チケットはショップで購入可能",
+      "CONDITION": "【リブルム】「ローズヒップ邸」にいる「リコリスアバター」たちを討伐",
+      "QUEST_NO": 4,
+      "QUEST_SUB_NO": 1,
+      "CHAPTER": 0,
+      "CHARA": 0,
+      "NPC": 1010,
+      "DESTINATION": 5,
+      "AREA": 2,
+      "RNK_PT": 30,
+      "UNLOCK": [],
+      "LAST": 0,
+      "INVISIBLE": 0,
+      "IMPORTANT": 0,
+      "PARTY_IN": 0,
+      "KEY_QUEST": 0,
+      "OFFICIAL_EXAMINATION": 0,
+      "CHALLENGE": 0,
+      "COST": {
+        "WTH": {
+          "DF": 97,
+          "CNT": 1
+        }
+      },
+      "EVENT": 54,
+      "NPC_FD": [],
+      "RWD_ITEM": [],
+      "RWD_WTH": [
+        {
+          "DF": 2,
+          "CNT": 100
+        },
+        {
+          "DF": 96,
+          "CNT": 100
+        }
+      ],
+      "FLG_ON": [
+        {
+          "DF": 800054004
+        }
+      ],
+      "ENM": [
+        {
+          "DF": 800054003,
+          "CATEG": 0,
+          "BDR": 1,
+          "QTY": 0,
+          "AREA": 0
+        }
+      ],
+      "BTL": [],
+      "QST": [],
+      "MIX": [],
+      "SKL": [],
+      "ACT_SKL": [],
+      "DLV": [],
+      "ALC": [],
+      "GET": [],
+      "PIC": [],
+      "REG": [],
+      "DUN": [],
+      "ARR": [],
+      "SPE": [],
+      "VIL": [],
+      "TALK": [],
+      "ARA": []
+    },
+    {
+      "DF": 800054005,
+      "CATEG": 8,
+      "TYPE": 5001,
+      "GROUP": 4,
+      "NAME": "【デイリー】超絶！戦闘特訓！",
+      "KANA": "デイリーチョウゼツセントウトックン",
+      "DESC": "強くなるためには特訓あるのみ！　「ラジアータ」の眷属「ドロすけ」と死闘を繰り広げるのだ～！　※１日１回クリア可",
+      "CONDITION": "【リブルム】「ローズヒップ邸」にいる「ドロすけ」を討伐",
+      "QUEST_NO": 5,
+      "QUEST_SUB_NO": 1,
+      "CHAPTER": 0,
+      "CHARA": 0,
+      "NPC": 1010,
+      "DESTINATION": 5,
+      "AREA": 2,
+      "RNK_PT": 20,
+      "UNLOCK": [],
+      "LAST": 0,
+      "INVISIBLE": 0,
+      "IMPORTANT": 0,
+      "PARTY_IN": 0,
+      "KEY_QUEST": 0,
+      "OFFICIAL_EXAMINATION": 0,
+      "CHALLENGE": 0,
+      "COST": {
+        "WTH": {
+          "DF": 0,
+          "CNT": 0
+        }
+      },
+      "EVENT": 54,
+      "NPC_FD": [],
+      "RWD_ITEM": [],
+      "RWD_WTH": [
+        {
+          "DF": 2,
+          "CNT": 100
+        },
+        {
+          "DF": 96,
+          "CNT": 75
+        }
+      ],
+      "FLG_ON": [
+        {
+          "DF": 800054005
+        }
+      ],
+      "ENM": [
+        {
+          "DF": 800054005,
+          "CATEG": 0,
+          "BDR": 1,
+          "QTY": 0,
+          "AREA": 0
+        }
+      ],
+      "BTL": [],
+      "QST": [],
+      "MIX": [],
+      "SKL": [],
+      "ACT_SKL": [],
+      "DLV": [],
+      "ALC": [],
+      "GET": [],
+      "PIC": [],
+      "REG": [],
+      "DUN": [],
+      "ARR": [],
+      "SPE": [],
+      "VIL": [],
+      "TALK": [],
+      "ARA": []
+    },
+    {
+      "DF": 800054006,
+      "CATEG": 8,
+      "TYPE": 5001,
+      "GROUP": 4,
+      "NAME": "【デイリー】激烈！戦闘特訓！",
+      "KANA": "デイリーゲキレツセントウトックン",
+      "DESC": "口を開くヒマがあるなら戦闘あるのみ！　「リコリス」の眷属「ぷにまる」とガンガン戦っちゃって～！　※１日１回クリア可",
+      "CONDITION": "【リブルム】「ローズヒップ邸」にいる「ぷにまる」を討伐",
+      "QUEST_NO": 6,
+      "QUEST_SUB_NO": 1,
+      "CHAPTER": 0,
+      "CHARA": 0,
+      "NPC": 1010,
+      "DESTINATION": 5,
+      "AREA": 2,
+      "RNK_PT": 20,
+      "UNLOCK": [],
+      "LAST": 0,
+      "INVISIBLE": 0,
+      "IMPORTANT": 0,
+      "PARTY_IN": 0,
+      "KEY_QUEST": 0,
+      "OFFICIAL_EXAMINATION": 0,
+      "CHALLENGE": 0,
+      "COST": {
+        "WTH": {
+          "DF": 0,
+          "CNT": 0
+        }
+      },
+      "EVENT": 54,
+      "NPC_FD": [],
+      "RWD_ITEM": [],
+      "RWD_WTH": [
+        {
+          "DF": 2,
+          "CNT": 100
+        },
+        {
+          "DF": 96,
+          "CNT": 75
+        }
+      ],
+      "FLG_ON": [
+        {
+          "DF": 800054006
+        }
+      ],
+      "ENM": [
+        {
+          "DF": 800054006,
+          "CATEG": 0,
+          "BDR": 1,
+          "QTY": 0,
+          "AREA": 0
+        }
+      ],
+      "BTL": [],
+      "QST": [],
+      "MIX": [],
+      "SKL": [],
+      "ACT_SKL": [],
+      "DLV": [],
+      "ALC": [],
+      "GET": [],
+      "PIC": [],
+      "REG": [],
+      "DUN": [],
+      "ARR": [],
+      "SPE": [],
+      "VIL": [],
+      "TALK": [],
+      "ARA": []
+    },
+    {
+      "DF": 800054007,
+      "CATEG": 7,
+      "TYPE": 5001,
+      "GROUP": 4,
+      "NAME": "痛快！戦闘訓練！",
+      "KANA": "ツウカイセントウクンレン",
+      "DESC": "身体を鍛えるのには実践が一番。プニ左衛門の弟子の「プニ之丞」に胸を借りて戦闘訓練だよ！　胸があるかは知らないけどね！　※繰り返し可",
+      "CONDITION": "【オルビュース】「ルフナ村」近くに現れた「プニ之丞」を討伐",
+      "QUEST_NO": 7,
+      "QUEST_SUB_NO": 1,
+      "CHAPTER": 0,
+      "CHARA": 0,
+      "NPC": 1010,
+      "DESTINATION": 1,
+      "AREA": 1,
+      "RNK_PT": 15,
+      "UNLOCK": [],
+      "LAST": 0,
+      "INVISIBLE": 0,
+      "IMPORTANT": 0,
+      "PARTY_IN": 0,
+      "KEY_QUEST": 0,
+      "OFFICIAL_EXAMINATION": 0,
+      "CHALLENGE": 0,
+      "COST": {
+        "WTH": {
+          "DF": 0,
+          "CNT": 0
+        }
+      },
+      "EVENT": 54,
+      "NPC_FD": [],
+      "RWD_ITEM": [],
+      "RWD_WTH": [
+        {
+          "DF": 2,
+          "CNT": 100
+        },
+        {
+          "DF": 96,
+          "CNT": 5
+        }
+      ],
+      "FLG_ON": [
+        {
+          "DF": 800054007
+        }
+      ],
+      "ENM": [
+        {
+          "DF": 800054007,
+          "CATEG": 0,
+          "BDR": 1,
+          "QTY": 0,
+          "AREA": 0
+        }
+      ],
+      "BTL": [],
+      "QST": [],
+      "MIX": [],
+      "SKL": [],
+      "ACT_SKL": [],
+      "DLV": [],
+      "ALC": [],
+      "GET": [],
+      "PIC": [],
+      "REG": [],
+      "DUN": [],
+      "ARR": [],
+      "SPE": [],
+      "VIL": [],
+      "TALK": [],
+      "ARA": []
+    },
+    {
+      "DF": 800054008,
+      "CATEG": 3,
+      "TYPE": 5007,
+      "GROUP": 4,
+      "NAME": "一心！採取訓練！",
+      "KANA": "イッシンサイシュクンレン",
+      "DESC": "採取は根気が大事だよ！　自然と一つになって、求める材料を探し続けるのだ～！　あ、風邪はひかないようにね！　※繰り返し可",
+      "CONDITION": "「ガマの油」を納品する／「ガマの油」は雨天時に出現するカエルから採取可能",
+      "QUEST_NO": 8,
+      "QUEST_SUB_NO": 1,
+      "CHAPTER": 0,
+      "CHARA": 0,
+      "NPC": 1010,
+      "DESTINATION": 0,
+      "AREA": 0,
+      "RNK_PT": 15,
+      "UNLOCK": [],
+      "LAST": 0,
+      "INVISIBLE": 0,
+      "IMPORTANT": 0,
+      "PARTY_IN": 0,
+      "KEY_QUEST": 0,
+      "OFFICIAL_EXAMINATION": 0,
+      "CHALLENGE": 0,
+      "COST": {
+        "WTH": {
+          "DF": 0,
+          "CNT": 0
+        }
+      },
+      "EVENT": 54,
+      "NPC_FD": [],
+      "RWD_ITEM": [],
+      "RWD_WTH": [
+        {
+          "DF": 2,
+          "CNT": 100
+        },
+        {
+          "DF": 96,
+          "CNT": 5
+        }
+      ],
+      "FLG_ON": [
+        {
+          "DF": 800054008
+        }
+      ],
+      "ENM": [],
+      "BTL": [],
+      "QST": [],
+      "MIX": [],
+      "SKL": [],
+      "ACT_SKL": [],
+      "DLV": [
+        {
+          "DF": 10910001,
+          "CATEG": 0,
+          "BDR": 1,
+          "QTY": 0,
+          "AREA": 0
+        }
+      ],
+      "ALC": [],
+      "GET": [],
+      "PIC": [],
+      "REG": [],
+      "DUN": [],
+      "ARR": [],
+      "SPE": [],
+      "VIL": [],
+      "TALK": [],
+      "ARA": []
+    },
+    {
+      "DF": 800054009,
+      "CATEG": 3,
+      "TYPE": 5007,
+      "GROUP": 4,
+      "NAME": "難解！調合訓練！",
+      "KANA": "ナンカイチョウゴウクンレン",
+      "DESC": "錬金術の基本は中和剤にあり！　……ま、あたし錬金術士じゃないから受け売りだけど。さ、ちゃっちゃと調合調合！　※繰り返し可",
+      "CONDITION": "上質の「中和剤・緑」（品質６０）を納品する／「中和剤・緑」は「ゼラチン」「フレッシュリーフ」で調合可能",
+      "QUEST_NO": 9,
+      "QUEST_SUB_NO": 1,
+      "CHAPTER": 0,
+      "CHARA": 0,
+      "NPC": 1010,
+      "DESTINATION": 0,
+      "AREA": 0,
+      "RNK_PT": 15,
+      "UNLOCK": [],
+      "LAST": 0,
+      "INVISIBLE": 0,
+      "IMPORTANT": 0,
+      "PARTY_IN": 0,
+      "KEY_QUEST": 0,
+      "OFFICIAL_EXAMINATION": 0,
+      "CHALLENGE": 0,
+      "COST": {
+        "WTH": {
+          "DF": 0,
+          "CNT": 0
+        }
+      },
+      "EVENT": 54,
+      "NPC_FD": [],
+      "RWD_ITEM": [],
+      "RWD_WTH": [
+        {
+          "DF": 2,
+          "CNT": 100
+        },
+        {
+          "DF": 96,
+          "CNT": 5
+        }
+      ],
+      "FLG_ON": [
+        {
+          "DF": 800054009
+        }
+      ],
+      "ENM": [],
+      "BTL": [],
+      "QST": [],
+      "MIX": [],
+      "SKL": [],
+      "ACT_SKL": [],
+      "DLV": [
+        {
+          "DF": 10390004,
+          "CATEG": 0,
+          "BDR": 1,
+          "QTY": 60,
+          "AREA": 0
+        }
+      ],
+      "ALC": [],
+      "GET": [],
+      "PIC": [],
+      "REG": [],
+      "DUN": [],
+      "ARR": [],
+      "SPE": [],
+      "VIL": [],
+      "TALK": [],
+      "ARA": []
     }
   ]
 }

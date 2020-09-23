@@ -83805,6 +83805,895 @@
           }
         }
       }
+    },
+    {
+      "DF": 800054001,
+      "bBoss": 1,
+      "eAttackTargetKind": 0,
+      "sNormalAttackFile": "",
+      "sBossStartFile": "",
+      "sBossEndFile": "",
+      "eKind": 4,
+      "iCategory": 1,
+      "musicID": 0,
+      "strName": "アークウーズ",
+      "strAnotherName": "修行相手の",
+      "eSize": 0,
+      "bAura": 0,
+      "fViewRadius": 5.0,
+      "fViewCos": -0.57357645,
+      "fMoveRadius": 8.0,
+      "fMoveSpeed": 2.0,
+      "fHitRadius": 1.2,
+      "bOnlyOnline": 0,
+      "fCullingSide": 8.0,
+      "strDesc": "オリエンでの活躍をかわれ、シスルに修行相手として抜擢されたウーズ。シスルのために、やられ役にやる気満々。",
+      "sParam": {
+        "MDL": "004_01",
+        "NAME": "",
+        "DESC": "",
+        "ELM": {
+          "FIRE": 0,
+          "WATER": 0,
+          "WIND": 0,
+          "EARTH": 0,
+          "LIGHT": -50,
+          "DARK": 0
+        },
+        "SKILL": [
+          {
+            "DF": 5124
+          },
+          {
+            "DF": 5125
+          }
+        ],
+        "SPEC": {
+          "EXP": {
+            "G": 0.6,
+            "M": 400,
+            "R": 60,
+            "B": 40
+          },
+          "HP": {
+            "G": 1.0,
+            "M": 5000,
+            "R": 15,
+            "B": 4000
+          },
+          "SATK": {
+            "G": 1.0,
+            "M": 2500,
+            "R": 60,
+            "B": 250
+          },
+          "SDEF": {
+            "G": 1.0,
+            "M": 1500,
+            "R": 60,
+            "B": 150
+          },
+          "MATK": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "MDEF": {
+            "G": 1.0,
+            "M": 1500,
+            "R": 60,
+            "B": 150
+          },
+          "SPD": {
+            "G": 1.0,
+            "M": 762,
+            "R": 60,
+            "B": 76
+          },
+          "SDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "LDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "QTH": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          },
+          "DDG": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "SADD": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          }
+        }
+      }
+    },
+    {
+      "DF": 800054002,
+      "bBoss": 1,
+      "eAttackTargetKind": 0,
+      "sNormalAttackFile": "",
+      "sBossStartFile": "",
+      "sBossEndFile": "",
+      "eKind": 4,
+      "iCategory": 1,
+      "musicID": 0,
+      "strName": "ヘルウーズ",
+      "strAnotherName": "修行相手の",
+      "eSize": 0,
+      "bAura": 0,
+      "fViewRadius": 5.0,
+      "fViewCos": -0.57357645,
+      "fMoveRadius": 8.0,
+      "fMoveSpeed": 2.0,
+      "fHitRadius": 1.2,
+      "bOnlyOnline": 0,
+      "fCullingSide": 8.0,
+      "strDesc": "オリエンでの活躍をかわれ、シスルに修行相手として抜擢されたウーズ。いつかシスルを超えるのが夢だが、実現の時はまだ遠そう。",
+      "sParam": {
+        "MDL": "004_02",
+        "NAME": "",
+        "DESC": "",
+        "ELM": {
+          "FIRE": 0,
+          "WATER": 0,
+          "WIND": 0,
+          "EARTH": 0,
+          "LIGHT": 0,
+          "DARK": -50
+        },
+        "SKILL": [
+          {
+            "DF": 5124
+          },
+          {
+            "DF": 5125
+          }
+        ],
+        "SPEC": {
+          "EXP": {
+            "G": 0.6,
+            "M": 400,
+            "R": 60,
+            "B": 40
+          },
+          "HP": {
+            "G": 1.0,
+            "M": 20000,
+            "R": 30,
+            "B": 5000
+          },
+          "SATK": {
+            "G": 1.0,
+            "M": 2700,
+            "R": 60,
+            "B": 270
+          },
+          "SDEF": {
+            "G": 1.0,
+            "M": 1800,
+            "R": 60,
+            "B": 150
+          },
+          "MATK": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "MDEF": {
+            "G": 1.0,
+            "M": 1800,
+            "R": 60,
+            "B": 150
+          },
+          "SPD": {
+            "G": 1.0,
+            "M": 762,
+            "R": 60,
+            "B": 76
+          },
+          "SDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "LDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "QTH": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          },
+          "DDG": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "SADD": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          }
+        }
+      }
+    },
+    {
+      "DF": 800054003,
+      "bBoss": 1,
+      "eAttackTargetKind": 0,
+      "sNormalAttackFile": "",
+      "sBossStartFile": "",
+      "sBossEndFile": "BossBattleEnd_040",
+      "eKind": 40,
+      "iCategory": 1,
+      "musicID": 0,
+      "strName": "リコリスアバター",
+      "strAnotherName": "修行相手の",
+      "eSize": 1,
+      "bAura": 0,
+      "fViewRadius": 5.0,
+      "fViewCos": -0.173648179,
+      "fMoveRadius": 8.0,
+      "fMoveSpeed": 2.0,
+      "fHitRadius": 2.0,
+      "bOnlyOnline": 0,
+      "fCullingSide": 8.0,
+      "strDesc": "すっかりブレセイル島になじんだリコリスが生み出した分身。本人の性格に似ているのか、たまに戦闘中でも遊びだす。",
+      "sParam": {
+        "MDL": "040_01",
+        "NAME": "",
+        "DESC": "",
+        "ELM": {
+          "FIRE": 20,
+          "WATER": -20,
+          "WIND": 0,
+          "EARTH": 0,
+          "LIGHT": 0,
+          "DARK": 0
+        },
+        "SKILL": [
+          {
+            "DF": 8001
+          },
+          {
+            "DF": 8002
+          },
+          {
+            "DF": 8003
+          },
+          {
+            "DF": 8004
+          },
+          {
+            "DF": 8005
+          },
+          {
+            "DF": 8007
+          },
+          {
+            "DF": 8008
+          },
+          {
+            "DF": 8009
+          },
+          {
+            "DF": 8010
+          },
+          {
+            "DF": 8011
+          },
+          {
+            "DF": 8013
+          },
+          {
+            "DF": 5070
+          }
+        ],
+        "SPEC": {
+          "EXP": {
+            "G": 0.6,
+            "M": 500,
+            "R": 60,
+            "B": 50
+          },
+          "HP": {
+            "G": 1.0,
+            "M": 50000,
+            "R": 60,
+            "B": 7000
+          },
+          "SATK": {
+            "G": 1.0,
+            "M": 3000,
+            "R": 60,
+            "B": 400
+          },
+          "SDEF": {
+            "G": 1.0,
+            "M": 2000,
+            "R": 60,
+            "B": 350
+          },
+          "MATK": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "MDEF": {
+            "G": 1.0,
+            "M": 2000,
+            "R": 60,
+            "B": 250
+          },
+          "SPD": {
+            "G": 1.0,
+            "M": 700,
+            "R": 60,
+            "B": 30
+          },
+          "SDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "LDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "QTH": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          },
+          "DDG": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "SADD": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          }
+        }
+      }
+    },
+    {
+      "DF": 800054004,
+      "bBoss": 1,
+      "eAttackTargetKind": 0,
+      "sNormalAttackFile": "",
+      "sBossStartFile": "",
+      "sBossEndFile": "BossBattleEnd_039",
+      "eKind": 39,
+      "iCategory": 1,
+      "musicID": 0,
+      "strName": "ラジアータアバター",
+      "strAnotherName": "修行相手の",
+      "eSize": 1,
+      "bAura": 0,
+      "fViewRadius": 5.0,
+      "fViewCos": -0.173648179,
+      "fMoveRadius": 8.0,
+      "fMoveSpeed": 2.0,
+      "fHitRadius": 2.0,
+      "bOnlyOnline": 0,
+      "fCullingSide": 8.0,
+      "strDesc": "すっかりブレセイル島になじんだラジアータが生み出した分身。分身も真面目なので修行とはいえ手を抜かない。",
+      "sParam": {
+        "MDL": "039_01",
+        "NAME": "",
+        "DESC": "",
+        "ELM": {
+          "FIRE": 0,
+          "WATER": 0,
+          "WIND": 20,
+          "EARTH": -20,
+          "LIGHT": 0,
+          "DARK": 0
+        },
+        "SKILL": [
+          {
+            "DF": 8001
+          },
+          {
+            "DF": 8002
+          },
+          {
+            "DF": 8003
+          },
+          {
+            "DF": 8004
+          },
+          {
+            "DF": 8005
+          },
+          {
+            "DF": 8007
+          },
+          {
+            "DF": 8008
+          },
+          {
+            "DF": 8009
+          },
+          {
+            "DF": 8010
+          },
+          {
+            "DF": 8011
+          },
+          {
+            "DF": 8013
+          },
+          {
+            "DF": 5069
+          }
+        ],
+        "SPEC": {
+          "EXP": {
+            "G": 0.6,
+            "M": 500,
+            "R": 60,
+            "B": 50
+          },
+          "HP": {
+            "G": 1.0,
+            "M": 50000,
+            "R": 60,
+            "B": 7000
+          },
+          "SATK": {
+            "G": 1.0,
+            "M": 3000,
+            "R": 60,
+            "B": 400
+          },
+          "SDEF": {
+            "G": 1.0,
+            "M": 2000,
+            "R": 60,
+            "B": 350
+          },
+          "MATK": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "MDEF": {
+            "G": 1.0,
+            "M": 2000,
+            "R": 60,
+            "B": 250
+          },
+          "SPD": {
+            "G": 1.0,
+            "M": 700,
+            "R": 60,
+            "B": 30
+          },
+          "SDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "LDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "QTH": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          },
+          "DDG": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "SADD": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          }
+        }
+      }
+    },
+    {
+      "DF": 800054005,
+      "bBoss": 1,
+      "eAttackTargetKind": 0,
+      "sNormalAttackFile": "NormalAttack_Enemy_17",
+      "sBossStartFile": "",
+      "sBossEndFile": "",
+      "eKind": 17,
+      "iCategory": 1,
+      "musicID": 0,
+      "strName": "ドロすけ",
+      "strAnotherName": "修行相手の",
+      "eSize": 0,
+      "bAura": 0,
+      "fViewRadius": 5.0,
+      "fViewCos": 6.125742E-17,
+      "fMoveRadius": 8.0,
+      "fMoveSpeed": 2.0,
+      "fHitRadius": 1.2,
+      "bOnlyOnline": 0,
+      "fCullingSide": 8.0,
+      "strDesc": "ラジアータの眷属であるバンシー。魔法攻撃に強いのが特徴。最近少し太ったのが悩み。",
+      "sParam": {
+        "MDL": "017_01",
+        "NAME": "",
+        "DESC": "",
+        "ELM": {
+          "FIRE": 0,
+          "WATER": 0,
+          "WIND": 10,
+          "EARTH": -10,
+          "LIGHT": 0,
+          "DARK": 0
+        },
+        "SKILL": [
+          {
+            "DF": 8013
+          },
+          {
+            "DF": 5135
+          },
+          {
+            "DF": 5022
+          }
+        ],
+        "SPEC": {
+          "EXP": {
+            "G": 0.6,
+            "M": 300,
+            "R": 45,
+            "B": 100
+          },
+          "HP": {
+            "G": 1.0,
+            "M": 10000,
+            "R": 30,
+            "B": 320
+          },
+          "SATK": {
+            "G": 1.0,
+            "M": 0,
+            "R": 45,
+            "B": 0
+          },
+          "SDEF": {
+            "G": 1.0,
+            "M": 1000,
+            "R": 45,
+            "B": 215
+          },
+          "MATK": {
+            "G": 1.0,
+            "M": 3500,
+            "R": 45,
+            "B": 350
+          },
+          "MDEF": {
+            "G": 1.0,
+            "M": 3500,
+            "R": 45,
+            "B": 105
+          },
+          "SPD": {
+            "G": 1.0,
+            "M": 500,
+            "R": 45,
+            "B": 15
+          },
+          "SDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 45,
+            "B": 100
+          },
+          "LDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 45,
+            "B": 100
+          },
+          "QTH": {
+            "G": 1.0,
+            "M": 10,
+            "R": 45,
+            "B": 10
+          },
+          "DDG": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "SADD": {
+            "G": 1.0,
+            "M": 30,
+            "R": 60,
+            "B": 30
+          }
+        }
+      }
+    },
+    {
+      "DF": 800054006,
+      "bBoss": 1,
+      "eAttackTargetKind": 0,
+      "sNormalAttackFile": "",
+      "sBossStartFile": "",
+      "sBossEndFile": "",
+      "eKind": 31,
+      "iCategory": 12,
+      "musicID": 0,
+      "strName": "ぷにまる",
+      "strAnotherName": "修行相手の",
+      "eSize": 0,
+      "bAura": 0,
+      "fViewRadius": 5.0,
+      "fViewCos": -0.173648179,
+      "fMoveRadius": 8.0,
+      "fMoveSpeed": 2.0,
+      "fHitRadius": 1.2,
+      "bOnlyOnline": 0,
+      "fCullingSide": 8.0,
+      "strDesc": "リコリスの眷属であるぷにぷに？　物理攻撃に強いのが特徴。近頃必殺技の開発に余念がないが、成果は乏しい。",
+      "sParam": {
+        "MDL": "031_12",
+        "NAME": "",
+        "DESC": "",
+        "ELM": {
+          "FIRE": 10,
+          "WATER": -10,
+          "WIND": 0,
+          "EARTH": 0,
+          "LIGHT": 0,
+          "DARK": 0
+        },
+        "SKILL": [
+          {
+            "DF": 8012
+          },
+          {
+            "DF": 5136
+          },
+          {
+            "DF": 5026
+          }
+        ],
+        "SPEC": {
+          "EXP": {
+            "G": 0.6,
+            "M": 300,
+            "R": 45,
+            "B": 100
+          },
+          "HP": {
+            "G": 1.0,
+            "M": 10000,
+            "R": 30,
+            "B": 580
+          },
+          "SATK": {
+            "G": 1.0,
+            "M": 2800,
+            "R": 45,
+            "B": 150
+          },
+          "SDEF": {
+            "G": 1.0,
+            "M": 4000,
+            "R": 45,
+            "B": 140
+          },
+          "MATK": {
+            "G": 1.0,
+            "M": 0,
+            "R": 45,
+            "B": 0
+          },
+          "MDEF": {
+            "G": 1.0,
+            "M": 1000,
+            "R": 45,
+            "B": 140
+          },
+          "SPD": {
+            "G": 1.0,
+            "M": 650,
+            "R": 45,
+            "B": 13
+          },
+          "SDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 45,
+            "B": 100
+          },
+          "LDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 45,
+            "B": 100
+          },
+          "QTH": {
+            "G": 1.0,
+            "M": 10,
+            "R": 45,
+            "B": 10
+          },
+          "DDG": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "SADD": {
+            "G": 1.0,
+            "M": 30,
+            "R": 60,
+            "B": 30
+          }
+        }
+      }
+    },
+    {
+      "DF": 800054007,
+      "bBoss": 1,
+      "eAttackTargetKind": 0,
+      "sNormalAttackFile": "",
+      "sBossStartFile": "",
+      "sBossEndFile": "",
+      "eKind": 31,
+      "iCategory": 1,
+      "musicID": 0,
+      "strName": "プニ之丞",
+      "strAnotherName": "修行相手の",
+      "eSize": 0,
+      "bAura": 0,
+      "fViewRadius": 5.0,
+      "fViewCos": -0.173648179,
+      "fMoveRadius": 8.0,
+      "fMoveSpeed": 2.0,
+      "fHitRadius": 1.2,
+      "bOnlyOnline": 0,
+      "fCullingSide": 8.0,
+      "strDesc": "プニ左衛門の弟子。日夜プニ左衛門を的に鍛えた破壊力は、通常のプニを凌駕する。",
+      "sParam": {
+        "MDL": "031_01",
+        "NAME": "",
+        "DESC": "",
+        "ELM": {
+          "FIRE": -80,
+          "WATER": -80,
+          "WIND": -80,
+          "EARTH": -80,
+          "LIGHT": -80,
+          "DARK": -80
+        },
+        "SKILL": [
+          {
+            "DF": 5026
+          }
+        ],
+        "SPEC": {
+          "EXP": {
+            "G": 0.6,
+            "M": 400,
+            "R": 60,
+            "B": 40
+          },
+          "HP": {
+            "G": 1.0,
+            "M": 10000,
+            "R": 15,
+            "B": 300
+          },
+          "SATK": {
+            "G": 1.0,
+            "M": 3000,
+            "R": 30,
+            "B": 300
+          },
+          "SDEF": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          },
+          "MATK": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          },
+          "MDEF": {
+            "G": 1.0,
+            "M": 10,
+            "R": 60,
+            "B": 10
+          },
+          "SPD": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "SDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "LDA": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          },
+          "QTH": {
+            "G": 1.0,
+            "M": 80,
+            "R": 60,
+            "B": 80
+          },
+          "DDG": {
+            "G": 1.0,
+            "M": 0,
+            "R": 60,
+            "B": 0
+          },
+          "SADD": {
+            "G": 1.0,
+            "M": 100,
+            "R": 60,
+            "B": 100
+          }
+        }
+      }
     }
   ],
   "KindList": [
