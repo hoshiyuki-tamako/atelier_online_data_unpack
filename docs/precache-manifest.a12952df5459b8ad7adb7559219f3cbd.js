@@ -828,7 +828,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/fonts/element-icons.732389de.ttf"
   },
   {
-    "revision": "3bbb349a3bcaaaf0fac0ac2e3fe25990",
+    "revision": "a3bf373634371be46b5d8e2f986c37c5",
     "url": "/atelier_online_data_unpack/generated/files.json"
   },
   {
