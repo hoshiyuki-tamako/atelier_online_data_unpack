@@ -1,8 +1,11 @@
-export interface Skill {
+import { Type } from 'class-transformer';
+
+export class Skill {
     m_GameObject:      MGameObject;
     m_Enabled:         number;
     m_Script:          MGameObject;
     m_Name:            string;
+    @Type(_ => List)
     m_vList:           List[];
     LargeCategoryName: LargeCategoryName[];
     CategoryList:      CategoryList[];
@@ -25,7 +28,7 @@ export interface MGameObject {
     m_PathID: number;
 }
 
-export interface List {
+export class List {
     id:             number;
     name:           string;
     detail:         string;
@@ -54,7 +57,19 @@ export interface List {
     enemyList:      number[];
     enemyListJ:     any[];
     combSkillListJ: any[];
+
+    @Type(_ => List)
     combSkillList?: List[];
+
+    public get icon() {
+      return `img/icon_skill/Texture2D/${this.iconPath}.png`;
+    }
+
+    #attackSkill: List;
+
+    public get attackSkill() {
+      return this.#attackSkill ||= this.combSkillList.find((i) => i.effect === 1) || this;
+    }
 }
 
 export enum IconPath {

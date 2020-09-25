@@ -4,16 +4,9 @@
 
 ## Notes
 
-All files in `./docs/img` `./docs/models` `./docs/export` are NOT license in MIT as those were not belongs to me
+All exported files `images` `models` `export json/csv` are NOT license in MIT as those were not belongs to me
 
 For developer, see `./development.md`
-
-### Below files were not auto generated
-
-- `./docs/3d.html`
-- `./docs/characterBuilder.html`
-- `./docs/composeItem.html`
-- `./docs/effect.html`
 
 ## Running The Script
 
@@ -25,10 +18,10 @@ For developer, see `./development.md`
 npm i
 ```
 
-#### Development Build
+#### Development
 
 ```bash
-npm start
+npm run serve
 ```
 
 #### Production Build
@@ -39,6 +32,7 @@ npm run build
 
 ### Content Update Check List
 
-- copy JSON from AssetStudio to `./docs/export/*` folder json files
-- export Texture2D files to `./docs/img/*`
-- export updated models to `./docs/models/*`
+- copy JSON from AssetStudio to `./public/export/*` folder json files
+- export Texture2D files to `./public/img/*`
+- export updated models to `./public/models/*`
+- run `npm run generate` to optimize/generate files needed for the page

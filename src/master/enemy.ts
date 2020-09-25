@@ -1,8 +1,35 @@
-export interface Enemy {
+import { dataManager } from './../utils/DataManager';
+import { Type } from 'class-transformer';
+import { Formula } from '@/logic/Formula';
+import { List as SkillList } from '@/master/skill';
+
+// custom types
+export interface IElementResult {
+  element: string;
+  label: string;
+  skills?: SkillList[],
+  value: number;
+  skillValue?: number;
+  total: number;
+}
+
+export interface IStateResult {
+  state: string;
+  label: string;
+  skills?: SkillList[],
+  value: number;
+  skillValue?: number;
+  total: number;
+}
+
+// generated types
+export class Enemy {
     m_GameObject: MGameObject;
     m_Enabled:    number;
     m_Script:     MGameObject;
     m_Name:       string;
+
+    @Type(_ => MVList)
     m_vList:      MVList[];
     KindList:     KindList[];
     ModelList:    ModelList[];
@@ -26,7 +53,44 @@ export interface MGameObject {
     m_PathID: number;
 }
 
-export interface MVList {
+export class SPEC {
+  @Type(_ => Formula)
+  EXP: Formula;
+  @Type(_ => Formula)
+  HP: Formula;
+  @Type(_ => Formula)
+  SATK: Formula;
+  @Type(_ => Formula)
+  SDEF: Formula;
+  @Type(_ => Formula)
+  MATK: Formula;
+  @Type(_ => Formula)
+  MDEF: Formula;
+  @Type(_ => Formula)
+  SPD: Formula;
+  @Type(_ => Formula)
+  SDA: Formula;
+  @Type(_ => Formula)
+  LDA: Formula;
+  @Type(_ => Formula)
+  QTH: Formula;
+  @Type(_ => Formula)
+  DDG: Formula;
+  @Type(_ => Formula)
+  SADD: Formula;
+}
+
+export class SParam {
+    MDL:   string;
+    NAME:  string;
+    DESC:  string;
+    ELM:   Elm;
+    SKILL: Skill[];
+    @Type(_ => SPEC)
+    SPEC: SPEC;
+}
+
+export class MVList {
     DF:                number;
     bBoss:             number;
     eAttackTargetKind: number;
@@ -48,7 +112,58 @@ export interface MVList {
     bOnlyOnline:       number;
     fCullingSide:      number;
     strDesc:           string;
+    @Type(_ => SParam)
     sParam:            SParam;
+
+  #elementCache = new Map<string, IElementResult>();
+  #stateCache = new Map<string, IStateResult>();
+
+  public get icon() {
+    return `img/enemy/Texture2D/enemy_tex_${this.sParam.MDL}.png`;
+  }
+
+  public get viewAngleDegree() {
+    return Math.round(Math.acos(this.fViewCos) * (180/Math.PI));
+  }
+
+  //
+  public getState(state: string, level: number) {
+    const key = JSON.stringify({ state, level });
+    if (!this.#stateCache.has(key)) {
+      this.#stateCache.set(key, {
+        state,
+        label: dataManager.lookup.state[state],
+        value: this.sParam.SPEC[state].getValue(level),
+        get total() {
+          return this.value;
+        },
+      });
+    }
+    return this.#stateCache.get(key);
+  }
+
+  public getStates(level: number) {
+    return Object.keys(this.sParam.SPEC).map((state) => this.getState(state, level));
+  }
+
+  public getElement(element: string) {
+    const key = JSON.stringify({ element });
+    if (!this.#elementCache.has(element)) {
+      this.#elementCache.set(key, {
+        element,
+        label: dataManager.lookup.element[element],
+        value: this.sParam.ELM[element],
+        get total() {
+          return this.value;
+        },
+      });
+    }
+    return this.#elementCache.get(key);
+  }
+
+  public getElements() {
+    return Object.keys(this.sParam.ELM).map((element) => this.getElement(element));
+  }
 }
 
 export enum SBossEndFile {
@@ -80,14 +195,6 @@ export enum SNormalAttackFile {
     NormalAttackEnemy44 = "NormalAttack_Enemy_44",
 }
 
-export interface SParam {
-    MDL:   string;
-    NAME:  string;
-    DESC:  string;
-    ELM:   Elm;
-    SKILL: Skill[];
-    SPEC:  { [key: string]: Spec };
-}
 
 export interface Elm {
     FIRE:  number;
@@ -100,11 +207,4 @@ export interface Elm {
 
 export interface Skill {
     DF: number;
-}
-
-export interface Spec {
-    G: number;
-    M: number;
-    R: number;
-    B: number;
 }

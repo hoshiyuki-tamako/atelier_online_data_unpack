@@ -1,0 +1,339 @@
+<template lang="pug">
+div
+  el-dialog(title="" :visible.sync="itemPickerDialogVisible" fullscreen)
+    div.item-picker-container
+      el-select(v-model="itemPickerFilterCategory" style="width: 140px" placeholder="種類" filterable clearable)
+        el-option(v-for="item in itemCategories" :key="item.value" :label="item.label" :value="item.value")
+      el-input(v-model="itemPickerFilterKeyword" :placeholder="`${$t('名前')}/DF`")
+      div.item-picker-items
+        div(v-for="item in filteredItems" @click="onPickItem(item)")
+          p {{ item.NAME }}
+          img.icon-small(:src="item.icon" :alt="item.NAME")
+
+  el-dialog(title="" :visible.sync="exportComposeItemUrlVisible")
+    el-input(type="textarea" :value="href" autosize autofocus)
+
+  div.compose-container
+    div.compose-material-container
+      div.compose-material-top
+        div.compose-material(v-for="(material, i) of materials")
+          v-popover(placement="right-end" trigger="hover")
+            div
+              el-input-number(v-model="materialOptions[i].quality" style="width: 140px" :min="1" :max="100" placeholder="品質" size="small")
+            div
+              el-select(v-model="materialOptions[i].addonQuality" style="width: 140px" placeholder="品質特性" size="small" filterable)
+                el-option(v-for="v in new Array(16).keys()" :key="v" :label="`品質特性 ${v}`" :value="v")
+            div
+              img(:src="material.icon" :alt="material.NAME")
+            template(slot="popover")
+              div.item-popover
+                p {{ material.NAME }}
+                p {{ material.DESC }}
+                router-link(v-if="material.RSP.length" :to="{ name: 'ToolsComposeItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ $t('調合') }}
+
+      div(@click="onPickItemOpen" class="compose-item")
+        div.compose-requirement
+          p(v-for="pickedItem in [compose]")
+            span(v-if="pickedItem.ALT && pickedItem.ALT.CST" class="wealth-container")
+              img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="$t('エーテル')")
+              span {{ pickedItem.ALT.CST }}
+
+        v-popover(placement="right-end" trigger="hover")
+          div(class="compose-item-image")
+            img(:src="compose.icon" :alt="compose.NAME")
+          template(slot="popover")
+            div.item-popover
+              p {{ compose.NAME }}
+              p {{ compose.DESC }}
+              router-link(:to="{ name: 'ItemsItem', query: { df: compose.DF, quality: composeQuality } }" target="_blank") {{ $t('アイテム') }}
+
+    div.compose-result
+      h3 {{ $t('品質') }} {{ composeQuality }}
+      h4 {{ compose.NAME }}
+      div.compose-result-image-container
+        img.compose-result-image(@click="onPickItemOpen" :src="compose.icon" :alt="compose.NAME")
+      div.compose-result-export
+        el-button(@click="onOpenExportUrl" type="primary" circle) URL
+      div.compose-result-skill(v-for="skill in compose.getSkills(composeQuality)")
+        table
+          tr
+            th {{ $t('名前') }}
+            td {{ skill.name }}
+          tr
+            th {{ $t('詳細') }}
+            td {{ skill.detail }}
+          tr
+            th {{ $t('数値') }}
+            td {{ skill.effectValue }}, {{ skill.effectValue2 }}
+          template(v-if="skill.type === 1")
+            tr
+              th {{ $t('属性') }}
+              td {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
+            tr
+              th {{ $t('對象') }}
+              td {{ $t(dataManager.lookup.targetTeam[skill.attackSkill.targetTeam]) }}{{ $t(dataManager.lookup.eFieldItemRange[skill.attackSkill.targetScope]) }}
+            tr(v-if="skill.attackSkill.stateOwn.length")
+              th {{ $t('追加状態 (自)') }}
+              td
+                p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
+            tr(v-if="skill.attackSkill.state.length")
+              th {{ $t('追加状態') }}
+              td
+                p(v-for="[state, abnormalState] of skill.attackSkill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
+        p {{ '>' }}
+</template>
+
+<script lang="ts">
+import Component from 'vue-class-component';
+import VueBase from '@/utils/VueBase';
+import { dataManager } from '@/utils/DataManager';
+import { clamp } from 'lodash';
+import { MVList as ItemMVList } from '@/master/item';
+import { ItemModifier } from '@/logic/modifiers/ItemModifier';
+
+@Component({
+  components: {
+  },
+})
+export default class extends VueBase {
+  public get dataManager() {
+    return dataManager;
+  }
+
+  public get href() {
+    return window.location.href.replace(window.location.hash, '') + this.$router.resolve({ name: 'ToolsComposeItem', query: { df: this.compose.DF.toString(), materialOptions: this.materialOptionsExport } }).href;
+  }
+
+  // state
+  public isRouteLeaveing = false;
+
+  // dialog
+  public itemPickerDialogVisible = false;
+
+  public itemPickerFilterCategory: number | null = null;
+
+  public itemPickerFilterKeyword = '';
+
+  // export
+  public exportComposeItemUrlVisible = false;
+
+  //
+  public materialOptions = [] as ItemModifier[];
+
+  public get materialOptionsExport() {
+    return btoa(JSON.stringify(this.materialOptions));
+  }
+
+  public materials = [] as ItemMVList[];
+
+  public get compose() {
+    return dataManager.itemById[this.$store.state.composeItemFilter.itemDf];
+  }
+
+  public set compose(value: ItemMVList) {
+    this.$store.commit('composeItemFilter/setItemDf', value?.DF);
+  }
+
+  public get itemCategories() {
+    return Object.keys(dataManager.itemsByCategory).map((value) => ({
+      label: this.$t(dataManager.lookup.itemCategory[value]),
+      value: +value,
+    }));
+  }
+
+  public get filteredItems() {
+    return dataManager.itemsHasRecipe.filter((p) => (
+      (!this.itemPickerFilterKeyword || p.DF === +this.itemPickerFilterKeyword || p.NAME.toLocaleLowerCase().includes(this.itemPickerFilterKeyword.toLocaleLowerCase()))
+      && (!this.itemPickerFilterCategory || p.CATEG === this.itemPickerFilterCategory)
+    ));
+  }
+
+  public get composeQuality() {
+    if (!this.materialOptions.length) {
+      return 0;
+    }
+
+    const sumQuality = this.materialOptions.reduce((sum, p) => sum + p.quality, 0);
+    const addonQuality = this.materialOptions.reduce((sum, p) => sum + p.addonQuality, 0);
+    return clamp(Math.floor((sumQuality / this.materialOptions.length) + addonQuality), 1, 100);
+  }
+
+  public beforeMount() {
+    try {
+      if (this.$route.query.df) {
+        const item = dataManager.itemById[this.$route.query.df as string];
+        if (item) {
+          if (dataManager.itemsHasRecipe.some((p) => p.DF === item.DF)) {
+            this.onPickItem(item, +this.$route.query.quality);
+            if (this.$route.query.materialOptions) {
+              const materialOptions = JSON.parse(atob(this.$route.query.materialOptions as string));
+              for (const [i, materialOption] of this.materialOptions.entries()) {
+                const thatOption = materialOptions[i] || materialOption;
+                materialOption.quality = thatOption.quality || materialOption.quality;
+                materialOption.addonQuality = thatOption.addonQuality || materialOption.addonQuality;
+              }
+            }
+            return;
+          }
+        }
+      }
+
+      if (this.compose) {
+        this.onPickItem(this.compose);
+        return;
+      }
+      this.onPickItem(dataManager.itemsHasRecipe[0]);
+    } catch (e) {
+      this.$message.error(e.toString());
+      console.error(e);
+    }
+  }
+
+  // dialog
+  public onPickItem(item: ItemMVList, _quality = 10, _addonQuality = 0) {
+    const quality = clamp(_quality || 10, 1, 100);
+    const addonQuality = clamp(_addonQuality || 0, 0, 15);
+
+    this.compose = item;
+    const items = item.RSP.map((rsp) => new Array(rsp.NC).fill(dataManager.itemById[rsp.DF])).flat();
+    this.materialOptions = Array.from({ length: items.length }, () => Object.assign(new ItemModifier(), { quality, addonQuality }));
+    this.materials = items;
+    this.itemPickerDialogVisible = false;
+  }
+
+  // export url
+  public onOpenExportUrl() {
+    this.exportComposeItemUrlVisible = true;
+  }
+
+  // compose target
+  public onPickItemOpen() {
+    this.itemPickerDialogVisible = true;
+  }
+
+  public getPickedItemSkills() {
+    if (!this.compose) {
+      return [];
+    }
+    const quality = this.composeQuality;
+    const filteredSkills = this.compose.SPC.filter((p) => p.THR <= quality);
+    if (!filteredSkills.length) {
+      return [];
+    }
+    filteredSkills.sort((a, b) => a.THR - b.THR);
+    return filteredSkills[filteredSkills.length - 1].SKILL
+      .map((p) => dataManager.skillById[p.DF])
+      .filter((p) => p);
+  }
+
+  public updateUrlParams() {
+    const query = { ...this.$route.query };
+    query.df = this.compose.DF.toString();
+    query.materialOptions = this.materialOptionsExport;
+    try {
+      this.$router.replace({ query });
+    } catch (e) {
+      if (e.name !== 'NavigationDuplicated') {
+        console.error(e);
+      }
+    }
+  }
+}
+</script>
+
+<style lang="sass" scoped>
+a
+  text-decoration: none
+
+/* item picker dialog
+.item-picker-items
+  display: flex
+  flex-wrap: wrap
+  text-align: center
+  padding-top: 36px
+
+  > div
+    width: 140px
+    cursor: pointer
+
+    > p
+      white-space: nowrap
+      text-overflow: ellipsis
+      overflow: hidden
+
+.compose-container
+  display: flex
+
+.compose-material-container
+  display: flex
+  flex-direction: column
+  background: rgb(224, 195, 151)
+  padding: 36px
+  min-height: 100vh
+
+.compose-material-top
+  display: flex
+  flex-wrap: wrap
+  flex-direction: row
+  text-align: center
+  max-width: 940px
+
+  img
+    width: 120px
+    text-align: center
+
+.compose-material
+  margin: 24px
+
+/* target
+.compose-item
+  display: flex
+  flex-direction: column
+  align-items: center
+
+.compose-requirement
+  width: 120px
+  display: flex
+  flex-direction: column
+  align-items: center
+  text-align: center
+
+.compose-item-image img
+  cursor: pointer
+  width: 200px
+  height: 200px
+  padding-top: 12px
+  text-align: center
+  justify-content: center
+  align-items: center
+
+.item-popover
+  border: 2px solid green
+  width: 200px
+  color: black
+  background: white
+  height: auto
+  padding: 4px
+
+/* compose result
+.compose-result
+  padding: 36px
+
+  h3, h4
+    text-align: center
+
+.compose-result-image-container
+  text-align: center
+
+.compose-result-image
+  width: 240px
+  cursor: pointer
+
+.compose-result-export
+  text-align: center
+
+.compose-result-skill tr th
+  white-space: nowrap
+  text-align: left
+  padding: 4px
+</style>

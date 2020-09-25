@@ -103,7 +103,7 @@ Info for developer
       "R": 0,
       "B": 0
     },
-    "QTH": {
+    "QTH": { //critical hit
       "G": 0.0,
       "M": 0,
       "R": 0,
@@ -261,9 +261,9 @@ Info for developer
   "overrideID": 0, // remove skill that may match in a skills list, relationship to skill.id
   "markID": 0, // effect icon that show above player/on the item special effect icon
   "skillLV": 0, // skill level, technically anything that != 0 can be apply to item as a skill
-  "rarity": 1,
-  "category": 0,
-  "specialVoiceID": 0,
+  "rarity": 1, // for 調合 items
+  "category": 0, // 調合 effect category e.g. 品質上昇/強化
+  "specialVoiceID": 0, // for skill
   "enemyList": [ // skills that automatic apply when battle with that enemy
     800001004, // relationship to enemy.DF
     800001006

@@ -1,0 +1,265 @@
+<template lang="pug">
+div.container
+  div.filters
+    div.filter
+      el-select(v-model="eKind" clearable filterable)
+        el-option(v-for="item of enemyCategoryFilter" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span LV
+      el-input-number(v-model="level" size="mini" :min="1" :step="1" step-strictly)
+  div.filters
+    div.filter
+      el-checkbox(v-model="showColumnTotalState") {{ $t('総戦闘力') }}
+      el-checkbox(v-model="showColumnEXP") {{ $t('EXP') }}
+      el-checkbox(v-model="showColumnHP") {{ $t('HP') }}
+      el-checkbox(v-model="showColumnSATK") {{ $t('物理攻撃') }}
+      el-checkbox(v-model="showColumnSDEF") {{ $t('物理防禦') }}
+      el-checkbox(v-model="showColumnMATK") {{ $t('魔法攻撃') }}
+      el-checkbox(v-model="showColumnMDEF") {{ $t('魔法防禦') }}
+      el-checkbox(v-model="showColumnSPD") {{ $t('速度') }}
+      el-checkbox(v-model="showColumnQTH") {{ $t('クリティカル') }}
+      el-checkbox(v-model="showColumnDDG") {{ $t('回避') }}
+      el-checkbox(v-model="showColumnTotalElement") {{ $t('全属性') }}
+      el-checkbox(v-model="showColumnFIRE") {{ $t('火') }}
+      el-checkbox(v-model="showColumnWATER") {{ $t('水') }}
+      el-checkbox(v-model="showColumnEARTH") {{ $t('土') }}
+      el-checkbox(v-model="showColumnWIND") {{ $t('風') }}
+      el-checkbox(v-model="showColumnLIGHT") {{ $t('光') }}
+      el-checkbox(v-model="showColumnDARK") {{ $t('闇') }}
+
+  el-table(:data="filteredData")
+    el-table-column(prop="NAME" :label="$t('名前')")
+      template(slot-scope="scope")
+        span {{ scope.row.strName }}
+        router-link(:to="{ name: 'EnemiesEnemy', query: { df: scope.row.DF } }" target="_blank")
+          img.icon-small(:src="scope.row.icon" :alt="scope.row.strName")
+    el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" width="100%" sortable)
+    el-table-column(v-if="showColumnEXP" prop="EXP" :label="$t('EXP')" width="100%" sortable)
+    el-table-column(v-if="showColumnHP" prop="HP" :label="$t('HP')" width="100%" sortable)
+    el-table-column(v-if="showColumnSATK" prop="SATK" :label="$t('物理攻撃')" width="100%" sortable)
+    el-table-column(v-if="showColumnSDEF" prop="SDEF" :label="$t('物理防禦')" width="100%" sortable)
+    el-table-column(v-if="showColumnMATK" prop="MATK" :label="$t('魔法攻撃')" width="100%" sortable)
+    el-table-column(v-if="showColumnMDEF" prop="MDEF" :label="$t('魔法防禦')" width="100%" sortable)
+    el-table-column(v-if="showColumnSPD" prop="SPD" :label="$t('速度')" width="100%" sortable)
+    el-table-column(v-if="showColumnQTH" prop="QTH" :label="$t('クリティカル')" sortable)
+    el-table-column(v-if="showColumnDDG" prop="DDG" :label="$t('回避')" width="100%" sortable)
+    el-table-column(v-if="showColumnTotalElement" prop="totalElement" :label="$t('全属性')" width="100%" sortable)
+    el-table-column(v-if="showColumnFIRE" prop="FIRE" :label="$t('火')" width="100%" sortable)
+    el-table-column(v-if="showColumnWATER" prop="WATER" :label="$t('水')" width="100%" sortable)
+    el-table-column(v-if="showColumnEARTH" prop="EARTH" :label="$t('土')" width="100%" sortable)
+    el-table-column(v-if="showColumnWIND" prop="WIND" :label="$t('風')" width="100%" sortable)
+    el-table-column(v-if="showColumnLIGHT" prop="LIGHT" :label="$t('光')" width="100%" sortable)
+    el-table-column(v-if="showColumnDARK" prop="DARK" :label="$t('闇')" width="100%" sortable)
+</template>
+
+<script lang="ts">
+import Component from 'vue-class-component';
+import VueBase from '@/utils/VueBase';
+import { dataManager } from '@/utils/DataManager';
+import { sum } from 'lodash';
+
+@Component({
+  components: {
+  },
+})
+export default class extends VueBase {
+  public get dataManager() {
+    return dataManager;
+  }
+
+  public get enemyCategoryFilter() {
+    return dataManager.enemy.KindList
+      .filter((p) => p.iKind)
+      .map((p) => ({
+        label: p.strName,
+        value: p.iKind,
+      }));
+  }
+
+  get eKind() {
+    return this.$store.state.enemyRankingFilter.eKind;
+  }
+
+  set eKind(value) {
+    this.$store.commit('enemyRankingFilter/setEKind', value);
+  }
+
+  get level() {
+    return this.$store.state.enemyRankingFilter.level;
+  }
+
+  set level(value) {
+    this.$store.commit('enemyRankingFilter/setLevel', value);
+  }
+
+  get showColumnTotalState() {
+    return this.$store.state.enemyRankingFilter.showColumnTotalState;
+  }
+
+  set showColumnTotalState(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnTotalState', value);
+  }
+
+  get showColumnEXP() {
+    return this.$store.state.enemyRankingFilter.showColumnEXP;
+  }
+
+  set showColumnEXP(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnEXP', value);
+  }
+
+  get showColumnHP() {
+    return this.$store.state.enemyRankingFilter.showColumnHP;
+  }
+
+  set showColumnHP(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnHP', value);
+  }
+
+  get showColumnSATK() {
+    return this.$store.state.enemyRankingFilter.showColumnSATK;
+  }
+
+  set showColumnSATK(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnSATK', value);
+  }
+
+  get showColumnSDEF() {
+    return this.$store.state.enemyRankingFilter.showColumnSDEF;
+  }
+
+  set showColumnSDEF(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnSDEF', value);
+  }
+
+  get showColumnMATK() {
+    return this.$store.state.enemyRankingFilter.showColumnMATK;
+  }
+
+  set showColumnMATK(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnMATK', value);
+  }
+
+  get showColumnMDEF() {
+    return this.$store.state.enemyRankingFilter.showColumnMDEF;
+  }
+
+  set showColumnMDEF(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnMDEF', value);
+  }
+
+  get showColumnSPD() {
+    return this.$store.state.enemyRankingFilter.showColumnSPD;
+  }
+
+  set showColumnSPD(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnSPD', value);
+  }
+
+  get showColumnQTH() {
+    return this.$store.state.enemyRankingFilter.showColumnQTH;
+  }
+
+  set showColumnQTH(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnQTH', value);
+  }
+
+  get showColumnDDG() {
+    return this.$store.state.enemyRankingFilter.showColumnDDG;
+  }
+
+  set showColumnDDG(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnDDG', value);
+  }
+
+  get showColumnTotalElement() {
+    return this.$store.state.enemyRankingFilter.showColumnTotalElement;
+  }
+
+  set showColumnTotalElement(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnTotalElement', value);
+  }
+
+  get showColumnFIRE() {
+    return this.$store.state.enemyRankingFilter.showColumnFIRE;
+  }
+
+  set showColumnFIRE(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnFIRE', value);
+  }
+
+  get showColumnWATER() {
+    return this.$store.state.enemyRankingFilter.showColumnWATER;
+  }
+
+  set showColumnWATER(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnWATER', value);
+  }
+
+  get showColumnEARTH() {
+    return this.$store.state.enemyRankingFilter.showColumnEARTH;
+  }
+
+  set showColumnEARTH(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnEARTH', value);
+  }
+
+  get showColumnWIND() {
+    return this.$store.state.enemyRankingFilter.showColumnWIND;
+  }
+
+  set showColumnWIND(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnWIND', value);
+  }
+
+  get showColumnLIGHT() {
+    return this.$store.state.enemyRankingFilter.showColumnLIGHT;
+  }
+
+  set showColumnLIGHT(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnLIGHT', value);
+  }
+
+  get showColumnDARK() {
+    return this.$store.state.enemyRankingFilter.showColumnDARK;
+  }
+
+  set showColumnDARK(value) {
+    this.$store.commit('enemyRankingFilter/setShowColumnDARK', value);
+  }
+
+  public get enemies() {
+    return this.eKind ? (dataManager.enemiesByEKind[this.eKind] || []) : dataManager.enemiesHasValidSpec;
+  }
+
+  public get filteredData() {
+    return this.enemies.map((p) => ({
+      DF: p.DF,
+      strName: p.strName,
+      icon: p.icon,
+      totalState: sum(p.getStates(this.level).map((i) => i.total)),
+      EXP: p.getState('EXP', this.level).total,
+      HP: p.getState('HP', this.level).total,
+      SATK: p.getState('SATK', this.level).total,
+      SDEF: p.getState('SDEF', this.level).total,
+      MATK: p.getState('MATK', this.level).total,
+      MDEF: p.getState('MDEF', this.level).total,
+      SPD: p.getState('SPD', this.level).total,
+      QTH: p.getState('QTH', this.level).total,
+      DDG: p.getState('DDG', this.level).total,
+      totalElement: sum(p.getElements().map((i) => i.total)),
+      FIRE: p.getElement('FIRE').total,
+      WATER: p.getElement('WATER').total,
+      EARTH: p.getElement('EARTH').total,
+      WIND: p.getElement('WIND').total,
+      LIGHT: p.getElement('LIGHT').total,
+      DARK: p.getElement('DARK').total,
+    }));
+  }
+}
+</script>
+
+<style lang="sass" scoped>
+a
+  text-decoration: none
+</style>
