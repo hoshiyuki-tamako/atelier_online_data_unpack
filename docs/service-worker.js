@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/atelier_online_data_unpack/precache-manifest.3f65b07ca907c960441f5d6c7032cb88.js"
+  "/atelier_online_data_unpack/precache-manifest.36c58380fc81c8b8b16ad9c38f268e01.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "atelier_online_data_unpack"});

@@ -25,18 +25,22 @@ export class SpawnerDataManager {
     spawnListFolders.push('SpawnList', 'TextAsset');
 
     return Promise.all(Object.values(spawnFiles.SpawnList.TextAsset).map(async (csvFileName: string) => {
-      const url = spawnListFolders.join('/') + `/${csvFileName}`;
-      const spawnLists = await csv({
-        noheader: true,
-        output: 'csv',
-      }).fromString(await fetch(url).then((i) => i.text()));
+      try {
+        const url = spawnListFolders.join('/') + `/${csvFileName}`;
+        const spawnLists = await csv({
+          noheader: true,
+          output: 'csv',
+        }).fromString(await fetch(url).then((i) => i.text()));
 
-      this.spawnLists.set(csvFileName, spawnLists.map((row) => {
-        const that = new SpawnerData();
-        that.DF = +row[0];
-        that.spawnerKind = +row[1];
-        return that;
-      }));
+        this.spawnLists.set(csvFileName, spawnLists.map((row) => {
+          const that = new SpawnerData();
+          that.DF = +row[0];
+          that.spawnerKind = +row[1];
+          return that;
+        }));
+      } catch (e) {
+        console.error(e);
+      }
     }));
   }
 

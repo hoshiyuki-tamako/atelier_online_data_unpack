@@ -104,8 +104,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/ToolsEnemyRanking.704aac7e.css"
   },
   {
-    "revision": "92ff12d5101c100c7acd",
-    "url": "/atelier_online_data_unpack/css/app.d3405bc4.css"
+    "revision": "41a09c027889f9d8704d",
+    "url": "/atelier_online_data_unpack/css/app.e436132b.css"
   },
   {
     "revision": "e860a143580c4db1c62d28b7c795b382",
@@ -765,11 +765,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   },
   {
     "revision": "914908e027842350741d6566af6f045b",
-    "url": "/atelier_online_data_unpack/export/tw/fieldName.json"
+    "url": "/atelier_online_data_unpack/export/tw/fieldname.json"
   },
   {
     "revision": "eb8445aa36ac49c24cd28168f9ec5b9a",
-    "url": "/atelier_online_data_unpack/export/tw/gateInfo.json"
+    "url": "/atelier_online_data_unpack/export/tw/gateinfo.json"
   },
   {
     "revision": "f1c02e26b9e086c10cd539efcc3b7e4a",
@@ -11908,7 +11908,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/img/tips/Texture2D/Tips_Chara_01.png"
   },
   {
-    "revision": "00035da1fd4c52caf15bce50f775751f",
+    "revision": "f4b40b6eb863bde34370154e6d4faf3c",
     "url": "/atelier_online_data_unpack/index.html"
   },
   {
@@ -12020,8 +12020,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/ToolsEquipmentRanking.bd499f3b.js"
   },
   {
-    "revision": "92ff12d5101c100c7acd",
-    "url": "/atelier_online_data_unpack/js/app.f99b9e93.js"
+    "revision": "41a09c027889f9d8704d",
+    "url": "/atelier_online_data_unpack/js/app.97195e95.js"
   },
   {
     "revision": "0fa09197c45d755889e5ab649440792a",

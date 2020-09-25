@@ -88,8 +88,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/ToolsEnemyRanking.704aac7e.css"
   },
   {
-    "revision": "5034435640d2c117339b",
-    "url": "/atelier_online_data_unpack/css/app.d3405bc4.css"
+    "revision": "9caf2b50bdae09090c82",
+    "url": "/atelier_online_data_unpack/css/app.e436132b.css"
   },
   {
     "revision": "11199f1f593fcab805c4",
@@ -104,7 +104,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/fonts/element-icons.732389de.ttf"
   },
   {
-    "revision": "85ac3921214585e19acef435fa0ab699",
+    "revision": "09d63f87eb06180e726f03a5ac6ae79b",
     "url": "/atelier_online_data_unpack/index.html"
   },
   {
@@ -216,8 +216,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/ToolsEquipmentRanking-legacy.89cc8949.js"
   },
   {
-    "revision": "5034435640d2c117339b",
-    "url": "/atelier_online_data_unpack/js/app-legacy.6a574fbe.js"
+    "revision": "9caf2b50bdae09090c82",
+    "url": "/atelier_online_data_unpack/js/app-legacy.607973ba.js"
   },
   {
     "revision": "11199f1f593fcab805c4",

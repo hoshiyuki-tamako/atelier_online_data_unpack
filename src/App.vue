@@ -45,8 +45,9 @@ export default class extends VueBase {
   public pageLoading = true;
 
   public async beforeCreate() {
+    let maxRetry = 10;
     let completed = false;
-    while (!completed) {
+    while (!completed && maxRetry > 0) {
       try {
         this.$i18n.locale = new URLSearchParams(window.location.search).get('locale') || 'ja-JP';
         document.title = this.$t(document.title).toString();
@@ -54,6 +55,7 @@ export default class extends VueBase {
         this.pageLoading = false;
         completed = true;
       } catch (e) {
+        maxRetry -= 1;
         this.$message.error(e.toString());
         console.error(e);
         await sleep(ms('3s'));
