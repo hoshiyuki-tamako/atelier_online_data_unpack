@@ -7,7 +7,6 @@ module.exports = {
   pwa: {
     name: 'アトリエオンライン資料庫',
     manifestOptions: {
-      manifestPath: '',
       icons: [
         {
           src: './img/icons/favicon-32x32.png',

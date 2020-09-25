@@ -224,7 +224,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/chunk-vendors-legacy.1b1ca0be.js"
   },
   {
-    "revision": "77ad69d7d5bb638d9346e9a896ca588a",
+    "revision": "9cc4dae82a0480fbf6dcf3805e75f02f",
     "url": "/atelier_online_data_unpack/manifest.json"
   }
 ]);
