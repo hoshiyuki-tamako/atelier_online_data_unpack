@@ -8,8 +8,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/Characters.323d2475.css"
   },
   {
-    "revision": "14a99ce66998bdbb77cc",
-    "url": "/atelier_online_data_unpack/css/CharactersCharacter.16d1ef08.css"
+    "revision": "059895e9c7aa0019d1ff",
+    "url": "/atelier_online_data_unpack/css/CharactersCharacter.b2171730.css"
   },
   {
     "revision": "e164bd534aaae0e6c517",
@@ -92,7 +92,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/ToolsEnemyRanking.704aac7e.css"
   },
   {
-    "revision": "0e135380ec36a9bf3e4f",
+    "revision": "4e0f457271d9e2e3c602",
     "url": "/atelier_online_data_unpack/css/app.b212fcb2.css"
   },
   {
@@ -108,7 +108,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/fonts/element-icons.732389de.ttf"
   },
   {
-    "revision": "684f85a769e8d6caead111f83ce3f9ba",
+    "revision": "2e13daec9130af38e78403e0dcdd8336",
     "url": "/atelier_online_data_unpack/index.html"
   },
   {
@@ -120,8 +120,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/Characters-legacy.7d6e3e79.js"
   },
   {
-    "revision": "14a99ce66998bdbb77cc",
-    "url": "/atelier_online_data_unpack/js/CharactersCharacter-legacy.4e80cc22.js"
+    "revision": "059895e9c7aa0019d1ff",
+    "url": "/atelier_online_data_unpack/js/CharactersCharacter-legacy.87d483e6.js"
   },
   {
     "revision": "e164bd534aaae0e6c517",
@@ -220,8 +220,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/ToolsEquipmentRanking-legacy.3057a8f9.js"
   },
   {
-    "revision": "0e135380ec36a9bf3e4f",
-    "url": "/atelier_online_data_unpack/js/app-legacy.562e4927.js"
+    "revision": "4e0f457271d9e2e3c602",
+    "url": "/atelier_online_data_unpack/js/app-legacy.7967ac7c.js"
   },
   {
     "revision": "dd1c7a6feca70cb5d5da",

@@ -212,7 +212,7 @@ export default class extends VueBase {
   }
 
   public get images() {
-    return Object.values(dataManager.files.img.chara.Texture2D)
+    return Object.values(dataManager.files.img.icon_chara.Texture2D)
       .filter((p: string) => p.startsWith(`icon_chara_all_${this.character.DF.toString().padStart(4, '0')}`))
       .map((p) => `img/icon_chara/Texture2D/${p}`);
   }

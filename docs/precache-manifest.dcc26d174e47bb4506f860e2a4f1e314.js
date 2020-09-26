@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/Characters.323d2475.css"
   },
   {
-    "revision": "9bca76d38bac4e743832",
-    "url": "/atelier_online_data_unpack/css/CharactersCharacter.16d1ef08.css"
+    "revision": "d3057c10b6a7fc21c502",
+    "url": "/atelier_online_data_unpack/css/CharactersCharacter.b2171730.css"
   },
   {
     "revision": "ee28aa9797bf12de4a3f",
@@ -104,7 +104,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/ToolsEnemyRanking.704aac7e.css"
   },
   {
-    "revision": "7f649e63aabe7835e7e1",
+    "revision": "5d98bb38cd1a552f4274",
     "url": "/atelier_online_data_unpack/css/app.b212fcb2.css"
   },
   {
@@ -832,7 +832,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/generated/areaModel.json"
   },
   {
-    "revision": "d74e5018b665d3a01830ed3da431f444",
+    "revision": "2b3554afd7786c61d35bdeade9e5f0a9",
     "url": "/atelier_online_data_unpack/generated/files.json"
   },
   {
@@ -17384,7 +17384,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/img/tips/Texture2D/Tips_Chara_01.png"
   },
   {
-    "revision": "f9b2d519039f95f9a1dd6f7d18c20be0",
+    "revision": "2fec9a666720e3bf60e27a11f9aae312",
     "url": "/atelier_online_data_unpack/index.html"
   },
   {
@@ -17396,8 +17396,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/Characters.58f1abf7.js"
   },
   {
-    "revision": "9bca76d38bac4e743832",
-    "url": "/atelier_online_data_unpack/js/CharactersCharacter.544386fe.js"
+    "revision": "d3057c10b6a7fc21c502",
+    "url": "/atelier_online_data_unpack/js/CharactersCharacter.b187a137.js"
   },
   {
     "revision": "ee28aa9797bf12de4a3f",
@@ -17496,8 +17496,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/ToolsEquipmentRanking.ace4f41d.js"
   },
   {
-    "revision": "7f649e63aabe7835e7e1",
-    "url": "/atelier_online_data_unpack/js/app.672d6c04.js"
+    "revision": "5d98bb38cd1a552f4274",
+    "url": "/atelier_online_data_unpack/js/app.8bd0bee1.js"
   },
   {
     "revision": "d929ad68b9e13d9082d2",
