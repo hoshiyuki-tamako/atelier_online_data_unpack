@@ -89,7 +89,7 @@ import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
 import { clamp } from 'lodash';
 import { MVList as ItemMVList } from '@/master/item';
-import { ItemModifier } from '@/logic/modifiers/ItemModifier';
+import { MaterialOptions } from '@/store/tools/composeItemFilter';
 
 @Component({
   components: {
@@ -115,13 +115,12 @@ export default class extends VueBase {
   public exportComposeItemUrlVisible = false;
 
   //
-  // public materialOptions = [] as ItemModifier[];
   public get materialOptions() {
-    return this.$store.state.composeItemFilter.itemModifiers;
+    return this.$store.state.composeItemFilter.materialOptions;
   }
 
   public set materialOptions(value) {
-    this.$store.commit('composeItemFilter/setItemModifiers', value);
+    this.$store.commit('composeItemFilter/setMaterialOptions', value);
   }
 
   public get materialOptionsExport() {
@@ -210,7 +209,7 @@ export default class extends VueBase {
 
     this.compose = item;
     const items = this.compose.RSP.map((rsp) => new Array(rsp.NC).fill(dataManager.itemById[rsp.DF])).flat();
-    this.materialOptions = Array.from({ length: items.length }, () => Object.assign(new ItemModifier(), { quality, addonQuality }));
+    this.materialOptions = Array.from({ length: items.length }, () => Object.assign(new MaterialOptions(), { quality, addonQuality }));
     this.materials = items;
     this.itemPickerDialogVisible = false;
   }

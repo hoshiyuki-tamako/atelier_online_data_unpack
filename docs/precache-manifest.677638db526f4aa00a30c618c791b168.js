@@ -20,7 +20,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/Characters.323d2475.css"
   },
   {
-    "revision": "d3057c10b6a7fc21c502",
+    "revision": "3a5cf9c2ebe1173c4a34",
     "url": "/atelier_online_data_unpack/css/CharactersCharacter.b2171730.css"
   },
   {
@@ -28,7 +28,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/Enemies.348a547a.css"
   },
   {
-    "revision": "5d2bdfdf9b6133a243b9",
+    "revision": "1eed65d254ddce79665a",
     "url": "/atelier_online_data_unpack/css/EnemiesEnemy.b705a619.css"
   },
   {
@@ -56,7 +56,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/Items.db6e659b.css"
   },
   {
-    "revision": "0923cb03a46333d078dd",
+    "revision": "ce260df8ca981ab0a647",
     "url": "/atelier_online_data_unpack/css/ItemsItem.d9dca5a4.css"
   },
   {
@@ -88,7 +88,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/SkillsEffect.5112b8e3.css"
   },
   {
-    "revision": "7c4294a171142934a3bd",
+    "revision": "fa5c6a70776aeaf2961d",
     "url": "/atelier_online_data_unpack/css/ToolsCharacterBuilder.7c2c0dcf.css"
   },
   {
@@ -96,15 +96,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/ToolsCharacterRanking.ea95bba2.css"
   },
   {
-    "revision": "cb70b4093400c9aae027",
-    "url": "/atelier_online_data_unpack/css/ToolsComposeItem.c9e3ecd8.css"
+    "revision": "51cb0974eb4e0afffcbc",
+    "url": "/atelier_online_data_unpack/css/ToolsComposeItem.6e129a50.css"
   },
   {
     "revision": "2a187f21ac9800e3ae49",
     "url": "/atelier_online_data_unpack/css/ToolsEnemyRanking.704aac7e.css"
   },
   {
-    "revision": "e078eb204cd1358fcd33",
+    "revision": "4efdc67bef067b0d1f6b",
     "url": "/atelier_online_data_unpack/css/app.027d4e90.css"
   },
   {
@@ -17384,7 +17384,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/img/tips/Texture2D/Tips_Chara_01.png"
   },
   {
-    "revision": "dd572e15f327862a2467ea2ce6cce84f",
+    "revision": "a3b2157b6fe9cb0393e5723d38470eaa",
     "url": "/atelier_online_data_unpack/index.html"
   },
   {
@@ -17396,16 +17396,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/Characters.58f1abf7.js"
   },
   {
-    "revision": "d3057c10b6a7fc21c502",
-    "url": "/atelier_online_data_unpack/js/CharactersCharacter.b187a137.js"
+    "revision": "3a5cf9c2ebe1173c4a34",
+    "url": "/atelier_online_data_unpack/js/CharactersCharacter.7f6f70f4.js"
   },
   {
     "revision": "ee28aa9797bf12de4a3f",
     "url": "/atelier_online_data_unpack/js/Enemies.2e3745f0.js"
   },
   {
-    "revision": "5d2bdfdf9b6133a243b9",
-    "url": "/atelier_online_data_unpack/js/EnemiesEnemy.8f5e97f0.js"
+    "revision": "1eed65d254ddce79665a",
+    "url": "/atelier_online_data_unpack/js/EnemiesEnemy.d4baf4f2.js"
   },
   {
     "revision": "a6f47f62b0eaa87fdc8f",
@@ -17432,8 +17432,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/Items.171e37d9.js"
   },
   {
-    "revision": "0923cb03a46333d078dd",
-    "url": "/atelier_online_data_unpack/js/ItemsItem.ae7d40e0.js"
+    "revision": "ce260df8ca981ab0a647",
+    "url": "/atelier_online_data_unpack/js/ItemsItem.552c2d92.js"
   },
   {
     "revision": "d63468d5431557f5e813",
@@ -17476,16 +17476,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/SkillsEffect.161e22dc.js"
   },
   {
-    "revision": "7c4294a171142934a3bd",
-    "url": "/atelier_online_data_unpack/js/ToolsCharacterBuilder.51400d65.js"
+    "revision": "fa5c6a70776aeaf2961d",
+    "url": "/atelier_online_data_unpack/js/ToolsCharacterBuilder.96e55995.js"
   },
   {
     "revision": "39f548d0ed8a771ace3e",
     "url": "/atelier_online_data_unpack/js/ToolsCharacterRanking.288d74f0.js"
   },
   {
-    "revision": "cb70b4093400c9aae027",
-    "url": "/atelier_online_data_unpack/js/ToolsComposeItem.007a3ef8.js"
+    "revision": "51cb0974eb4e0afffcbc",
+    "url": "/atelier_online_data_unpack/js/ToolsComposeItem.52c8806d.js"
   },
   {
     "revision": "2a187f21ac9800e3ae49",
@@ -17496,8 +17496,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/ToolsEquipmentRanking.ace4f41d.js"
   },
   {
-    "revision": "e078eb204cd1358fcd33",
-    "url": "/atelier_online_data_unpack/js/app.35002a69.js"
+    "revision": "4efdc67bef067b0d1f6b",
+    "url": "/atelier_online_data_unpack/js/app.64b12d40.js"
   },
   {
     "revision": "d929ad68b9e13d9082d2",
