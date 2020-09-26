@@ -2,7 +2,7 @@
 div
   el-dialog(title="" :visible.sync="itemPickerDialogVisible" fullscreen)
     div.item-picker-container
-      el-select(v-model="itemPickerFilterCategory" style="width: 140px" placeholder="種類" filterable clearable)
+      el-select.compose-input--size(v-model="itemPickerFilterCategory" :placeholder="$t('種類')" filterable clearable)
         el-option(v-for="item in itemCategories" :key="item.value" :label="item.label" :value="item.value")
       el-input(v-model="itemPickerFilterKeyword" :placeholder="`${$t('名前')}/DF`")
       div.item-picker-items
@@ -11,7 +11,7 @@ div
           img.icon-small(:src="item.icon" :alt="item.NAME")
 
   el-dialog(title="" :visible.sync="exportComposeItemUrlVisible")
-    el-input(type="textarea" :value="href" autosize autofocus)
+    el-input(type="textarea" :value="href" autosize)
 
   div.compose-container
     div.compose-material-container
@@ -19,10 +19,10 @@ div
         div.compose-material(v-for="(material, i) of materials")
           v-popover(placement="right-end" trigger="hover")
             div
-              el-input-number(v-model="materialOptions[i].quality" style="width: 140px" :min="1" :max="100" placeholder="品質" size="small")
+              el-input-number.compose-input--size(v-model="materialOptions[i].quality" :min="1" :max="100" :placeholder="$t('品質')" size="small")
             div
-              el-select(v-model="materialOptions[i].addonQuality" style="width: 140px" placeholder="品質特性" size="small" filterable)
-                el-option(v-for="v in new Array(16).keys()" :key="v" :label="`品質特性 ${v}`" :value="v")
+              el-select.compose-input--size(v-model="materialOptions[i].addonQuality" :placeholder="$t('品質特性')" size="small" filterable)
+                el-option(v-for="v in new Array(16).keys()" :key="v" :label="`${$t('品質特性')} ${v}`" :value="v")
             div
               img(:src="material.icon" :alt="material.NAME")
             template(slot="popover")
@@ -31,15 +31,15 @@ div
                 p {{ material.DESC }}
                 router-link(v-if="material.RSP.length" :to="{ name: 'ToolsComposeItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ $t('調合') }}
 
-      div(@click="onPickItemOpen" class="compose-item")
+      div.compose-item(@click="itemPickerDialogVisible = true")
         div.compose-requirement
           p(v-for="pickedItem in [compose]")
-            span(v-if="pickedItem.ALT && pickedItem.ALT.CST" class="wealth-container")
+            span.wealth-container(v-if="pickedItem.ALT && pickedItem.ALT.CST")
               img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="$t('エーテル')")
               span {{ pickedItem.ALT.CST }}
 
         v-popover(placement="right-end" trigger="hover")
-          div(class="compose-item-image")
+          div.compose-item-image
             img(:src="compose.icon" :alt="compose.NAME")
           template(slot="popover")
             div.item-popover
@@ -51,9 +51,9 @@ div
       h3 {{ $t('品質') }} {{ composeQuality }}
       h4 {{ compose.NAME }}
       div.compose-result-image-container
-        img.compose-result-image(@click="onPickItemOpen" :src="compose.icon" :alt="compose.NAME")
+        img.compose-result-image(@click="itemPickerDialogVisible = true" :src="compose.icon" :alt="compose.NAME")
       div.compose-result-export
-        el-button(@click="onOpenExportUrl" type="primary" circle) URL
+        el-button(@click="exportComposeItemUrlVisible = true" type="primary" circle) URL
       div.compose-result-skill(v-for="skill in compose.getSkills(composeQuality)")
         table
           tr
@@ -104,9 +104,6 @@ export default class extends VueBase {
     return window.location.href.replace(window.location.hash, '') + this.$router.resolve({ name: 'ToolsComposeItem', query: { df: this.compose.DF.toString(), materialOptions: this.materialOptionsExport } }).href;
   }
 
-  // state
-  public isRouteLeaveing = false;
-
   // dialog
   public itemPickerDialogVisible = false;
 
@@ -118,7 +115,14 @@ export default class extends VueBase {
   public exportComposeItemUrlVisible = false;
 
   //
-  public materialOptions = [] as ItemModifier[];
+  // public materialOptions = [] as ItemModifier[];
+  public get materialOptions() {
+    return this.$store.state.composeItemFilter.itemModifiers;
+  }
+
+  public set materialOptions(value) {
+    this.$store.commit('composeItemFilter/setItemModifiers', value);
+  }
 
   public get materialOptionsExport() {
     return btoa(JSON.stringify(this.materialOptions));
@@ -177,16 +181,26 @@ export default class extends VueBase {
           }
         }
       }
-
-      if (this.compose) {
-        this.onPickItem(this.compose);
-        return;
-      }
-      this.onPickItem(dataManager.itemsHasRecipe[0]);
     } catch (e) {
       this.$message.error(e.toString());
       console.error(e);
     }
+
+    try {
+      if (this.compose) {
+        const options = this.materialOptions;
+        this.onPickItem(this.compose);
+        if (this.materialOptions.length === options.length) {
+          this.materialOptions = options;
+        }
+        return;
+      }
+    } catch (e) {
+      this.$message.error(e.toString());
+      console.error(e);
+    }
+
+    this.onPickItem(dataManager.itemsHasRecipe[0]);
   }
 
   // dialog
@@ -195,48 +209,10 @@ export default class extends VueBase {
     const addonQuality = clamp(_addonQuality || 0, 0, 15);
 
     this.compose = item;
-    const items = item.RSP.map((rsp) => new Array(rsp.NC).fill(dataManager.itemById[rsp.DF])).flat();
+    const items = this.compose.RSP.map((rsp) => new Array(rsp.NC).fill(dataManager.itemById[rsp.DF])).flat();
     this.materialOptions = Array.from({ length: items.length }, () => Object.assign(new ItemModifier(), { quality, addonQuality }));
     this.materials = items;
     this.itemPickerDialogVisible = false;
-  }
-
-  // export url
-  public onOpenExportUrl() {
-    this.exportComposeItemUrlVisible = true;
-  }
-
-  // compose target
-  public onPickItemOpen() {
-    this.itemPickerDialogVisible = true;
-  }
-
-  public getPickedItemSkills() {
-    if (!this.compose) {
-      return [];
-    }
-    const quality = this.composeQuality;
-    const filteredSkills = this.compose.SPC.filter((p) => p.THR <= quality);
-    if (!filteredSkills.length) {
-      return [];
-    }
-    filteredSkills.sort((a, b) => a.THR - b.THR);
-    return filteredSkills[filteredSkills.length - 1].SKILL
-      .map((p) => dataManager.skillById[p.DF])
-      .filter((p) => p);
-  }
-
-  public updateUrlParams() {
-    const query = { ...this.$route.query };
-    query.df = this.compose.DF.toString();
-    query.materialOptions = this.materialOptionsExport;
-    try {
-      this.$router.replace({ query });
-    } catch (e) {
-      if (e.name !== 'NavigationDuplicated') {
-        console.error(e);
-      }
-    }
   }
 }
 </script>
@@ -284,7 +260,8 @@ a
 
 .compose-material
   margin: 24px
-
+.compose-input--size
+  width: 140px
 /* target
 .compose-item
   display: flex

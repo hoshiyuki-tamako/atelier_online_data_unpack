@@ -70,6 +70,10 @@ export class List {
     public get attackSkill() {
       return this.#attackSkill ||= this.combSkillList.find((i) => i.effect === 1) || this;
     }
+
+    public get flatComboSkills() {
+      return this.combSkillList.concat([this]);
+    }
 }
 
 export enum IconPath {

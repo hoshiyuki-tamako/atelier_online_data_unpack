@@ -91,6 +91,8 @@ export class SParam {
 }
 
 export class MVList {
+  public static defaultLevel = 120;
+
     DF:                number;
     bBoss:             number;
     eAttackTargetKind: number;
@@ -119,7 +121,7 @@ export class MVList {
   #stateCache = new Map<string, IStateResult>();
 
   public get icon() {
-    return `img/enemy/Texture2D/enemy_tex_${this.sParam.MDL}.png`;
+    return `img/enemy_tex/Texture2D/enemy_tex_${this.sParam.MDL}.png`;
   }
 
   public get viewAngleDegree() {

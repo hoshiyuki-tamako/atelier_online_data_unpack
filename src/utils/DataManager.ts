@@ -1,3 +1,4 @@
+import { EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
 import { AbnormalState, MVList as AbnormalStateMVList } from '@/master/abnormalState';
 import { AbnormalStateEffect, MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
 import { AdventBattle } from '@/master/adventBattle';
@@ -9,7 +10,7 @@ import { Chat } from '@/master/chat';
 import { Degree, List as DegreeList } from '@/master/degree';
 import { DungeonInfo, List as DungeonList } from '@/master/dungeonInfo';
 import { Enemy, KindList, MVList as EnemyMVList } from '@/master/enemy';
-import { ExtraQuest } from '@/master/extraQuest';
+import { ExtraQuest, List as ExtraQuestList } from '@/master/extraQuest';
 import { FieldItem, List as FieldItemList } from '@/master/fieldItem';
 import { FieldName, List as FieldNameList } from '@/master/fieldName';
 import { GateInfo, List as GateInfoList } from '@/master/gateInfo';
@@ -17,7 +18,7 @@ import { Item, MVList as ItemMVList } from '@/master/item';
 import { MVList as QuestMVList, Quest } from '@/master/quest';
 import { List as SkillList, Skill } from '@/master/skill';
 import { Tips } from '@/master/tips';
-import { TownInfo, List as TownInfoList } from '@/master/townInfo';
+import { List as TownInfoList, TownInfo } from '@/master/townInfo';
 import { Treasure } from '@/master/treasure';
 import { MVList as WealthMvList, Wealth } from '@/master/wealth';
 import { Zone } from '@/master/zone';
@@ -44,7 +45,7 @@ export class DataManager {
     return `${this.generatedFolder}${file}`;
   }
 
-  // raw data
+  // parsed raw data
   public blazeArt: BlazeArt;
   public chara: Chara;
   public degree: Degree;
@@ -83,12 +84,14 @@ export class DataManager {
   public itemsByRecipe: { [df: string]: ItemMVList[] };
   public itemsByEquipment: { [EQU_BRD: string]: ItemMVList[] };
   public itemsByCharacterLegendRecipe: { [df: string]: ItemMVList[] };
+  public itemsByZone: { [id: string]: ItemMVList[] };
 
   public skillById: { [id: string]: SkillList };
   public skills: SkillList[];
   public skillEffects: SkillList[];
-  public skillEffectAddons: SkillList[];
+  public skillAddonNames: string[];
   public skillAddons: SkillList[];
+  public skillAddonsEquipmentUseful: SkillList[];
   public skillBlazeArts: SkillList[];
 
   public blazeArtById: { [df: string]: BlazeArtMvList };
@@ -99,6 +102,7 @@ export class DataManager {
   public enemiesOrderByCategory: EnemyMVList[];
   public enemiesHasValidSpec: EnemyMVList[];
   public enemyKindListById: { [id: string]: KindList };
+  public enemiesByZone: { [id: string]: EnemyMVList[] };
 
   public abnormalStateById: { [id: string]: AbnormalStateMVList };
 
@@ -108,9 +112,9 @@ export class DataManager {
   public charactersBySkill: { [df: string]: CharaMvList[] };
   public charactersCanBattle: CharaMvList[];
   public charactersByGroupDf: { [GROUP_DF: string]: CharaMvList[] };
-  public charactersHasBlazeArt :CharaMvList[]; // currently unused
   public characterNpcs: CharaMvList[];
 
+  public zoneNames: string[];
   public zoneEffectById: { [id: string]: ZoneEffectList };
 
   public wealthOrderBySort: WealthMvList[];
@@ -135,12 +139,15 @@ export class DataManager {
 
   public fieldItemById: { [id: string]: FieldItemList };
 
+  public extraQuestsByQuest: { [df: string]: ExtraQuestList[] };
+
   // other managers
   public spawnerDataManager = new SpawnerDataManager();
 
   // custom data
   public lookup = lookup;
   public files: any;
+  public areaModel: { [areaId: string]: { [subAreaId: string]: string } };
 
   //
   public setLocale(locale: string) {
@@ -149,8 +156,8 @@ export class DataManager {
   }
 
   public async loadData() {
-    const [blazeArt, chara, degree, enemy, item, quest, skill, zone, zoneEffect, fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, abnormalState, abnormalStateEffect, wealth, tips, treasure, gateInfo, adventBattle, fieldItem, chat, extraQuest, files] = await Promise.all([
-      fetch(this.getExportJsonUrl('blaze_art.json')).then((p) => p.json()),
+    const [blazeArt, chara, degree, enemy, item, quest, skill, zone, zoneEffect, fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, abnormalState, abnormalStateEffect, wealth, tips, treasure, gateInfo, adventBattle, fieldItem, chat, extraQuest, files, areaModel] = await Promise.all([
+      fetch(this.getExportJsonUrl('blaze_arts.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('chara.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('degree.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('enemy.json')).then((p) => p.json()),
@@ -176,25 +183,23 @@ export class DataManager {
       fetch(this.getExportJsonUrl('extraquest.json')).then((p) => p.json()),
 
       fetch(this.getGeneratedJsonUrl('files.json')).then((p) => p.json()),
+      fetch(this.getGeneratedJsonUrl('areaModel.json')).then((p) => p.json()),
     ]);
 
     const spawnerDataPromise = this.spawnerDataManager.setLocale(this.locale, files);
 
     // exported data
-    this.chara = chara;
-    this.zone = zone;
     this.areaDetail = areaDetail;
-    this.wealth = wealth;
     this.tips = tips;
     this.treasure = treasure;
     this.adventBattle = adventBattle;
     this.chat = chat;
-    this.extraQuest = extraQuest;
 
     this.processBlazeArt(blazeArt);
     this.processCharacter(chara);
-    this.processItem(item);
     this.processSkill(skill);
+    this.processZone(zone);
+    this.processItem(item);
     this.processAbnormalState(abnormalState);
     this.processAbnormalStateEffect(abnormalStateEffect);
     this.processZoneEffect(zoneEffect);
@@ -208,9 +213,11 @@ export class DataManager {
     this.processGateInfo(gateInfo);
     this.processDungeonInfo(dungeonInfo);
     this.processFieldItem(fieldItem);
+    this.processExtraQuest(extraQuest);
 
     // other
     this.files = files;
+    this.areaModel = areaModel;
 
     await spawnerDataPromise;
   }
@@ -266,6 +273,19 @@ export class DataManager {
       })))
       .groupBy((p) => p.lrcp.DF)
       .toObject((p) => p.key(), (p) => p.select(({ item }) => item).toArray()) as { [df: string]: ItemMVList[] };
+      this.itemsByZone = Enumerable.from(this.zone.List)
+        .select((zone) => ({
+          zone,
+          items: this.itemsOrderByCategory.filter((item) =>
+            item.SPC
+              .map((p) => p.SKILL)
+              .flat()
+              .map((p) => this.skillById[p.DF])
+              .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)
+          ),
+        }))
+        .where((p) => !!p.items.length)
+        .toObject((p) => p.zone.id, (p) => p.items) as { [id: string]: ItemMVList[] };
   }
 
   public processCharacter(chara: Chara) {
@@ -276,14 +296,13 @@ export class DataManager {
     this.characterById = Enumerable.from(this.chara.m_vList)
       .toObject((p) => p.DF, (p) => p) as { [df: string]: CharaMvList };
     this.charactersCanBattle = this.chara.m_vList.filter((p) => p.EXC);
-    this.charactersHasBlazeArt = this.chara.m_vList.filter((p) => p.BA.length);
     this.characterNpcs = this.chara.m_vList.filter((p) => !p.EXC);
 
     this.charactersBySkill = Enumerable.from(this.chara.m_vList)
       .selectMany((character) => {
         const normalSkillDfs = character.SKILL.map((skill) => skill.DF);
         const blazeArtSkillDfs = character.BA.map((p) => this.blazeArtById[p.DF]?.LV.map((lv) => lv.SKILL_DF)).filter((p) => p).flat();
-        return [... new Set(normalSkillDfs.concat(blazeArtSkillDfs))].map((df) => ({
+        return [...new Set(normalSkillDfs.concat(blazeArtSkillDfs))].map((df) => ({
           character,
           df,
         }));
@@ -303,8 +322,19 @@ export class DataManager {
     // filtered items
     this.skills = this.skill.m_vList.filter((p) => p.type === 1);
     this.skillEffects = this.skill.m_vList.filter((p) => p.type === 2 && !p.category);
-    this.skillEffectAddons = this.skillEffects.filter((p) => !!p.category);
     this.skillAddons = this.skill.m_vList.filter((p) => !!p.category);
+    this.skillAddonNames = Enumerable.from(this.skillAddons)
+      .groupBy((p) => p.name.split('　')[0])
+      .select((p) => p.key())
+      .where((p) => !!p)
+      .toArray()
+    this.skillAddonsEquipmentUseful = this.skillAddons.filter((p) => (
+      p.type === 2
+      && [EBattleEffectTrigger.eANYTIME, EBattleEffectTrigger.eATTACK_SKILL].includes(p.trigger)
+      && p.name.includes('強化')
+      && !p.name.includes('【')
+      && !p.name.includes('】')
+    ));
     const characterBlazeArtSkillDfs = new Set(
       this.chara.m_vList
       .map((character) => character.BA.map((ba) => this.blazeArtById[ba.DF].LV.map((lv) => lv.SKILL_DF)))
@@ -326,6 +356,14 @@ export class DataManager {
     this.abnormalStateEffect = abnormalStateEffect;
     this.abnormalStateEffectById = Enumerable.from(this.abnormalStateEffect.m_vList)
       .toObject((p) => p.id, (p) => p) as { [id: string]: AbnormalStateEffectMVList };
+  }
+
+  public processZone(zone: Zone) {
+    this.zone = zone;
+    this.zoneNames = Enumerable.from(this.zone.List)
+      .groupBy((p) => p.name.split(' ')[0])
+      .select((p) => p.key())
+      .toArray();
   }
 
   public processZoneEffect(zoneEffect: ZoneEffect) {
@@ -359,6 +397,17 @@ export class DataManager {
     this.enemiesByEKind = Enumerable.from(this.enemiesHasValidSpec)
       .groupBy((p) => p.eKind)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [id: string]: EnemyMVList[] };
+    this.enemiesByZone = Enumerable.from(this.zone.List)
+      .select((zone) => ({
+        zone,
+        enemies: this.enemiesOrderByCategory.filter((enemy) =>
+          enemy.sParam.SKILL
+            .map((p) => this.skillById[p.DF])
+            .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)
+        ),
+      }))
+      .where((p) => !!p.enemies.length)
+      .toObject((p) => p.zone.id, (p) => p.enemies) as { [id: string]: EnemyMVList[] };;
 
     this.enemyKindListById = Enumerable.from(this.enemy.KindList).toObject((p) => p.iKind, (p) => p) as { [id: string]: KindList };
   }
@@ -438,6 +487,13 @@ export class DataManager {
   public processFieldItem(fieldItem: FieldItem) {
     this.fieldItem = fieldItem;
     this.fieldItemById = Enumerable.from(this.fieldItem.List).toObject((p) => p.iItemId, (p) => p) as { [s: string]: FieldItemList };
+  }
+
+  public processExtraQuest(extraQuest: ExtraQuest) {
+    this.extraQuest = extraQuest;
+    this.extraQuestsByQuest = Enumerable.from(this.extraQuest.List)
+      .groupBy((p) => p.iQuestDf)
+      .toObject((p) => p.key(), (p) => p.toArray()) as { [df: string]: ExtraQuestList[] };
   }
 
   // skill helper

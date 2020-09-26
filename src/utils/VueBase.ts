@@ -1,7 +1,7 @@
-import Vue from 'vue'
-import { Location } from 'vue-router';
+import Vue from 'vue';
+
 export default abstract class VueBase extends Vue {
-  public scrollTo(query: string) {
-    document.querySelector(query)?.scrollIntoView();
+  public s(number: number) {
+    return number > 0 ? '+' : '';
   }
 }

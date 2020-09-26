@@ -33,7 +33,7 @@ div.container
 
   el-divider
   div.strategy-guides
-    h3 {{ $t('他人の攻略サイト') }}
+    h3 {{ $t('他の人の攻略サイト') }}
     br
     div
       p ブレセイル観光局
@@ -117,7 +117,7 @@ export default class extends VueBase {
         pages: this.pageEnemies,
       },
       {
-        title: this.$t('情報'),
+        title: this.$t('他の資料'),
         pages: this.pageInfo,
       },
       {
@@ -132,7 +132,6 @@ export default class extends VueBase {
       {
         label: this.$t('キャラクタービルダー'),
         imgSrc: 'img/other/Texture2D/item_texture_0024.png',
-        href: `characterBuilder.html?locale=${this.$i18n.locale}`,
         to: {
           name: 'ToolsCharacterBuilder',
         },
@@ -150,7 +149,7 @@ export default class extends VueBase {
   public get pageWeapons() {
     return [
       {
-        label: this.$t('値ランキング'),
+        label: this.$t('ランキング'),
         imgSrc: 'img/other/Texture2D/item_texture_0025.png',
         to: {
           name: 'ToolsEquipmentRanking',
@@ -194,7 +193,7 @@ export default class extends VueBase {
     return [
       {
         label: this.$t('スキル'),
-        imgSrc: 'img/icon_skill/Texture2D/icon_skill_00003.png',
+        imgSrc: 'img/icon/icon_skill_00003.png',
         to: {
           name: 'Skills',
           query: {
@@ -211,7 +210,7 @@ export default class extends VueBase {
       },
       {
         label: this.$t('強化効果'),
-        imgSrc: 'img/icon_s/Texture2D/icon_item_s_10950010.png',
+        imgSrc: 'img/icon_item_s/Texture2D/icon_item_s_10950010.png',
         to: {
           name: 'SkillsAddon',
         },
@@ -225,7 +224,7 @@ export default class extends VueBase {
       },
       {
         label: this.$t('ブレイズアーツ'),
-        imgSrc: 'img/icon_s/Texture2D/icon_item_s_56010003.png',
+        imgSrc: 'img/icon_item_s/Texture2D/icon_item_s_56010003.png',
         to: {
           name: 'Skills',
           query: {
@@ -239,7 +238,7 @@ export default class extends VueBase {
   public get pageCharacters() {
     return [
       {
-        label: this.$t('値ランキング'),
+        label: this.$t('ランキング'),
         imgSrc: 'img/other/Texture2D/item_texture_0025.png',
         to: {
           name: 'ToolsCharacterRanking',
@@ -271,7 +270,7 @@ export default class extends VueBase {
   public get pageEnemies() {
     return [
       {
-        label: this.$t('値ランキング'),
+        label: this.$t('ランキング'),
         imgSrc: 'img/other/Texture2D/item_texture_0025.png',
         to: {
           name: 'ToolsEnemyRanking',
@@ -291,14 +290,14 @@ export default class extends VueBase {
     return [
       {
         label: this.$t('区域'),
-        imgSrc: 'img/map/Texture2D/MapArea_04_001_ALL.png',
+        imgSrc: 'img/icon/MapArea_04_001_ALL-small.png',
         to: {
           name: 'Areas',
         },
       },
       {
         label: this.$t('ゾーン'),
-        imgSrc: 'img/icon_s/Texture2D/icon_item_s_10500014.png',
+        imgSrc: 'img/icon_item_s/Texture2D/icon_item_s_10500014.png',
         to: {
           name: 'InfoZone',
         },
@@ -338,7 +337,7 @@ export default class extends VueBase {
       },
       {
         label: this.$t('降臨バタル(昔)'),
-        imgSrc: 'img/enemy/Texture2D/enemy_tex_023_03.png',
+        imgSrc: 'img/enemy_tex/Texture2D/enemy_tex_023_03.png',
         to: {
           name: 'OthersAdventBattle',
         },

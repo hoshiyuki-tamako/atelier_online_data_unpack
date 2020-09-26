@@ -6,6 +6,7 @@ import charactersFilter from './characters/charactersFilter';
 import enemiesFilter from './enemies/enemiesFilter';
 import home from './home';
 import itemsFilter from './items/itemsFilter';
+import characterBuilder from './tools/characterBuilder';
 import composeItemFilter from './tools/composeItemFilter';
 import characterRankingFilter from './tools/ranking/characterRankingFilter';
 import enemyRankingFilter from './tools/ranking/enemyRankingFilter';
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     characterRankingFilter,
     enemyRankingFilter,
     equipmentRankingFilter,
+    characterBuilder,
   },
   plugins: [new VuexPersistence().plugin]
 });

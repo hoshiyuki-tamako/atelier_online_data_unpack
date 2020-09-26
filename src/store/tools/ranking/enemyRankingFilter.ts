@@ -1,4 +1,5 @@
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
+import { MVList as ItemMVList } from '@/master/item';
 
 @Module({
   namespaced: true
@@ -6,7 +7,7 @@ import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
 export default class extends VuexModule {
   public eKind: number | null = null;
 
-  public level = 120;
+  public level = ItemMVList.equipmentMaxLevel;
 
   public showColumnTotalState = true;
 

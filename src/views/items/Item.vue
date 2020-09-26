@@ -1,17 +1,21 @@
 <template lang="pug">
 div.container
+  el-dialog(title="" :visible.sync="fbxDialogVisible" width="90%")
+    model-fbx.fbx-container(:src="item.model" :rotation="{ x:0, y: 0, z: Math.PI }" backgroundColor="rgb(169,169,169)")
+
   div.item-container(v-if="item")
     div.item-container-left
       h3.item-name {{ item.NAME }}
-      div(v-if="item.RSP.length")
-        router-link(:to="{ name: 'ToolsComposeItem', query: { df: item.DF, quality: itemModifier.quality } }")
-          img.icon-full(:src="item.icon" :alt="item.NAME")
+      div.item-has-3d(v-if="item.model" @click="fbxDialogVisible = true")
+        img.icon-full(:src="item.icon" :alt="item.NAME")
       div(v-else)
-          img.icon-full(:src="item.icon" :alt="item.NAME")
+        img.icon-full(:src="item.icon" :alt="item.NAME")
       p {{ item.DESC }}
-      div(v-if="item.RSP.length")
-        p
-        router-link(:to="{ name: 'ToolsComposeItem', query: { df: item.DF, quality: itemModifier.quality } }") {{ $t('調合') }}
+      div.item-local-link
+        p(v-if="item.RSP.length")
+          router-link(:to="{ name: 'ToolsComposeItem', query: { df: item.DF, quality: itemModifier.quality } }") {{ $t('調合') }}
+        p(v-if="item.model")
+          el-link(@click="fbxDialogVisible = true" :underline="false") 3D
       br
       p DF: {{ item.DF }}
       p {{ $t('種類') }}: {{ $t(dataManager.lookup.itemCategory[item.CATEG]) }}
@@ -20,8 +24,11 @@ div.container
         p {{ $t('攻撃属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[item.elementChangeSkill ? item.elementChangeSkill.effectValue : 0]) }}
         template(item.JOB.length)
           p {{ $t('職業') }}: {{ item.JOB.map(p => $t(dataManager.lookup.EJobKind[p])).join(',') }}
-      p {{ $t('レシピ種類') }}: {{ item.RCP_TYPE === 1 ? $t('レジェンドレシピ') : $t('一般レシピ') }}
-      p {{ $t('おすすめ錬金 LV') }} {{ item.ALT ? item.ALT.LV : '-' }}
+        p(v-if="item.getAttackSkill()") {{ $t('SP回復率') }}{{ item.getAttackSkill().spAdd }}{{ $t('倍') }}
+
+      template(v-if="item.RSP.length")
+        p {{ $t('レシピ種類') }}: {{ item.RCP_TYPE === 1 ? $t('レジェンドレシピ') : $t('一般レシピ') }}
+        p {{ $t('おすすめ錬金 LV') }} {{ item.ALT ? item.ALT.LV : '-' }}
       p
         span.wealth-container
           span {{ $t('売却') }}
@@ -46,7 +53,7 @@ div.container
                   tr(v-for="state of item.getStates(itemModifier.quality, itemModifier.level)")
                     th
                       v-popover(placement="right-end" trigger="hover")
-                        span {{ state.label }}
+                        span {{ $t(state.label) }}
                         template(v-if="state.value || state.skills.length" slot="popover")
                           div.popover-base
                             table
@@ -73,10 +80,13 @@ div.container
                   tr(v-for="element of item.getElements(itemModifier.quality)")
                     th
                       v-popover(placement="right-end" trigger="hover")
-                        span {{ element.label }}
-                        template(v-if="element.skills.length" slot="popover")
+                        span {{ $t(element.label) }}
+                        template(v-if="element.value || element.skills.length" slot="popover")
                           div.popover-base
                             table
+                              tr(v-if="element.value")
+                                th {{ $t('ベース') }}
+                                td {{ element.value }}
                               tr(v-if="element.skills.length")
                                 th {{ $t('スキル') }}
                                 td
@@ -84,9 +94,12 @@ div.container
                     td
                       v-popover(placement="right-end" trigger="hover")
                         span {{ element.value }}
-                        template(v-if="element.skills.length" slot="popover")
+                        template(v-if="element.value || element.skills.length" slot="popover")
                           div.popover-base
                             table
+                              tr(v-if="element.value")
+                                th {{ $t('ベース') }}
+                                td {{ element.value }}
                               tr(v-if="element.skills.length")
                                 th {{ $t('スキル') }}
                                 td
@@ -196,6 +209,8 @@ export default class extends VueBase {
     return dataManager;
   }
 
+  public fbxDialogVisible = false;
+
   public item: ItemMVList | null = null;
 
   public itemModifier = new ItemModifier();
@@ -206,9 +221,9 @@ export default class extends VueBase {
       this.$router.push({ name: 'Items' });
     }
 
-    const maxQuality = this.item.EQU_BRD ? 120 : 100;
+    const maxQuality = this.item.EQU_BRD ? ItemMVList.equipmentMaxQuality : ItemMVList.itemMaxQuality;
     this.itemModifier.quality = this.$route.query.quality ? clamp(+this.$route.query.quality, 0, maxQuality) : maxQuality;
-    this.itemModifier.level = 80;
+    this.itemModifier.level = ItemMVList.equipmentMaxLevel;
   }
 }
 </script>
@@ -223,6 +238,14 @@ th
 th, td
   text-align: left
   padding: 4px
+
+.item-local-link
+  display: flex
+  > p:first-child
+    margin-right: auto
+
+.item-has-3d
+  cursor: pointer
 
 .item-modify
   display: flex

@@ -1,4 +1,5 @@
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
+import { MVList as ItemMVList } from '@/master/item';
 
 @Module({
   namespaced: true
@@ -10,9 +11,9 @@ export default class extends VuexModule {
 
   public support = false;
 
-  public quality = 120;
+  public quality = ItemMVList.equipmentMaxQuality;
 
-  public level = 80;
+  public level = ItemMVList.equipmentMaxLevel;
 
   public showColumnTotalState = true;
 

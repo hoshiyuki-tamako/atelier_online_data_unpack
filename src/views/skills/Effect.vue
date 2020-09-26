@@ -1,12 +1,18 @@
 <template lang="pug">
 div.container
-  div.filter
-    el-form(:model="filter")
-      el-form-item(:label="$t('すべてを一度に表示')")
-        el-switch(@change="onShowAllChange" v-model="filter.showAll")
+  div.filters
+    div.filter
+      span {{ $t('名前') }}/ID
+      el-input(v-model="filter.name" clearable)
+    div.filter
+      el-switch(v-model="filter.hasItem" :active-text="$t('アイテム')")
+    div.filter
+      el-switch(v-model="filter.hasEnemy" :active-text="$t('敵')")
+    div.filter
+      el-switch(v-model="filter.hasCharacter" :active-text="$t('人物')")
 
   div.content
-    el-table(ref="table" v-loading="tableLoading" :data="filteredPaginationSkills" header-align="center" style="width: 100%" default-expand-all)
+    el-table(ref="table" :data="filteredPaginationSkills" default-expand-all)
       el-table-column(type="expand")
         template(slot-scope="props")
           div
@@ -23,13 +29,9 @@ div.container
               router-link(v-for="character in dataManager.charactersBySkill[props.row.id]" :key="character.DF" :to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
                 img.icon-small(:src="character.icon" :alt="character.NAME")
       el-table-column(prop="id" label="ID" width="100%")
-        template(slot="header" slot-scope="scope")
-          el-input(v-model="filter.id" size="mini" placeholder="id")
       el-table-column(prop="name" :label="$t('名前')")
-        template(slot="header" slot-scope="scope")
-          el-input(v-model="filter.name" size="mini" placeholder="名前")
       el-table-column(prop="detail" :label="$t('詳細')")
-      el-table-column(prop="id" :label="$t('数値')")
+      el-table-column(prop="effectValue" :label="$t('数値')")
         template(slot-scope="scope") {{ scope.row.effectValue }}, {{ scope.row.effectValue2 }}
     el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredSkills.length" layout="prev, pager, next" background="")
 </template>
@@ -40,7 +42,7 @@ import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
 import { List as SkillList } from '@/master/skill';
-import ms from 'ms';
+import LRU from 'lru-cache';
 
 @Component({
   components: {
@@ -51,17 +53,15 @@ export default class extends VueBase {
     return dataManager;
   }
 
-  public tableLoading = false;
-
   public filter = {
-    showAll: false,
-    id: null,
     name: '',
+
+    hasItem: false,
+    hasEnemy: false,
+    hasCharacter: false,
   };
 
-  public filterCache = new Map<string, SkillList[]>();
-
-  public maximumCacheSize = 1000;
+  public filterCache = new LRU<string, SkillList[]>(100);
 
   // page
   public page = 1;
@@ -69,33 +69,20 @@ export default class extends VueBase {
   public take = 100;
 
   public get filteredSkills() {
-    const filterName = this.filter.name.toLocaleLowerCase();
-    const filterCacheKey = `${+this.filter.id}|${filterName}`;
-
-    if (!this.filterCache.has(filterCacheKey)) {
-      if (Object.keys(this.filterCache).length > this.maximumCacheSize) {
-        this.filterCache.clear();
-      }
-      this.filterCache.set(filterCacheKey, dataManager.skillEffects.filter((p) => (
-        (!this.filter.id || p.id === +this.filter.id)
-        && (!filterName || p.name.toLocaleLowerCase().includes(filterName))
+    const key = JSON.stringify(this.filter);
+    if (!this.filterCache.has(key)) {
+      this.filterCache.set(key, dataManager.skillEffects.filter((p) => (
+        (!this.filter.name || p.id === +this.filter.name || p.name.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
+        && (!this.filter.hasItem || dataManager.itemsBySkill[p.id])
+        && (!this.filter.hasEnemy || dataManager.enemiesBySkill[p.id])
+        && (!this.filter.hasCharacter || dataManager.charactersBySkill[p.id])
       )));
     }
-
-    return this.filterCache.get(filterCacheKey);
+    return this.filterCache.get(key);
   }
 
   public get filteredPaginationSkills() {
     return this.filteredSkills.slice((this.page - 1) * this.take, this.page * this.take);
-  }
-
-  //
-  public onShowAllChange() {
-    this.tableLoading = true;
-    setTimeout(() => {
-      this.take = dataManager.skillEffects.length;
-      this.tableLoading = false;
-    }, ms('1s'));
   }
 
   public scrollTableTop() {

@@ -1,13 +1,23 @@
-import { AtelierOnlineExportProcessor } from '../generate/AtelierOnlineExportProcessor';
 import path from 'path';
 
-import { AtelierOnlineFileExport } from '../generate/AtelierOnlineFileExport';
-import { Lookup } from '../generate/Lookup';
+import { AtelierOnlineExportProcessor } from './AtelierOnlineExportProcessor';
+import { AtelierOnlineFileExport } from './AtelierOnlineFileExport';
+import { Lookup } from './Lookup';
+import { ModelExport } from './ModelExport';
+import { TextureExport } from './TextureExport';
 
-const outFolder = path.join(__dirname, '..', '..', 'public', 'generated');
+class Main {
+  public static async main() {
+    const sourceFolder = path.join(__dirname, '..', '..', 'source');
+    const rootFolder = path.join(__dirname, '..', '..', 'public');
+    await Promise.all([
+      new TextureExport().process(sourceFolder, rootFolder),
+      new ModelExport().process(sourceFolder, rootFolder),
+      new Lookup().save(rootFolder),
+      new AtelierOnlineExportProcessor().process(path.join(__dirname, '..', '..', 'public', 'export')),
+    ]);
+    await new AtelierOnlineFileExport().save(rootFolder);
+  }
+}
 
-Promise.all([
-  new AtelierOnlineFileExport().save(outFolder),
-  new Lookup().save(outFolder),
-  new AtelierOnlineExportProcessor().process(path.join(__dirname, '..', '..', 'public', 'export')),
-]);
+Main.main().catch((e) => console.error(e));

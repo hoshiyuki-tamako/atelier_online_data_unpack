@@ -4,7 +4,7 @@
 
 ## Notes
 
-All exported files `images` `models` `export json/csv` are NOT license in MIT as those were not belongs to me
+All exported files `images` `models` are NOT license in MIT as those were not belongs to me
 
 For developer, see `./development.md`
 
@@ -21,18 +21,20 @@ npm i
 #### Development
 
 ```bash
-npm run serve
+npm start
 ```
 
 #### Production Build
 
 ```bash
+npm run generate
 npm run build
 ```
 
-### Content Update Check List
+## Content Update Steps
 
-- copy JSON from AssetStudio to `./public/export/*` folder json files
-- export Texture2D files to `./public/img/*`
-- export updated models to `./public/models/*`
-- run `npm run generate` to optimize/generate files needed for the page
+1. Export all Texture2D to `./source/Texture2D/*`
+2. Export all fbx models with folder to `./source/models/**/*`
+3. copy JSON from AssetStudio to `./public/export/*`
+4. update other images/models if needed
+5. run `npm run generate`

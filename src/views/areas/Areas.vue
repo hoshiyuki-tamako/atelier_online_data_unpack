@@ -14,11 +14,12 @@ div.container
         template(v-for="fieldName of [dataManager.fieldNameById[areaInfo.iAreaNameId]]")
           div.item-container-left
             h3(v-if="fieldName") {{ fieldName.strAreaName }} {{ fieldName.strAreaNameSub.trim() ? `/ ${fieldName.strAreaNameSub}` : '' }}
-            div(v-if="areaIcons.includes(`${areaDetail.iAreaID}.png`)")
-              a(:href="modelUrlMap[areaDetail.iAreaID]" target="_blank")
-                img(:src="`img/map/${areaDetail.iAreaID}.png`" :alt="fieldName ? fieldName.strAreaName : areaDetail.iAreaID" style="width: 80%")
             p iAreaID: {{ areaDetail.iAreaID }}
-            p LV: {{areaDetail.iLevel }}
+            p iLevel: {{areaDetail.iLevel }}
+            br
+            template(v-if="dataManager.areaModel[areaDetail.iAreaID]")
+              div(v-for="[subArea, root] of Object.entries(dataManager.areaModel[areaDetail.iAreaID])")
+                el-link(:href="`3d/mapArea.html?root=${root}&iAreaId=${areaDetail.iAreaID}`" target="_blank" :underline="false") 3D{{ $t('地図') }} {{ subArea }}
 
           div.item-container-right
             div(v-if="areaDetail.iItemIDList.length")
@@ -87,17 +88,7 @@ export default class extends VueBase {
     return dataManager;
   }
 
-  public modelUrlMap = {
-    1: '3d/mapArea.html?iAreaId=1&iDungeonId=0',
-    2: '3d/mapArea.html?iAreaId=2&iDungeonId=20102',
-    3: '3d/mapArea.html?iAreaId=3&iDungeonId=0',
-    5: '3d/mapArea.html?iAreaId=5&iDungeonId=0',
-    10: '3d/mapArea.html?iAreaId=10&iDungeonId=0',
-  };
-
   public townIcons = Object.values(dataManager.files.img.map_town.Texture2D).filter((p: string) => !p.endsWith('_02.png')) as string[];
-
-  public areaIcons = Object.values(dataManager.files.img.map) as string[];
 
   public getOtherEnemies(id: number) {
     return [...dataManager.spawnerDataManager.spawnLists.keys()]
@@ -140,6 +131,9 @@ a
   flex-wrap: wrap
 .area-nav
   margin: 12px
+
+.area__image
+  width: 80%
 
 .example-container
   display: flex

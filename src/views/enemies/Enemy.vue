@@ -24,10 +24,10 @@ div.container
             el-input-number(v-model="enemyModifier.level" size="mini" :min="1" :step="1" step-strictly)
         table
           tr(v-for="state of enemy.getStates(enemyModifier.level)")
-            th {{ state.label }}
+            th {{ $t(state.label) }}
             td {{ state.value }}
           tr(v-for="element of enemy.getElements(enemyModifier.level).filter((p) => p.value)")
-            th {{ element.label }}
+            th {{ $t(element.label) }}
             td {{ element.value }}
 
       div(v-if="appareAreas.length")
@@ -87,7 +87,7 @@ export default class extends VueBase {
   public enemyModifier = new EnemyModifier();
 
   public beforeMount() {
-    this.enemyModifier.level = 120;
+    this.enemyModifier.level = EnemyMVList.defaultLevel;
 
     this.enemy = dataManager.enemyById[this.$route.query.df as string];
     if (!this.enemy) {

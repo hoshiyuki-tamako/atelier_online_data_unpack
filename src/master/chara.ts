@@ -134,6 +134,7 @@ export interface BA {
 }
 
 export class MVList {
+  public static maxLevel = 80;
 
   DF: number;
   CATEG: number;
@@ -185,14 +186,14 @@ export class MVList {
   }
 
   // skills
-  public getRawSkills(level: number) {
+  public getRawSkills(level = MVList.maxLevel) {
     return this.SKILL
       .filter((p) => p.LV <= level)
       .map((p) => dataManager.skillById[p.DF])
       .filter((p) => p);
   }
 
-  public getSkills(level: number) {
+  public getSkills(level = MVList.maxLevel) {
     const key = JSON.stringify({ level });
     if (!this.#skillCache.has(key)) {
       this.#skillCache.set(key, dataManager.removeOverrideSkills(this.getRawSkills(level)));
@@ -200,19 +201,30 @@ export class MVList {
     return this.#skillCache.get(key);
   }
 
-  public getSkillWithComboSkills(level: number) {
+  public getSkillWithComboSkills(level = MVList.maxLevel) {
     const key = JSON.stringify({ level });
     if (!this.#skillWithComboSkillCache.has(key)) {
       this.#skillWithComboSkillCache.set(key, dataManager.removeOverrideSkills(
         this.getSkills(level)
-        .map((p) => p.combSkillList.concat(p))
+        .map((p) => [p].concat(p.combSkillList))
         .flat()
       ));
     }
     return this.#skillWithComboSkillCache.get(key);
   }
 
-  public getElement(element: string, level: number) {
+  public getBlazeArt(level = MVList.maxLevel, blazeArtLevel = 5) {
+    const blazeArts = this.BA.filter((p) => p.LV <= level);
+    if (!blazeArts.length) {
+      return null;
+    }
+    const blazeArtLv = dataManager.blazeArtById[blazeArts[0].DF].LV;
+    const blazeArt = blazeArtLv[blazeArtLevel - 1];
+    return dataManager.skillById[blazeArt?.SKILL_DF];
+  }
+
+  //
+  public getElement(element: string, level = MVList.maxLevel) {
     const key = JSON.stringify({ element, level });
     if (!this.#elementCache.has(key)) {
       const skills = this.getSkillWithComboSkills(level)
@@ -230,24 +242,24 @@ export class MVList {
     return this.#elementCache.get(key);
   }
 
-  public getElements(level: number) {
+  public getElements(level = MVList.maxLevel) {
     return Object.keys(dataManager.lookup.element).map((element) => this.getElement(element, level));
   }
 
   //
-  public getFoodSpec(level: number) {
+  public getFoodSpec(level = MVList.maxLevel) {
     return this.FDM[level - 1];
   }
 
-  public getFoodState(state: string, foodLevel: number) {
+  public getFoodState(state: string, foodLevel = MVList.maxLevel) {
     return this.getFoodSpec(foodLevel)?.[state] ?? 0;
   }
 
-  public getBaseState(state: string, level: number) {
+  public getBaseState(state: string, level = MVList.maxLevel) {
     return this.SPEC[state].getValue(level);
   }
 
-  public getState(state: string, level: number, foodLevel: number) {
+  public getState(state: string, level = MVList.maxLevel, foodLevel = MVList.maxLevel) {
     const key = JSON.stringify({ state, level, foodLevel });
     if (!this.#stateCache.has(key)) {
       const baseSkills = this.getSkillWithComboSkills(level);
@@ -269,7 +281,7 @@ export class MVList {
     return this.#stateCache.get(key);
   }
 
-  public getStates(level: number, foodLevel: number) {
+  public getStates(level = MVList.maxLevel, foodLevel = MVList.maxLevel) {
     return Object.keys(this.SPEC).map((state) => this.getState(state, level, foodLevel));
   }
 }

@@ -2,8 +2,11 @@
 div.container
   div.filters
     div.filter
-      el-select(v-model="eKind" clearable filterable)
+      el-select(v-model="eKind" :placeholder="$t('種類')" clearable filterable)
         el-option(v-for="item of enemyCategoryFilter" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('名前') }}/DF
+      el-input(v-model="name")
     div.filter
       span {{ $t('ソート') }}
       el-select(v-model="sort" clearable filterable)
@@ -38,6 +41,14 @@ export default class extends VueBase {
     this.$store.commit('enemiesFilter/setEKind', value);
   }
 
+  public get name() {
+    return this.$store.state.enemiesFilter.name;
+  }
+
+  public set name(value) {
+    this.$store.commit('enemiesFilter/setName', value);
+  }
+
   public get sort() {
     return this.$store.state.enemiesFilter.sort;
   }
@@ -68,10 +79,16 @@ export default class extends VueBase {
     ];
   }
 
+  public get enemies() {
+    return this.eKind ? (dataManager.enemiesByEKind[this.eKind] || []) : dataManager.enemiesOrderByCategory;
+  }
+
   public get filteredEnemies() {
-    const enemies = this.eKind ? (dataManager.enemiesByEKind[this.eKind] || []) : dataManager.enemiesOrderByCategory;
+    const enemies = this.enemies.filter((p) => (
+      (!this.name || p.strName.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()))
+    ));
     if (this.sort === 1) {
-      return [...enemies].reverse();
+      return enemies.reverse();
     }
     return enemies;
   }

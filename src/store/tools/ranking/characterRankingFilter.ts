@@ -1,12 +1,13 @@
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
+import { MVList as CharacterMVList } from '@/master/chara';
 
 @Module({
   namespaced: true
 })
 export default class extends VuexModule {
-  public foodLevel = 80;
+  public foodLevel = CharacterMVList.maxLevel;
 
-  public level = 80;
+  public level = CharacterMVList.maxLevel;
 
   public showColumnTotalState = true;
 

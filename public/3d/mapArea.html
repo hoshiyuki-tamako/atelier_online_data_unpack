@@ -18,14 +18,10 @@
   animate();
   function init() {
     // params
-    const params = new URL(window.location).searchParams;
-    const iAreaId = params.get("iAreaId");
-    const iDungeonId = params.get("iDungeonId");
-    let fbx = `../models/maparea/${iAreaId}`;
-    if (iDungeonId) {
-      fbx += `/${iDungeonId}`;
-    }
-    fbx += '/root.fbx';
+    const { searchParams } = new URL(window.location);
+    const root = searchParams.get('root');
+    const iAreaId = searchParams.get('iAreaId');
+    let fbx = `../models/root/${root}/root.fbx`;
 
     //
     container = document.createElement('div');

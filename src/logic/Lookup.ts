@@ -1,3 +1,5 @@
+import { EWeaponKind } from './Enums';
+
 export const lookup = {
   // value lookups
   elementMapSkillEffectTarget: {
@@ -19,6 +21,11 @@ export const lookup = {
     DDG: 8,
     QTH: 9,
   },
+
+  twoHandledWeaponKind: [
+    EWeaponKind.eLANCE,
+    EWeaponKind.eBOW,
+  ],
 
   // name lookups
   itemCategory: {
@@ -88,6 +95,7 @@ export const lookup = {
     2: '効果',
   },
 
+  // enum lookup
   ESubCategory: {
     0: '全種類',
     2001: '剣',

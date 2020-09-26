@@ -1,8 +1,31 @@
 <template lang="pug">
 div.container
-  div.filter
-    el-select(v-model="filter.skillKind" clearable filterable)
-      el-option(v-for="item of skillKindFilter" :key="item.value" :label="item.label" :value="item.value")
+  div.filters
+    div.filter
+      el-select(v-model="filter.skillKind" clearable filterable)
+        el-option(v-for="item of skillKindFilter" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('属性') }}
+      el-select(v-model="filter.element" clearable filterable)
+        el-option(v-for="item of elementFilter" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('目標') }}
+      el-select(v-model="filter.targetTeam" clearable filterable)
+        el-option(v-for="item of targetTeamFilter" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('範囲') }}
+      el-select(v-model="filter.targetScope" clearable filterable)
+        el-option(v-for="item of targetScopeFilter" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      el-switch(v-model="filter.hasStateOwn" :active-text="$t('追加状態 (自)')")
+    div.filter
+      el-switch(v-model="filter.hasState" :active-text="$t('追加状態')")
+    div.filter
+      el-switch(v-model="filter.hasItem" :active-text="$t('アイテム')")
+    div.filter
+      el-switch(v-model="filter.hasEnemy" :active-text="$t('敵')")
+    div.filter
+      el-switch(v-model="filter.hasCharacter" :active-text="$t('人物')")
   div.content
     el-table(:data="filteredSkills")
       el-table-column(prop="id" label="ID" width="100%" sortable)
@@ -10,6 +33,8 @@ div.container
       el-table-column(prop="detail" :label="$t('詳細')" sortable)
       el-table-column(prop="effectValue" :label="$t('数値')" sortable)
         template(slot-scope="scope") {{ scope.row.effectValue }}, {{ scope.row.effectValue2 }}
+      el-table-column(prop="spAdd" :label="$t('SP回復率')" sortable)
+        template(slot-scope="scope") {{ scope.row.spAdd }}{{ $t('倍') }}
       el-table-column(prop="attackSkill.element" :label="$t('属性')" sortable)
         template(slot-scope="scope") {{ $t(dataManager.lookup.EBattleElementKind[scope.row.attackSkill.element]) }}
       el-table-column(prop="targetTeam" :label="$t('對象')" sortable)
@@ -44,7 +69,10 @@ div.container
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
+import { List as SkillList } from '@/master/skill';
+import LRU from 'lru-cache';
 
+// eslint-disable-next-line no-shadow
 export enum SkillKind {
   none,
   normal,
@@ -73,11 +101,42 @@ export default class extends VueBase {
     ];
   }
 
+  public get elementFilter() {
+    return Object.entries(dataManager.lookup.EBattleElementKind).map(([value, label]) => ({
+      label: this.$t(label),
+      value: +value,
+    }));
+  }
+
+  public get targetTeamFilter() {
+    return Object.entries(dataManager.lookup.targetTeam).map(([value, label]) => ({
+      label: this.$t(label),
+      value: +value,
+    }));
+  }
+
+  public get targetScopeFilter() {
+    return Object.entries(dataManager.lookup.eFieldItemRange).map(([value, label]) => ({
+      label: this.$t(label),
+      value: +value,
+    }));
+  }
+
   public filter = {
     skillKind: SkillKind.normal,
+    element: '',
+    targetTeam: '',
+    targetScope: '',
+    hasStateOwn: false,
+    hasState: false,
+    hasItem: false,
+    hasEnemy: false,
+    hasCharacter: false,
   };
 
-  public get filteredSkills() {
+  public filterCache = new LRU<string, SkillList[]>(100);
+
+  public get skills() {
     switch (this.filter.skillKind) {
       case SkillKind.blazeArt:
         return dataManager.skillBlazeArts;
@@ -86,6 +145,23 @@ export default class extends VueBase {
       default:
         return dataManager.skills;
     }
+  }
+
+  public get filteredSkills() {
+    const key = JSON.stringify(this.filter);
+    if (!this.filterCache.has(key)) {
+      this.filterCache.set(key, this.skills.filter((p) => (
+        (this.filter.element === '' || p.attackSkill.element === +this.filter.element)
+        && (this.filter.targetTeam === '' || p.targetTeam === +this.filter.targetTeam)
+        && (this.filter.targetScope === '' || p.targetScope === +this.filter.targetScope)
+        && (!this.filter.hasStateOwn || p.stateOwn.length)
+        && (!this.filter.hasState || p.state.length)
+        && (!this.filter.hasItem || dataManager.itemsBySkill[p.id])
+        && (!this.filter.hasEnemy || dataManager.enemiesBySkill[p.id])
+        && (!this.filter.hasCharacter || dataManager.charactersBySkill[p.id])
+      )));
+    }
+    return this.filterCache.get(key);
   }
 
   public beforeMount() {

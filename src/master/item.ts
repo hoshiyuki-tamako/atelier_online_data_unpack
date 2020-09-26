@@ -1,8 +1,8 @@
-import { EBattleEffectKind } from '@/logic/Enums';
+import { EBattleEffectKind, ECategory, EWeaponKind } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
+import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
-import { List as SkillList } from '@/master/skill';
 import Enumerable from 'linq';
 
 // custom types
@@ -10,9 +10,10 @@ export interface IElementResult {
   element: string;
   label: string;
   skills: SkillList[],
+  addonSkill: SkillList | null,
   value: number;
   skillValue: number;
-  extraValue: number;
+  addonValue: number;
   total: number;
 }
 
@@ -20,9 +21,10 @@ export interface IStateResult {
   state: string;
   label: string;
   skills: SkillList[],
+  addonSkill: SkillList | null,
   value: number;
   skillValue: number;
-  extraValue: number;
+  addonValue: number;
   total: number;
 }
 
@@ -43,6 +45,12 @@ export interface MGameObject {
 }
 export class MVList {
   public static states = ['HP', 'SATK', 'SDEF', 'MATK', 'MDEF', 'SPD', 'QTH', 'DDG'];
+
+  public static equipmentMaxLevel = 80;
+
+  public static equipmentMaxQuality = 120;
+
+  public static itemMaxQuality = 100;
 
   DF: number;
   CATEG: number;
@@ -70,18 +78,45 @@ export class MVList {
   RCP_TYPE: number;
   LRCP_CHARA: LrcpChara[];
 
+  #elementChangeSkill: SkillList;
+  #skillsCache = new Map<string, SkillList[]>();
   #elementCache = new Map<string, IElementResult>();
   #stateCache = new Map<string, IStateResult>();
 
   public get icon() {
-    return `img/icon_s/Texture2D/icon_item_s_${this.DF}.png`;
+    return `img/icon_item_s/Texture2D/icon_item_s_${this.DF}.png`;
   }
 
-  public get elementChangeSkill() {
-    return this.SPC.map((p) => p.SKILL)
-    .flat()
-    .map((p) => dataManager.skillById[p.DF])
-    .find((skill) => skill.type === 2 && skill.effect === EBattleEffectKind.eELEMENT_CHANGE);
+  public get modelFolderName() {
+    if ([ECategory.eWEAPON, ECategory.eSHIELD].includes(this.CATEG)) {
+      return EWeaponKind[this.WPN_KIND]?.substring(1).toLocaleLowerCase() || '';
+    }
+    if (this.CATEG === ECategory.eHELM) {
+      return '';
+    }
+    // body
+    if (this.CATEG === ECategory.eARMOR) {
+      return '';
+    }
+    // accessory
+    if (this.CATEG === ECategory.eACCESSORY) {
+      return '';
+    }
+    return '';
+  }
+
+  public get model() {
+    if (!this.MDL) {
+      return '';
+    }
+
+    const name = this.modelFolderName;
+    if (!name) {
+      return name;
+    }
+
+    const id = this.MDL.toString().padStart(4, '0');
+    return `models/items/${name}${id}/${name}${id}.fbx`;
   }
 
   public get genderTextIcon() {
@@ -96,33 +131,57 @@ export class MVList {
     }
   }
 
+  public canGenderUseEquipment(gender: number) {
+    return this.EQU_GND.some((p) => !p.GEN) || this.EQU_GND.some((p) => p.ENB && p.GEN === gender)
+  }
+
+  // skills
+  public get elementChangeSkill() {
+    return this.#elementChangeSkill ||= this.SPC.map((p) => p.SKILL)
+      .flat()
+      .map((p) => dataManager.skillById[p.DF])
+      .find((skill) => skill.type === 2 && skill.effect === EBattleEffectKind.eELEMENT_CHANGE);
+  }
+
   public get hasSkill() {
     return this.SPC.some((p) => p.SKILL.length);
   }
 
-  public getSkills(quality: number) {
-    return Enumerable.from(this.SPC)
+  public getSkills(quality = MVList.equipmentMaxQuality) {
+    const key = JSON.stringify({ quality });
+    if (!this.#skillsCache.has(key)) {
+      this.#skillsCache.set(key, Enumerable.from(this.SPC)
       .orderByDescending((p) => p.THR)
       .where((p) => p.THR <= quality)
       .firstOrDefault()
       ?.SKILL.map((p) => dataManager.skillById[p.DF])
-      .filter((p) => p) || [];
+      .filter((p) => p) || []);
+    }
+    return this.#skillsCache.get(key);
   }
 
-  public getElement(element: string, quality: number) {
-    const key = JSON.stringify({ element, quality });
+
+  public getAttackSkill(quality = MVList.equipmentMaxQuality) {
+    return this.getSkills(quality).find((p) => p.type === 1);
+  }
+
+
+  // elements
+  public getElement(element: string, quality = MVList.equipmentMaxQuality, addonSkill: SkillList | null = null) {
+    const key = JSON.stringify({ element, quality, addonSkill: addonSkill?.id });
     if (!this.#elementCache.has(key)) {
-      const baseSkills = this.getSkills(quality);
-      const skills = baseSkills.filter((p) => dataManager.lookup.elementMapSkillEffectTarget[element].includes(p.effectTarget));
+      const skillFilter = (p: SkillList) => dataManager.lookup.elementMapSkillEffectTarget[element].includes(p.effectTarget);
+      const skills = this.getSkills(quality).filter(skillFilter);
       this.#elementCache.set(key, {
         element,
         label: dataManager.lookup.element[element],
         skills,
+        addonSkill,
         value: this.ELM[element],
         skillValue: skills.reduce((sum, p) => sum + p.effectValue, 0),
-        extraValue: 0,
+        addonValue: addonSkill ? addonSkill.flatComboSkills.filter(skillFilter).reduce((sum, p) => sum + p.effectValue, 0) : 0,
         get total() {
-          return this.value + this.skillValue + this.extraValue;
+          return this.value + this.skillValue + this.addonValue;
         },
       });
     }
@@ -130,26 +189,32 @@ export class MVList {
     return this.#elementCache.get(key);
   }
 
-  public getElements(quality: number) {
-    return Object.keys(this.ELM).map((element) => this.getElement(element, quality));
+  public getElements(quality = MVList.equipmentMaxQuality, addonSkill: SkillList | null = null) {
+    return Object.keys(this.ELM).map((element) => this.getElement(element, quality, addonSkill));
   }
 
-  public getState(state: string, quality: number, level: number) {
-    const key = JSON.stringify({ state, quality, level });
+  // state
+  public getBaseState(state: string, level = MVList.equipmentMaxLevel) {
+    return this.EQU[state]?.getValue(level) || 0;
+  }
+
+  public getState(state: string, quality = MVList.equipmentMaxQuality, level = MVList.equipmentMaxLevel, addonSkill: SkillList | null = null) {
+    const key = JSON.stringify({ state, quality, level, addonSkill: addonSkill?.id });
     if (!this.#stateCache.has(key)) {
-      const baseSkills = this.getSkills(quality);
-      const skills = ['QTH', 'DDG'].includes(state) ?
-        baseSkills.filter((p) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state])
-        : baseSkills.filter((p) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state] && p.effect === EBattleEffectKind.eSTATUS_FIX);
+      const skillFilter = ['QTH', 'DDG'].includes(state) ?
+        (p: SkillList) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state]
+        : (p: SkillList) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state] && p.effect === EBattleEffectKind.eSTATUS_FIX;
+      const skills = this.getSkills(quality).filter(skillFilter);
       this.#stateCache.set(key, {
         state,
         label: dataManager.lookup.state[state],
         skills,
+        addonSkill,
         value: state in this.EQU ? this.EQU[state].getValue(level) : 0,
-        extraValue: 0,
         skillValue: skills.reduce((sum, p) => sum + p.effectValue, 0),
+        addonValue: addonSkill ? addonSkill.flatComboSkills.filter(skillFilter).reduce((sum, p) => sum + p.effectValue, 0) : 0,
         get total() {
-          return this.value + this.skillValue;
+          return this.value + this.skillValue + this.addonValue;
         },
       });
     }
@@ -157,8 +222,33 @@ export class MVList {
     return this.#stateCache.get(key);
   }
 
-  public getStates(quality: number, level: number) {
-    return MVList.states.map((state) => this.getState(state, quality, level));
+  public getStates(quality = MVList.equipmentMaxQuality, level = MVList.equipmentMaxLevel, addonSkill: SkillList | null = null) {
+    return MVList.states.map((state) => this.getState(state, quality, level, addonSkill));
+  }
+
+  // support state
+  public getSupportState(state: string, level = MVList.equipmentMaxLevel) {
+    return {
+      state,
+      label: dataManager.lookup.state[state],
+      value: state in this.EQU ? this.EQU[state].getSupportValue(level) : 0,
+    };
+  }
+
+  public getSupportStates(level = MVList.equipmentMaxLevel) {
+    return Formula.supportStates.map((state) => this.getSupportState(state, level));
+  }
+
+  public getSupportElement(element: string) {
+    return{
+      element,
+      label: dataManager.lookup.element[element],
+      value: Formula.getSupportElement(this.ELM[element]),
+    };
+  }
+
+  public getSupportElements() {
+    return Object.keys(this.ELM).map(this.getSupportElement.bind(this));
   }
 }
 

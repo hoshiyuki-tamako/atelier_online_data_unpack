@@ -29,7 +29,7 @@ div.container
             tr(v-for="state of character.getStates(characterModifier.level, characterModifier.foodLevel)")
               th
                 v-popover(placement="right-end" trigger="hover")
-                  span {{ state.label }}
+                  span {{ $t(state.label) }}
                   template(v-if="state.value || state.foodValue || state.skills.length" slot="popover")
                     div.popover-base
                       table
@@ -62,7 +62,7 @@ div.container
             tr(v-for="element of character.getElements(characterModifier.level)")
               th
                 v-popover(placement="right-end" trigger="hover")
-                  span {{ element.label }}
+                  span {{ $t(element.label) }}
                   template(v-if="element.skills.length" slot="popover")
                     div.popover-base
                       table
@@ -167,7 +167,7 @@ div.container
             el-divider LV{{ fdm.NO }}
             template(v-for="[fd, item] of fdm.FD.map((p) => [p, dataManager.itemById[p.DF]])")
               router-link.character-food__consume(:to="item.RSP.length ? { name: 'ToolsComposeItem', query: { df: item.DF, quality: fd.QTY } } : { name: 'ItemsItem', query: { df: item.DF } }")
-                span(style="whitespace: nowrap") {{ $t('品質') }} {{ fd.QTY }}
+                span.character-food__quality-text {{ $t('品質') }} {{ fd.QTY }}
                 img.icon-small(:src="item.icon" :alt="item.NAME")
             table
               tr(v-for="state of Object.keys(character.SPEC)")
@@ -202,8 +202,8 @@ export default class extends VueBase {
   public characterModifier = new CharacterModifier();
 
   public beforeMount() {
-    this.characterModifier.level = 80;
-    this.characterModifier.foodLevel = 80;
+    this.characterModifier.level = CharacterMVList.maxLevel;
+    this.characterModifier.foodLevel = CharacterMVList.maxLevel;
 
     this.character = dataManager.characterById[this.$route.query.df as string];
     if (!this.character) {
@@ -256,4 +256,6 @@ th, td
   display: flex
   align-items: center
   flex-basis: auto
+.character-food__quality-text
+  whitespace: nowrap
 </style>

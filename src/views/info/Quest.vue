@@ -26,7 +26,7 @@ div.container
       el-button(@click="onClickExpandAll") {{ $t('すべて展開') }}
 
   div.content
-    el-table(ref="table" :data="filteredQuests" :row-key="getRowKey" @sort-change="onSortChange")
+    el-table(ref="table" :data="filteredPaginationQuests" :row-key="getRowKey" @sort-change="onSortChange")
       el-table-column(type="expand")
         template(slot-scope="props")
           template(v-for="quest of [props.row]")
@@ -126,7 +126,7 @@ div.container
       el-table-column(prop="CHARA" :label="$t('キャラクター')" sortable="custom")
         template(slot-scope="scope")
           img.character-preview(v-if="scope.row.CHARA" :src="dataManager.characterById[scope.row.CHARA].icon" :alt="dataManager.characterById[scope.row.CHARA].NAME")
-    el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="total" layout="prev, pager, next" background="")
+    el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredQuests.length" layout="prev, pager, next" background="")
 </template>
 
 <script lang="ts">
@@ -136,6 +136,7 @@ import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
 import { Utils } from '@/utils/Utils';
 import { MVList as QuestMVList } from '@/master/quest';
+import LRU from 'lru-cache';
 
 @Component({
   components: {
@@ -165,7 +166,7 @@ export default class extends VueBase {
 
   public take = 100;
 
-  public total = 0;
+  public filterCache = new LRU<string, QuestMVList[]>(100);
 
   public currentRows = [] as QuestMVList[];
 
@@ -207,34 +208,40 @@ export default class extends VueBase {
   }
 
   public get filteredQuests() {
-    const quests = this.filter.category ? dataManager.questsByCategory[this.filter.category] : [...dataManager.quest.m_vList].reverse();
-    const filteredQuests = quests.filter((p) => (
-      (!this.filter.character || p.CHARA === this.filter.character)
-      && (!this.filter.name || p.DF === +this.filter.name || p.NAME.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
-      && (!this.filter.extraQuest || dataManager.extraQuest.List.some((i) => i.iQuestDf === p.DF))
-      && (!this.filter.has.includes(1) || p.COST.WTH.CNT)
-      && (!this.filter.has.includes(2) || p.ENM.length)
-      && (!this.filter.has.includes(3) || p.GET.length)
-      && (!this.filter.has.includes(4) || p.DLV.length)
-    ));
-    this.total = filteredQuests.length;
+    const key = JSON.stringify(this.filter);
+    if (!this.filterCache.has(key)) {
+      const quests = this.filter.category ? dataManager.questsByCategory[this.filter.category] : [...dataManager.quest.m_vList].reverse();
+      const filteredQuests = quests.filter((p) => (
+        (!this.filter.character || p.CHARA === this.filter.character)
+        && (!this.filter.name || p.DF === +this.filter.name || p.NAME.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
+        && (!this.filter.extraQuest || dataManager.extraQuestsByQuest[p.DF])
+        && (!this.filter.has.includes(1) || p.COST.WTH.CNT)
+        && (!this.filter.has.includes(2) || p.ENM.length)
+        && (!this.filter.has.includes(3) || p.GET.length)
+        && (!this.filter.has.includes(4) || p.DLV.length)
+      ));
 
-    if (this.filter.sort) {
-      const findObject = (quest: QuestMVList) => this.filter.sort.split('.').reduce((o, i) => o[i], quest);
-      if (this.filter.sort === 'NAME') {
-        if (this.filter.order === 'ascending') {
-          filteredQuests.sort((a, b) => findObject(a).localeCompare(findObject(b)));
+      if (this.filter.sort) {
+        const findObject = (quest: QuestMVList) => this.filter.sort.split('.').reduce((o, i) => o[i], quest);
+        if (this.filter.sort === 'NAME') {
+          if (this.filter.order === 'ascending') {
+            filteredQuests.sort((a, b) => findObject(a).localeCompare(findObject(b)));
+          } else {
+            filteredQuests.sort((a, b) => findObject(b).localeCompare(findObject(a)));
+          }
+        } else if (this.filter.order === 'ascending') {
+          filteredQuests.sort((a, b) => findObject(a) - findObject(b));
         } else {
-          filteredQuests.sort((a, b) => findObject(b).localeCompare(findObject(a)));
+          filteredQuests.sort((a, b) => findObject(b) - findObject(a));
         }
-      } else if (this.filter.order === 'ascending') {
-        filteredQuests.sort((a, b) => findObject(a) - findObject(b));
-      } else {
-        filteredQuests.sort((a, b) => findObject(b) - findObject(a));
       }
+      this.filterCache.set(key, filteredQuests);
     }
+    return this.filterCache.get(key);
+  }
 
-    this.currentRows = filteredQuests.slice((this.page - 1) * this.take, this.page * this.take);
+  public get filteredPaginationQuests() {
+    this.currentRows = this.filteredQuests.slice((this.page - 1) * this.take, this.page * this.take);
     return this.currentRows;
   }
 
@@ -251,8 +258,7 @@ export default class extends VueBase {
   }
 
   public onClickExpandAll() {
-    const table = (this.$refs.table as any);
-    this.currentRows.forEach((row) => table.toggleRowExpansion(row, true));
+    this.currentRows.forEach((row) => (this.$refs.table as any).toggleRowExpansion(row, true));
   }
 
   public getRowKey(row: QuestMVList) {

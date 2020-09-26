@@ -12,7 +12,27 @@ Info for developer
 - DF = id *Note if a column is `DF` it can have duplicate `DF` in the same array
 - MDL = model ID
 
+## Export Assets Locations
+
+most file follow naming convention from the source code
+
+- Character `./public/img/icon_chara/*`
+- Item small `./public/img/icon_item_s/*`
+- Wealth `./public/img/icon_item01/*`
+- Skill `./public/img/icon_skill/*`
+- Degree `./public/img/icon_degree/*`
+- Enemy `./public/img/enemy_tex/*`
+- Town `./public/img/map_town/*`
+- Pickup`./public/img/icon_pickup/*`
+
+those file were use for lookup/generate content for the site
+
+- Lookup `./public/generated/lookup.json`
+- Enum `./src/logic/Enum.ts`
+
 ## Item
+
+item
 
 ```ts
 {
@@ -227,6 +247,8 @@ Info for developer
 
 ## Skill
 
+skill
+
 ```ts
 {
   "id": 1,
@@ -276,6 +298,8 @@ Info for developer
 
 ## Abnormal State
 
+abnormalstate
+
 ```ts
 {
   "id": 1,
@@ -300,6 +324,8 @@ Info for developer
 
 ## Abnormal State Effect
 
+abnormalstateeffect
+
 ```ts
 {
   "id": 1001,
@@ -311,6 +337,8 @@ Info for developer
 ```
 
 ## Character
+
+chara
 
 ```ts
     {
@@ -472,6 +500,8 @@ Info for developer
 
 ## Blaze Art
 
+blaze_arts
+
 ```ts
 {
   "DF": 1, // id
@@ -485,6 +515,8 @@ Info for developer
 ```
 
 ## Degree
+
+degree
 
 ```ts
 {
@@ -501,19 +533,23 @@ Info for developer
 
 ## Wealth
 
+wealth
+
 ```ts
 {
   "DF": 1,
   "NAME": "コール",
   "DESC": "ブレセイルで流通している通貨",
-  "ICON": 1,
+  "ICON": 1, // icon of the wealth, `icon_item01_${this.ICON.toString().padStart(5, '0')}.png`
   "CHARA": 0, // relationship to chara.DF
   "SORT": 1, // sorting
-  "CATEG": 0
+  "CATEG": 0 // enum EWealthKind
 }
 ```
 
 ## Quest
+
+quest
 
 ```ts
 {
@@ -687,6 +723,8 @@ Info for developer
 
 ## Extra Quest
 
+extraquest
+
 ```ts
 {
   "iDf": 1,
@@ -707,6 +745,8 @@ Info for developer
 ```
 
 ## Enemy
+
+enemy
 
 ```ts
 {
@@ -828,6 +868,8 @@ Info for developer
 
 ## Area Info
 
+areaInfo
+
 ```ts
 {
   "iAreaId": 1, // relationship to areaDetail.iAreaID. note that its ID for other file.
@@ -857,6 +899,8 @@ Info for developer
 
 ## Area Detail
 
+areaDetail
+
 ```ts
 {
   "iAreaID": 1,
@@ -884,6 +928,8 @@ Info for developer
 
 ## FieldName
 
+fieldname
+
 ```ts
 {
   "iAreaNameId": 1,
@@ -893,6 +939,8 @@ Info for developer
 ```
 
 ## Gate Info
+
+gateinfo
 
 ```ts
 {
@@ -911,6 +959,8 @@ Info for developer
 ```
 
 ## Dungeon
+
+dungeon
 
 seems they merge normal area and dungeon together
 
@@ -950,6 +1000,8 @@ some of the field see enum for more info
 
 ## Zone
 
+zone
+
 ```ts
  {
   "id": 101,
@@ -976,6 +1028,8 @@ some of the field see enum for more info
 ```
 
 ## Zone effect
+
+zoneeffect
 
 ```ts
 {

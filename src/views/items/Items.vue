@@ -23,8 +23,8 @@ div.container
       span {{ $t('キャラクター專用') }}
       el-switch(v-model="characterOnlyItem")
   div.items
-    el-card.item(v-for="item of filteredItems" :key="item.DF")
-      router-link(:to="{ name: 'ItemsItem', query: { df: item.DF } }")
+    router-link(v-for="item of filteredItems" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }")
+      el-card.item
         h3 {{ item.NAME }}
         img.item__image(:src="item.icon" :alt="item.NAME")
 </template>

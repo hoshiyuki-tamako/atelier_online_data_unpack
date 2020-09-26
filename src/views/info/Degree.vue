@@ -33,12 +33,12 @@ export default class extends VueBase {
   public get typeFilters() {
     return Object.entries(dataManager.lookup.EDegreeMissonType).map(([value, text]) => ({
       text,
-      value,
+      value: +value,
     }));
   }
 
-  public typeFilderHandler(value: string, row: DegreeList) {
-    return row.TYP === +value;
+  public typeFilderHandler(value: number, row: DegreeList) {
+    return row.TYP === value;
   }
 }
 </script>

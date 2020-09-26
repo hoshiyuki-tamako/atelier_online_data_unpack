@@ -20,6 +20,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'no-restricted-syntax': 'off',
     'no-await-in-loop': 'off',
+    'no-plusplus': 'off',
   },
   overrides: [
     {

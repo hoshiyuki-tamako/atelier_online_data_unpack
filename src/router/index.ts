@@ -26,7 +26,7 @@ const toolsRotes: Array<RouteConfig> = [
     name: 'ToolsEquipmentRanking',
     component: () => import(/* webpackChunkName: "ToolsEquipmentRanking" */ '@/views/tools/EquipmentRanking.vue'),
     meta: {
-      title: '値ランキング',
+      title: 'ランキング',
     },
   },
   {
@@ -34,7 +34,7 @@ const toolsRotes: Array<RouteConfig> = [
     name: 'ToolsCharacterRanking',
     component: () => import(/* webpackChunkName: "ToolsCharacterRanking" */ '@/views/tools/CharacterRanking.vue'),
     meta: {
-      title: '値ランキング',
+      title: 'ランキング',
     },
   },
   {
@@ -42,7 +42,7 @@ const toolsRotes: Array<RouteConfig> = [
     name: 'ToolsEnemyRanking',
     component: () => import(/* webpackChunkName: "ToolsEnemyRanking" */ '@/views/tools/EnemyRanking.vue'),
     meta: {
-      title: '値ランキング',
+      title: 'ランキング',
     },
   },
 ];
