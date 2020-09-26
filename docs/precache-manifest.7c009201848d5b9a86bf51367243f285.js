@@ -104,8 +104,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/ToolsEnemyRanking.704aac7e.css"
   },
   {
-    "revision": "5d98bb38cd1a552f4274",
-    "url": "/atelier_online_data_unpack/css/app.b212fcb2.css"
+    "revision": "e078eb204cd1358fcd33",
+    "url": "/atelier_online_data_unpack/css/app.027d4e90.css"
   },
   {
     "revision": "d929ad68b9e13d9082d2",
@@ -17384,7 +17384,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/img/tips/Texture2D/Tips_Chara_01.png"
   },
   {
-    "revision": "2fec9a666720e3bf60e27a11f9aae312",
+    "revision": "dd572e15f327862a2467ea2ce6cce84f",
     "url": "/atelier_online_data_unpack/index.html"
   },
   {
@@ -17496,8 +17496,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/ToolsEquipmentRanking.ace4f41d.js"
   },
   {
-    "revision": "5d98bb38cd1a552f4274",
-    "url": "/atelier_online_data_unpack/js/app.8bd0bee1.js"
+    "revision": "e078eb204cd1358fcd33",
+    "url": "/atelier_online_data_unpack/js/app.35002a69.js"
   },
   {
     "revision": "d929ad68b9e13d9082d2",
