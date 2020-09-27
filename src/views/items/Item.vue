@@ -133,7 +133,7 @@ div.container
           p
             router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
       div(v-for="fieldItem of [dataManager.fieldItemById[item.DF]].filter((p) => p)")
-        el-divider {{ $t('戦闘用') }}
+        el-divider {{ $t('フィールド用') }}
         table
           tr
             th {{ $t('目標') }}

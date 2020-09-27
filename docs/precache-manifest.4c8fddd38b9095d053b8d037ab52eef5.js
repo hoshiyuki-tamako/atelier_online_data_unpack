@@ -60,8 +60,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/Items.53f11922.css"
   },
   {
-    "revision": "f77ce1e2dfe78b4c679f",
-    "url": "/atelier_online_data_unpack/css/ItemsItem.fcd7c30a.css"
+    "revision": "f84c7cd1ec709e0e7e89",
+    "url": "/atelier_online_data_unpack/css/ItemsItem.ab6009f9.css"
   },
   {
     "revision": "d7170ee9be9e3cc32fba",
@@ -112,7 +112,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/ToolsEnemyRanking.704aac7e.css"
   },
   {
-    "revision": "32bdb1688b8027949aab",
+    "revision": "ba06480caf4a41679b69",
     "url": "/atelier_online_data_unpack/css/app.9e6e67fc.css"
   },
   {
@@ -17380,7 +17380,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/img/tips/Texture2D/Tips_Chara_01.png"
   },
   {
-    "revision": "bddafd8193d6203a36520190e3b7ee25",
+    "revision": "0994f33237be3f4163ad720b9eb16fb1",
     "url": "/atelier_online_data_unpack/index.html"
   },
   {
@@ -17432,8 +17432,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/Items.4fe2392f.js"
   },
   {
-    "revision": "f77ce1e2dfe78b4c679f",
-    "url": "/atelier_online_data_unpack/js/ItemsItem.66ce3c54.js"
+    "revision": "f84c7cd1ec709e0e7e89",
+    "url": "/atelier_online_data_unpack/js/ItemsItem.ba021985.js"
   },
   {
     "revision": "d63468d5431557f5e813",
@@ -17500,19 +17500,19 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/ToolsEquipmentRanking.8acdb718.js"
   },
   {
-    "revision": "32bdb1688b8027949aab",
-    "url": "/atelier_online_data_unpack/js/app.c8f46ceb.js"
+    "revision": "ba06480caf4a41679b69",
+    "url": "/atelier_online_data_unpack/js/app.5cce1de0.js"
   },
   {
     "revision": "c9e150d3384bd992a1a0",
     "url": "/atelier_online_data_unpack/js/chunk-vendors.3a9adf91.js"
   },
   {
-    "revision": "6e0587b852f1905c6f366d3725a0a2be",
+    "revision": "3828801e529df21fd71659f1583f768a",
     "url": "/atelier_online_data_unpack/locales/ja-JP.json"
   },
   {
-    "revision": "90537cbc2a21a917cefab17d788e1ea2",
+    "revision": "19bf413c1d82fda4dfc80b5deac6698d",
     "url": "/atelier_online_data_unpack/locales/zh-TW.json"
   },
   {

@@ -48,8 +48,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/Items.53f11922.css"
   },
   {
-    "revision": "0c71f5e4a291f80a2a97",
-    "url": "/atelier_online_data_unpack/css/ItemsItem.fcd7c30a.css"
+    "revision": "e50775dd84bde0fe3ede",
+    "url": "/atelier_online_data_unpack/css/ItemsItem.ab6009f9.css"
   },
   {
     "revision": "13ef653bb988f6d406b3",
@@ -100,7 +100,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/css/ToolsEnemyRanking.704aac7e.css"
   },
   {
-    "revision": "7b9f9ca9917cdc714ec3",
+    "revision": "eaa2d4a6726cd4269079",
     "url": "/atelier_online_data_unpack/css/app.9e6e67fc.css"
   },
   {
@@ -116,7 +116,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/fonts/element-icons.732389de.ttf"
   },
   {
-    "revision": "972c3cbdb3f4a5126ebf3871f08927f5",
+    "revision": "808904fa181bf32a5225d9020ce6b2d0",
     "url": "/atelier_online_data_unpack/index.html"
   },
   {
@@ -168,8 +168,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/Items-legacy.ec89b522.js"
   },
   {
-    "revision": "0c71f5e4a291f80a2a97",
-    "url": "/atelier_online_data_unpack/js/ItemsItem-legacy.6921c614.js"
+    "revision": "e50775dd84bde0fe3ede",
+    "url": "/atelier_online_data_unpack/js/ItemsItem-legacy.4e3769a8.js"
   },
   {
     "revision": "d63468d5431557f5e813",
@@ -236,8 +236,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/atelier_online_data_unpack/js/ToolsEquipmentRanking-legacy.fe496616.js"
   },
   {
-    "revision": "7b9f9ca9917cdc714ec3",
-    "url": "/atelier_online_data_unpack/js/app-legacy.2f27b964.js"
+    "revision": "eaa2d4a6726cd4269079",
+    "url": "/atelier_online_data_unpack/js/app-legacy.43a670cc.js"
   },
   {
     "revision": "bd847ff310d825e856c0",
