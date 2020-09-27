@@ -1,7 +1,7 @@
 <template lang="pug">
 div.container
   el-dialog(title="" :visible.sync="fbxDialogVisible" width="90%")
-    model-fbx.fbx-container(:src="item.model" :rotation="{ x:0, y: 0, z: Math.PI }" backgroundColor="rgb(169,169,169)")
+    model-fbx.item-fbx-container(:src="item.model" :rotation="{ x:0, y: 0, z: Math.PI }" backgroundColor="rgb(169,169,169)")
 
   div.item-container(v-if="item")
     div.item-container-left
@@ -132,14 +132,22 @@ div.container
         div(v-for="quest of dataManager.questsByRewardItem[item.DF]")
           p
             router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
-      div(v-if="dataManager.fieldItemById[item.DF]")
+      div(v-for="fieldItem of [dataManager.fieldItemById[item.DF]].filter((p) => p)")
         el-divider {{ $t('戦闘用') }}
-        p {{ $t('目標') }}: {{ $t(dataManager.lookup.eFieldItemRange[fieldItem.eRange]) }}
-        p {{ $t('効果') }}: {{ $t(dataManager.lookup.eFieldItemUse[fieldItem.eUse]) }}
-        div(v-for="(abnormalState, i) of fieldItem.eStateList.map((p) => dataManager.abnormalStateById[p])")
-          p {{ abnormalState.name }}
-          p {{ abnormalState.turn }} {{ $t('ターン') }}
-          p(v-if="fieldItem.eStateList.length !== (i + 1)") {{ '>' }}
+        table
+          tr
+            th {{ $t('目標') }}
+            td {{ $t(dataManager.lookup.eFieldItemRange[fieldItem.eRange]) }}
+          tr
+            th {{ $t('効果') }}
+            td {{ $t(dataManager.lookup.eFieldItemUse[fieldItem.eUse]) }}
+          tr(v-for="abnormalStates of [fieldItem.eStateList.map((p) => dataManager.abnormalStateById[p]).filter((p) => p)].filter((p) => p.length)")
+            th {{ $t('状態') }}
+            td
+              div(v-for="(abnormalState, i) of abnormalStates")
+                p {{ abnormalState.name }}
+                p {{ abnormalState.turn }} {{ $t('ターン') }}
+                p(v-if="fieldItem.eStateList.length !== (i + 1)") {{ '>' }}
       div(v-if="item.RSP.length")
         el-divider {{ $t('調合條件') }}
         div(v-if="item.ALT.CST")

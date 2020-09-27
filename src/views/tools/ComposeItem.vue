@@ -138,7 +138,7 @@ export default class extends VueBase {
   }
 
   public get itemCategories() {
-    return Object.keys(dataManager.itemsByCategory).map((value) => ({
+    return dataManager.itemsCategoriesHasRecipe.map((value) => ({
       label: this.$t(dataManager.lookup.itemCategory[value]),
       value: +value,
     }));

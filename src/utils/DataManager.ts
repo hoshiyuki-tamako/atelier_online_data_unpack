@@ -5,7 +5,7 @@ import { AdventBattle } from '@/master/adventBattle';
 import { AreaDetail } from '@/master/areaDetail';
 import { AreaInfo, List as AreaInfoList } from '@/master/areaInfo';
 import { BlazeArt, MVList as BlazeArtMvList } from '@/master/blazeArt';
-import { Chara, MVList as CharaMvList } from '@/master/chara';
+import { Chara, MVList as CharacterMVList } from '@/master/chara';
 import { Chat } from '@/master/chat';
 import { Degree, List as DegreeList } from '@/master/degree';
 import { DungeonInfo, List as DungeonList } from '@/master/dungeonInfo';
@@ -31,6 +31,7 @@ import { lookup } from './../logic/Lookup';
 
 export class DataManager {
   // settings
+  public showHiddenContent = false;
   public locale = 'ja-JP';
   public exportFolder = './export/';
   public generatedFolder = './generated/';
@@ -85,6 +86,7 @@ export class DataManager {
   public itemsByEquipment: { [EQU_BRD: string]: ItemMVList[] };
   public itemsByCharacterLegendRecipe: { [df: string]: ItemMVList[] };
   public itemsByZone: { [id: string]: ItemMVList[] };
+  public itemsCategoriesHasRecipe: number[];
 
   public skillById: { [id: string]: SkillList };
   public skills: SkillList[];
@@ -108,11 +110,11 @@ export class DataManager {
 
   public abnormalStateEffectById: { [id: string]: AbnormalStateEffectMVList };
 
-  public characterById: { [df: string]: CharaMvList };
-  public charactersBySkill: { [df: string]: CharaMvList[] };
-  public charactersCanBattle: CharaMvList[];
-  public charactersByGroupDf: { [GROUP_DF: string]: CharaMvList[] };
-  public characterNpcs: CharaMvList[];
+  public characterById: { [df: string]: CharacterMVList };
+  public charactersBySkill: { [df: string]: CharacterMVList[] };
+  public charactersCanBattle: CharacterMVList[];
+  public charactersByGroupDf: { [GROUP_DF: string]: CharacterMVList[] };
+  public characterNpcs: CharacterMVList[];
 
   public zoneNames: string[];
   public zoneEffectById: { [id: string]: ZoneEffectList };
@@ -150,7 +152,8 @@ export class DataManager {
   public areaModel: { [areaId: string]: { [subAreaId: string]: string } };
 
   //
-  public setLocale(locale: string) {
+  public load(locale: string, showHiddenContent = false) {
+    this.showHiddenContent = showHiddenContent;
     this.locale = locale;
     return this.loadData();
   }
@@ -166,7 +169,7 @@ export class DataManager {
       fetch(this.getExportJsonUrl('skill.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('zone.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('zoneeffect.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('fieldname.json')).then((p) => p.json()),
+      fetch(this.getExportJsonUrl('fieldName.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('areaDetail.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('areaInfo.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('townInfo.json')).then((p) => p.json()),
@@ -176,7 +179,7 @@ export class DataManager {
       fetch(this.getExportJsonUrl('wealth.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('tips.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('treasure.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('gateinfo.json')).then((p) => p.json()),
+      fetch(this.getExportJsonUrl('gateInfo.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('adventbattle.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('fieldItem.json')).then((p) => p.json()),
       fetch(this.getExportJsonUrl('chat.json')).then((p) => p.json()),
@@ -186,7 +189,7 @@ export class DataManager {
       fetch(this.getGeneratedJsonUrl('areaModel.json')).then((p) => p.json()),
     ]);
 
-    const spawnerDataPromise = this.spawnerDataManager.setLocale(this.locale, files);
+    const spawnerDataPromise = this.spawnerDataManager.load(this.locale, files);
 
     // exported data
     this.areaDetail = areaDetail;
@@ -231,6 +234,10 @@ export class DataManager {
     this.itemsEquipments = this.itemsOrderByCategory.filter((p) => p.EQU_BRD);
     this.itemsWeaponKindCategories = Enumerable.from(this.itemsOrderByCategory)
       .where((p) => !!p.WPN_KIND)
+      .groupBy((p) => p.CATEG)
+      .select((p) => p.key())
+      .toArray();
+    this.itemsCategoriesHasRecipe = Enumerable.from(this.itemsHasRecipe)
       .groupBy((p) => p.CATEG)
       .select((p) => p.key())
       .toArray();
@@ -289,12 +296,13 @@ export class DataManager {
   }
 
   public processCharacter(chara: Chara) {
-    const hideCharacterDfs = [3005];
     this.chara = plainToClass(Chara, chara);
-    this.chara.m_vList = this.chara.m_vList.filter((p) => !hideCharacterDfs.includes(p.DF));
+    if (!this.showHiddenContent) {
+      this.chara.m_vList = this.chara.m_vList.filter((p) => !CharacterMVList.hideDfs.includes(p.DF));
+    }
 
     this.characterById = Enumerable.from(this.chara.m_vList)
-      .toObject((p) => p.DF, (p) => p) as { [df: string]: CharaMvList };
+      .toObject((p) => p.DF, (p) => p) as { [df: string]: CharacterMVList };
     this.charactersCanBattle = this.chara.m_vList.filter((p) => p.EXC);
     this.characterNpcs = this.chara.m_vList.filter((p) => !p.EXC);
 
@@ -311,10 +319,10 @@ export class DataManager {
       .toObject(
         p => p.key(),
         p => p.groupBy(({ character }) => character.DF).select((p) => p.first().character).toArray(),
-      ) as { [id: string]: CharaMvList[] };
+      ) as { [id: string]: CharacterMVList[] };
     this.charactersByGroupDf = Enumerable.from(this.chara.m_vList)
       .groupBy((p) => p.GROUP_DF)
-      .toObject((p) => p.key(), (p) => p) as { [GROUP_DF: string]: CharaMvList[] };
+      .toObject((p) => p.key(), (p) => p) as { [GROUP_DF: string]: CharacterMVList[] };
   }
 
   public processSkill(skill: Skill) {

@@ -13,7 +13,7 @@ export class SpawnerDataManager {
 
   public locale = 'ja-JP';
 
-  public setLocale(locale: string, files: any) {
+  public load(locale: string, files: any) {
     this.locale = locale;
 
     let spawnFiles = files.export;

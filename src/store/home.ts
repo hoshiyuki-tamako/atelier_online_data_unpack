@@ -1,13 +1,22 @@
-import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
+import { Module, Mutation } from 'vuex-module-decorators';
+
+import { VuexModuleBase } from './base/VuexModuleBase';
 
 @Module({
-  namespaced: true
+  namespaced: true,
 })
-export default class extends VuexModule {
+export default class extends VuexModuleBase {
   public showSideBar = true;
 
+  public showHiddenContent = false;
+
   @Mutation
-  public setShowSideBar(showSideBar: boolean) {
+  public updateShowSideBar(showSideBar: boolean) {
     this.showSideBar = showSideBar;
+  }
+
+  @Mutation
+  public updateShowHiddenContent(showHiddenContent: boolean) {
+    this.showHiddenContent = showHiddenContent;
   }
 }

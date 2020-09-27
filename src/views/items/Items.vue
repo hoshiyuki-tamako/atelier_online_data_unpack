@@ -147,9 +147,7 @@ export default class extends VueBase {
     if (this.$route.query.category) {
       this.resetFilter();
       this.category = +this.$route.query.category;
-      const query = { ...this.$route.query };
-      delete query.category;
-      this.$router.replace({ query });
+      this.$router.replace({ query: { ...this.$route.query, category: undefined } });
     }
   }
 

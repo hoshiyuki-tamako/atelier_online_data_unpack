@@ -82,7 +82,7 @@ export default class extends VueBase {
       try {
         this.$i18n.locale = new URLSearchParams(window.location.search).get('locale') || 'ja-JP';
         document.title = this.$t(document.title).toString();
-        await dataManager.setLocale(this.$i18n.locale);
+        await dataManager.load(this.$i18n.locale, this.$store.state.home.showHiddenContent);
         this.pageLoading = false;
         retry = 0;
       } catch (e) {
@@ -109,7 +109,7 @@ export default class extends VueBase {
 .container
   margin: 12px
 
-.fbx-container
+.item-fbx-container
   width: 100%
   height: 100%
   outline: none

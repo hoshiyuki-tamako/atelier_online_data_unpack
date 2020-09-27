@@ -64,6 +64,14 @@ const itemsRoutes: Array<RouteConfig> = [
       title: 'アイテム',
     },
   },
+  {
+    path: '/items/UnusedItems',
+    name: 'ItemsUnusedItems',
+    component: () => import(/* webpackChunkName: "ItemsUnusedItems" */ '@/views/items/UnusedItems.vue'),
+    meta: {
+      title: '未使用アイテム',
+    },
+  },
 ];
 
 const charactersRoutes: Array<RouteConfig> = [
@@ -81,6 +89,14 @@ const charactersRoutes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "CharactersCharacter" */ '@/views/characters/Character.vue'),
     meta: {
       title: 'キャラクター',
+    },
+  },
+  {
+    path: '/characters/otherCharacters',
+    name: 'CharactersOtherCharacters',
+    component: () => import(/* webpackChunkName: "CharactersOtherCharacters" */ '@/views/characters/OtherCharacters.vue'),
+    meta: {
+      title: '他のキャラクター',
     },
   },
 ];

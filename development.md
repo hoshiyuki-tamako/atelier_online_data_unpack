@@ -588,7 +588,7 @@ quest
       "CNT": 0 // how many wealth it cost
     }
   },
-  "EVENT": 0,
+  "EVENT": 0, // ADV id, assets/assetbundles/adv/*.asset
   "NPC_FD": [],
   "RWD_ITEM": [ // reward item
     {
@@ -928,7 +928,7 @@ areaDetail
 
 ## FieldName
 
-fieldname
+fieldName
 
 ```ts
 {
@@ -940,7 +940,7 @@ fieldname
 
 ## Gate Info
 
-gateinfo
+gateInfo
 
 ```ts
 {
@@ -960,7 +960,7 @@ gateinfo
 
 ## Dungeon
 
-dungeon
+dungeonInfo
 
 seems they merge normal area and dungeon together
 
@@ -993,6 +993,8 @@ seems they merge normal area and dungeon together
 ```
 
 ## Spawn List CSV
+
+Game_Spawner_*
 
 some of the field see enum for more info
 
@@ -1040,3 +1042,19 @@ zoneeffect
   "element": 1 // see enum EElement
 },
 ```
+
+## Others
+
+- chara_group
+- equip
+- cameraFilterInfo
+- fairyRoute
+- hardModeInfo
+- npcTalk
+- roomMemberNum
+- roomPlan
+- shop
+- activeskilldirection
+- skilldirection
+- soundList
+- mapFacility

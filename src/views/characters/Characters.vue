@@ -8,7 +8,6 @@ div.container
       span {{ $t('ソート') }}
       el-select(v-model="sort" clearable filterable)
         el-option(v-for="item in sortOptions" :key="item.value" :label="item.label" :value="item.value")
-
   div.characters
     el-card.character(v-for="character of filteredCharacters" :key="character.DF")
       router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
@@ -21,12 +20,22 @@ import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
 import { CharacterType } from '@/store/characters/charactersFilter';
+import { mapFields } from 'vuex-map-fields';
+
+abstract class VueWithMapFields extends VueBase {
+  public characterType!: number;
+
+  public sort!: number;
+}
 
 @Component({
   components: {
   },
+  computed: {
+    ...mapFields('charactersFilter', ['characterType', 'sort']),
+  },
 })
-export default class extends VueBase {
+export default class extends VueWithMapFields {
   public get dataManager() {
     return dataManager;
   }
@@ -57,25 +66,10 @@ export default class extends VueBase {
     ];
   }
 
-  get characterType() {
-    return this.$store.state.charactersFilter.characterType;
-  }
-
-  set characterType(value) {
-    this.$store.commit('charactersFilter/setCharacterType', value);
-  }
-
-  public get sort() {
-    return this.$store.state.charactersFilter.sort;
-  }
-
-  public set sort(value) {
-    this.$store.commit('charactersFilter/setSort', value);
-  }
-
   public beforeMount() {
     if (typeof this.$route.query.characterType !== 'undefined') {
       this.characterType = +this.$route.query.characterType;
+      this.$router.replace({ query: { ...this.$route.query, characterType: undefined } });
     }
   }
 

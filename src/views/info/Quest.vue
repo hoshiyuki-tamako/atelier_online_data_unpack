@@ -43,9 +43,9 @@ div.container
                 p {{ $t('クェストステップ') }}: {{ quest.QUEST_SUB_NO }}
                 p {{ $t('種類') }}: {{ $t(dataManager.lookup.EQuestCategory[quest.CATEG]) }}
                 p {{ $t('解放チャプター') }}: {{ quest.CHAPTER ? quest.CHAPTER : '-' }}
-                p {{ $t('キークェスト') }}: {{ Utils.tickCross(quest.KEYQUEST) }}
-                p {{ $t('重要') }}: {{ Utils.tickCross(quest.IMPORTANT) }}
-                p {{ $t('挑戦') }}: {{ Utils.tickCross(quest.CHALLENGE) }}
+                p {{ $t('キークェスト') }}: {{ Util.tickCross(quest.KEYQUEST) }}
+                p {{ $t('重要') }}: {{ Util.tickCross(quest.IMPORTANT) }}
+                p {{ $t('挑戦') }}: {{ Util.tickCross(quest.CHALLENGE) }}
                 p(v-if="quest.AREA") {{ $t('区域') }}:
                   template(v-for="area of [dataManager.areaInfoById[quest.AREA]].filter((p) => p)")
                     template(v-for="fieldName of [dataManager.fieldNameById[area.iAreaNameId]].filter((p) => p)") {{ fieldName.strAreaName }}
@@ -116,13 +116,13 @@ div.container
       el-table-column(prop="CATEG" :label="$t('カテゴリー')" sortable="custom")
         template(slot-scope="scope") {{ $t(dataManager.lookup.EQuestCategory[scope.row.CATEG]) }}
       el-table-column(prop="COST.WTH.CNT" :label="$t('消費')" width="100%" sortable="custom")
-        template(slot-scope="scope") {{ Utils.tickCross(scope.row.COST.WTH.CNT) }}
+        template(slot-scope="scope") {{ Util.tickCross(scope.row.COST.WTH.CNT) }}
       el-table-column(prop="ENM.length" :label="$t('討伐')" width="100%" sortable="custom")
-        template(slot-scope="scope") {{ Utils.tickCross(scope.row.ENM.length) }}
+        template(slot-scope="scope") {{ Util.tickCross(scope.row.ENM.length) }}
       el-table-column(prop="GET.length" :label="$t('調合入手')" width="100%" sortable="custom")
-        template(slot-scope="scope") {{ Utils.tickCross(scope.row.GET.length) }}
+        template(slot-scope="scope") {{ Util.tickCross(scope.row.GET.length) }}
       el-table-column(prop="DLV.length" :label="`${$t('納品')}/${$t('報告')}`" sortable="custom")
-        template(slot-scope="scope") {{ Utils.tickCross(scope.row.DLV.length) }}
+        template(slot-scope="scope") {{ Util.tickCross(scope.row.DLV.length) }}
       el-table-column(prop="CHARA" :label="$t('キャラクター')" sortable="custom")
         template(slot-scope="scope")
           img.character-preview(v-if="scope.row.CHARA" :src="dataManager.characterById[scope.row.CHARA].icon" :alt="dataManager.characterById[scope.row.CHARA].NAME")
@@ -134,7 +134,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
-import { Utils } from '@/utils/Utils';
+import { Util } from '@/utils/Util';
 import { MVList as QuestMVList } from '@/master/quest';
 import LRU from 'lru-cache';
 
@@ -147,8 +147,8 @@ export default class extends VueBase {
     return dataManager;
   }
 
-  public get Utils() {
-    return Utils;
+  public get Util() {
+    return Util;
   }
 
   public filter = {

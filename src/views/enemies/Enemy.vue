@@ -105,10 +105,13 @@ export default class extends VueBase {
 
     const areaIds = dataManager.areaDetail.List
       .filter((i) => i.iEnemyIDList.includes(this.enemy.DF))
-      .map((p) => p.iAreaID)
-      .concat(spawnerDataAreaIds);
+      .map((p) => p.iAreaID);
 
-    return [...new Set(areaIds)]
+    console.log([...new Set(spawnerDataAreaIds.concat(areaIds))]
+      .sort((a, b) => a - b)
+      .map((id) => dataManager.areaInfoById[id]))
+
+    return [...new Set(spawnerDataAreaIds.concat(areaIds))]
       .sort((a, b) => a - b)
       .map((id) => dataManager.areaInfoById[id])
       .filter((p) => p);

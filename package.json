@@ -35,6 +35,7 @@
     "vue-scrollto": "^2.18.2",
     "vue-select": "^3.10.8",
     "vuex": "^3.5.1",
+    "vuex-map-fields": "^1.4.0",
     "vuex-persist": "^3.1.0"
   },
   "devDependencies": {

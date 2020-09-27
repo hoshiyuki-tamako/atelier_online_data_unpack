@@ -261,6 +261,7 @@ div.top-container
                       th {{ $t('特性') }}
                       td
                         v-select.skill-addon-select(:options="dataManager.skillAddonsEquipmentUseful" label="name" :value="player.equipmentModifiers[slot].skill" @input="(value) => setEquipmentModifierSkill(value, slot)")
+                          div(slot="no-options")
                   table
                     tr(v-for="state of getEquipmentStates(slot)")
                       th {{ $t(state.label) }}
@@ -315,6 +316,7 @@ div.top-container
                       th {{ $t('特性') }}
                       td
                         v-select.skill-addon-select(:options="dataManager.skillAddonsEquipmentUseful" label="name" :value="player.equipmentModifiers[slot].skill" @input="(value) => setEquipmentModifierSkill(value, slot)")
+                          div(slot="no-options")
                   table
                     tr(v-for="state of getEquipmentStates(slot)")
                       th {{ $t(state.label) }}

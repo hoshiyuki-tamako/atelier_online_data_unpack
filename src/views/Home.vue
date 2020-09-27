@@ -14,8 +14,11 @@ div.container
       span Twitter
       el-link(href="https://twitter.com/hoshiyuki_git" target="_blank" type="primary") @hoshiyuki_git
     br
-    p
-      el-switch(v-model="showSideBar" active-color="#13ce66" :active-text="$t('サイドバー')")
+    div.filters
+      div.filter
+        el-switch(v-model="showSideBar" active-color="#13ce66" :active-text="$t('サイドバー')")
+      div.filter(v-if="false")
+        el-switch(:value="showHiddenContent" @change="onShowHiddenContent" :active-text="$t('ネタバレ')")
   el-divider
   div
     div.categories__container(v-for="allPage of allPages")
@@ -74,22 +77,24 @@ import Component from 'vue-class-component';
 import { dataManager } from '@/utils/DataManager';
 import Enumerable from 'linq';
 import VueBase from '@/utils/VueBase';
+import { mapFields } from 'vuex-map-fields';
 import { CharacterType } from '@/store/characters/charactersFilter';
 import { SkillKind } from './skills/Skills.vue';
+
+abstract class VueWithMapFields extends VueBase {
+  public showSideBar!: boolean;
+
+  public showHiddenContent!: boolean;
+}
 
 @Component({
   components: {
   },
+  computed: {
+    ...mapFields('home', ['showSideBar', 'showHiddenContent']),
+  },
 })
-export default class extends VueBase {
-  get showSideBar() {
-    return this.$store.state.home.showSideBar;
-  }
-
-  set showSideBar(value) {
-    this.$store.commit('home/setShowSideBar', value);
-  }
-
+export default class extends VueWithMapFields {
   public get allPages() {
     return [
       {
@@ -172,7 +177,7 @@ export default class extends VueBase {
   }
 
   public get pageItems() {
-    return Enumerable.from(dataManager.item.m_vList)
+    const items = Enumerable.from(dataManager.item.m_vList)
       .where((p) => !p.EQU_BRD)
       .groupBy((p) => p.CATEG)
       .orderBy((p) => p.key())
@@ -185,8 +190,20 @@ export default class extends VueBase {
             category: p.key(),
           },
         },
-      }))
+      }) as unknown)
       .toArray();
+
+    if (this.showHiddenContent) {
+      items.push({
+        label: this.$t('未使用アイテム'),
+        imgSrc: 'img/icon_item_s/Texture2D/icon_item_s_20020010.png',
+        to: {
+          name: 'ItemsUnusedItems',
+        },
+      });
+    }
+
+    return items;
   }
 
   public get pageSkills() {
@@ -236,7 +253,7 @@ export default class extends VueBase {
   }
 
   public get pageCharacters() {
-    return [
+    const characters = [
       {
         label: this.$t('ランキング'),
         imgSrc: 'img/other/Texture2D/item_texture_0025.png',
@@ -265,6 +282,18 @@ export default class extends VueBase {
         },
       },
     ];
+
+    if (this.showHiddenContent) {
+      characters.push({
+        label: this.$t('他のキャラクター'),
+        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_5018_00.png',
+        to: {
+          name: 'CharactersOtherCharacters',
+        },
+      });
+    }
+
+    return characters;
   }
 
   public get pageEnemies() {
@@ -290,7 +319,7 @@ export default class extends VueBase {
     return [
       {
         label: this.$t('区域'),
-        imgSrc: 'img/icon/MapArea_04_001_ALL-small.png',
+        imgSrc: 'img/icon/tree.png',
         to: {
           name: 'Areas',
         },
@@ -367,9 +396,21 @@ export default class extends VueBase {
   }
 
   public onChangeLocale(locale: string) {
-    const url = new URL(window.location.toString());
+    const url = new URL(window.location.href);
     url.searchParams.set('locale', locale);
     window.location.href = url.toString();
+  }
+
+  public async onShowHiddenContent(value: boolean) {
+    if (value) {
+      await this.$confirm(`${this.$t('ネタバレのコンテンツ表示しでよろしいでしか')}?`, '', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning',
+      });
+    }
+    this.showHiddenContent = value;
+    window.location.reload();
   }
 }
 </script>
