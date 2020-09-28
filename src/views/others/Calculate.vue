@@ -66,10 +66,6 @@ import { Formula } from '@/logic/Formula';
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public state = {
     r: 60,
     m: 40,

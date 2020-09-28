@@ -134,7 +134,7 @@ export interface BA {
 }
 
 export class MVList {
-  public static hideDfs = [3005];
+  public static hides = [3005];
   public static maxLevel = 80;
 
   DF: number;

@@ -17,7 +17,7 @@ div.container
     div.filters
       div.filter
         el-switch(v-model="showSideBar" active-color="#13ce66" :active-text="$t('サイドバー')")
-      div.filter(v-if="false")
+      div.filter
         el-switch(:value="showHiddenContent" @change="onShowHiddenContent" :active-text="$t('ネタバレ')")
   el-divider
   div
@@ -38,38 +38,11 @@ div.container
   div.strategy-guides
     h3 {{ $t('他の人の攻略サイト') }}
     br
-    div
-      p ブレセイル観光局
-      p
-        el-link(href="https://bresail-kanko.info/index.html" target="_blank") https://bresail-kanko.info/index.html
-      p
-        el-link(href="https://twitter.com/bresail_kanko" target="_blank") https://twitter.com/bresail_kanko
-      p
-        el-link(href="https://twitter.com/re_dream5" target="_blank") https://twitter.com/re_dream5
-    el-divider
-    div
-      p アトリエオンライン攻略日記〜シャオンのアトリエ〜
-      p
-        el-link(href="https://ameblo.jp/shana12151014/" target="_blank") https://ameblo.jp/shana12151014/
-      p
-        el-link(href="https://twitter.com/_shaon" target="_blank") https://twitter.com/_shaon
-    el-divider
-    div
-      p かぴ
-      p
-        el-link(href="https://twitter.com/kapi_atorie" target="_blank") https://twitter.com/kapi_atorie
-    el-divider
-    div
-      p アトリエオンライン攻略Wikiまとめ【ブレセイルの錬金術士】
-      p
-        el-link(href="https://atelieronline.gamerch.com/" target="_blank") https://atelieronline.gamerch.com/
-    el-divider
-    div
-      p 煉金工坊OL 資料庫
-      p
-        el-link(href="https://forum.gamer.com.tw/C.php?bsn=33099&snA=883&tnum=1" target="_blank") {{ 'https://forum.gamer.com.tw/C.php?bsn=33099&snA=883&tnum=1' }}
-      p
-        el-link(href="https://docs.google.com/spreadsheets/d/1GzUq1eeawlkqm6tVz1e36Fx2anNgPjIAKdwg20g8pCg/edit?usp=sharing" target="_blank" ) https://docs.google.com/spreadsheets/d/1GzUq1eeawlkqm6tVz1e36Fx2anNgPjIAKdwg20g8pCg/edit?usp=sharing
+    div(v-for="page of otherStrategyPages")
+      h4 {{ page.title }}
+      p(v-for="link of page.links")
+        el-link(:href="link.href" target="_blank") {{ link.href }}
+      el-divider
 </template>
 
 <script lang="ts">
@@ -325,10 +298,17 @@ export default class extends VueWithMapFields {
         },
       },
       {
-        label: this.$t('ゾーン'),
-        imgSrc: 'img/icon_item_s/Texture2D/icon_item_s_10500014.png',
+        label: this.$t('クェスト'),
+        imgSrc: 'img/other/Texture2D/item_texture_0018.png',
         to: {
-          name: 'InfoZone',
+          name: 'InfoQuest',
+        },
+      },
+      {
+        label: this.$t('ダイアログ'),
+        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_1010_00.png',
+        to: {
+          name: 'InfoDialog',
         },
       },
       {
@@ -346,10 +326,10 @@ export default class extends VueWithMapFields {
         },
       },
       {
-        label: this.$t('クェスト'),
-        imgSrc: 'img/other/Texture2D/item_texture_0018.png',
+        label: this.$t('ゾーン'),
+        imgSrc: 'img/icon_item_s/Texture2D/icon_item_s_10500014.png',
         to: {
-          name: 'InfoQuest',
+          name: 'InfoZone',
         },
       },
     ];
@@ -391,6 +371,63 @@ export default class extends VueWithMapFields {
         to: {
           name: 'OthersChat',
         },
+      },
+    ];
+  }
+
+  public get otherStrategyPages() {
+    return [
+      {
+        title: 'ブレセイル観光局',
+        links: [
+          {
+            href: 'https://bresail-kanko.info/index.html',
+          },
+          {
+            href: 'https://twitter.com/bresail_kanko',
+          },
+          {
+            href: 'https://twitter.com/re_dream5',
+          },
+        ],
+      },
+      {
+        title: 'アトリエオンライン攻略日記〜シャオンのアトリエ〜',
+        links: [
+          {
+            href: 'https://ameblo.jp/shana12151014/',
+          },
+          {
+            href: 'https://twitter.com/_shaon',
+          },
+        ],
+      },
+      {
+        title: 'かぴ',
+        links: [
+          {
+            href: 'https://twitter.com/kapi_atorie',
+          },
+        ],
+      },
+      {
+        title: 'アトリエオンライン攻略Wikiまとめ【ブレセイルの錬金術士】',
+        links: [
+          {
+            href: 'https://atelieronline.gamerch.com/',
+          },
+        ],
+      },
+      {
+        title: '煉金工坊OL 資料庫',
+        links: [
+          {
+            href: 'https://forum.gamer.com.tw/C.php?bsn=33099&snA=883&tnum=1',
+          },
+          {
+            href: 'https://docs.google.com/spreadsheets/d/1GzUq1eeawlkqm6tVz1e36Fx2anNgPjIAKdwg20g8pCg/edit?usp=sharing',
+          },
+        ],
       },
     ];
   }

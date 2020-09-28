@@ -165,9 +165,9 @@ const areasRoutes: Array<RouteConfig> = [
     },
   },
   {
-    path: '/areas',
+    path: '/areas/area',
     name: 'AreasArea',
-    component: () => import(/* webpackChunkName: "AreasArea" */ '@/views/areas/Areas.vue'),
+    component: () => import(/* webpackChunkName: "AreasArea" */ '@/views/areas/Area.vue'),
     meta: {
       title: '区域',
     },
@@ -205,6 +205,14 @@ const infoRoutes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "InfoQuest" */ '@/views/info/Quest.vue'),
     meta: {
       title: 'クェスト',
+    },
+  },
+  {
+    path: '/info/dialog',
+    name: 'InfoDialog',
+    component: () => import(/* webpackChunkName: "InfoDialog" */ '@/views/info/Dialog.vue'),
+    meta: {
+      title: 'ダイアログ',
     },
   },
 ];

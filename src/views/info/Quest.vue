@@ -1,5 +1,19 @@
 <template lang="pug">
 div.container
+  el-dialog#quest-dialog(v-loading="questDialogLoading" title="" :lock-scroll="false" :destroy-on-close="true" top="0" :visible.sync="questDialogVisible" width="80%" :fullscreen="!!(md.mobile() || md.tablet())")
+    el-divider(v-if="selectedQuest")
+      h3 {{ selectedQuest.NAME }}
+    el-table(:data="questDialogs" :show-header="false")
+      el-table-column(width="210px")
+        template(slot-scope="scope")
+          img.dialog-character-image(v-if="scope.row.characterDf" :src="`img/icon_chara/Texture2D/icon_chara_all_${scope.row.characterDf.toString().padStart(4, '0')}_00.png`" :alt="dataManager.characterById[scope.row.characterDf] ? dataManager.characterById[scope.row.characterDf].NAME : scope.row.characterDf")
+      el-table-column
+        template(slot-scope="scope")
+          h4 {{ scope.row.name }}
+          p {{ scope.row.dialog }}
+    div(slot="footer")
+      el-button(@click="questDialogVisible = false" type="primary") {{ $t('閉じる') }}
+
   div.filters
     div.filter
       span {{ $t('カテゴリー') }}
@@ -39,9 +53,8 @@ div.container
                 p {{ quest.DESC }}
                 br
                 p DF: {{ quest.DF }}
-                p {{ $t('クェスト号') }}: {{ quest.QUEST_NO }}
-                p {{ $t('クェストステップ') }}: {{ quest.QUEST_SUB_NO }}
                 p {{ $t('種類') }}: {{ $t(dataManager.lookup.EQuestCategory[quest.CATEG]) }}
+                p(v-if="quest.TYPE") {{ $t('タイプ') }}: {{ $t(dataManager.lookup.EQuestType[quest.TYPE]) }}
                 p {{ $t('解放チャプター') }}: {{ quest.CHAPTER ? quest.CHAPTER : '-' }}
                 p {{ $t('キークェスト') }}: {{ Util.tickCross(quest.KEYQUEST) }}
                 p {{ $t('重要') }}: {{ Util.tickCross(quest.IMPORTANT) }}
@@ -103,8 +116,8 @@ div.container
 
                 div(v-if="quest.UNLOCK.length")
                   el-divider {{ $t('必要称号') }}
-                    div(v-for="[unlock, degree] of quest.UNLOCK.map((unlock) => [unlock, dataManager.degreeById[unlock.DF]]).filter(([unlock, degree]) => degree.STP === unlock.STP)")
-                      p {{ degree.NAME }}
+                  div(v-for="[unlock, degree] of quest.UNLOCK.map((unlock) => [unlock, dataManager.degreeById[unlock.DF]]).filter(([unlock, degree]) => degree.STP === unlock.STP)")
+                    p {{ degree.NAME }}
 
                 div(v-if="quest.PARTY_IN")
                   el-divider {{ $t('必要キャラクター') }}
@@ -121,11 +134,16 @@ div.container
         template(slot-scope="scope") {{ Util.tickCross(scope.row.ENM.length) }}
       el-table-column(prop="GET.length" :label="$t('調合入手')" width="100%" sortable="custom")
         template(slot-scope="scope") {{ Util.tickCross(scope.row.GET.length) }}
-      el-table-column(prop="DLV.length" :label="`${$t('納品')}/${$t('報告')}`" sortable="custom")
+      el-table-column(prop="DLV.length" :label="`${$t('納品')}${$t('報告')}`" width="100%" sortable="custom")
         template(slot-scope="scope") {{ Util.tickCross(scope.row.DLV.length) }}
-      el-table-column(prop="CHARA" :label="$t('キャラクター')" sortable="custom")
+      el-table-column(prop="NPC_FD.length" :label="`${$t('ダイアログ')}`" width="130%" sortable="custom")
+        template(slot-scope="scope") {{ Util.tickCross(scope.row.NPC_FD.some((i) => i.ADV)) }}
+      el-table-column(prop="CHARA" :label="$t('キャラクター')"  width="130%" sortable="custom")
         template(slot-scope="scope")
           img.character-preview(v-if="scope.row.CHARA" :src="dataManager.characterById[scope.row.CHARA].icon" :alt="dataManager.characterById[scope.row.CHARA].NAME")
+      el-table-column(prop="NPC_FD.length" :label="$t('ダイアログ')" width="120%" sortable="custom")
+        template(slot-scope="scope")
+          el-button(v-if="scope.row.NPC_FD.some((p) => p.ADV)" @click="onOpenDialog(scope.row)" type="primary" size="small") {{ $t('ダイアログ') }}
     el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredQuests.length" layout="prev, pager, next" background="")
 </template>
 
@@ -134,22 +152,22 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
-import { Util } from '@/utils/Util';
+import Util from '@/utils/Util';
 import { MVList as QuestMVList } from '@/master/quest';
 import LRU from 'lru-cache';
+import { IDialog } from '@/utils/AdvManager';
+import MobileDetect from 'mobile-detect';
 
 @Component({
   components: {
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public get Util() {
     return Util;
   }
+
+  public md = new MobileDetect(window.navigator.userAgent);
 
   public filter = {
     category: null,
@@ -169,6 +187,15 @@ export default class extends VueBase {
   public filterCache = new LRU<string, QuestMVList[]>(100);
 
   public currentRows = [] as QuestMVList[];
+
+  // dialog
+  public questDialogVisible = false;
+
+  public questDialogLoading = false;
+
+  public selectedQuest: QuestMVList | null = null;
+
+  public questDialogs: IDialog[] = [];
 
   public get categoryFilter() {
     return Object.keys(dataManager.questsByCategory)
@@ -204,6 +231,10 @@ export default class extends VueBase {
         label: `${this.$t('納品')}/${this.$t('報告')}`,
         value: 4,
       },
+      {
+        label: `${this.$t('ダイアログ')}`,
+        value: 5,
+      },
     ];
   }
 
@@ -219,6 +250,7 @@ export default class extends VueBase {
         && (!this.filter.has.includes(2) || p.ENM.length)
         && (!this.filter.has.includes(3) || p.GET.length)
         && (!this.filter.has.includes(4) || p.DLV.length)
+        && (!this.filter.has.includes(5) || p.NPC_FD.some((i) => i.ADV))
       ));
 
       if (this.filter.sort) {
@@ -273,6 +305,28 @@ export default class extends VueBase {
   public scrollTableTop() {
     (this.$refs.table as Vue).$el.scrollIntoView();
   }
+
+  // dialog
+  public async onOpenDialog(quest: QuestMVList) {
+    try {
+      this.selectedQuest = quest;
+      this.questDialogs = [];
+      this.questDialogVisible = true;
+      this.questDialogLoading = true;
+      const dialogs = await Promise.all(
+        quest.NPC_FD
+          .filter((p) => p.ADV)
+          .map((p) => dataManager.advManager.getDialog(p.ADV)),
+      );
+      this.questDialogs = dialogs.flat().map((p) => Object.assign(p, { dialog: p.dialog.replace('[px]', `[${this.$t('プレーヤー')}${this.$t('名前')}]`) }));
+    } catch (e) {
+      this.questDialogVisible = false;
+      this.$message.error(e.toString());
+      console.error(e);
+    } finally {
+      this.questDialogLoading = false;
+    }
+  }
 }
 </script>
 
@@ -296,4 +350,7 @@ a
 
 .quest-reward-item-container img
   width: 60px
+
+.dialog-character-image
+  width: 180px
 </style>

@@ -26,10 +26,6 @@ import { List as DegreeList } from '@/master/degree';
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public get typeFilters() {
     return Object.entries(dataManager.lookup.EDegreeMissonType).map(([value, text]) => ({
       text,

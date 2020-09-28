@@ -1,15 +1,16 @@
 import path from 'path';
 
-import { AtelierOnlineExportProcessor } from './AtelierOnlineExportProcessor';
-import { AtelierOnlineFileExport } from './AtelierOnlineFileExport';
-import { Lookup } from './Lookup';
-import { ModelExport } from './ModelExport';
-import { TextureExport } from './TextureExport';
+import AtelierOnlineExportProcessor from './AtelierOnlineExportProcessor';
+import AtelierOnlineFileExport from './AtelierOnlineFileExport';
+import Lookup from './Lookup';
+import ModelExport from './ModelExport';
+import TextureExport from './TextureExport';
 
 class Main {
   public static async main() {
     const sourceFolder = path.join(__dirname, '..', '..', 'source');
     const rootFolder = path.join(__dirname, '..', '..', 'public');
+
     await Promise.all([
       new TextureExport().process(sourceFolder, rootFolder),
       new ModelExport().process(sourceFolder, rootFolder),

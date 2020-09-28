@@ -2,9 +2,9 @@
 div
   el-dialog(title="" :visible.sync="itemPickerDialogVisible" fullscreen)
     div.item-picker-container
-      el-select.compose-input--size(v-model="itemPickerFilterCategory" :placeholder="$t('種類')" filterable clearable)
+      el-select.compose-input--size(v-model="itemPickerCategory" :placeholder="$t('種類')" filterable clearable)
         el-option(v-for="item in itemCategories" :key="item.value" :label="item.label" :value="item.value")
-      el-input(v-model="itemPickerFilterKeyword" :placeholder="`${$t('名前')}/DF`")
+      el-input(v-model="itemPickerKeyword" :placeholder="`${$t('名前')}/DF`" clearable)
       div.item-picker-items
         div(v-for="item in filteredItems" @click="onPickItem(item)")
           p {{ item.NAME }}
@@ -54,7 +54,7 @@ div
         img.compose-result-image(@click="itemPickerDialogVisible = true" :src="compose.icon" :alt="compose.NAME")
       div.compose-result-export
         el-button(@click="exportComposeItemUrlVisible = true" type="primary" circle) URL
-      div.compose-result-skill(v-for="skill in compose.getSkills(composeQuality)")
+      div.compose-result-skill(v-for="(skill, i) in compose.getSkills(composeQuality)")
         table
           tr
             th {{ $t('名前') }}
@@ -80,7 +80,7 @@ div
               th {{ $t('追加状態') }}
               td
                 p(v-for="[state, abnormalState] of skill.attackSkill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
-        p {{ '>' }}
+        p(v-if="compose.getSkills(composeQuality).length !== (i + 1)") {{ '>' }}
 </template>
 
 <script lang="ts">
@@ -90,37 +90,38 @@ import { dataManager } from '@/utils/DataManager';
 import { clamp } from 'lodash';
 import { MVList as ItemMVList } from '@/master/item';
 import { MaterialOptions } from '@/store/tools/composeItemFilter';
+import { mapFields } from 'vuex-map-fields';
+
+abstract class VueWithMapFields extends VueBase {
+  public itemDf!: number;
+
+  public itemPickerCategory!: number | null;
+
+  public itemPickerKeyword!: string;
+}
 
 @Component({
   components: {
   },
+  computed: {
+    ...mapFields('composeItemFilter', ['itemDf']),
+    ...mapFields('composeItemFilter', {
+      itemPickerCategory: 'itemPicker.category',
+      itemPickerKeyword: 'itemPicker.keyword',
+    }),
+  },
 })
-export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
+export default class extends VueWithMapFields {
   public get href() {
     return window.location.href.replace(window.location.hash, '') + this.$router.resolve({ name: 'ToolsComposeItem', query: { df: this.compose.DF.toString(), materialOptions: this.materialOptionsExport } }).href;
   }
 
-  // dialog
-  public itemPickerDialogVisible = false;
-
-  public itemPickerFilterCategory: number | null = null;
-
-  public itemPickerFilterKeyword = '';
-
-  // export
-  public exportComposeItemUrlVisible = false;
-
-  //
   public get materialOptions() {
     return this.$store.state.composeItemFilter.materialOptions;
   }
 
   public set materialOptions(value) {
-    this.$store.commit('composeItemFilter/setMaterialOptions', value);
+    this.$store.commit('composeItemFilter/updateMaterialOptions', value);
   }
 
   public get materialOptionsExport() {
@@ -129,12 +130,23 @@ export default class extends VueBase {
 
   public materials = [] as ItemMVList[];
 
+  // dialog
+  public itemPickerDialogVisible = false;
+
+  // export
+  public exportComposeItemUrlVisible = false;
+
   public get compose() {
-    return dataManager.itemById[this.$store.state.composeItemFilter.itemDf];
+    const compose = dataManager.itemById[this.itemDf];
+    if (!compose) {
+      this.itemDf = dataManager.itemsHasRecipe[0].DF;
+      return dataManager.itemById[this.itemDf];
+    }
+    return compose;
   }
 
   public set compose(value: ItemMVList) {
-    this.$store.commit('composeItemFilter/setItemDf', value?.DF);
+    this.itemDf = value?.DF || dataManager.itemsHasRecipe[0].DF;
   }
 
   public get itemCategories() {
@@ -146,8 +158,8 @@ export default class extends VueBase {
 
   public get filteredItems() {
     return dataManager.itemsHasRecipe.filter((p) => (
-      (!this.itemPickerFilterKeyword || p.DF === +this.itemPickerFilterKeyword || p.NAME.toLocaleLowerCase().includes(this.itemPickerFilterKeyword.toLocaleLowerCase()))
-      && (!this.itemPickerFilterCategory || p.CATEG === this.itemPickerFilterCategory)
+      (!this.itemPickerKeyword || p.DF === +this.itemPickerKeyword || p.NAME.toLocaleLowerCase().includes(this.itemPickerKeyword.toLocaleLowerCase()))
+      && (!this.itemPickerCategory || p.CATEG === this.itemPickerCategory)
     ));
   }
 
@@ -157,8 +169,8 @@ export default class extends VueBase {
     }
 
     const sumQuality = this.materialOptions.reduce((sum, p) => sum + p.quality, 0);
-    const addonQuality = this.materialOptions.reduce((sum, p) => sum + p.addonQuality, 0);
-    return clamp(Math.floor((sumQuality / this.materialOptions.length) + addonQuality), 1, 100);
+    const sumAddonQuality = this.materialOptions.reduce((sum, p) => sum + p.addonQuality, 0);
+    return clamp(Math.floor((sumQuality / this.materialOptions.length) + sumAddonQuality), 1, 100);
   }
 
   public beforeMount() {

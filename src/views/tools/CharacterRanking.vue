@@ -55,160 +55,54 @@ import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
 import { sum } from 'lodash';
+import { mapFields } from 'vuex-map-fields';
+
+abstract class VueWithMapFields extends VueBase {
+  public foodLevel!: number;
+
+  public level!: number;
+
+  public showColumnTotalState!: boolean;
+
+  public showColumnHP!: boolean;
+
+  public showColumnSATK!: boolean;
+
+  public showColumnSDEF!: boolean;
+
+  public showColumnMATK!: boolean;
+
+  public showColumnMDEF!: boolean;
+
+  public showColumnSPD!: boolean;
+
+  public showColumnQTH!: boolean;
+
+  public showColumnDDG!: boolean;
+
+  public showColumnTotalElement!: boolean;
+
+  public showColumnFIRE!: boolean;
+
+  public showColumnWATER!: boolean;
+
+  public showColumnEARTH!: boolean;
+
+  public showColumnWIND!: boolean;
+
+  public showColumnLIGHT!: boolean;
+
+  public showColumnDARK!: boolean;
+}
 
 @Component({
   components: {
   },
+  computed: {
+    ...mapFields('characterRankingFilter', ['foodLevel', 'level', 'showColumnTotalState', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
+  },
 })
-export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
-  get foodLevel() {
-    return this.$store.state.characterRankingFilter.foodLevel;
-  }
-
-  set foodLevel(value) {
-    this.$store.commit('characterRankingFilter/setFoodLevel', value);
-  }
-
-  get level() {
-    return this.$store.state.characterRankingFilter.level;
-  }
-
-  set level(value) {
-    this.$store.commit('characterRankingFilter/setLevel', value);
-  }
-
-  get showColumnTotalState() {
-    return this.$store.state.characterRankingFilter.showColumnTotalState;
-  }
-
-  set showColumnTotalState(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnTotalState', value);
-  }
-
-  get showColumnHP() {
-    return this.$store.state.characterRankingFilter.showColumnHP;
-  }
-
-  set showColumnHP(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnHP', value);
-  }
-
-  get showColumnSATK() {
-    return this.$store.state.characterRankingFilter.showColumnSATK;
-  }
-
-  set showColumnSATK(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnSATK', value);
-  }
-
-  get showColumnSDEF() {
-    return this.$store.state.characterRankingFilter.showColumnSDEF;
-  }
-
-  set showColumnSDEF(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnSDEF', value);
-  }
-
-  get showColumnMATK() {
-    return this.$store.state.characterRankingFilter.showColumnMATK;
-  }
-
-  set showColumnMATK(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnMATK', value);
-  }
-
-  get showColumnMDEF() {
-    return this.$store.state.characterRankingFilter.showColumnMDEF;
-  }
-
-  set showColumnMDEF(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnMDEF', value);
-  }
-
-  get showColumnSPD() {
-    return this.$store.state.characterRankingFilter.showColumnSPD;
-  }
-
-  set showColumnSPD(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnSPD', value);
-  }
-
-  get showColumnQTH() {
-    return this.$store.state.characterRankingFilter.showColumnQTH;
-  }
-
-  set showColumnQTH(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnQTH', value);
-  }
-
-  get showColumnDDG() {
-    return this.$store.state.characterRankingFilter.showColumnDDG;
-  }
-
-  set showColumnDDG(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnDDG', value);
-  }
-
-  get showColumnTotalElement() {
-    return this.$store.state.characterRankingFilter.showColumnTotalElement;
-  }
-
-  set showColumnTotalElement(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnTotalElement', value);
-  }
-
-  get showColumnFIRE() {
-    return this.$store.state.characterRankingFilter.showColumnFIRE;
-  }
-
-  set showColumnFIRE(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnFIRE', value);
-  }
-
-  get showColumnWATER() {
-    return this.$store.state.characterRankingFilter.showColumnWATER;
-  }
-
-  set showColumnWATER(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnWATER', value);
-  }
-
-  get showColumnEARTH() {
-    return this.$store.state.characterRankingFilter.showColumnEARTH;
-  }
-
-  set showColumnEARTH(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnEARTH', value);
-  }
-
-  get showColumnWIND() {
-    return this.$store.state.characterRankingFilter.showColumnWIND;
-  }
-
-  set showColumnWIND(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnWIND', value);
-  }
-
-  get showColumnLIGHT() {
-    return this.$store.state.characterRankingFilter.showColumnLIGHT;
-  }
-
-  set showColumnLIGHT(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnLIGHT', value);
-  }
-
-  get showColumnDARK() {
-    return this.$store.state.characterRankingFilter.showColumnDARK;
-  }
-
-  set showColumnDARK(value) {
-    this.$store.commit('characterRankingFilter/setShowColumnDARK', value);
-  }
-
+export default class extends VueWithMapFields {
   public get filteredData() {
     return dataManager.charactersCanBattle.map((p) => ({
       icon: p.icon,

@@ -35,6 +35,10 @@ el-container.containter-main(v-loading="pageLoading")
         span(slot="title") {{ $t('区域') }}
         router-link(:to="{ name: 'Areas' }")
           img.menu__home-icon(src="img/icon/tree.png" :alt="$t('区域')")
+      el-menu-item.menu__item(index="7")
+        span(slot="title") {{ $t('クェスト') }}
+        router-link(:to="{ name: 'InfoQuest' }")
+          img.menu__home-icon(src="img/other/Texture2D/item_texture_0018.png" :alt="$t('クェスト')")
   el-main.reset
     router-view(v-if="!pageLoading" :key="$route.fullPath")
 </template>
@@ -63,6 +67,7 @@ export default class extends VueBase {
   public routeToColor = {
     ToolsCharacterBuilder: '#e0c397',
     ToolsComposeItem: '#e0c397',
+    AreasArea: '#2F4F4F',
   };
 
   public get menu() {

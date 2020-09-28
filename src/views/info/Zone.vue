@@ -36,10 +36,6 @@ import { List as ZoneList } from '@/master/zone';
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public filter = {
     hasItem: false,
     hasEnemy: false,

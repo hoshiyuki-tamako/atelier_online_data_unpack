@@ -1,6 +1,6 @@
 <template lang="pug">
 div.container
-  h3 模型
+  h3 {{ $t('模型') }}
   el-dialog(title="" :visible.sync="fbxDialogVisible" width="90%")
     model-fbx.item-fbx-container(:src="fbxModel" :rotation="{ x:0, y: 0, z: Math.PI }" backgroundColor="rgb(169,169,169)")
 
@@ -18,16 +18,14 @@ div.container
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
+import { ModelFbx } from 'vue-3d-model';
 
 @Component({
   components: {
+    'model-fbx': ModelFbx,
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public fbxModel = '';
 
   public fbxDialogVisible = false;
@@ -55,7 +53,8 @@ export default class extends VueBase {
       .map((icon: string) => ({
         id: +icon.split('_')[3].split('.')[0],
         src: `img/icon_item_s/Texture2D/${icon}`,
-      }));
+      }))
+      .sort((a, b) => b.id - a.id);
   }
 
   public openFbxDialog(fbxModel: string) {
@@ -80,6 +79,7 @@ a
   flex-wrap: wrap
   .unused-item-container
     text-align: center
+    padding: 12px
     img
       width: 120px
 </style>

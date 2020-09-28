@@ -5,6 +5,9 @@ div.container
       el-select(v-model="characterType" clearable filterable)
         el-option(v-for="item of characterTypeFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
+      span {{ $t('名前') }}/DF
+      el-input(v-model="name")
+    div.filter
       span {{ $t('ソート') }}
       el-select(v-model="sort" clearable filterable)
         el-option(v-for="item in sortOptions" :key="item.value" :label="item.label" :value="item.value")
@@ -26,20 +29,18 @@ abstract class VueWithMapFields extends VueBase {
   public characterType!: number;
 
   public sort!: number;
+
+  public name!: string;
 }
 
 @Component({
   components: {
   },
   computed: {
-    ...mapFields('charactersFilter', ['characterType', 'sort']),
+    ...mapFields('charactersFilter', ['characterType', 'sort', 'name']),
   },
 })
 export default class extends VueWithMapFields {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public get characterTypeFilter() {
     return [
       {
@@ -74,10 +75,13 @@ export default class extends VueWithMapFields {
   }
 
   public get filteredCharacters() {
+    const characters = this.characters.filter((p) => (
+      (!this.name || p.DF === +this.name || p.NAME.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()))
+    ));
     if (this.sort === 1) {
-      return [...this.characters].reverse();
+      return characters.reverse();
     }
-    return this.characters;
+    return characters;
   }
 
   public get characters() {

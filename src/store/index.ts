@@ -26,5 +26,5 @@ export default new Vuex.Store({
     equipmentRankingFilter,
     characterBuilder,
   },
-  plugins: [new VuexPersistence().plugin]
+  plugins: [new VuexPersistence().plugin],
 });

@@ -193,10 +193,6 @@ import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public character: CharacterMVList | null = null;
 
   public characterModifier = new CharacterModifier();

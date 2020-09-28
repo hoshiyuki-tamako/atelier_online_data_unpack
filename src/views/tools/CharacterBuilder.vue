@@ -680,8 +680,11 @@ div.top-container
 </template>
 
 <script lang="ts">
+import 'vue-select/dist/vue-select.css';
+
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
+import vSelect from 'vue-select';
 import { dataManager } from '@/utils/DataManager';
 import { MVList as ItemMVList } from '@/master/item';
 import { MVList as CharacterMVList } from '@/master/chara';
@@ -695,13 +698,10 @@ import { PlayerExportVersionConvertor } from '@/logic/convertor/PlayerExportVers
 
 @Component({
   components: {
+    'v-select': vSelect,
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public get Formula() {
     return Formula;
   }

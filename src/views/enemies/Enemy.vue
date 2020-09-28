@@ -33,7 +33,7 @@ div.container
       div(v-if="appareAreas.length")
         el-divider {{ $t('出現エリア') }}
         p(v-for="area of appareAreas")
-          router-link(:to="{ name: 'Area', query: { df: area.iAreaId } }") {{ dataManager.fieldNameById[area.iAreaNameId].strAreaName }}
+          router-link(:to="{ name: 'Areas', query: { df: area.iAreaId } }") {{ dataManager.fieldNameById[area.iAreaNameId].strAreaName }}
 
       div(v-if="enemy.sParam.SKILL.length")
         el-divider {{ $t('スキル') }}/{{ $t('効果') }}
@@ -78,10 +78,6 @@ import { EnemyModifier } from '@/logic/modifiers/EnemyModifier';
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public enemy: EnemyMVList | null = null;
 
   public enemyModifier = new EnemyModifier();
@@ -96,7 +92,7 @@ export default class extends VueBase {
   }
 
   public get appareAreas() {
-    const spawnerDataAreaIds = Object.entries(dataManager.spawnerDataManager.spawnLists).map(([csvFileName, spawnerDatas]) => ({
+    const spawnerDataAreaIds = [...dataManager.spawnerDataManager.spawnLists.entries()].map(([csvFileName, spawnerDatas]) => ({
       csvFileName,
       spawners: spawnerDatas.filter((i) => i.spawnerKind === 3 && i.DF === this.enemy.DF),
     }))
@@ -106,10 +102,6 @@ export default class extends VueBase {
     const areaIds = dataManager.areaDetail.List
       .filter((i) => i.iEnemyIDList.includes(this.enemy.DF))
       .map((p) => p.iAreaID);
-
-    console.log([...new Set(spawnerDataAreaIds.concat(areaIds))]
-      .sort((a, b) => a - b)
-      .map((id) => dataManager.areaInfoById[id]))
 
     return [...new Set(spawnerDataAreaIds.concat(areaIds))]
       .sort((a, b) => a - b)

@@ -1,23 +1,24 @@
 import { eSpawnerKind } from '@/logic/Enums';
 import csv from 'csvtojson';
 
-export class SpawnerData
-{
+export class SpawnerData {
   public DF = 0;
+
   public spawnerKind = eSpawnerKind.Ignore;
 }
 
 export class SpawnerDataManager {
-
   public spawnLists = new Map<string, SpawnerData[]>();
 
   public locale = 'ja-JP';
 
   public load(locale: string, files: any) {
+    this.spawnLists.clear();
+
     this.locale = locale;
 
     let spawnFiles = files.export;
-    let spawnListFolders = ['export'];
+    const spawnListFolders = ['export'];
     if (this.locale === 'zh-TW') {
       spawnFiles = spawnFiles.tw;
       spawnListFolders.push('tw');
@@ -26,7 +27,7 @@ export class SpawnerDataManager {
 
     return Promise.all(Object.values(spawnFiles.SpawnList.TextAsset).map(async (csvFileName: string) => {
       try {
-        const url = spawnListFolders.join('/') + `/${csvFileName}`;
+        const url = `${spawnListFolders.join('/')}/${csvFileName}`;
         const spawnLists = await csv({
           noheader: true,
           output: 'csv',
@@ -43,5 +44,4 @@ export class SpawnerDataManager {
       }
     }));
   }
-
 }

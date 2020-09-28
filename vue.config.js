@@ -19,6 +19,9 @@ module.exports = {
     iconPaths: {
       favicon32: './img/icons/favicon-32x32.png',
     },
+    workboxOptions: {
+      exclude: /.*/,
+    },
   },
   pluginOptions: {
     i18n: {
@@ -27,5 +30,8 @@ module.exports = {
       localeDir: '../public/locales',
       enableInSFC: false,
     },
+  },
+  configureWebpack: {
+    devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
   },
 };

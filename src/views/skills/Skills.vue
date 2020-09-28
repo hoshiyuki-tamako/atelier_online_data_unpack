@@ -84,10 +84,6 @@ export enum SkillKind {
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public get skillKindFilter() {
     return [
       {

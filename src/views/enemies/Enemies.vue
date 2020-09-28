@@ -23,38 +23,28 @@ div.container
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
+import { mapFields } from 'vuex-map-fields';
+
+abstract class VueWithMapFields extends VueBase {
+  public name!: string;
+
+  public sort!: number;
+}
 
 @Component({
   components: {
   },
+  computed: {
+    ...mapFields('enemiesFilter', ['name', 'sort']),
+  },
 })
-export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
+export default class extends VueWithMapFields {
   get eKind() {
     return this.$store.state.enemiesFilter.eKind || null;
   }
 
   set eKind(value) {
-    this.$store.commit('enemiesFilter/setEKind', value);
-  }
-
-  public get name() {
-    return this.$store.state.enemiesFilter.name;
-  }
-
-  public set name(value) {
-    this.$store.commit('enemiesFilter/setName', value);
-  }
-
-  public get sort() {
-    return this.$store.state.enemiesFilter.sort;
-  }
-
-  public set sort(value) {
-    this.$store.commit('enemiesFilter/setSort', value);
+    this.$store.commit('enemiesFilter/updateEKind', value);
   }
 
   public get enemyCategoryFilter() {

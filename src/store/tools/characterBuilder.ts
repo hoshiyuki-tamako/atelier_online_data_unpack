@@ -1,7 +1,7 @@
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
 
 @Module({
-  namespaced: true
+  namespaced: true,
 })
 export default class extends VuexModule {
   public importStringJaJp = '';

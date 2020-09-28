@@ -46,6 +46,8 @@ export interface MGameObject {
 export class MVList {
   public static states = ['HP', 'SATK', 'SDEF', 'MATK', 'MDEF', 'SPD', 'QTH', 'DDG'];
 
+  public static weaponKindCategory = [ECategory.eWEAPON, ECategory.eSHIELD];
+
   public static equipmentMaxLevel = 80;
 
   public static equipmentMaxQuality = 120;
@@ -88,11 +90,11 @@ export class MVList {
   }
 
   public get modelFolderName() {
-    if ([ECategory.eWEAPON, ECategory.eSHIELD].includes(this.CATEG)) {
+    if (MVList.weaponKindCategory.includes(this.CATEG)) {
       return EWeaponKind[this.WPN_KIND]?.substring(1).toLocaleLowerCase() || '';
     }
     if (this.CATEG === ECategory.eHELM) {
-      return '';
+      return 'helm';
     }
     // body
     if (this.CATEG === ECategory.eARMOR) {

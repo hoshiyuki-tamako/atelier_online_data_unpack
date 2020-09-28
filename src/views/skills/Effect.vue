@@ -49,10 +49,6 @@ import LRU from 'lru-cache';
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public filter = {
     name: '',
 

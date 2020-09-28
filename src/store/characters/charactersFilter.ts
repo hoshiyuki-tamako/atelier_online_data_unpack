@@ -1,6 +1,8 @@
-import { Module, Mutation } from 'vuex-module-decorators';
-import { VuexModuleBase } from '../base/VuexModuleBase';
+import { Module } from 'vuex-module-decorators';
 
+import VuexModuleBase from '../base/VuexModuleBase';
+
+// es-lint-disable no-shadow
 export enum CharacterType {
   none,
   battle,
@@ -15,13 +17,5 @@ export default class extends VuexModuleBase {
 
   public sort = 1;
 
-  @Mutation
-  public updateCharacterType(characterType: number) {
-    this.characterType = characterType;
-  }
-
-  @Mutation
-  public updateSort(sort: number) {
-    this.sort = sort;
-  }
+  public name = '';
 }

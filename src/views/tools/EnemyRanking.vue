@@ -57,16 +57,56 @@ import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
 import { sum } from 'lodash';
+import { mapFields } from 'vuex-map-fields';
+
+abstract class VueWithMapFields extends VueBase {
+  public eKind!: number | null;
+
+  public level!: number;
+
+  public showColumnTotalState!: boolean;
+
+  public showColumnEXP!: boolean;
+
+  public showColumnHP!: boolean;
+
+  public showColumnSATK!: boolean;
+
+  public showColumnSDEF!: boolean;
+
+  public showColumnMATK!: boolean;
+
+  public showColumnMDEF!: boolean;
+
+  public showColumnSPD!: boolean;
+
+  public showColumnQTH!: boolean;
+
+  public showColumnDDG!: boolean;
+
+  public showColumnTotalElement!: boolean;
+
+  public showColumnFIRE!: boolean;
+
+  public showColumnWATER!: boolean;
+
+  public showColumnEARTH!: boolean;
+
+  public showColumnWIND!: boolean;
+
+  public showColumnLIGHT!: boolean;
+
+  public showColumnDARK!: boolean;
+}
 
 @Component({
   components: {
   },
+  computed: {
+    ...mapFields('enemyRankingFilter', ['eKind', 'level', 'showColumnTotalState', 'showColumnEXP', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
+  },
 })
-export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
+export default class extends VueWithMapFields {
   public get enemyCategoryFilter() {
     return dataManager.enemy.KindList
       .filter((p) => p.iKind)
@@ -74,158 +114,6 @@ export default class extends VueBase {
         label: p.strName,
         value: p.iKind,
       }));
-  }
-
-  get eKind() {
-    return this.$store.state.enemyRankingFilter.eKind;
-  }
-
-  set eKind(value) {
-    this.$store.commit('enemyRankingFilter/setEKind', value);
-  }
-
-  get level() {
-    return this.$store.state.enemyRankingFilter.level;
-  }
-
-  set level(value) {
-    this.$store.commit('enemyRankingFilter/setLevel', value);
-  }
-
-  get showColumnTotalState() {
-    return this.$store.state.enemyRankingFilter.showColumnTotalState;
-  }
-
-  set showColumnTotalState(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnTotalState', value);
-  }
-
-  get showColumnEXP() {
-    return this.$store.state.enemyRankingFilter.showColumnEXP;
-  }
-
-  set showColumnEXP(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnEXP', value);
-  }
-
-  get showColumnHP() {
-    return this.$store.state.enemyRankingFilter.showColumnHP;
-  }
-
-  set showColumnHP(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnHP', value);
-  }
-
-  get showColumnSATK() {
-    return this.$store.state.enemyRankingFilter.showColumnSATK;
-  }
-
-  set showColumnSATK(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnSATK', value);
-  }
-
-  get showColumnSDEF() {
-    return this.$store.state.enemyRankingFilter.showColumnSDEF;
-  }
-
-  set showColumnSDEF(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnSDEF', value);
-  }
-
-  get showColumnMATK() {
-    return this.$store.state.enemyRankingFilter.showColumnMATK;
-  }
-
-  set showColumnMATK(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnMATK', value);
-  }
-
-  get showColumnMDEF() {
-    return this.$store.state.enemyRankingFilter.showColumnMDEF;
-  }
-
-  set showColumnMDEF(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnMDEF', value);
-  }
-
-  get showColumnSPD() {
-    return this.$store.state.enemyRankingFilter.showColumnSPD;
-  }
-
-  set showColumnSPD(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnSPD', value);
-  }
-
-  get showColumnQTH() {
-    return this.$store.state.enemyRankingFilter.showColumnQTH;
-  }
-
-  set showColumnQTH(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnQTH', value);
-  }
-
-  get showColumnDDG() {
-    return this.$store.state.enemyRankingFilter.showColumnDDG;
-  }
-
-  set showColumnDDG(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnDDG', value);
-  }
-
-  get showColumnTotalElement() {
-    return this.$store.state.enemyRankingFilter.showColumnTotalElement;
-  }
-
-  set showColumnTotalElement(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnTotalElement', value);
-  }
-
-  get showColumnFIRE() {
-    return this.$store.state.enemyRankingFilter.showColumnFIRE;
-  }
-
-  set showColumnFIRE(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnFIRE', value);
-  }
-
-  get showColumnWATER() {
-    return this.$store.state.enemyRankingFilter.showColumnWATER;
-  }
-
-  set showColumnWATER(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnWATER', value);
-  }
-
-  get showColumnEARTH() {
-    return this.$store.state.enemyRankingFilter.showColumnEARTH;
-  }
-
-  set showColumnEARTH(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnEARTH', value);
-  }
-
-  get showColumnWIND() {
-    return this.$store.state.enemyRankingFilter.showColumnWIND;
-  }
-
-  set showColumnWIND(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnWIND', value);
-  }
-
-  get showColumnLIGHT() {
-    return this.$store.state.enemyRankingFilter.showColumnLIGHT;
-  }
-
-  set showColumnLIGHT(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnLIGHT', value);
-  }
-
-  get showColumnDARK() {
-    return this.$store.state.enemyRankingFilter.showColumnDARK;
-  }
-
-  set showColumnDARK(value) {
-    this.$store.commit('enemyRankingFilter/setShowColumnDARK', value);
   }
 
   public get enemies() {

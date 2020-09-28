@@ -1,7 +1,7 @@
 <template lang="pug">
 div.container
   el-dialog(title="" :visible.sync="fbxDialogVisible" width="90%")
-    model-fbx.item-fbx-container(:src="item.model" :rotation="{ x:0, y: 0, z: Math.PI }" backgroundColor="rgb(169,169,169)")
+    model-fbx.item-fbx-container(:src="item.model" :position="fbxPosition" :rotation="fbxRotation" backgroundColor="rgb(169,169,169)")
 
   div.item-container(v-if="item")
     div.item-container-left
@@ -207,17 +207,29 @@ import { dataManager } from '@/utils/DataManager';
 import { MVList as ItemMVList } from '@/master/item';
 import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 import { clamp } from 'lodash';
+import { ModelFbx } from 'vue-3d-model';
 
 @Component({
   components: {
+    'model-fbx': ModelFbx,
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
+  public fbxDialogVisible = false;
+
+  public get fbxRotation() {
+    if (ItemMVList.weaponKindCategory.includes(this.item?.CATEG)) {
+      return { x: 0, y: 0, z: Math.PI };
+    }
+    return { x: 0, y: 0, z: Math.PI };
   }
 
-  public fbxDialogVisible = false;
+  public get fbxPosition() {
+    if (ItemMVList.weaponKindCategory.includes(this.item?.CATEG)) {
+      return { x: 0, y: 0, z: 0 };
+    }
+    return { x: 0, y: 1.2, z: -1.2 };
+  }
 
   public item: ItemMVList | null = null;
 

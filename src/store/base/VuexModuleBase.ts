@@ -1,7 +1,7 @@
 import { getField, updateField } from 'vuex-map-fields';
 import { Mutation, VuexModule } from 'vuex-module-decorators';
 
-export abstract class VuexModuleBase extends VuexModule {
+export default abstract class VuexModuleBase extends VuexModule {
   public get getField() {
     return getField(this);
   }

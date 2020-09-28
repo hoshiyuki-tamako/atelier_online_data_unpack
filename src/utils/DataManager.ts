@@ -1,8 +1,9 @@
 import { EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
+import { lookup } from '@/logic/Lookup';
 import { AbnormalState, MVList as AbnormalStateMVList } from '@/master/abnormalState';
 import { AbnormalStateEffect, MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
 import { AdventBattle } from '@/master/adventBattle';
-import { AreaDetail } from '@/master/areaDetail';
+import { AreaDetail, List as AreaDetailList } from '@/master/areaDetail';
 import { AreaInfo, List as AreaInfoList } from '@/master/areaInfo';
 import { BlazeArt, MVList as BlazeArtMvList } from '@/master/blazeArt';
 import { Chara, MVList as CharacterMVList } from '@/master/chara';
@@ -23,11 +24,11 @@ import { Treasure } from '@/master/treasure';
 import { MVList as WealthMvList, Wealth } from '@/master/wealth';
 import { Zone } from '@/master/zone';
 import { List as ZoneEffectList, ZoneEffect } from '@/master/zoneEffect';
+import { IAreaModel } from '@/scripts/ModelExport';
+import { AdvManager } from '@/utils/AdvManager';
 import { SpawnerDataManager } from '@/utils/SpawnerDataManager';
 import { plainToClass } from 'class-transformer';
 import Enumerable from 'linq';
-
-import { lookup } from './../logic/Lookup';
 
 export class DataManager {
   // settings
@@ -129,6 +130,8 @@ export class DataManager {
 
   public areaInfoById: { [id: string]: AreaInfoList };
 
+  public areaDetailById: { [id: string]: AreaDetailList };
+
   public townInfosByAreaId: { [id: string]: TownInfoList[] };
 
   public gateInfoByAreaId: { [id: string]: GateInfoList[] };
@@ -145,16 +148,20 @@ export class DataManager {
 
   // other managers
   public spawnerDataManager = new SpawnerDataManager();
+  public advManager = new AdvManager();
 
   // custom data
   public lookup = lookup;
   public files: any;
-  public areaModel: { [areaId: string]: { [subAreaId: string]: string } };
+  public areaModel: IAreaModel[];
+
+  public areaModelsById: { [iAreaId: string]: IAreaModel[] };
 
   //
   public load(locale: string, showHiddenContent = false) {
     this.showHiddenContent = showHiddenContent;
     this.locale = locale;
+    this.advManager.setLocale(this.locale);
     return this.loadData();
   }
 
@@ -192,7 +199,6 @@ export class DataManager {
     const spawnerDataPromise = this.spawnerDataManager.load(this.locale, files);
 
     // exported data
-    this.areaDetail = areaDetail;
     this.tips = tips;
     this.treasure = treasure;
     this.adventBattle = adventBattle;
@@ -211,6 +217,7 @@ export class DataManager {
     this.processDegree(degree);
     this.processQuest(quest);
     this.processFieldName(fieldName);
+    this.processAreaDetail(areaDetail);
     this.processAreaInfo(areaInfo);
     this.processTownInfo(townInfo);
     this.processGateInfo(gateInfo);
@@ -220,7 +227,7 @@ export class DataManager {
 
     // other
     this.files = files;
-    this.areaModel = areaModel;
+    this.processAreaModel(areaModel);
 
     await spawnerDataPromise;
   }
@@ -261,7 +268,7 @@ export class DataManager {
       .groupBy((p) => p.df)
       .toObject(
         (p) => p.key(),
-        (p) => p.groupBy(({ item }) => item.DF).select((p) => p.first().item).toArray(),
+        (p) => p.groupBy(({ item }) => item.DF).select((i) => i.first().item).toArray(),
       ) as { [id: string]: ItemMVList[] };
     this.itemsByRecipe = Enumerable.from(this.itemsOrderByCategory)
       .selectMany((item) => item.RSP.map((rsp) => ({
@@ -280,25 +287,25 @@ export class DataManager {
       })))
       .groupBy((p) => p.lrcp.DF)
       .toObject((p) => p.key(), (p) => p.select(({ item }) => item).toArray()) as { [df: string]: ItemMVList[] };
-      this.itemsByZone = Enumerable.from(this.zone.List)
-        .select((zone) => ({
-          zone,
-          items: this.itemsOrderByCategory.filter((item) =>
-            item.SPC
-              .map((p) => p.SKILL)
-              .flat()
-              .map((p) => this.skillById[p.DF])
-              .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)
-          ),
-        }))
-        .where((p) => !!p.items.length)
-        .toObject((p) => p.zone.id, (p) => p.items) as { [id: string]: ItemMVList[] };
+    this.itemsByZone = Enumerable.from(this.zone.List)
+      .select((zone) => ({
+        zone,
+        items: this.itemsOrderByCategory.filter((item) =>
+          item.SPC
+            .map((p) => p.SKILL)
+            .flat()
+            .map((p) => this.skillById[p.DF])
+            .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)
+        ),
+      }))
+      .where((p) => !!p.items.length)
+      .toObject((p) => p.zone.id, (p) => p.items) as { [id: string]: ItemMVList[] };
   }
 
   public processCharacter(chara: Chara) {
     this.chara = plainToClass(Chara, chara);
     if (!this.showHiddenContent) {
-      this.chara.m_vList = this.chara.m_vList.filter((p) => !CharacterMVList.hideDfs.includes(p.DF));
+      this.chara.m_vList = this.chara.m_vList.filter((p) => !CharacterMVList.hides.includes(p.DF));
     }
 
     this.characterById = Enumerable.from(this.chara.m_vList)
@@ -345,13 +352,12 @@ export class DataManager {
     ));
     const characterBlazeArtSkillDfs = new Set(
       this.chara.m_vList
-      .map((character) => character.BA.map((ba) => this.blazeArtById[ba.DF].LV.map((lv) => lv.SKILL_DF)))
-      .flat(Infinity)
+        .map((character) => character.BA.map((ba) => this.blazeArtById[ba.DF].LV.map((lv) => lv.SKILL_DF)))
+        .flat(Infinity)
     );
     this.skillBlazeArts = this.skills.filter((p) => characterBlazeArtSkillDfs.has(p.id));
     // lookup
-    this.skillById = Enumerable.from(this.skill.m_vList)
-      .toObject((p) => p.id, (p) => p) as { [id: string]: SkillList };
+    this.skillById = Enumerable.from(this.skill.m_vList).toObject((p) => p.id, (p) => p) as { [id: string]: SkillList };
   }
 
   public processAbnormalState(abnormalState: AbnormalState) {
@@ -415,8 +421,7 @@ export class DataManager {
         ),
       }))
       .where((p) => !!p.enemies.length)
-      .toObject((p) => p.zone.id, (p) => p.enemies) as { [id: string]: EnemyMVList[] };;
-
+      .toObject((p) => p.zone.id, (p) => p.enemies) as { [id: string]: EnemyMVList[] };
     this.enemyKindListById = Enumerable.from(this.enemy.KindList).toObject((p) => p.iKind, (p) => p) as { [id: string]: KindList };
   }
 
@@ -461,35 +466,38 @@ export class DataManager {
 
   public processFieldName(fieldName: FieldName) {
     this.fieldName = fieldName;
-    this.fieldNameById = Enumerable.from(this.fieldName.List)
-      .toObject((p) => p.iAreaNameId) as { [s: string]: FieldNameList };
+    this.fieldNameById = Enumerable.from(this.fieldName.List).toObject((p) => p.iAreaNameId) as { [s: string]: FieldNameList };
+  }
+
+  public processAreaDetail(areaDetail: AreaDetail) {
+    this.areaDetail = areaDetail;
+    this.areaDetailById = Enumerable.from(this.areaDetail.List).toObject((p) => p.iAreaID) as { [s: string]: AreaDetailList };
   }
 
   public processAreaInfo(areaInfo: AreaInfo) {
     this.areaInfo = areaInfo;
-    this.areaInfoById = Enumerable.from(this.areaInfo.List)
-    .toObject((p) => p.iAreaId) as { [s: string]: AreaInfoList };
+    this.areaInfoById = Enumerable.from(this.areaInfo.List).toObject((p) => p.iAreaId) as { [s: string]: AreaInfoList };
   }
 
   public processTownInfo(townInfo: TownInfo) {
     this.townInfo = townInfo;
     this.townInfosByAreaId = Enumerable.from(this.townInfo.List)
-    .groupBy((p) => p.iAreaId)
-    .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: TownInfoList[] };
+      .groupBy((p) => p.iAreaId)
+      .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: TownInfoList[] };
   }
 
   public processGateInfo(gateInfo: GateInfo) {
     this.gateInfo = gateInfo;
     this.gateInfoByAreaId = Enumerable.from(this.gateInfo.List)
-    .groupBy((p) => p.iArea)
-    .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: GateInfoList[] };
+      .groupBy((p) => p.iArea)
+      .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: GateInfoList[] };
   }
 
   public processDungeonInfo(dungeonInfo: DungeonInfo) {
     this.dungeonInfo = dungeonInfo;
     this.dungeonInfosByAreaId = Enumerable.from(this.dungeonInfo.List)
-    .groupBy((p) => p.iAreaId)
-    .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: DungeonList[] };
+      .groupBy((p) => p.iAreaId)
+      .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: DungeonList[] };
   }
 
   public processFieldItem(fieldItem: FieldItem) {
@@ -502,6 +510,14 @@ export class DataManager {
     this.extraQuestsByQuest = Enumerable.from(this.extraQuest.List)
       .groupBy((p) => p.iQuestDf)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [df: string]: ExtraQuestList[] };
+  }
+
+  // custom
+  public processAreaModel(areaModel: IAreaModel[]) {
+    this.areaModel = areaModel;
+    this.areaModelsById = Enumerable.from(this.areaModel)
+      .groupBy((p) => p.iAreaID)
+      .toObject((p) => p.key(), (p) => p.orderBy((i) => i.iLevel).toArray()) as { [iAreaId: string]: IAreaModel[] };
   }
 
   // skill helper

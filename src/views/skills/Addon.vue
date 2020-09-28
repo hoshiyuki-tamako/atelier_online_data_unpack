@@ -26,10 +26,6 @@ import { List as SkillList } from '@/master/skill';
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public equipmentUseful = false;
 
   public get filteredSills() {

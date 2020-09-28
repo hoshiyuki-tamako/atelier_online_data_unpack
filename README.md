@@ -33,8 +33,9 @@ npm run build
 
 ## Content Update Steps
 
-1. Export all Texture2D to `./source/Texture2D/*`
-2. Export all fbx models with folder to `./source/models/**/*`
-3. copy JSON from AssetStudio to `./public/export/*`
-4. update other images/models if needed
-5. run `npm run generate`
+1. export all Texture2D to `./source/Texture2D/*`
+2. export all fbx models with folder to `./source/models/**/*`
+3. export all fbx ascii to `./source/modelsMeta/*`
+4. copy JSON from AssetStudio to `./public/export/*`
+5. update other images/models if needed
+6. run `npm run generate`

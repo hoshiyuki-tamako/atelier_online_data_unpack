@@ -22,6 +22,7 @@ module.exports = {
     'no-await-in-loop': 'off',
     'no-plusplus': 'off',
     'max-classes-per-file': 'off',
+    'lines-between-class-members': 'off',
   },
   overrides: [
     {

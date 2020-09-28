@@ -1,10 +1,11 @@
-import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
 import { MVList as ItemMVList } from '@/master/item';
+import VuexModuleBase from '@/store/base/VuexModuleBase';
+import { Module } from 'vuex-module-decorators';
 
 @Module({
-  namespaced: true
+  namespaced: true,
 })
-export default class extends VuexModule {
+export default class extends VuexModuleBase {
   public eKind: number | null = null;
 
   public level = ItemMVList.equipmentMaxLevel;
@@ -42,99 +43,4 @@ export default class extends VuexModule {
   public showColumnLIGHT = true;
 
   public showColumnDARK = true;
-
-  @Mutation
-  public setEKind(eKind: number | null) {
-    this.eKind = eKind;
-  }
-
-  @Mutation
-  public setLevel(level: number) {
-    this.level = level;
-  }
-
-  @Mutation
-  public setShowColumnTotalState(showColumnTotalState: boolean) {
-    this.showColumnTotalState = showColumnTotalState;
-  }
-
-  @Mutation
-  public setShowColumnEXP(showColumnEXP: boolean) {
-    this.showColumnEXP = showColumnEXP;
-  }
-
-  @Mutation
-  public setShowColumnHP(showColumnHP: boolean) {
-    this.showColumnHP = showColumnHP;
-  }
-
-  @Mutation
-  public setShowColumnSATK(showColumnSATK: boolean) {
-    this.showColumnSATK = showColumnSATK;
-  }
-
-  @Mutation
-  public setShowColumnSDEF(showColumnSDEF: boolean) {
-    this.showColumnSDEF = showColumnSDEF;
-  }
-
-  @Mutation
-  public setShowColumnMATK(showColumnMATK: boolean) {
-    this.showColumnMATK = showColumnMATK;
-  }
-
-  @Mutation
-  public setShowColumnMDEF(showColumnMDEF: boolean) {
-    this.showColumnMDEF = showColumnMDEF;
-  }
-
-  @Mutation
-  public setShowColumnSPD(showColumnSPD: boolean) {
-    this.showColumnSPD = showColumnSPD;
-  }
-
-  @Mutation
-  public setShowColumnQTH(showColumnQTH: boolean) {
-    this.showColumnQTH = showColumnQTH;
-  }
-
-  @Mutation
-  public setShowColumnDDG(showColumnDDG: boolean) {
-    this.showColumnDDG = showColumnDDG;
-  }
-
-  @Mutation
-  public setShowColumnTotalElement(showColumnTotalElement: boolean) {
-    this.showColumnTotalElement = showColumnTotalElement;
-  }
-
-  @Mutation
-  public setShowColumnFIRE(showColumnFIRE: boolean) {
-    this.showColumnFIRE = showColumnFIRE;
-  }
-
-  @Mutation
-  public setShowColumnWATER(showColumnWATER: boolean) {
-    this.showColumnWATER = showColumnWATER;
-  }
-
-  @Mutation
-  public setShowColumnEARTH(showColumnEARTH: boolean) {
-    this.showColumnEARTH = showColumnEARTH;
-  }
-
-  @Mutation
-  public setShowColumnWIND(showColumnWIND: boolean) {
-    this.showColumnWIND = showColumnWIND;
-  }
-
-  @Mutation
-  public setShowColumnLIGHT(showColumnLIGHT: boolean) {
-    this.showColumnLIGHT = showColumnLIGHT;
-  }
-
-  @Mutation
-  public setShowColumnDARK(showColumnDARK: boolean) {
-    this.showColumnDARK = showColumnDARK;
-  }
 }

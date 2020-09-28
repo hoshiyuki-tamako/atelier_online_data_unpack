@@ -20,10 +20,6 @@ import { eChatTab } from '@/logic/Enums';
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public get eChatTab() {
     return eChatTab;
   }

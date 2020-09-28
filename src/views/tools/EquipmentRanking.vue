@@ -68,16 +68,58 @@ import Enumerable from 'linq';
 import { sum } from 'lodash';
 import { Formula } from '@/logic/Formula';
 import { MVList as ItemMVList } from '@/master/item';
+import { mapFields } from 'vuex-map-fields';
+
+abstract class VueWithMapFields extends VueBase {
+  public category: number | null;
+
+  public weaponKind: number | null;
+
+  public support!: boolean;
+
+  public quality!: number;
+
+  public level!: number;
+
+  public showColumnTotalState!: boolean;
+
+  public showColumnSATK!: boolean;
+
+  public showColumnSDEF!: boolean;
+
+  public showColumnMATK!: boolean;
+
+  public showColumnMDEF!: boolean;
+
+  public showColumnSPD!: boolean;
+
+  public showColumnQTH!: boolean;
+
+  public showColumnDDG!: boolean;
+
+  public showColumnTotalElement!: boolean;
+
+  public showColumnFIRE!: boolean;
+
+  public showColumnWATER!: boolean;
+
+  public showColumnEARTH!: boolean;
+
+  public showColumnWIND!: boolean;
+
+  public showColumnLIGHT!: boolean;
+
+  public showColumnDARK!: boolean;
+}
 
 @Component({
   components: {
   },
+  computed: {
+    ...mapFields('equipmentRankingFilter', ['category', 'weaponKind', 'support', 'quality', 'level', 'showColumnTotalState', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
+  },
 })
-export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
+export default class extends VueWithMapFields {
   public get enableWeaponKindFilter() {
     return !this.category || dataManager.itemsWeaponKindCategories.includes(this.category);
   }
@@ -168,166 +210,6 @@ export default class extends VueBase {
       LIGHT: p.getElement('LIGHT', this.quality).total,
       DARK: p.getElement('DARK', this.quality).total,
     }));
-  }
-
-  get category() {
-    return this.$store.state.equipmentRankingFilter.category;
-  }
-
-  set category(value) {
-    this.$store.commit('equipmentRankingFilter/setCategory', value);
-  }
-
-  get weaponKind() {
-    return this.$store.state.equipmentRankingFilter.weaponKind;
-  }
-
-  set weaponKind(value) {
-    this.$store.commit('equipmentRankingFilter/setWeaponKind', value);
-  }
-
-  get support() {
-    return this.$store.state.equipmentRankingFilter.support;
-  }
-
-  set support(value) {
-    this.$store.commit('equipmentRankingFilter/setSupport', value);
-  }
-
-  get quality() {
-    return this.$store.state.equipmentRankingFilter.quality;
-  }
-
-  set quality(value) {
-    this.$store.commit('equipmentRankingFilter/setQuality', value);
-  }
-
-  get level() {
-    return this.$store.state.equipmentRankingFilter.level;
-  }
-
-  set level(value) {
-    this.$store.commit('equipmentRankingFilter/setLevel', value);
-  }
-
-  get showColumnTotalState() {
-    return this.$store.state.equipmentRankingFilter.showColumnTotalState;
-  }
-
-  set showColumnTotalState(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnTotalState', value);
-  }
-
-  get showColumnSATK() {
-    return this.$store.state.equipmentRankingFilter.showColumnSATK;
-  }
-
-  set showColumnSATK(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnSATK', value);
-  }
-
-  get showColumnSDEF() {
-    return this.$store.state.equipmentRankingFilter.showColumnSDEF;
-  }
-
-  set showColumnSDEF(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnSDEF', value);
-  }
-
-  get showColumnMATK() {
-    return this.$store.state.equipmentRankingFilter.showColumnMATK;
-  }
-
-  set showColumnMATK(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnMATK', value);
-  }
-
-  get showColumnMDEF() {
-    return this.$store.state.equipmentRankingFilter.showColumnMDEF;
-  }
-
-  set showColumnMDEF(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnMDEF', value);
-  }
-
-  get showColumnSPD() {
-    return this.$store.state.equipmentRankingFilter.showColumnSPD;
-  }
-
-  set showColumnSPD(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnSPD', value);
-  }
-
-  get showColumnQTH() {
-    return this.$store.state.equipmentRankingFilter.showColumnQTH;
-  }
-
-  set showColumnQTH(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnQTH', value);
-  }
-
-  get showColumnDDG() {
-    return this.$store.state.equipmentRankingFilter.showColumnDDG;
-  }
-
-  set showColumnDDG(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnDDG', value);
-  }
-
-  get showColumnTotalElement() {
-    return this.$store.state.equipmentRankingFilter.showColumnTotalElement;
-  }
-
-  set showColumnTotalElement(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnTotalElement', value);
-  }
-
-  get showColumnFIRE() {
-    return this.$store.state.equipmentRankingFilter.showColumnFIRE;
-  }
-
-  set showColumnFIRE(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnFIRE', value);
-  }
-
-  get showColumnWATER() {
-    return this.$store.state.equipmentRankingFilter.showColumnWATER;
-  }
-
-  set showColumnWATER(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnWATER', value);
-  }
-
-  get showColumnEARTH() {
-    return this.$store.state.equipmentRankingFilter.showColumnEARTH;
-  }
-
-  set showColumnEARTH(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnEARTH', value);
-  }
-
-  get showColumnWIND() {
-    return this.$store.state.equipmentRankingFilter.showColumnWIND;
-  }
-
-  set showColumnWIND(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnWIND', value);
-  }
-
-  get showColumnLIGHT() {
-    return this.$store.state.equipmentRankingFilter.showColumnLIGHT;
-  }
-
-  set showColumnLIGHT(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnLIGHT', value);
-  }
-
-  get showColumnDARK() {
-    return this.$store.state.equipmentRankingFilter.showColumnDARK;
-  }
-
-  set showColumnDARK(value) {
-    this.$store.commit('equipmentRankingFilter/setShowColumnDARK', value);
   }
 
   public beforeMount() {

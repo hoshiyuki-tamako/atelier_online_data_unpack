@@ -15,15 +15,11 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 
 @Component({
   components: {
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
 }
 </script>

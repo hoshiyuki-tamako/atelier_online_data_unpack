@@ -33,60 +33,30 @@ div.container
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
+import { mapFields } from 'vuex-map-fields';
+
+abstract class VueWithMapFields extends VueBase {
+  public category!: number | null;
+
+  public weaponKind!: number | null;
+
+  public name!: string;
+
+  public sort!: number;
+
+  public legendRecipe!: boolean;
+
+  public characterOnlyItem!: boolean;
+}
 
 @Component({
   components: {
   },
+  computed: {
+    ...mapFields('itemsFilter', ['category', 'weaponKind', 'name', 'sort', 'legendRecipe', 'characterOnlyItem']),
+  },
 })
-export default class extends VueBase {
-  public get category() {
-    return this.$store.state.itemsFilter.category;
-  }
-
-  public set category(value) {
-    this.$store.commit('itemsFilter/setCategory', value);
-  }
-
-  public get weaponKind() {
-    return this.$store.state.itemsFilter.weaponKind;
-  }
-
-  public set weaponKind(value) {
-    this.$store.commit('itemsFilter/setWeaponKind', value);
-  }
-
-  public get name() {
-    return this.$store.state.itemsFilter.name;
-  }
-
-  public set name(value) {
-    this.$store.commit('itemsFilter/setName', value);
-  }
-
-  public get sort() {
-    return this.$store.state.itemsFilter.sort;
-  }
-
-  public set sort(value) {
-    this.$store.commit('itemsFilter/setSort', value);
-  }
-
-  public get legendRecipe() {
-    return this.$store.state.itemsFilter.legendRecipe;
-  }
-
-  public set legendRecipe(value) {
-    this.$store.commit('itemsFilter/setLegendRecipe', value);
-  }
-
-  public get characterOnlyItem() {
-    return this.$store.state.itemsFilter.characterOnlyItem;
-  }
-
-  public set characterOnlyItem(value) {
-    this.$store.commit('itemsFilter/setCharacterOnlyItem', value);
-  }
-
+export default class extends VueWithMapFields {
   public get categoryOptions() {
     return Object.keys(dataManager.itemsByCategory).map((value) => ({
       label: this.$t(dataManager.lookup.itemCategory[value]),
@@ -118,13 +88,22 @@ export default class extends VueBase {
     return !this.category || dataManager.itemsWeaponKindCategories.includes(this.category);
   }
 
-  public get filteredItems() {
-    let items = this.category ? dataManager.itemsByCategory[this.category] : dataManager.itemsOrderByCategory;
+  public get items() {
+    if (this.category) {
+      return dataManager.itemsByCategory[this.category];
+    }
+    if (this.sort !== null) {
+      return dataManager.item.m_vList;
+    }
+    return dataManager.itemsOrderByCategory;
+  }
 
+  public get filteredItems() {
     if (!this.enableWeaponKindFilter) {
       this.weaponKind = null;
     }
 
+    let { items } = this;
     if (this.weaponKind) {
       items = items.filter((p) => p.WPN_KIND === this.weaponKind);
     }

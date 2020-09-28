@@ -1,26 +1,27 @@
-import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
+import { Module, Mutation } from 'vuex-module-decorators';
 
 import { ItemModifier } from '../../logic/modifiers/ItemModifier';
+import VuexModuleBase from '../base/VuexModuleBase';
 
 export class MaterialOptions extends ItemModifier {
   public addonQuality = 0;
 }
 
 @Module({
-  namespaced: true
+  namespaced: true,
 })
-export default class extends VuexModule {
+export default class extends VuexModuleBase {
   public itemDf: number | null = null;
 
   public materialOptions: MaterialOptions[] = [];
 
-  @Mutation
-  public setItemDf(df: number | null) {
-    this.itemDf = df;
-  }
+  public itemPicker = {
+    category: null,
+    keyword: '',
+  };
 
   @Mutation
-  public setMaterialOptions(materialOptions: MaterialOptions[]) {
+  public updateMaterialOptions(materialOptions: MaterialOptions[]) {
     this.materialOptions = materialOptions;
   }
 }

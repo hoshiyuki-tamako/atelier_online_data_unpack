@@ -555,7 +555,7 @@ quest
 {
   "DF": 100001001,
   "CATEG": 1, // category, see enum EQuestCategory for more info
-  "TYPE": 5011,
+  "TYPE": 5011, // EQuestType
   "GROUP": 1,
   "NAME": "オルビュースの探索",
   "KANA": "オルビュースノタンサク",
@@ -588,8 +588,31 @@ quest
       "CNT": 0 // how many wealth it cost
     }
   },
-  "EVENT": 0, // ADV id, assets/assetbundles/adv/*.asset
-  "NPC_FD": [],
+  "EVENT": 0, // ADV id
+  "NPC_FD": [
+    {
+      "DF": 1,
+      "STEP": 2,
+      "MESSAGE": "",
+      "FD": 0,
+      "POS": 1,
+      "ADV": "",
+      "PLC": 1,
+      "PLC_ID": 0,
+      "CHA_ID": 3
+    },
+    {
+      "DF": 2,
+      "STEP": 3,
+      "MESSAGE": "",
+      "FD": 0,
+      "POS": 0,
+      "ADV": "MQ_33_010", // directly link to assets/assetbundles/adv/*.asset
+      "PLC": 0,
+      "PLC_ID": 0,
+      "CHA_ID": 0
+    }
+  ],
   "RWD_ITEM": [ // reward item
     {
       "DF": 50010001, // relationship to item.id
@@ -1040,7 +1063,92 @@ zoneeffect
   "effect": 1,
   "value": 0.1,
   "element": 1 // see enum EElement
-},
+}
+```
+
+## Adv
+
+```ts
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 0,
+    "m_PathID": 6520365622649918000
+  },
+  "m_Name": "1008ADV_01", // name of the file
+  "vOrderList": [
+    {
+      "eOrder": 22,
+      "vsParam": []
+    },
+    {
+      "eOrder": 89,
+      "vsParam": [
+        "0"
+      ]
+    },
+    {
+      "eOrder": 94,
+      "vsParam": [
+        "2",
+        "-1"
+      ]
+    },
+    {
+      "eOrder": 59,
+      "vsParam": [
+        "1",
+        "-1",
+        "1",
+        "70.25",
+        "0.02",
+        "119",
+        "-90"
+      ]
+    },
+    {
+      "eOrder": 69,
+      "vsParam": [
+        "-1004",
+        "5",
+        "1",
+        "0"
+      ]
+    },
+    {
+      "eOrder": 98,
+      "vsParam": [
+        "hero_m2_004",
+        "heroine_m2_004",
+        "1"
+      ]
+    },
+    {
+      "eOrder": 18,
+      "vsParam": [
+        "1008", // character id
+        "クフェア", // character name
+        "まあ、よくいらっしゃいました。お客様はいつでも\n大歓迎ですわ。ね、あなた？" // dialog
+      ]
+    },
+    {
+      "eOrder": 18,
+      "vsParam": [
+        "1004",
+        "ルー",
+        "ふむ……。\nやはり先史文明は、噴火の影響で……",
+        "0",
+        "",
+        "",
+        "ru_m2_001" // voice
+      ]
+    }
+  ]
+}
 ```
 
 ## Others

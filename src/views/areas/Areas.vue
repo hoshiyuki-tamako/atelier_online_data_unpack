@@ -17,9 +17,9 @@ div.container
             p iAreaID: {{ areaDetail.iAreaID }}
             p iLevel: {{areaDetail.iLevel }}
             br
-            template(v-if="dataManager.areaModel[areaDetail.iAreaID]")
-              div(v-for="[subArea, root] of Object.entries(dataManager.areaModel[areaDetail.iAreaID])")
-                el-link(:href="`3d/mapArea.html?root=${root}&iAreaId=${areaDetail.iAreaID}`" target="_blank" :underline="false") 3D{{ $t('地図') }} {{ subArea }}
+            template(v-if="dataManager.areaModelsById[areaDetail.iAreaID]")
+              div(v-for="{ root, iLevel } of dataManager.areaModelsById[areaDetail.iAreaID]")
+                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, root } }") 3D{{ $t('地図') }} {{ iLevel }}
 
           div.item-container-right
             div(v-if="areaDetail.iItemIDList.length")
@@ -78,16 +78,13 @@ div.container
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
+import ms from 'ms';
 
 @Component({
   components: {
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public townIcons = Object.values(dataManager.files.img.map_town.Texture2D).filter((p: string) => !p.endsWith('_02.png')) as string[];
 
   public getOtherEnemies(id: number) {
@@ -116,6 +113,12 @@ export default class extends VueBase {
     return this.townIcons
       .filter((p) => p.startsWith(`Map_Town_${iTownId.toString().padStart(2, '0')}`))
       .map((p) => `img/map_town/Texture2D/${p}`);
+  }
+
+  public mounted() {
+    if (this.$route.query.df) {
+      setTimeout(() => this.$scrollTo(`#DF-${this.$route.query.df}`, -1), ms('1s'));
+    }
   }
 }
 </script>

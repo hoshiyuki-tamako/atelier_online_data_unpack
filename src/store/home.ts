@@ -1,6 +1,6 @@
 import { Module, Mutation } from 'vuex-module-decorators';
 
-import { VuexModuleBase } from './base/VuexModuleBase';
+import VuexModuleBase from './base/VuexModuleBase';
 
 @Module({
   namespaced: true,

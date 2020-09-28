@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 export enum EAbnormalState
 {
   eSLEEP = 1,

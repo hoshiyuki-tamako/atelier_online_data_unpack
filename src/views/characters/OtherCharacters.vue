@@ -15,10 +15,6 @@ import { dataManager } from '@/utils/DataManager';
   },
 })
 export default class extends VueBase {
-  public get dataManager() {
-    return dataManager;
-  }
-
   public get existingCharacterIconDfs() {
     return dataManager.chara.m_vList.map((p) => p.DF.toString().padStart(4, '0'));
   }
