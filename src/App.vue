@@ -1,6 +1,6 @@
 <template lang="pug">
 el-container.containter-main(v-loading="pageLoading")
-  el-backtop.back-top
+  el-backtop.back-top(v-if="$store.state.home.showBackTopButton")
   el-aside(v-if="$store.state.home.showSideBar" width="")
     el-menu.menu(:active-text-color="menu.activeTextColor" :background-color="menu.backgroundColor" default-active="1" :collapse="true")
       el-menu-item.menu__item(index="1")
