@@ -24,7 +24,7 @@ div.container
       template(v-if="item.WPN_KIND")
         p {{ $t('武器種類') }}: {{ $t(dataManager.lookup.weaponKind[item.WPN_KIND]) }}
         p {{ $t('攻撃属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[item.elementChangeSkill ? item.elementChangeSkill.effectValue : 0]) }}
-        p(v-if="item.getAttackSkill()") {{ $t('攻撃タイプ') }}: {{ $t(item.getAttackSkill().attribute === 3 ? dataManager.lookup.EBattleAttribute[3] : dataManager.lookup.EBattleAttribute[1]) }}
+        p(v-if="item.getAttackSkill()") {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.EBattleAttribute[item.getAttackSkill().attribute]) }}
         template(v-if="item.JOB.length")
           p {{ $t('職業') }}: {{ item.JOB.map(p => $t(dataManager.lookup.EJobKind[p])).join(',') }}
         p(v-if="item.getAttackSkill()") {{ $t('SP回復率') }}{{ item.getAttackSkill().spAdd }}{{ $t('倍') }}

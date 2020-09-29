@@ -394,13 +394,13 @@ export class DataManager {
 
   public processEnemy(enemy: Enemy) {
     this.enemy = plainToClass(Enemy, enemy);
+    // data
+    this.enemiesHasValidSpec = this.enemy.m_vList.filter((p) => p.sParam.SPEC.HP.R);
     // order
-    this.enemiesOrderByCategory = Enumerable.from(this.enemy.m_vList)
+    this.enemiesOrderByCategory = Enumerable.from(this.enemiesHasValidSpec)
       .orderBy((p) => p.eKind)
       .thenBy((p) => p.iCategory)
       .toArray();
-    // data
-    this.enemiesHasValidSpec = this.enemiesOrderByCategory.filter((p) => p.sParam.SPEC.HP.R);
     // lookup
     this.enemyById = Enumerable.from(this.enemiesHasValidSpec)
       .toObject((p) => p.DF, (p) => p) as { [df: string]: EnemyMVList };

@@ -751,11 +751,11 @@ div.top-container
         img.enemy__icon(v-if="enemy.enemy" :src="enemy.enemy.icon" :alt="enemy.enemy.strName")
       div(v-if="enemy.enemy")
         table
-          tr(v-if="player.equipment.weapon || player.character" v-for="attribute of [player.equipment.weapon && player.equipment.weapon.item.getAttackSkill().attribute ? player.equipment.weapon && player.equipment.weapon.item.getAttackSkill().attribute : 0]")
+          tr(v-if="player.equipment.weapon || player.character" v-for="attribute of [player.equipment.weapon && player.equipment.weapon.item.getAttackSkill() ? player.equipment.weapon.item.getAttackSkill().attribute : 0]")
             template(v-for="element of [player.equipment.weapon && player.equipment.weapon.item.elementChangeSkill ? player.equipment.weapon.item.elementChangeSkill.element : 0]")
               template(v-for="playerAttack of [player.totalState(attribute === 3 ? 'MATK' : 'SATK')]")
                 template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, element, attribute, [])]")
-                  th {{ dataManager.lookup.EBattleAttribute[attribute] }}{{ $t('ダメージ' )}}
+                  th {{ $t(dataManager.lookup.EBattleAttribute[attribute]) }}{{ $t('ダメージ' )}}
                   td {{ receiveDamage.total }}
                   td HP: {{ clamp(enemy.enemy.getState('HP', enemy.level).total - receiveDamage.total, 0, Infinity) }}
           tr(v-if="player.character")
@@ -769,12 +769,12 @@ div.top-container
                         div.popover-base
                           h4 {{ $t('ブレイズアーツ') }}
                           br
-                          p {{ dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute] }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
+                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
                           br
                           table(v-if="receiveDamage.otherEffectSkills.length || receiveDamage.multipliersSkills.length")
                             tr(v-for="skill of receiveDamage.multipliersSkills")
                               th {{ skill.name }}
-                              td x{{ skill.effectValue }}
+                              td {{ skill.effectValue }}
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
@@ -791,18 +791,18 @@ div.top-container
                         div.popover-base
                           h4 {{ $t('武器') }}
                           br
-                          p {{ dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute] }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
+                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
                           br
                           table(v-if="receiveDamage.otherEffectSkills.length || receiveDamage.multipliersSkills.length")
                             tr(v-for="skill of receiveDamage.multipliersSkills")
                               th {{ skill.name }}
-                              td x{{ skill.effectValue }}
+                              td {{ skill.effectValue }}
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
                   td {{ receiveDamage.total }}
                   td HP: {{ clamp(enemy.enemy.getState('HP', enemy.level).total - receiveDamage.total, 0, Infinity) }}
-          tr(v-if="player.equipment.shield && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.shield.quality).attribute")
+          tr(v-if="player.equipment.shield && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality) && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality).attribute")
             template(v-for="skill of [player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)]")
               template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
                 template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, skill.element, skill.attribute, [])]")
@@ -813,7 +813,7 @@ div.top-container
                         div.popover-base
                           h4 {{ $t('盾') }}
                           br
-                          p {{ dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute] }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
+                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
                           br
                           table(v-if="receiveDamage.otherEffectSkills.length || receiveDamage.multipliersSkills.length")
                             tr(v-for="skill of receiveDamage.multipliersSkills")

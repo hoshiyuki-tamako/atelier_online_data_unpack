@@ -4,6 +4,14 @@ import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
 import { clamp } from 'lodash';
 
+export interface IEnemyReceiveDamage {
+  otherEffectSkills: SkillList[];
+  multipliersSkills: SkillList[];
+  multipliers: number[];
+  defense: number;
+  total: number;
+};
+
 export class Enemy {
   public enemyId : number | null = null;
 
@@ -20,14 +28,19 @@ export class Enemy {
   }
 
   public receiveDamage(damage: number, element = 0, attribute: EBattleAttribute = EBattleAttribute.eNONE, skills: SkillList[] = []) {
+    const result = {
+      otherEffectSkills: [],
+      multipliersSkills: [],
+      multipliers: [],
+      defense: 0,
+      total: 0,
+    } as IEnemyReceiveDamage;
+
     const oneDamageSkills = this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eONE_DAMAGE);
     if (oneDamageSkills.length) {
-      return {
-        otherEffectSkills: oneDamageSkills,
-        multipliersSkills: [],
-        defense: 0,
-        total: 1,
-      };
+      result.otherEffectSkills = oneDamageSkills;
+      result.total = 1;
+      return result;
     }
     /* unhandled effect
 eATTACK,
@@ -86,12 +99,10 @@ eRECOVER,
     const defense = this.enemy.getState(defenseState, this.level).total;
 
     const total = Math.round(multipliersSkills.map((p) => p.effectValue).concat(multipliers).reduce((sum, v) => sum * v, damage - defense));
-    return {
-      otherEffectSkills: [],
-      multipliersSkills,
-      multipliers,
-      defense,
-      total: total > 0 ? total : 1,
-    };
+    result.total = total > 0 ? total : 1;
+    result.multipliersSkills = multipliersSkills;
+    result.defense = defense;
+    result.multipliers = multipliers;
+    return result;
   }
 }
