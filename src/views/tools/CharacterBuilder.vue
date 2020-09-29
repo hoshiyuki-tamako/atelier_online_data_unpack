@@ -233,6 +233,8 @@ div.top-container
                     p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}j
                     p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
 
+  el-dialog(title="" :visible.sync="enemyEditDialogVisible" width="80%")
+
   div.character-builder-container
     div.main-equipment-container
       div
@@ -671,12 +673,55 @@ div.top-container
         h4
           span
             el-button(@click="enemyEditDialogVisible = true" type="primary" icon="el-icon-edit" circle)
-          span(v-if="enemy") {{ enemy.NAME }} (LV {{ enemyModifier.level }})
-        img(v-if="enemy" :src="enemy.icon" :alt="enemy.NAME")
+          span(v-if="enemy.enemy") {{ enemy.NAME }} (LV {{ enemy.level }})
+        img.enemy__icon(v-if="enemy.enemy" :src="enemy.enemy.icon" :alt="enemy.enemy.NAME")
         table
-          tr
-            th
-            td
+          tr(v-if="player.character")
+            template(v-for="skill of [player.character.getBlazeArt(player.characterModifier.level, player.characterModifier.blazeArtLevel)].filter((p) => p)")
+              template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, skill.element, skill.attribute, [])]")
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      img.icon-small(:src="skill.icon" :alt="skill.name")
+                      template(slot="popover")
+                        div.popover-base
+                          h4 {{ $t('ブレイズアーツ') }}
+                          p damage {{ receiveDamage.total }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
+                          table(v-if="receiveDamage.multipliersSkills.length")
+                            tr(v-for="skill of receiveDamage.multipliersSkills")
+                              th {{ skill.name }}
+                              td x{{ skill.effectValue }}
+                  td {{ receiveDamage.total }}
+          tr(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)")
+            template(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
+              template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, skill.element, skill.attribute, [])]")
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      img.icon-small(:src="skill.icon" :alt="skill.name")
+                      template(v-if="receiveDamage.multipliersSkills.length" slot="popover")
+                        div.popover-base
+                          h4 {{ $t('武器') }}
+                          table
+                            tr(v-for="skill of receiveDamage.multipliersSkills")
+                              th {{ skill.name }}
+                              td x{{ skill.effectValue }}
+                  td {{ receiveDamage.total }}
+          tr(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)")
+            template(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
+              template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, skill.element, skill.attribute, [])]")
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      img.icon-small(:src="skill.icon" :alt="skill.name")
+                      template(v-if="receiveDamage.multipliersSkills.length" slot="popover")
+                        div.popover-base
+                          h4 {{ $t('盾') }}
+                          table
+                            tr(v-for="skill of receiveDamage.multipliersSkills")
+                              th {{ skill.name }}
+                              td x{{ skill.effectValue }}
+                  td {{ receiveDamage.total }}
 </template>
 
 <script lang="ts">
@@ -689,6 +734,7 @@ import { dataManager } from '@/utils/DataManager';
 import { MVList as ItemMVList } from '@/master/item';
 import { MVList as CharacterMVList } from '@/master/chara';
 import { Player, PlayerExport } from '@/logic/entities/Player';
+import { Enemy } from '@/logic/entities/Enemy';
 import { Formula } from '@/logic/Formula';
 import { EquipmentItem } from '@/logic/items/EquipmentItem';
 import { ECategory } from '@/logic/Enums';
@@ -728,6 +774,8 @@ export default class extends VueBase {
 
   // dialog
   public characterEditDialogVisible = false
+
+  public enemyEditDialogVisible = false;
 
   // item picker dialog
   public get itemPickerSortOption() {
@@ -819,6 +867,9 @@ export default class extends VueBase {
 
   public skillChain = 0;
 
+  public enemy = new Enemy();
+
+  // check has player change
   public initPlayer = '';
 
   // other
@@ -1241,6 +1292,7 @@ export default class extends VueBase {
   public beforeMount() {
     this.importFromQuery() || this.importFromLocalStorage();
     this.initPlayer = this.exportString;
+    this.enemy.enemy = this.dataManager.enemyById['800014014'];
   }
 }
 </script>
@@ -1414,7 +1466,6 @@ td
 .battle
   padding: 48px
 
-.enemy
-  img
-    width: 240px
+.enemy__icon
+  width: 240px
 </style>

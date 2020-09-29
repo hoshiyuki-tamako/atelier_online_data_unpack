@@ -137,8 +137,12 @@ export class MVList {
   }
 
   // skill
+  public get skills() {
+    return this.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p);
+  }
+
   public get attackSkills() {
-    return this.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p?.type === 1);
+    return this.skills.filter((p) => p.type === 1);
   }
 
   // state

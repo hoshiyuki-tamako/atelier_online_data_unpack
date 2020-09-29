@@ -36,28 +36,28 @@ div.container
       el-checkbox(v-model="showColumnLIGHT") {{ $t('光') }}
       el-checkbox(v-model="showColumnDARK") {{ $t('闇') }}
 
-  el-table(:data="filteredData")
+  el-table(:data="filteredData" @sort-change="onSortChange")
     el-table-column(prop="NAME" :label="$t('名前')")
       template(slot-scope="scope")
         router-link(:to="{ name: 'ItemsItem', query: { df: scope.row.DF } }" target="_blank")
           img.icon-small(:src="scope.row.icon" :alt="scope.row.NAME")
         span {{ scope.row.NAME }}
         img.icon-small(v-if="scope.row.GROUP_DF && dataManager.charactersByGroupDf[scope.row.GROUP_DF]" v-for="character of dataManager.charactersByGroupDf[scope.row.GROUP_DF]" :src="character.icon" :alt="character.NAME")
-    el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" width="100%" sortable)
-    el-table-column(v-if="showColumnSATK" prop="SATK" :label="$t('物理攻撃')" width="100%" sortable)
-    el-table-column(v-if="showColumnSDEF" prop="SDEF" :label="$t('物理防禦')" width="100%" sortable)
-    el-table-column(v-if="showColumnMATK" prop="MATK" :label="$t('魔法攻撃')" width="100%" sortable)
-    el-table-column(v-if="showColumnMDEF" prop="MDEF" :label="$t('魔法防禦')" width="100%" sortable)
-    el-table-column(v-if="showColumnSPD" prop="SPD" :label="$t('速度')" width="100%" sortable)
-    el-table-column(v-if="showColumnQTH" prop="QTH" :label="$t('クリティカル')" sortable)
-    el-table-column(v-if="showColumnDDG" prop="DDG" :label="$t('回避')" width="100%" sortable)
-    el-table-column(v-if="showColumnTotalElement" prop="totalElement" :label="$t('全属性')" width="100%" sortable)
-    el-table-column(v-if="showColumnFIRE" prop="FIRE" :label="$t('火')" width="100%" sortable)
-    el-table-column(v-if="showColumnWATER" prop="WATER" :label="$t('水')" width="100%" sortable)
-    el-table-column(v-if="showColumnEARTH" prop="EARTH" :label="$t('土')" width="100%" sortable)
-    el-table-column(v-if="showColumnWIND" prop="WIND" :label="$t('風')" width="100%" sortable)
-    el-table-column(v-if="showColumnLIGHT" prop="LIGHT" :label="$t('光')" width="100%" sortable)
-    el-table-column(v-if="showColumnDARK" prop="DARK" :label="$t('闇')" width="100%" sortable)
+    el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnSATK" prop="SATK" :label="$t('物理攻撃')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnSDEF" prop="SDEF" :label="$t('物理防禦')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnMATK" prop="MATK" :label="$t('魔法攻撃')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnMDEF" prop="MDEF" :label="$t('魔法防禦')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnSPD" prop="SPD" :label="$t('速度')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnQTH" prop="QTH" :label="$t('クリティカル')" sortable="custom")
+    el-table-column(v-if="showColumnDDG" prop="DDG" :label="$t('回避')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnTotalElement" prop="totalElement" :label="$t('全属性')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnFIRE" prop="FIRE" :label="$t('火')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnWATER" prop="WATER" :label="$t('水')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnEARTH" prop="EARTH" :label="$t('土')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnWIND" prop="WIND" :label="$t('風')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnLIGHT" prop="LIGHT" :label="$t('光')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnDARK" prop="DARK" :label="$t('闇')" width="100%" sortable="custom")
 </template>
 
 <script lang="ts">
@@ -120,6 +120,10 @@ abstract class VueWithMapFields extends VueBase {
   },
 })
 export default class extends VueWithMapFields {
+  public sort = '';
+
+  public order = null;
+
   public get enableWeaponKindFilter() {
     return !this.category || dataManager.itemsWeaponKindCategories.includes(this.category);
   }
@@ -143,7 +147,22 @@ export default class extends VueWithMapFields {
   }
 
   public get filteredData() {
-    return this.support ? this.supportEquipments : this.equpiments;
+    const filteredData = this.support ? this.supportEquipments : this.equpiments;
+    if (this.sort) {
+      if (this.order === 'ascending') {
+        return Enumerable.from(filteredData)
+          .orderBy((p) => p[this.sort])
+          .thenBy((p) => p.totalState)
+          .thenBy((p) => p.totalElement)
+          .toArray();
+      }
+      return Enumerable.from(filteredData)
+        .orderByDescending((p) => p[this.sort])
+        .thenByDescending((p) => p.totalState)
+        .thenByDescending((p) => p.totalElement)
+        .toArray();
+    }
+    return filteredData;
   }
 
   private get items() {
@@ -221,6 +240,11 @@ export default class extends VueWithMapFields {
   public onSupportChange() {
     this.level += 1;
     this.level -= 1;
+  }
+
+  public onSortChange({ prop, order }: { prop: string, order: string }) {
+    this.sort = prop;
+    this.order = order;
   }
 }
 </script>
