@@ -1449,7 +1449,6 @@ export default class extends VueBase {
   public beforeMount() {
     this.importFromQuery() || this.importFromLocalStorage();
     this.initPlayer = this.exportString;
-    this.enemy.enemy = this.dataManager.enemyById['11508'];
   }
 }
 </script>
