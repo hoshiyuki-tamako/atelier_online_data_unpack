@@ -12,7 +12,7 @@ div.container
         el-link(v-if="$i18n.locale !== 'zh-TW'" type="success" :underline="false" @click="onChangeLocale('zh-TW')") link
     p
       span Twitter
-      el-link(href="https://twitter.com/hoshiyuki_git" target="_blank" type="primary") @hoshiyuki_git
+      el-link(href="https://twitter.com/hoshiyuki_git" target="_blank" rel="noopener" type="primary") @hoshiyuki_git
     br
     div.filters
       div.filter
@@ -30,12 +30,9 @@ div.container
       div.categories
         div.category__container(v-for="page in allPage.pages")
           h3
-            a.category__link(v-if="page.href" :href="page.href" target="_blank")
+            router-link.category__link(:to="page.to")
               span {{ page.label }}
-              img.category__image(:src="page.imgSrc" :alt="page.label")
-            router-link.category__link(v-else :to="page.to")
-              span {{ page.label }}
-              img.category__image(:src="page.imgSrc" :alt="page.label")
+              img.category__image(:src="page.imgSrc" :alt="page.label || page.imgAlt")
 
   el-divider
   div.strategy-guides
@@ -359,6 +356,7 @@ export default class extends VueWithMapFields {
       {
         label: '',
         imgSrc: 'img/tips/Texture2D/Tips_Chara_01.png',
+        imgAlt: 'tips',
         to: {
           name: 'OthersTips',
         },
