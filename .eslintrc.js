@@ -23,6 +23,7 @@ module.exports = {
     'no-plusplus': 'off',
     'max-classes-per-file': 'off',
     'lines-between-class-members': 'off',
+    'no-floating-decimal': 'off',
   },
   overrides: [
     {

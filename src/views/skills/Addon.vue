@@ -44,7 +44,7 @@ export default class extends VueBase {
   }
 
   public typeFilderHandler(value: string, row: SkillList) {
-    return row.name.includes(value);
+    return row.name.startsWith(value);
   }
 }
 </script>

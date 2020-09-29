@@ -11,7 +11,7 @@ div.container
         el-option(v-for="item in weaponKindOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('名前') }}/DF
-      el-input(v-model="name")
+      el-input(v-model="name" clearable)
     div.filter
       span {{ $t('ソート') }}
       el-select(v-model="sort" clearable filterable)

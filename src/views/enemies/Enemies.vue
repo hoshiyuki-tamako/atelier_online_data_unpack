@@ -6,7 +6,7 @@ div.container
         el-option(v-for="item of enemyCategoryFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('名前') }}/DF
-      el-input(v-model="name")
+      el-input(v-model="name" clearable)
     div.filter
       span {{ $t('ソート') }}
       el-select(v-model="sort" clearable filterable)

@@ -16,9 +16,12 @@ div.container
     br
     div.filters
       div.filter
-        el-switch(v-model="showSideBar" active-color="#13ce66" :active-text="$t('サイドバー')")
+        label
+          el-switch(v-model="showSideBar" active-color="#13ce66" :active-text="$t('サイドバー')")
       div.filter
-        el-switch(:value="showHiddenContent" @change="onShowHiddenContent" :active-text="$t('ネタバレ')")
+        el-switch(v-model="showBackTopButton" :active-text="$t('トップに移動ボタン')")
+      div.filter
+        el-switch(:value="showHiddenContent" @change="onShowHiddenContent" active-color="#f56c6c" :active-text="$t('ネタバレ')")
   el-divider
   div
     div.categories__container(v-for="allPage of allPages")
@@ -41,7 +44,7 @@ div.container
     div(v-for="page of otherStrategyPages")
       h4 {{ page.title }}
       p(v-for="link of page.links")
-        el-link(:href="link.href" target="_blank") {{ link.href }}
+        el-link(:href="link.href" target="_blank" rel="noopener") {{ link.href }}
       el-divider
 </template>
 
@@ -57,6 +60,8 @@ import { SkillKind } from './skills/Skills.vue';
 abstract class VueWithMapFields extends VueBase {
   public showSideBar!: boolean;
 
+  public showBackTopButton!: boolean;
+
   public showHiddenContent!: boolean;
 }
 
@@ -64,7 +69,7 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('home', ['showSideBar', 'showHiddenContent']),
+    ...mapFields('home', ['showSideBar', 'showBackTopButton', 'showHiddenContent']),
   },
 })
 export default class extends VueWithMapFields {
@@ -353,7 +358,7 @@ export default class extends VueWithMapFields {
       },
       {
         label: '',
-        imgSrc: 'img/Tips/Texture2D/Tips_Chara_01.png',
+        imgSrc: 'img/tips/Texture2D/Tips_Chara_01.png',
         to: {
           name: 'OthersTips',
         },

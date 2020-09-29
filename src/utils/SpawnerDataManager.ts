@@ -1,5 +1,6 @@
 import { eSpawnerKind } from '@/logic/Enums';
 import csv from 'csvtojson';
+import Enumerable from 'linq';
 
 export class SpawnerData {
   public DF = 0;
@@ -7,12 +8,22 @@ export class SpawnerData {
   public spawnerKind = eSpawnerKind.Ignore;
 }
 
-export class SpawnerDataManager {
-  public spawnLists = new Map<string, SpawnerData[]>();
+export interface IEnemyMap {
+  level: number;
+  enemyIds: number[];
+}
 
+export class SpawnerDataManager {
+  // settings
   public locale = 'ja-JP';
 
-  public load(locale: string, files: any) {
+  // data
+  public spawnLists = new Map<string, SpawnerData[]>();
+
+  public enemyIdsInAreaByAreaId: { [id: string]: IEnemyMap[] } = {};
+  public enemyIdsInDungeonByAreaId: { [id: string]: IEnemyMap[] } = {};
+
+  public async load(locale: string, files: any) {
     this.spawnLists.clear();
 
     this.locale = locale;
@@ -25,7 +36,7 @@ export class SpawnerDataManager {
     }
     spawnListFolders.push('SpawnList', 'TextAsset');
 
-    return Promise.all(Object.values(spawnFiles.SpawnList.TextAsset).map(async (csvFileName: string) => {
+    await Promise.all(Object.values(spawnFiles.SpawnList.TextAsset).map(async (csvFileName: string) => {
       try {
         const url = `${spawnListFolders.join('/')}/${csvFileName}`;
         const spawnLists = await csv({
@@ -43,5 +54,45 @@ export class SpawnerDataManager {
         console.error(e);
       }
     }));
+    this.processData();
+  }
+
+  private processData() {
+    this.enemyIdsInAreaByAreaId = Enumerable.from([...this.spawnLists.keys()])
+      .where((fileName) => !fileName.includes('Dun'))
+      .select((fileName) => ({
+        match: fileName.match(/^SpawnList\_(\d+)\_(\d+)/),
+        fileName,
+      }))
+      .where(({ match }) => !!match)
+      .select(({ fileName, match }) => ({
+        areaId: +match[1],
+        level: +match[2] || 0,
+        spawnList: this.spawnLists.get(fileName).filter((p) => p.spawnerKind === eSpawnerKind.Enemy),
+      }))
+      .where(({ spawnList }) => !!spawnList.length)
+      .groupBy(({ areaId }) => areaId)
+      .toObject((p) => p.key(), (p) => p.select(({ level, spawnList }) => ({
+        level,
+        enemyIds: spawnList.map((p) => p.DF),
+      } as IEnemyMap)).toArray()) as { [id: string]: IEnemyMap[] };
+    this.enemyIdsInDungeonByAreaId = Enumerable.from([...this.spawnLists.keys()])
+      .where((fileName) => fileName.includes('Dun'))
+      .select((fileName) => ({
+        match: fileName.match(/^SpawnList\_(\d+)\_(\d+)/),
+        fileName,
+      }))
+      .where(({ match }) => !!match)
+      .select(({ fileName, match }) => ({
+        areaId: +match[1],
+        level: +match[2] || 0,
+        spawnList: this.spawnLists.get(fileName).filter((p) => p.spawnerKind === eSpawnerKind.Enemy),
+      }))
+      .where(({ spawnList }) => !!spawnList.length)
+      .groupBy(({ areaId }) => areaId)
+      .toObject((p) => p.key(), (p) => p.select(({ level, spawnList }) => ({
+        level,
+        enemyIds: spawnList.map((p) => p.DF).sort((a, b) => a - b),
+      } as IEnemyMap)).toArray()) as { [id: string]: IEnemyMap[] };
   }
 }

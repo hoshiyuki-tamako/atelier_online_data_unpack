@@ -19,10 +19,12 @@ div.container
       br
       p DF: {{ item.DF }}
       p {{ $t('種類') }}: {{ $t(dataManager.lookup.itemCategory[item.CATEG]) }}
+      template(v-if="item.EQU_BRD")
+        p {{ $t('性別') }}: {{ item.genderTextIcon }}
       template(v-if="item.WPN_KIND")
         p {{ $t('武器種類') }}: {{ $t(dataManager.lookup.weaponKind[item.WPN_KIND]) }}
         p {{ $t('攻撃属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[item.elementChangeSkill ? item.elementChangeSkill.effectValue : 0]) }}
-        template(item.JOB.length)
+        template(v-if="item.JOB.length")
           p {{ $t('職業') }}: {{ item.JOB.map(p => $t(dataManager.lookup.EJobKind[p])).join(',') }}
         p(v-if="item.getAttackSkill()") {{ $t('SP回復率') }}{{ item.getAttackSkill().spAdd }}{{ $t('倍') }}
 
@@ -34,8 +36,6 @@ div.container
           span {{ $t('売却') }}
           img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="$t('エーテル')")
           span {{ item.RST.MN }}
-      template(v-if="item.EQU_BRD")
-        p {{ $t('性別') }}: {{ item.genderTextIcon }}
 
     div.item-container-right
       div(v-if="item.hasSkill || item.EQU_BRD")
@@ -93,7 +93,7 @@ div.container
                                   p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
                     td
                       v-popover(placement="right-end" trigger="hover")
-                        span {{ element.value }}
+                        span {{ element.total }}
                         template(v-if="element.value || element.skills.length" slot="popover")
                           div.popover-base
                             table
@@ -208,6 +208,7 @@ import { MVList as ItemMVList } from '@/master/item';
 import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 import { clamp } from 'lodash';
 import { ModelFbx } from 'vue-3d-model';
+import { ECategory } from '@/logic/Enums';
 
 @Component({
   components: {
@@ -215,22 +216,36 @@ import { ModelFbx } from 'vue-3d-model';
   },
 })
 export default class extends VueBase {
+  // model
   public fbxDialogVisible = false;
 
   public get fbxRotation() {
     if (ItemMVList.weaponKindCategory.includes(this.item?.CATEG)) {
       return { x: 0, y: 0, z: Math.PI };
     }
-    return { x: 0, y: 0, z: Math.PI };
+    if (this.item.CATEG === ECategory.eARMOR) {
+      return { x: -Math.PI / 2, y: 0, z: 0 };
+    }
+    if ([ECategory.eHELM, ECategory.eACCESSORY].includes(this.item.CATEG)) {
+      return { x: 0, y: 0, z: Math.PI };
+    }
+    return { x: 0, y: 0, z: 0 };
   }
 
   public get fbxPosition() {
     if (ItemMVList.weaponKindCategory.includes(this.item?.CATEG)) {
       return { x: 0, y: 0, z: 0 };
     }
-    return { x: 0, y: 1.2, z: -1.2 };
+    if (this.item.CATEG === ECategory.eARMOR) {
+      return { x: 0, y: -.5, z: 0 };
+    }
+    if ([ECategory.eHELM, ECategory.eACCESSORY].includes(this.item.CATEG)) {
+      return { x: 0, y: 1.2, z: -1.2 };
+    }
+    return { x: 0, y: 0, z: 0 };
   }
 
+  // item
   public item: ItemMVList | null = null;
 
   public itemModifier = new ItemModifier();

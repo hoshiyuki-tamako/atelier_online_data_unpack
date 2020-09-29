@@ -36,10 +36,12 @@ div.container
                     img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
             div(v-if="getOtherEnemies(areaDetail.iAreaID).length")
               el-divider {{ $t('他の敵') }}
-              div.example-container
-                div(v-for="enemy of getOtherEnemies(areaDetail.iAreaID)")
-                  router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
-                    img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
+              div(v-for="{ level, enemies } of getOtherEnemies(areaDetail.iAreaID)")
+                el-divider {{ level }}
+                div.example-container
+                  div(v-for="enemy of enemies")
+                    router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
+                      img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
             div(v-if="dataManager.dungeonInfosByAreaId[areaDetail.iAreaID]")
               el-divider {{ $t('ダンジョン') }}
               div
@@ -52,10 +54,12 @@ div.container
 
             div(v-if="getDungeonEnemies(areaDetail.iAreaID).length")
               el-divider {{ $t('ダンジョン') }}{{ $t('敵') }}
-              div.example-container
-                div(v-for="enemy of getDungeonEnemies(areaDetail.iAreaID)")
-                  router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
-                    img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
+              div(v-for="{ level, enemies } of getDungeonEnemies(areaDetail.iAreaID)")
+                el-divider {{ level }}
+                div.example-container
+                  div(v-for="enemy of enemies")
+                    router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
+                      img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
 
             div(v-if="dataManager.townInfosByAreaId[areaDetail.iAreaID]")
               el-divider {{ $t('町') }}
@@ -88,25 +92,21 @@ export default class extends VueBase {
   public townIcons = Object.values(dataManager.files.img.map_town.Texture2D).filter((p: string) => !p.endsWith('_02.png')) as string[];
 
   public getOtherEnemies(id: number) {
-    return [...dataManager.spawnerDataManager.spawnLists.keys()]
-      .filter((p) => !p.includes('Dun') && p.includes(`SpawnList_${id.toString().padStart(2, '0')}_`))
-      .map((p) => dataManager.spawnerDataManager.spawnLists.get(p))
-      .flat()
-      .filter((p) => p.spawnerKind === 3)
-      .map((p) => dataManager.enemyById[p.DF])
-      .filter((p) => p)
-      .sort((a, b) => a.eKind - b.eKind);
+    return this.dataManager.spawnerDataManager.enemyIdsInAreaByAreaId[id]
+      ?.map(({ level, enemyIds }) => ({
+        level,
+        enemies: enemyIds.map((p) => dataManager.enemyById[p]).filter((p) => p).sort((a, b) => a.eKind - b.eKind),
+      }))
+      .filter(({ enemies }) => enemies.length) || [];
   }
 
   public getDungeonEnemies(id: number) {
-    return [...dataManager.spawnerDataManager.spawnLists.keys()]
-      .filter((p) => p.includes('Dun') && p.includes(`SpawnList_${id}`))
-      .map((p) => dataManager.spawnerDataManager.spawnLists.get(p))
-      .flat()
-      .filter((p) => p.spawnerKind === 3)
-      .map((p) => dataManager.enemyById[p.DF])
-      .filter((p) => p)
-      .sort((a, b) => a.eKind - b.eKind);
+    return this.dataManager.spawnerDataManager.enemyIdsInDungeonByAreaId[id]
+      ?.map(({ level, enemyIds }) => ({
+        level,
+        enemies: enemyIds.map((p) => dataManager.enemyById[p]).filter((p) => p).sort((a, b) => a.eKind - b.eKind),
+      }))
+      .filter(({ enemies }) => enemies.length) || [];
   }
 
   public getTownIcons(iTownId: number) {

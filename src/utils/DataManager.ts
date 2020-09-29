@@ -109,6 +109,8 @@ export class DataManager {
 
   public abnormalStateById: { [id: string]: AbnormalStateMVList };
 
+  public abnormalStateTypes: string[];
+
   public abnormalStateEffectById: { [id: string]: AbnormalStateEffectMVList };
 
   public characterById: { [df: string]: CharacterMVList };
@@ -364,6 +366,10 @@ export class DataManager {
     this.abnormalState = abnormalState;
     this.abnormalStateById = Enumerable.from(this.abnormalState.m_vList)
       .toObject((p) => p.id, (p) => p) as { [id: string]: AbnormalStateMVList };
+    this.abnormalStateTypes = Enumerable.from(this.abnormalState.m_vList)
+      .groupBy((p) => p.name.split('(')[0])
+      .select((p) => p.key())
+      .toArray();
   }
 
   public processAbnormalStateEffect(abnormalStateEffect: AbnormalStateEffect) {

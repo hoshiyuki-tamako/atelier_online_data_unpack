@@ -2,7 +2,7 @@
 div.container
   div.content
     div(v-for="adventBattle of dataManager.adventBattle.RankingList")
-      el-divider {{ adventBattle.ID }}
+      el-divider ID {{ adventBattle.ID }}
       div.item-container(v-for="enemyList of adventBattle.EnemyList")
         div.item-container-left(v-for="enemy of [dataManager.enemyById[enemyList.DF]]")
           h3

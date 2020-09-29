@@ -1,8 +1,0 @@
-<script>
-const { searchParams } = new URL(window.location);
-const locale = searchParams.get('locale') || 'ja-JP';
-const df = searchParams.get('df');
-const quality = searchParams.get('quality');
-const materialOptions = searchParams.get('materialOptions');
-window.location.href = `./?locale=${locale}#/tools/composeItem?df=${df}&quality=${quality}&materialOptions=${materialOptions}`;
-</script>

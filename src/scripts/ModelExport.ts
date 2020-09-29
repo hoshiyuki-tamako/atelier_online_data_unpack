@@ -13,6 +13,8 @@ export interface IAreaModel {
 }
 
 export default class ModelExport {
+  public ncp = promisify(ncp);
+
   public async process(sourceFolder: string, rootFolder: string) {
     const modelFolder = path.join(sourceFolder, 'models');
     const modelMetaFolder = path.join(sourceFolder, 'modelsMeta');
@@ -26,6 +28,7 @@ export default class ModelExport {
     const modelFolders = await fs.readdir(modelFolder);
     await Promise.all([
       this.processItemsModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
+      this.processEnemiesModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
       this.processAreaModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
     ]);
   }
@@ -35,7 +38,7 @@ export default class ModelExport {
       Object.values(EWeaponKind)
         .filter((p) => +p >= 0)
         .map((p) => EWeaponKind[p].substring(1).toLocaleLowerCase())
-        .concat(['helm'])
+        .concat(['helm', 'acc_', 'body'])
         .map((name) => this.processItemModels(name, modelFolders, rootFolder, modelFolder))
     );
   }
@@ -43,14 +46,28 @@ export default class ModelExport {
   private async processItemModels(name: string, modelFolders: string[], rootFolder: string, modelFolder: string) {
     const outFolder = path.join(rootFolder, 'models', 'items');
     const regex = new RegExp(`^${escapeStringRegexp(name)}.*`);
-    const itemFolders = modelFolders.filter((p) => !p.includes('#') && regex.exec(p));
+    const itemFolders = modelFolders.filter((p) => regex.exec(p));
     await Promise.all(itemFolders.map(async (p) => {
       const sourceModelFolder = path.join(modelFolder, p);
       const outModelFolder = path.join(outFolder, p);
       if (await fs.pathExists(outModelFolder)) {
         return;
       }
-      await promisify(ncp)(sourceModelFolder, outModelFolder);
+      await this.ncp(sourceModelFolder, outModelFolder);
+    }));
+  }
+
+  private async processEnemiesModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
+    const outFolder = path.join(rootFolder, 'models', 'enemies');
+    const regex = new RegExp(`^${escapeStringRegexp('Enemy044')}.*`);
+    const enemiesFolders = modelFolders.filter((p) => regex.exec(p));
+    await Promise.all(enemiesFolders.map(async (p) => {
+      const sourceModelFolder = path.join(modelFolder, p);
+      const outModelFolder = path.join(outFolder, p);
+      if (await fs.pathExists(outModelFolder)) {
+        return;
+      }
+      await this.ncp(sourceModelFolder, outModelFolder);
     }));
   }
 
@@ -58,9 +75,15 @@ export default class ModelExport {
     // custom meta
     const hideAreas = [101, 102, 90];
     const deDuplicationAreas = [5, 6];
+    const hideAreaFilters = [
+      {
+        iAreaID: 3,
+        iLevel: 901,
+      }
+    ];
 
     // start process
-    const modelOutFolder = path.join(rootFolder, 'models', 'root');
+    const modelOutFolder = path.join(rootFolder, 'models', 'roots');
     const roots = modelFolders.filter((p) => p.includes('root'))
       .sort(new Intl.Collator(undefined, { numeric: true }).compare)
       .reverse();
@@ -77,7 +100,7 @@ export default class ModelExport {
         iLevel: +iLevel,
         root,
       } as IAreaModel;
-    }).filter((p) => p && !hideAreas.includes(p.iAreaID));
+    }).filter((p) => p && !hideAreas.includes(p.iAreaID)).filter((p) => !hideAreaFilters.some((i) => i.iAreaID === p.iAreaID && i.iLevel === p.iLevel));
 
     // de duplication
     const removeIndexes = [] as number[];
@@ -103,7 +126,7 @@ export default class ModelExport {
         if (await fs.pathExists(outFolder)) {
           return;
         }
-        await promisify(ncp)(sourceModelFolder, outFolder);
+        await this.ncp(sourceModelFolder, outFolder);
       })),
     ]);
   }

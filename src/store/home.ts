@@ -8,15 +8,7 @@ import VuexModuleBase from './base/VuexModuleBase';
 export default class extends VuexModuleBase {
   public showSideBar = true;
 
+  public showBackTopButton = true;
+
   public showHiddenContent = false;
-
-  @Mutation
-  public updateShowSideBar(showSideBar: boolean) {
-    this.showSideBar = showSideBar;
-  }
-
-  @Mutation
-  public updateShowHiddenContent(showHiddenContent: boolean) {
-    this.showHiddenContent = showHiddenContent;
-  }
 }

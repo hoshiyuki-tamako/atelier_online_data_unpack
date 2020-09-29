@@ -28,7 +28,7 @@ import { List as DegreeList } from '@/master/degree';
 export default class extends VueBase {
   public get typeFilters() {
     return Object.entries(dataManager.lookup.EDegreeMissonType).map(([value, text]) => ({
-      text,
+      text: this.$t(text),
       value: +value,
     }));
   }

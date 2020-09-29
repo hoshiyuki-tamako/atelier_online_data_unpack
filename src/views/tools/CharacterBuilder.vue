@@ -7,7 +7,7 @@ div.top-container
           el-select(v-if="itemPickerShowSort" v-model="itemPickerSort" :placeholder="$t('ソート')" filterable clearable)
             el-option(v-for="item of itemPickerSortOption" :key="item.value" :label="item.label" :value="item.value")
         div.filter
-          el-input(v-model="itemPickerFilterKeyword" :placeholder="`${$t('名前')}/DF`")
+          el-input(v-model="itemPickerFilterKeyword" :placeholder="`${$t('名前')}/DF`" clearable)
         div.filter
           el-switch(v-model="itemPickerShowStates" :active-text="$t('情報を表示')")
       div.item-picker-items
@@ -700,6 +700,22 @@ import { PlayerExportVersionConvertor } from '@/logic/convertor/PlayerExportVers
   components: {
     'v-select': vSelect,
   },
+  async beforeRouteLeave(to, from, next) {
+    if (this.initPlayer !== this.exportString) {
+      try {
+        await this.$confirm(`${this.$t('キャラクター保存されません，ページを離れますか')}？`, '', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning',
+        });
+      } catch (e) {
+        console.log(e);
+        next(false);
+        return;
+      }
+    }
+    next();
+  },
 })
 export default class extends VueBase {
   public get Formula() {
@@ -708,10 +724,6 @@ export default class extends VueBase {
 
   public get ItemMVList() {
     return ItemMVList;
-  }
-
-  public get console() {
-    return console;
   }
 
   // dialog
@@ -806,6 +818,8 @@ export default class extends VueBase {
   public player = new Player();
 
   public skillChain = 0;
+
+  public initPlayer = '';
 
   // item picker
   public get itemPickerItems() {
@@ -1163,6 +1177,7 @@ export default class extends VueBase {
       importString: this.exportString,
     });
     this.successNotification();
+    this.initPlayer = this.exportString;
   }
 
   public async onClear() {
@@ -1211,6 +1226,7 @@ export default class extends VueBase {
 
   public beforeMount() {
     this.importFromQuery() || this.importFromLocalStorage();
+    this.initPlayer = this.exportString;
   }
 }
 </script>

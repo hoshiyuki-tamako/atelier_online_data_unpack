@@ -38,7 +38,7 @@ item
 {
   "DF": 10010001, // id of the item
   "CATEG": 11, // Category ID, see Enums ECategory for all the types
-  "GEN": 1001, // weapon type, relationship to chara.WEAPON[].GEN
+  "GEN": 1001, // ESubCategory, relationship to chara.WEAPON[].GEN
   "PRIO": 10010001, // previous item, for sorting
   "KANA": "ジュウコウセキ", // use for translate other languages
   "ICON": 1001,

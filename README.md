@@ -24,18 +24,37 @@ npm i
 npm start
 ```
 
-#### Production Build
+##### Update Packages
+
+Please find the packages in npm before running below commands
 
 ```bash
-npm run generate
+typesync
+ncu -u
+npm i
+```
+
+#### Production Build
+
+As currently this project using github actions, does not required to manually build on commit
+
+```bash
 npm run build
 ```
 
 ## Content Update Steps
 
-1. export all Texture2D to `./source/Texture2D/*`
-2. export all fbx models with folder to `./source/models/**/*`
-3. export all fbx ascii to `./source/modelsMeta/*`
-4. copy JSON from AssetStudio to `./public/export/*`
-5. update other images/models if needed
-6. run `npm run generate`
+Before update
+
+- Download latest `APK` and `assets`
+- using `AssetStudio` >= 0.15 load folders that include both un-zipped APK, and assets
+- use Il2CppDumper to dump DLL for Enums/others if needed
+
+1. export MonoBehaviour Container `assets/assetbundles/master/**/*` to `./public/export/*`
+2. export MonoBehaviour Container `assets/assetbundles/adv/*` to `./public/export/adv/*`
+3. export TextAsset Name filter `SpawnList` to `./public/export/SpawnList/TextAsset`
+4. export all Texture2D to `./source/Texture2D/*`
+5. export all models fbx version 7.5 binary with folder to `./source/models/**/*`
+6. export all models fbx version 7.5 ascii to `./source/modelsMeta/**/*`
+7. update other images/models/Enums/lookup if any
+8. run `npm run process`

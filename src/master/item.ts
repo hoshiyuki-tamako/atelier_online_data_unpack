@@ -1,4 +1,4 @@
-import { EBattleEffectKind, ECategory, EWeaponKind } from '@/logic/Enums';
+import { EBattleEffectKind, ECategory, ESubCategory, EWeaponKind } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
 import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
@@ -98,10 +98,16 @@ export class MVList {
     }
     // body
     if (this.CATEG === ECategory.eARMOR) {
-      return '';
+      return 'body';
     }
     // accessory
     if (this.CATEG === ECategory.eACCESSORY) {
+      if (this.GEN === ESubCategory.eFACE) {
+        return 'acc_face';
+      }
+      if (this.GEN === ESubCategory.eBACK) {
+        return 'acc_back';
+      }
       return '';
     }
     return '';
@@ -153,11 +159,11 @@ export class MVList {
     const key = JSON.stringify({ quality });
     if (!this.#skillsCache.has(key)) {
       this.#skillsCache.set(key, Enumerable.from(this.SPC)
-      .orderByDescending((p) => p.THR)
-      .where((p) => p.THR <= quality)
-      .firstOrDefault()
-      ?.SKILL.map((p) => dataManager.skillById[p.DF])
-      .filter((p) => p) || []);
+        .orderByDescending((p) => p.THR)
+        .where((p) => p.THR <= quality)
+        .firstOrDefault()
+        ?.SKILL.map((p) => dataManager.skillById[p.DF])
+        .filter((p) => p) || []);
     }
     return this.#skillsCache.get(key);
   }

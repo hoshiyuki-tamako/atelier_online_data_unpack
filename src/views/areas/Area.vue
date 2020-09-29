@@ -36,6 +36,8 @@ export default class extends VueBase {
 
   public controls = new OrbitControls(this.camera, this.renderer.domElement);
 
+  public renderLoop = true;
+
   // loader
   public fbxLoader = new FBXLoader();
 
@@ -45,7 +47,7 @@ export default class extends VueBase {
   public root = '';
 
   public get fbx() {
-    return `models/root/${this.root}/root.fbx`;
+    return `models/roots/${this.root}/root.fbx`;
   }
 
   public beforeMount() {
@@ -67,6 +69,14 @@ export default class extends VueBase {
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(window.innerWidth, window.innerHeight);
     });
+  }
+
+  public beforeDestroy() {
+    this.beforeUnmount();
+  }
+
+  public beforeUnmount() {
+    this.renderLoop = false;
   }
 
   private initializeCamera() {
@@ -138,8 +148,10 @@ export default class extends VueBase {
   }
 
   private animate() {
-    requestAnimationFrame(this.animate.bind(this));
-    this.renderer.render(this.scene, this.camera);
+    if (this.renderLoop) {
+      requestAnimationFrame(this.animate.bind(this));
+      this.renderer.render(this.scene, this.camera);
+    }
     return this;
   }
 }

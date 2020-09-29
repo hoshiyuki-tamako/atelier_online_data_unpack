@@ -4,6 +4,7 @@ div.container
     h3 ステータスの公式
     div
       p floor(((M - B)/R) * level + B)
+      br
       p R = 目標レベル值
       p M = R レベルのステータス最大值
       p B = ステータス初始值

@@ -1,8 +1,9 @@
 <template lang="pug">
 div.container
   div.other-characters
-    div(v-for="icon of icons")
-      img(:src="`img/icon_chara/Texture2D/${icon}`" :alt="icon")
+    div.other-character(v-for="otherCharacter of otherCharacters")
+      p {{ otherCharacter.df }}
+      img(:src="`img/icon_chara/Texture2D/${otherCharacter.icon}`" :alt="otherCharacter.df")
 </template>
 
 <script lang="ts">
@@ -19,10 +20,14 @@ export default class extends VueBase {
     return dataManager.chara.m_vList.map((p) => p.DF.toString().padStart(4, '0'));
   }
 
-  public get icons() {
+  public get otherCharacters() {
     const characterIconDfs = this.existingCharacterIconDfs;
-    return Object.values(dataManager.files.img.icon_chara.Texture2D)
-      .filter((icon: string) => icon.startsWith('icon_chara_all_') && !characterIconDfs.some((iconDf) => new RegExp(`^icon_chara_all_${iconDf}`).exec(icon)));
+    return Object.values(dataManager.files.img.icon_chara.Texture2D as string[])
+      .filter((icon) => icon.startsWith('icon_chara_all_') && !characterIconDfs.some((iconDf) => new RegExp(`^icon_chara_all_${iconDf}`).exec(icon)))
+      .map((icon) => ({
+        icon,
+        df: icon.match(/(\d+)/)[1] || '-',
+      }));
   }
 }
 </script>
@@ -34,7 +39,9 @@ a
 .other-characters
   display: flex
   flex-wrap: wrap
-.other-characters
-  img
-    width: 200px
+  .other-character
+    margin: 12px
+    text-align: center
+    img
+      width: 200px
 </style>

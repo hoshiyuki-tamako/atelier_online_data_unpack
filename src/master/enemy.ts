@@ -120,6 +120,14 @@ export class MVList {
   #elementCache = new Map<string, IElementResult>();
   #stateCache = new Map<string, IStateResult>();
 
+  public get model() {
+    if (!this.sParam.MDL || !this.sParam.MDL.startsWith('044') ) {
+      return '';
+    }
+
+    return `models/enemies/Enemy${this.sParam.MDL}/Enemy${this.sParam.MDL}.fbx`;
+  }
+
   public get icon() {
     return `img/enemy_tex/Texture2D/enemy_tex_${this.sParam.MDL}.png`;
   }
