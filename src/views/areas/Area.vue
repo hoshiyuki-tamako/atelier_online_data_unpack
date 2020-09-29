@@ -36,7 +36,9 @@ export default class extends VueBase {
 
   public controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-  public renderLoop = true;
+  public setting = {
+    renderLoop: true,
+  };
 
   // loader
   public fbxLoader = new FBXLoader();
@@ -78,7 +80,7 @@ export default class extends VueBase {
   }
 
   public beforeUnmount() {
-    this.renderLoop = false;
+    this.setting.renderLoop = false;
     window.removeEventListener('resize', this.resize);
   }
 
@@ -151,12 +153,12 @@ export default class extends VueBase {
   }
 
   private animate = () => {
-    if (this.renderLoop) {
+    if (this.setting.renderLoop) {
       requestAnimationFrame(this.animate);
       this.renderer.render(this.scene, this.camera);
     }
     return this;
-  }
+  };
 }
 </script>
 

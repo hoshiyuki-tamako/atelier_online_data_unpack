@@ -44,15 +44,13 @@ npm run build
 
 ## Content Update Steps
 
-Before update
-
 - Download latest `APK` and `assets`
 - using `AssetStudio` >= 0.15 load folders that include both un-zipped APK, and assets
 - use Il2CppDumper to dump DLL for Enums/others if needed
 
 1. export MonoBehaviour Container `assets/assetbundles/master/**/*` to `./public/export/*`
 2. export MonoBehaviour Container `assets/assetbundles/adv/*` to `./public/export/adv/*`
-3. export TextAsset Name filter `SpawnList` to `./public/export/SpawnList/TextAsset`
+3. export TextAsset Name filter `SpawnList` to `./public/export/SpawnList/TextAsset/*`
 4. export all Texture2D to `./source/Texture2D/*`
 5. export all models fbx version 7.5 binary with folder to `./source/models/**/*`
 6. export all models fbx version 7.5 ascii to `./source/modelsMeta/**/*`

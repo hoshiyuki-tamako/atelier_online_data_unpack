@@ -6,6 +6,9 @@ div.container
   div.item-container
     div.item-container-left
       h3.item-name {{ enemy.strName }}
+      div.item-has-3d(v-if="enemy.model" @click="fbxDialogVisible = true")
+        img.icon-full(:src="enemy.icon" :alt="enemy.strName")
+      div(v-else)
         img.icon-full(:src="enemy.icon" :alt="enemy.strName")
       p {{ enemy.strDesc }}
       p(v-if="enemy.model")

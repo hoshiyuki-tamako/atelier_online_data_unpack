@@ -822,6 +822,10 @@ export default class extends VueBase {
   public initPlayer = '';
 
   // other
+  public resetHasChange() {
+    this.initPlayer = this.exportString;
+  }
+
   public get hasChange() {
     return this.initPlayer !== this.exportString;
   }
@@ -1186,7 +1190,7 @@ export default class extends VueBase {
       importString: this.exportString,
     });
     this.successNotification();
-    this.initPlayer = this.exportString;
+    this.resetHasChange();
   }
 
   public async onClear() {
@@ -1199,6 +1203,7 @@ export default class extends VueBase {
     this.player = new Player();
     this.skillChain = 0;
     this.successNotification();
+    this.resetHasChange();
   }
 
   // notification

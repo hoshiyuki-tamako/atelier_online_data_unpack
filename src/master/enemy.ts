@@ -136,7 +136,12 @@ export class MVList {
     return Math.round(Math.acos(this.fViewCos) * (180/Math.PI));
   }
 
-  //
+  // skill
+  public get attackSkills() {
+    return this.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p?.type === 1);
+  }
+
+  // state
   public getState(state: string, level: number) {
     const key = JSON.stringify({ state, level });
     if (!this.#stateCache.has(key)) {
@@ -156,6 +161,7 @@ export class MVList {
     return Object.keys(this.sParam.SPEC).map((state) => this.getState(state, level));
   }
 
+  // element
   public getElement(element: string) {
     const key = JSON.stringify({ element });
     if (!this.#elementCache.has(element)) {

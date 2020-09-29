@@ -120,6 +120,9 @@ export default class extends VueBase {
   width: 100%
   height: 100%
   outline: none
+
+.item-has-3d
+  cursor: pointer
 </style>
 
 <style lang="sass" scoped>

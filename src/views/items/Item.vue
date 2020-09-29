@@ -279,9 +279,6 @@ th, td
   > p:first-child
     margin-right: auto
 
-.item-has-3d
-  cursor: pointer
-
 .item-modify
   display: flex
   flex-wrap: wrap

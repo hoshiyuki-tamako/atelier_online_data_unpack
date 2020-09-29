@@ -26,6 +26,8 @@ import { dataManager } from '@/utils/DataManager';
 import { mapFields } from 'vuex-map-fields';
 
 abstract class VueWithMapFields extends VueBase {
+  public eKind!: number;
+
   public name!: string;
 
   public sort!: number;
@@ -35,18 +37,10 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('enemiesFilter', ['name', 'sort']),
+    ...mapFields('enemiesFilter', ['eKind', 'name', 'sort']),
   },
 })
 export default class extends VueWithMapFields {
-  get eKind() {
-    return this.$store.state.enemiesFilter.eKind || null;
-  }
-
-  set eKind(value) {
-    this.$store.commit('enemiesFilter/updateEKind', value);
-  }
-
   public get enemyCategoryFilter() {
     return dataManager.enemy.KindList
       .filter((p) => p.iKind)

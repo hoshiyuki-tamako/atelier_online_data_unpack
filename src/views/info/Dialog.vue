@@ -43,7 +43,8 @@ export default class extends VueBase {
   public questDialogs: IDialog[] = [];
 
   public beforeMount() {
-    const advs = Object.values(dataManager.files.export.adv).map((p: string) => p.split('.')[0]) as string[];
+    const advFiles = this.dataManager.advManager.locale === 'zh-TW' ? dataManager.files.export.tw.adv : dataManager.files.export.adv;
+    const advs = Object.values(advFiles).map((p: string) => p.split('.')[0]) as string[];
     const existingAdvs = dataManager.quest.m_vList.map((p) => p.NPC_FD.map((i) => i.ADV)).flat().filter((p) => p);
     this.unusedAdvs = advs.filter((p) => !existingAdvs.includes(p));
   }
