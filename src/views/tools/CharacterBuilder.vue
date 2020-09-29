@@ -151,7 +151,9 @@ div.top-container
           img(:src="character.icon" :alt="character.NAME")
       div.character-state
         div(v-if="player.character")
-          h3 {{ player.character.NAME }}
+          h3
+            router-link(:to="{ name: 'CharactersCharacter', query: { df: player.character.DF, level: player.characterModifier.level, foodLevel: player.characterModifier.foodLevel } }" target="_blank")
+              span {{ player.character.NAME }}
           img.character-image(:src="player.character.icon" :alt="player.character.NAME")
           table
             tr
@@ -234,154 +236,224 @@ div.top-container
                     p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
 
   el-dialog(title="" :visible.sync="enemyEditDialogVisible" width="80%")
+    div.enemy-edit
+      div.enemy-edit-picker
+        div.filters
+          div.filter
+            el-select(v-model="enemyPickerEKind" :placeholder="$t('種類')" clearable filterable)
+              el-option(v-for="item of enemyCategoryFilter" :key="item.value" :label="item.label" :value="item.value")
+          div.filter
+            span {{ $t('名前') }}/DF
+            el-input(v-model="enemyPickerName" clearable)
+        div.item-picker-items
+          div.item-picker-remove-item(@click="onPickEnemy()")
+            img.icon-small(src="img/icon_item_s/Texture2D/icon_item_s_10790001.png" :alt="$t('削除する')")
+          div(v-for="enemy of filteredEnemies" @click="onPickEnemy(enemy)")
+            p.item-name {{ enemy.strName }}
+            img.icon-small(:src="enemy.icon" :alt="enemy.strName")
+      div.enemy-edit-enemy(v-if="enemy.enemy")
+        h3
+          router-link(v-if="enemy.enemy" :to="{ name: 'EnemiesEnemy', query: { df: enemy.enemy.DF, level: enemy.level } }" target="_blank")
+            span {{ enemy.enemy.strName }} (LV {{ enemy.level }})
+        img.enemy__icon(:src="enemy.enemy.icon" :alt="enemy.enemy.strName")
+        el-form
+          el-form-item(label="LV")
+            el-input-number(v-model="enemy.level" :min="1" size="small" step-strictly)
+        div
+          table.enemy-edit-enemy__state-table
+            tr(v-for="state of enemy.enemy.getStates(enemy.level)")
+              th {{ $t(state.label) }}
+              td {{ state.value }}
+            tr(v-for="element of enemy.enemy.getElements(enemy.level).filter((p) => p.value)")
+              th {{ $t(element.label) }}
+              td {{ element.value }}
+        div(v-if="enemy.enemy.sParam.SKILL.length")
+          el-divider {{ $t('スキル') }}/{{ $t('効果') }}
+          div(v-for="(skill, i) of enemy.enemy.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)")
+            table.skill-table
+              tr
+                th {{ $t('名前') }}
+                td {{ skill.name }}
+              tr
+                th {{ $t('詳細') }}
+                td {{ skill.detail }}
+              tr
+                th {{ $t('数値') }}
+                td {{ skill.effectValue }}, {{ skill.effectValue2 }}
+              template(v-if="skill.type === 1")
+                tr
+                  th {{ $t('攻撃タイプ') }}
+                  td {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
+                tr
+                  th {{ $t('属性') }}
+                  td {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
+                tr
+                  th {{ $t('對象') }}
+                  td {{ $t(dataManager.lookup.targetTeam[skill.attackSkill.targetTeam]) }}{{ $t(dataManager.lookup.eFieldItemRange[skill.attackSkill.targetScope]) }}
+                tr(v-if="skill.attackSkill.stateOwn.length")
+                  th {{ $t('追加状態 (自)') }}
+                  td
+                    p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
+                tr(v-if="skill.attackSkill.state.length")
+                  th {{ $t('追加状態') }}
+                  td
+                    p(v-for="[state, abnormalState] of skill.attackSkill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
+            p(v-if="enemy.enemy.sParam.SKILL.length !== (i + 1)") {{ '>' }}
 
   div.character-builder-container
-    div.main-equipment-container
-      div
-        el-button(@click="mainItemEditorVisible = true" type="success" icon="el-icon-edit" circle)
-        span {{ $t('まとめで設定') }}
-      div.main-equipments
-        div.left-equipment
-          template(v-for="slot of ['weapon', 'shield', 'helmet', 'armor']")
-            v-popover(placement="right-end" trigger="hover")
-              div.equipment-icon
-                p {{ $t('品質') }} {{ player.equipmentModifiers[slot].quality }} LV {{ player.equipmentModifiers[slot].level }}
-                img(@click="onPickEquipment(slot)" :src="getEquipmentImage(slot)")
-              template(v-if="player.equipment[slot]" slot="popover")
-                div.equipment-popover
-                  h3 {{ player.equipment[slot].NAME }}
-                  table
-                    tr
-                      th {{ $t('品質') }}
-                      td
-                        el-input-number(v-model="player.equipmentModifiers[slot].quality" :min="1" size="small" step-strictly)
-                    tr
-                      th LV
-                      td
-                        el-input-number(v-model="player.equipmentModifiers[slot].level" :min="1" size="small" step-strictly)
-                    tr
-                      th {{ $t('特性') }}
-                      td
-                        v-select.skill-addon-select(:options="dataManager.skillAddonsEquipmentUseful" label="name" :value="player.equipmentModifiers[slot].skill" @input="(value) => setEquipmentModifierSkill(value, slot)")
-                          div(slot="no-options")
-                  table
-                    tr(v-for="state of getEquipmentStates(slot)")
-                      th {{ $t(state.label) }}
-                      td
-                        span {{ state.total }}
-                        template(v-if="state.skillValue || state.addonValue")
-                          span  (
-                          span {{ state.value }}
-                          span(v-if="state.skillValue")  {{ s(state.skillValue) }} {{ state.skillValue }}
-                          span(v-if="state.addonValue")  {{ s(state.addonValue) }} {{ state.addonValue }}
-                          span )
-                    tr(v-for="element of getEquipmentElements(slot)")
-                      th {{ $t(element.label) }}
-                      td
-                        span {{ element.total }}
-                          template(v-if="element.skillValue || element.addonValue")
-                            span  (
-                            span {{ element.value }}
-                            span(v-if="element.skillValue")  {{ s(element.skillValue) }} {{ element.skillValue }}
-                            span(v-if="element.addonValue")  {{ s(element.addonValue) }} {{ element.addonValue }}
-                            span )
-                    tr(v-if="player.equipment[slot].item.GROUP_DF && dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
-                      th {{ $t('キャラクター專用') }}
-                      td
-                        p(v-for="character of dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
-                          img.icon-small(:src="character.icon" :alt="character.NAME")
-                  br
-                  div(v-for="(skill, i) of getEquipmentSkills(slot)")
-                    p {{ skill.name }}
-                    p {{ skill.detail }}
-                    p(v-if="getEquipmentSkills(slot).length !== (i + 1)") {{ '>' }}
+    div.top-equipment-container
+      div.filters
+        el-button(@click="importDialogVisible = true" type="warning" round) {{ $t('インポート') }}
+        el-button(@click="exportDialogVisible = true" round) {{ $t('エクスポート') }}
+        el-button(@click="onSave" type="primary" round) {{ $t('保存') }}
+        el-button(@click="onClear" type="danger" round) {{ $t('クリアー') }}
+      div.equipment-container
+        div.main-equipment-container
+          div.filters
+            el-button(@click="mainItemEditorVisible = true" type="success" icon="el-icon-edit" circle)
+            span {{ $t('まとめで設定') }}
+          div.main-equipments
+            div.left-equipment
+              template(v-for="slot of ['weapon', 'shield', 'helmet', 'armor']")
+                v-popover(placement="right-end" trigger="hover")
+                  div.equipment-icon
+                    p {{ $t('品質') }} {{ player.equipmentModifiers[slot].quality }} LV {{ player.equipmentModifiers[slot].level }}
+                    img(@click="onPickEquipment(slot)" :src="getEquipmentImage(slot)")
+                  template(v-if="player.equipment[slot]" slot="popover")
+                    div.equipment-popover
+                      h3
+                        router-link(:to="{ name: 'ItemsItem', query: { df: player.equipment[slot].item.DF, quality: player.equipmentModifiers[slot].quality, level: player.equipmentModifiers[slot].level } }" target="_blank")
+                          span {{ player.equipment[slot].item.NAME }}
+                      table
+                        tr
+                          th {{ $t('品質') }}
+                          td
+                            el-input-number(v-model="player.equipmentModifiers[slot].quality" :min="1" size="small" step-strictly)
+                        tr
+                          th LV
+                          td
+                            el-input-number(v-model="player.equipmentModifiers[slot].level" :min="1" size="small" step-strictly)
+                        tr
+                          th {{ $t('特性') }}
+                          td
+                            v-select.skill-addon-select(:options="dataManager.skillAddonsEquipmentUseful" label="name" :value="player.equipmentModifiers[slot].skill" @input="(value) => setEquipmentModifierSkill(value, slot)")
+                              div(slot="no-options")
+                      table
+                        tr(v-for="state of getEquipmentStates(slot)")
+                          th {{ $t(state.label) }}
+                          td
+                            span {{ state.total }}
+                            template(v-if="state.skillValue || state.addonValue")
+                              span  (
+                              span {{ state.value }}
+                              span(v-if="state.skillValue")  {{ s(state.skillValue) }} {{ state.skillValue }}
+                              span(v-if="state.addonValue")  {{ s(state.addonValue) }} {{ state.addonValue }}
+                              span )
+                        tr(v-for="element of getEquipmentElements(slot)")
+                          th {{ $t(element.label) }}
+                          td
+                            span {{ element.total }}
+                              template(v-if="element.skillValue || element.addonValue")
+                                span  (
+                                span {{ element.value }}
+                                span(v-if="element.skillValue")  {{ s(element.skillValue) }} {{ element.skillValue }}
+                                span(v-if="element.addonValue")  {{ s(element.addonValue) }} {{ element.addonValue }}
+                                span )
+                        tr(v-if="player.equipment[slot].item.GROUP_DF && dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
+                          th {{ $t('キャラクター專用') }}
+                          td
+                            p(v-for="character of dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
+                              img.icon-small(:src="character.icon" :alt="character.NAME")
+                      br
+                      div(v-for="(skill, i) of getEquipmentSkills(slot)")
+                        p {{ skill.name }}
+                        p {{ skill.detail }}
+                        p(v-if="getEquipmentSkills(slot).length !== (i + 1)") {{ '>' }}
 
-        div.right-equipment
-          template(v-for="slot of rightEquipments")
-            v-popover(placement="right-end" trigger="hover")
-              div.equipment-icon
-                p {{ $t('品質') }} {{ player.equipmentModifiers[slot].quality }} LV {{ player.equipmentModifiers[slot].level }}
-                img(@click="onPickEquipment(slot)" :src="getEquipmentImage(slot)")
-              template(v-if="player.equipment[slot]" slot="popover")
-                div.equipment-popover
-                  h3 {{ player.equipment[slot].NAME }}
-                  table
-                    tr
-                      th {{ $t('品質') }}
-                      td
-                        el-input-number(v-model="player.equipmentModifiers[slot].quality" :min="1" size="small" step-strictly)
-                    tr
-                      th LV
-                      td
-                        el-input-number(v-model="player.equipmentModifiers[slot].level" :min="1" size="small" step-strictly)
-                    tr
-                      th {{ $t('特性') }}
-                      td
-                        v-select.skill-addon-select(:options="dataManager.skillAddonsEquipmentUseful" label="name" :value="player.equipmentModifiers[slot].skill" @input="(value) => setEquipmentModifierSkill(value, slot)")
-                          div(slot="no-options")
-                  table
-                    tr(v-for="state of getEquipmentStates(slot)")
-                      th {{ $t(state.label) }}
-                      td
-                        span {{ state.total }}
-                        template(v-if="state.skillValue || state.addonValue")
-                          span  (
-                          span {{ state.value }}
-                          span(v-if="state.skillValue")  {{ s(state.skillValue) }} {{ state.skillValue }}
-                          span(v-if="state.addonValue")  {{ s(state.addonValue) }} {{ state.addonValue }}
-                          span )
-                    tr(v-for="element of getEquipmentElements(slot)")
-                      th {{ $t(element.label) }}
-                      td
-                        span {{ element.total }}
-                          template(v-if="element.skillValue || element.addonValue")
-                            span  (
-                            span {{ element.value }}
-                            span(v-if="element.skillValue")  {{ s(element.skillValue) }} {{ element.skillValue }}
-                            span(v-if="element.addonValue")  {{ s(element.addonValue) }} {{ element.addonValue }}
-                            span )
-                    tr(v-if="player.equipment[slot].item.GROUP_DF && dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
-                      th {{ $t('キャラクター專用') }}
-                      td
-                        p(v-for="character of dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
-                          img.icon-small(:src="character.icon" :alt="character.NAME")
-                  br
-                  div(v-for="(skill, i) of getEquipmentSkills(slot)")
-                    p {{ skill.name }}
-                    p {{ skill.detail }}
-                    p(v-if="getEquipmentSkills(slot).length !== (i + 1)") {{ '>' }}
+            div.right-equipment
+              template(v-for="slot of rightEquipments")
+                v-popover(placement="right-end" trigger="hover")
+                  div.equipment-icon
+                    p {{ $t('品質') }} {{ player.equipmentModifiers[slot].quality }} LV {{ player.equipmentModifiers[slot].level }}
+                    img(@click="onPickEquipment(slot)" :src="getEquipmentImage(slot)")
+                  template(v-if="player.equipment[slot]" slot="popover")
+                    div.equipment-popover
+                      h3
+                        router-link(:to="{ name: 'ItemsItem', query: { df: player.equipment[slot].item.DF, quality: player.equipmentModifiers[slot].quality, level: player.equipmentModifiers[slot].level } }" target="_blank")
+                          span {{ player.equipment[slot].item.NAME }}
+                      table
+                        tr
+                          th {{ $t('品質') }}
+                          td
+                            el-input-number(v-model="player.equipmentModifiers[slot].quality" :min="1" size="small" step-strictly)
+                        tr
+                          th LV
+                          td
+                            el-input-number(v-model="player.equipmentModifiers[slot].level" :min="1" size="small" step-strictly)
+                        tr
+                          th {{ $t('特性') }}
+                          td
+                            v-select.skill-addon-select(:options="dataManager.skillAddonsEquipmentUseful" label="name" :value="player.equipmentModifiers[slot].skill" @input="(value) => setEquipmentModifierSkill(value, slot)")
+                              div(slot="no-options")
+                      table
+                        tr(v-for="state of getEquipmentStates(slot)")
+                          th {{ $t(state.label) }}
+                          td
+                            span {{ state.total }}
+                            template(v-if="state.skillValue || state.addonValue")
+                              span  (
+                              span {{ state.value }}
+                              span(v-if="state.skillValue")  {{ s(state.skillValue) }} {{ state.skillValue }}
+                              span(v-if="state.addonValue")  {{ s(state.addonValue) }} {{ state.addonValue }}
+                              span )
+                        tr(v-for="element of getEquipmentElements(slot)")
+                          th {{ $t(element.label) }}
+                          td
+                            span {{ element.total }}
+                              template(v-if="element.skillValue || element.addonValue")
+                                span  (
+                                span {{ element.value }}
+                                span(v-if="element.skillValue")  {{ s(element.skillValue) }} {{ element.skillValue }}
+                                span(v-if="element.addonValue")  {{ s(element.addonValue) }} {{ element.addonValue }}
+                                span )
+                        tr(v-if="player.equipment[slot].item.GROUP_DF && dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
+                          th {{ $t('キャラクター專用') }}
+                          td
+                            p(v-for="character of dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
+                              img.icon-small(:src="character.icon" :alt="character.NAME")
+                      br
+                      div(v-for="(skill, i) of getEquipmentSkills(slot)")
+                        p {{ skill.name }}
+                        p {{ skill.detail }}
+                        p(v-if="getEquipmentSkills(slot).length !== (i + 1)") {{ '>' }}
 
-    div.sub-equipment
-      div.sub-equipment-menu
-        div.filters
-          el-button(@click="importDialogVisible = true" type="warning" round) {{ $t('インポート') }}
-          el-button(@click="exportDialogVisible = true" round) {{ $t('エクスポート') }}
-          el-button(@click="onSave" type="primary" round) {{ $t('保存') }}
-          el-button(@click="onClear" type="danger" round) {{ $t('クリアー') }}
-        br
-        div.filters
-          el-button(@click="openSupportItemEditDialog" type="success" icon="el-icon-edit" circle)
-          span {{ $t('サブ裝備') }} x {{ player.supports.length }}
+        div.sub-equipment
+          div.sub-equipment-menu
+            div.filters
+              el-button(@click="openSupportItemEditDialog" type="success" icon="el-icon-edit" circle)
+              span {{ $t('サブ裝備') }} x {{ player.supports.length }}
 
-      div.sub-equipment-items
-        div(v-for="(support, i) of player.supports")
-          v-popover(placement="right-end" trigger="hover")
-            img(:src="support.item.icon" :alt="support.item.NAME")
-            template(slot="popover")
-              div.equipment-popover
-                h3 {{ support.item.NAME }} (LV {{ support.modifier.level }})
-                table
-                  tr(v-for="state of support.item.getSupportStates(support.modifier.level).filter((p) => p.value)")
-                    th {{ $t(state.label) }}
-                    td {{ s(state.value) }}{{ state.value }}
-                  tr(v-for="element of support.item.getSupportElements(support.modifier.level).filter((p) => p.value)")
-                    th {{ $t(element.label) }}
-                    td {{ s(element.value) }}{{ element.value }}
-                  tr(v-if="support.item.GROUP_DF && dataManager.charactersByGroupDf[support.item.GROUP_DF]")
-                    th {{ $t('キャラクター專用') }}
-                    td
-                      p(v-for="character of dataManager.charactersByGroupDf[support.item.GROUP_DF]")
-                        img.icon-small(:src="character.icon" :alt="character.NAME")
+          div.sub-equipment-items
+            div(v-for="(support, i) of player.supports")
+              v-popover(placement="right-end" trigger="hover")
+                img(:src="support.item.icon" :alt="support.item.NAME")
+                template(slot="popover")
+                  div.equipment-popover
+                    h3
+                      router-link(:to="{ name: 'ItemsItem', query: { df: support.item.DF, level: support.modifier.level } }" target="_blank")
+                        span {{ support.item.NAME }} (LV {{ support.modifier.level }})
+                    table
+                      tr(v-for="state of support.item.getSupportStates(support.modifier.level).filter((p) => p.value)")
+                        th {{ $t(state.label) }}
+                        td {{ s(state.value) }}{{ state.value }}
+                      tr(v-for="element of support.item.getSupportElements(support.modifier.level).filter((p) => p.value)")
+                        th {{ $t(element.label) }}
+                        td {{ s(element.value) }}{{ element.value }}
+                      tr(v-if="support.item.GROUP_DF && dataManager.charactersByGroupDf[support.item.GROUP_DF]")
+                        th {{ $t('キャラクター專用') }}
+                        td
+                          p(v-for="character of dataManager.charactersByGroupDf[support.item.GROUP_DF]")
+                            img.icon-small(:src="character.icon" :alt="character.NAME")
 
     div.result
       div.character
@@ -389,7 +461,8 @@ div.top-container
           h4
             span
               el-button(@click="characterEditDialogVisible = true" type="primary" icon="el-icon-edit" circle)
-            span(v-if="player.character") {{ player.character.NAME }} (LV {{ player.characterModifier.level }}) ({{ $t('食事') }} LV {{ player.characterModifier.foodLevel }})
+            router-link(v-if="player.character" :to="{ name: 'CharactersCharacter', query: { df: player.character.DF, level: player.characterModifier.level, foodLevel: player.characterModifier.foodLevel } }" target="_blank")
+              span {{ player.character.NAME }} (LV {{ player.characterModifier.level }}) ({{ $t('食事') }} LV {{ player.characterModifier.foodLevel }})
           img(v-if="player.character" :src="player.character.icon" :alt="player.character.NAME")
       table
         tr
@@ -668,14 +741,23 @@ div.top-container
                 th 全超+-
                 td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.55, 1.55, 2], skillChain) }}
 
-    div.battle(v-if="false")
+    div.battle
       div.enemy
         h4
           span
             el-button(@click="enemyEditDialogVisible = true" type="primary" icon="el-icon-edit" circle)
-          span(v-if="enemy.enemy") {{ enemy.NAME }} (LV {{ enemy.level }})
-        img.enemy__icon(v-if="enemy.enemy" :src="enemy.enemy.icon" :alt="enemy.enemy.NAME")
+          router-link(v-if="enemy.enemy" :to="{ name: 'EnemiesEnemy', query: { df: enemy.enemy.DF, level: enemy.level } }" target="_blank")
+            span {{ enemy.enemy.strName }} (LV {{ enemy.level }})
+        img.enemy__icon(v-if="enemy.enemy" :src="enemy.enemy.icon" :alt="enemy.enemy.strName")
+      div(v-if="enemy.enemy")
         table
+          tr(v-if="player.equipment.weapon || player.character" v-for="attribute of [player.equipment.weapon && player.equipment.weapon.item.getAttackSkill().attribute ? player.equipment.weapon && player.equipment.weapon.item.getAttackSkill().attribute : 0]")
+            template(v-for="element of [player.equipment.weapon && player.equipment.weapon.item.elementChangeSkill ? player.equipment.weapon.item.elementChangeSkill.element : 0]")
+              template(v-for="playerAttack of [player.totalState(attribute === 3 ? 'MATK' : 'SATK')]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, element, attribute, [])]")
+                  th {{ dataManager.lookup.EBattleAttribute[attribute] }}{{ $t('ダメージ' )}}
+                  td {{ receiveDamage.total }}
+                  td HP: {{ clamp(enemy.enemy.getState('HP', enemy.level).total - receiveDamage.total, 0, Infinity) }}
           tr(v-if="player.character")
             template(v-for="skill of [player.character.getBlazeArt(player.characterModifier.level, player.characterModifier.blazeArtLevel)].filter((p) => p)")
               template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
@@ -686,42 +768,62 @@ div.top-container
                       template(slot="popover")
                         div.popover-base
                           h4 {{ $t('ブレイズアーツ') }}
-                          p damage {{ receiveDamage.total }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
-                          table(v-if="receiveDamage.multipliersSkills.length")
+                          br
+                          p {{ dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute] }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
+                          br
+                          table(v-if="receiveDamage.otherEffectSkills.length || receiveDamage.multipliersSkills.length")
                             tr(v-for="skill of receiveDamage.multipliersSkills")
                               th {{ skill.name }}
                               td x{{ skill.effectValue }}
+                            tr(v-for="skill of receiveDamage.otherEffectSkills")
+                              th {{ skill.name }}
+                              td {{ skill.detail }}
                   td {{ receiveDamage.total }}
-          tr(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)")
+                  td HP: {{ clamp(enemy.enemy.getState('HP', enemy.level).total - receiveDamage.total, 0, Infinity) }}
+          tr(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).attribute")
             template(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
               template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
                 template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, skill.element, skill.attribute, [])]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
-                      template(v-if="receiveDamage.multipliersSkills.length" slot="popover")
+                      template(slot="popover")
                         div.popover-base
                           h4 {{ $t('武器') }}
-                          table
+                          br
+                          p {{ dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute] }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
+                          br
+                          table(v-if="receiveDamage.otherEffectSkills.length || receiveDamage.multipliersSkills.length")
                             tr(v-for="skill of receiveDamage.multipliersSkills")
                               th {{ skill.name }}
                               td x{{ skill.effectValue }}
+                            tr(v-for="skill of receiveDamage.otherEffectSkills")
+                              th {{ skill.name }}
+                              td {{ skill.detail }}
                   td {{ receiveDamage.total }}
-          tr(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)")
-            template(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
+                  td HP: {{ clamp(enemy.enemy.getState('HP', enemy.level).total - receiveDamage.total, 0, Infinity) }}
+          tr(v-if="player.equipment.shield && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.shield.quality).attribute")
+            template(v-for="skill of [player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)]")
               template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
                 template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, skill.element, skill.attribute, [])]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
-                      template(v-if="receiveDamage.multipliersSkills.length" slot="popover")
+                      template(slot="popover")
                         div.popover-base
                           h4 {{ $t('盾') }}
-                          table
+                          br
+                          p {{ dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute] }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
+                          br
+                          table(v-if="receiveDamage.otherEffectSkills.length || receiveDamage.multipliersSkills.length")
                             tr(v-for="skill of receiveDamage.multipliersSkills")
                               th {{ skill.name }}
                               td x{{ skill.effectValue }}
+                            tr(v-for="skill of receiveDamage.otherEffectSkills")
+                              th {{ skill.name }}
+                              td {{ skill.detail }}
                   td {{ receiveDamage.total }}
+                  td HP: {{ clamp(enemy.enemy.getState('HP', enemy.level).total - receiveDamage.total, 0, Infinity) }}
 </template>
 
 <script lang="ts">
@@ -733,6 +835,7 @@ import vSelect from 'vue-select';
 import { dataManager } from '@/utils/DataManager';
 import { MVList as ItemMVList } from '@/master/item';
 import { MVList as CharacterMVList } from '@/master/chara';
+import { MVList as EnemyMVList } from '@/master/enemy';
 import { Player, PlayerExport } from '@/logic/entities/Player';
 import { Enemy } from '@/logic/entities/Enemy';
 import { Formula } from '@/logic/Formula';
@@ -741,6 +844,8 @@ import { ECategory } from '@/logic/Enums';
 import { pascalCase } from 'pascal-case';
 import { plainToClass } from 'class-transformer';
 import { PlayerExportVersionConvertor } from '@/logic/convertor/PlayerExportVersionConvertor';
+import { clamp } from 'lodash';
+import Enumerable from 'linq';
 
 @Component({
   components: {
@@ -772,10 +877,46 @@ export default class extends VueBase {
     return ItemMVList;
   }
 
+  public get clamp() {
+    return clamp;
+  }
+
+  public get console() {
+    return console;
+  }
+
   // dialog
   public characterEditDialogVisible = false
 
   public enemyEditDialogVisible = false;
+
+  // enemy picker
+  public enemyPickerEKind: number | null = null;
+
+  public enemyPickerName = '';
+
+  public get enemyCategoryFilter() {
+    return this.dataManager.enemy.KindList
+      .filter((p) => p.iKind)
+      .map((p) => ({
+        label: p.strName,
+        value: p.iKind,
+      }));
+  }
+
+  public get enemies() {
+    return this.enemyPickerEKind ? (this.dataManager.enemiesByEKind[this.enemyPickerEKind] || []) : this.dataManager.enemiesOrderByCategory;
+  }
+
+  public get filteredEnemies() {
+    return this.enemies.filter((p) => (
+      (!this.enemyPickerName || p.DF === +this.enemyPickerName || p.strName.toLocaleLowerCase().includes(this.enemyPickerName.toLocaleLowerCase()))
+    )).reverse();
+  }
+
+  public onPickEnemy(enemy: EnemyMVList) {
+    this.enemy.enemy = enemy;
+  }
 
   // item picker dialog
   public get itemPickerSortOption() {
@@ -893,7 +1034,7 @@ export default class extends VueBase {
   public get filteredItemPickerItems() {
     const key = JSON.stringify(this.itemPicker);
     if (!this.itemPickerSortCache.has(key)) {
-      const items = this.itemPickerItems.filter((p) => (
+      let items = this.itemPickerItems.filter((p) => (
         (!this.itemPickerFilterCategory || this.itemPickerFilterCategory === p.CATEG)
         && (!this.itemPickerFilterKeyword || p.DF === +this.itemPickerFilterKeyword || p.NAME.toLocaleLowerCase().includes(this.itemPickerFilterKeyword.toLocaleLowerCase()))
         && (!this.itemPickerFilterCharacterGender || p.canGenderUseEquipment(this.itemPickerFilterCharacterGender))
@@ -902,15 +1043,31 @@ export default class extends VueBase {
       ));
 
       if (this.itemPickerSort in dataManager.lookup.state) {
-        items.sort((a, b) => b.getState(this.itemPickerSort).total - a.getState(this.itemPickerSort).total);
+        items = Enumerable.from(items)
+          .orderByDescending((p) => p.getState(this.itemPickerSort).total)
+          .thenByDescending((p) => p.getStates().reduce((sum, { total }) => sum + total, 0))
+          .thenByDescending((p) => p.getElements().reduce((sum, { total }) => sum + total, 0))
+          .toArray();
       } else if (this.itemPickerSort in dataManager.lookup.element) {
-        items.sort((a, b) => b.getElement(this.itemPickerSort).total - a.getElement(this.itemPickerSort).total);
+        items = Enumerable.from(items)
+          .orderByDescending((p) => p.getElement(this.itemPickerSort).total)
+          .thenByDescending((p) => p.getStates().reduce((sum, { total }) => sum + total, 0))
+          .thenByDescending((p) => p.getElements().reduce((sum, { total }) => sum + total, 0))
+          .toArray();
       } else if (this.itemPickerSort.replace('_base', '') in dataManager.lookup.state) {
         const state = this.itemPickerSort.replace('_base', '');
-        items.sort((a, b) => b.EQU[state].getSupportValue() - a.EQU[state].getSupportValue());
+        items = Enumerable.from(items)
+          .orderByDescending((p) => p.getSupportState(state).value)
+          .thenByDescending((p) => p.getSupportStates().reduce((sum, { value }) => sum + value, 0))
+          .thenByDescending((p) => p.getSupportElements().reduce((sum, { value }) => sum + value, 0))
+          .toArray();
       } else if (this.itemPickerSort.replace('_base', '') in dataManager.lookup.element) {
         const element = this.itemPickerSort.replace('_base', '');
-        items.sort((a, b) => Formula.getSupportElement(b.ELM[element]) - Formula.getSupportElement(a.ELM[element]));
+        items = Enumerable.from(items)
+          .orderByDescending((p) => Formula.getSupportElement(p.ELM[element]))
+          .thenByDescending((p) => p.getSupportStates().reduce((sum, { value }) => sum + value, 0))
+          .thenByDescending((p) => p.getSupportElements().reduce((sum, { value }) => sum + value, 0))
+          .toArray();
       }
       this.itemPickerSortCache.set(key, items);
     }
@@ -1211,7 +1368,7 @@ export default class extends VueBase {
       return true;
     } catch (e) {
       this.$message({
-        message: 'Failed to import character',
+        message: this.$t('インポート失敗').toString(),
         type: 'warning',
       });
       setTimeout(() => this.$message({
@@ -1292,7 +1449,7 @@ export default class extends VueBase {
   public beforeMount() {
     this.importFromQuery() || this.importFromLocalStorage();
     this.initPlayer = this.exportString;
-    this.enemy.enemy = this.dataManager.enemyById['800014014'];
+    this.enemy.enemy = this.dataManager.enemyById['11508'];
   }
 }
 </script>
@@ -1378,7 +1535,28 @@ a
 .character-skill-popover-detail
   width: 400px
 
+/* enemy editor
+.enemy-edit
+  display: flex
+
+.enemy-edit-enemy
+  min-width: 25%
+  h3
+    text-align: center
+  display: flex
+  flex-direction: column
+.enemy-edit-enemy__state-table
+  width: 200px
 /* equipment
+.top-equipment-container
+  background: rgb(224, 195, 151)
+  .filters
+    padding: 12px
+
+.equipment-container
+  display: flex
+  background: rgb(224, 195, 151)
+
 .equipment-icon
   cursor: pointer
 
@@ -1396,8 +1574,7 @@ a
   width: 240px
 
 .main-equipment-container
-  padding: 48px
-  background: rgb(224, 195, 151)
+  padding: 0 48px
   .main-equipments
     margin-top: 24px
     display: flex
@@ -1410,7 +1587,8 @@ a
 .sub-equipment, .result
   width: 425px
   min-height: 425px
-  padding: 12px
+.sub-equipment
+  padding-right: 48px
 
 .sub-equipment img
   width: 72px
@@ -1418,7 +1596,7 @@ a
 .sub-equipment-items
   display: flex
   flex-wrap: wrap
-
+  padding-top: 100px
   > div
     margin: 6px
 
@@ -1426,11 +1604,8 @@ a
   display: flex
   height: 100%
 
-.sub-equipment, .result
+.result
   padding: 48px
-
-.sub-equipment
-  background: rgb(224, 195, 151)
 
 .left-equipment > div
   text-align: center

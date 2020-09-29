@@ -1,6 +1,5 @@
+import VuexModuleBase from '@/store/base/VuexModuleBase';
 import { Module } from 'vuex-module-decorators';
-
-import VuexModuleBase from '../base/VuexModuleBase';
 
 // es-lint-disable no-shadow
 export enum CharacterType {

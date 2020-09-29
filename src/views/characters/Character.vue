@@ -146,6 +146,9 @@ div.container
                   td {{ skill.effectValue }}, {{ skill.effectValue2 }}
                 template(v-if="skill.type === 1")
                   tr
+                    th {{ $t('攻撃タイプ') }}
+                    td {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
+                  tr
                     th {{ $t('属性') }}
                     td {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
                   tr
@@ -198,8 +201,8 @@ export default class extends VueBase {
   public characterModifier = new CharacterModifier();
 
   public beforeMount() {
-    this.characterModifier.level = CharacterMVList.maxLevel;
-    this.characterModifier.foodLevel = CharacterMVList.maxLevel;
+    this.characterModifier.level = +this.$route.query.level || CharacterMVList.maxLevel;
+    this.characterModifier.foodLevel = +this.$route.query.foodLevel || CharacterMVList.maxLevel;
 
     this.character = dataManager.characterById[this.$route.query.df as string];
     if (!this.character) {

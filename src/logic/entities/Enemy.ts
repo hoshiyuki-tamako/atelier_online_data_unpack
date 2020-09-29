@@ -1,4 +1,4 @@
-import { EBattleAttribute, EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
+import { EBattleAttribute, EBattleEffectKind, EBattleEffectTrigger, EElement } from '@/logic/Enums';
 import { MVList as EnemyMVList } from '@/master/enemy';
 import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
@@ -23,7 +23,9 @@ export class Enemy {
     const oneDamageSkills = this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eONE_DAMAGE);
     if (oneDamageSkills.length) {
       return {
-        multipliersSkills: [oneDamageSkills],
+        otherEffectSkills: oneDamageSkills,
+        multipliersSkills: [],
+        defense: 0,
         total: 1,
       };
     }
@@ -57,13 +59,39 @@ eRECOVER,
         : this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED_PHYSICS && skill.effect === EBattleEffectKind.eDAMAGE_RATE);
     multipliersSkills = multipliersSkills.concat(this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
 
-    console.log(multipliersSkills);
+    const multipliers = [] as number[];
+    switch (element) {
+      case EElement.eFIRE:
+        multipliers.push(1 - this.enemy.sParam.ELM.FIRE / 100);
+        break;
+      case EElement.eWATER:
+        multipliers.push(1 - this.enemy.sParam.ELM.WATER / 100);
+        break;
+      case EElement.eWIND:
+        multipliers.push(1 - this.enemy.sParam.ELM.WIND / 100);
+        break;
+      case EElement.eEARTH:
+        multipliers.push(1 - this.enemy.sParam.ELM.EARTH / 100);
+        break;
+      case EElement.eLIGHT:
+        multipliers.push(1 - this.enemy.sParam.ELM.LIGHT / 100);
+        break;
+      case EElement.eDARK:
+        multipliers.push(1 - this.enemy.sParam.ELM.DARK / 100);
+        break;
+      // 4 element?
+    }
 
     const defenseState = attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MDEF' : 'SDEF';
     const defense = this.enemy.getState(defenseState, this.level).total;
+
+    const total = Math.round(multipliersSkills.map((p) => p.effectValue).concat(multipliers).reduce((sum, v) => sum * v, damage - defense));
     return {
+      otherEffectSkills: [],
       multipliersSkills,
-      total: multipliersSkills.reduce((sum, skill) => sum * skill.effectValue, clamp(damage - defense, 1, Infinity)),
+      multipliers,
+      defense,
+      total: total > 0 ? total : 1,
     };
   }
 }

@@ -17,24 +17,24 @@ div.container
   div.filters
     div.filter
       span {{ $t('カテゴリー') }}
-      el-select(v-model="filter.category" clearable filterable)
+      el-select(v-model="filter.category" @change="resetPage" clearable filterable)
         el-option(v-for="item of categoryFilter" :key="item.value" :label="item.label" :value="item.value")
 
     div.filter
       span {{ $t('キャラクター') }}
-      el-select(v-model="filter.character" clearable filterable)
+      el-select(v-model="filter.character" @change="resetPage" clearable filterable)
         el-option(v-for="item of characterFilter" :key="item.value" :label="item.label" :value="item.value")
 
     div.filter
-      el-checkbox-group(v-model="filter.has" size="small")
+      el-checkbox-group(v-model="filter.has" @change="resetPage" size="small")
         el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
 
     div.filter
       span {{ $t('名前') }}/DF
-      el-input(v-model="filter.name" clearable)
+      el-input(v-model="filter.name" @change="resetPage" clearable)
 
     div.filter
-      el-switch(v-model="filter.extraQuest" :active-text="$t('EXクェスト')")
+      el-switch(v-model="filter.extraQuest" @change="resetPage" :active-text="$t('EXクェスト')")
 
     div.filter
       el-button(@click="onClickExpandAll") {{ $t('すべて展開') }}
@@ -304,6 +304,10 @@ export default class extends VueBase {
 
   public scrollTableTop() {
     (this.$refs.table as Vue).$el.scrollIntoView();
+  }
+
+  public resetPage() {
+    this.page = 1;
   }
 
   // dialog

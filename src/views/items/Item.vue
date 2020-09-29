@@ -24,6 +24,7 @@ div.container
       template(v-if="item.WPN_KIND")
         p {{ $t('武器種類') }}: {{ $t(dataManager.lookup.weaponKind[item.WPN_KIND]) }}
         p {{ $t('攻撃属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[item.elementChangeSkill ? item.elementChangeSkill.effectValue : 0]) }}
+        p(v-if="item.getAttackSkill()") {{ $t('攻撃タイプ') }}: {{ $t(item.getAttackSkill().attribute === 3 ? dataManager.lookup.EBattleAttribute[3] : dataManager.lookup.EBattleAttribute[1]) }}
         template(v-if="item.JOB.length")
           p {{ $t('職業') }}: {{ item.JOB.map(p => $t(dataManager.lookup.EJobKind[p])).join(',') }}
         p(v-if="item.getAttackSkill()") {{ $t('SP回復率') }}{{ item.getAttackSkill().spAdd }}{{ $t('倍') }}
@@ -182,6 +183,9 @@ div.container
               td {{ skill.effectValue }}, {{ skill.effectValue2 }}
             template(v-if="skill.type === 1")
               tr
+                th {{ $t('攻撃タイプ') }}
+                td {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
+              tr
                 th {{ $t('属性') }}
                 td {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
               tr
@@ -256,9 +260,9 @@ export default class extends VueBase {
       this.$router.push({ name: 'Items' });
     }
 
-    const maxQuality = this.item.EQU_BRD ? ItemMVList.equipmentMaxQuality : ItemMVList.itemMaxQuality;
-    this.itemModifier.quality = this.$route.query.quality ? clamp(+this.$route.query.quality, 0, maxQuality) : maxQuality;
-    this.itemModifier.level = ItemMVList.equipmentMaxLevel;
+    const maxQuality = this.item.EQU_BRD ? Infinity : ItemMVList.itemMaxQuality;
+    this.itemModifier.quality = this.$route.query.quality ? clamp(+this.$route.query.quality, 1, maxQuality) : ItemMVList.equipmentMaxQuality;
+    this.itemModifier.level = this.$route.query.level ? clamp(+this.$route.query.level, 1, Infinity) : ItemMVList.equipmentMaxLevel;
   }
 }
 </script>

@@ -3,13 +3,10 @@ div.container
   div.filters
     div.filter
       span {{ $t('名前') }}/ID
-      el-input(v-model="filter.name" clearable)
+      el-input(v-model="filter.name" @change="resetPage" clearable)
     div.filter
-      el-switch(v-model="filter.hasItem" :active-text="$t('アイテム')")
-    div.filter
-      el-switch(v-model="filter.hasEnemy" :active-text="$t('敵')")
-    div.filter
-      el-switch(v-model="filter.hasCharacter" :active-text="$t('人物')")
+      el-checkbox-group(v-model="filter.has" @change="resetPage" size="small")
+        el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
 
   div.content
     el-table(ref="table" :data="filteredPaginationSkills" default-expand-all)
@@ -49,12 +46,27 @@ import LRU from 'lru-cache';
   },
 })
 export default class extends VueBase {
+  public get hasFilter() {
+    return [
+      {
+        label: this.$t('アイテム'),
+        value: 1,
+      },
+      {
+        label: `${this.$t('敵')}`,
+        value: 2,
+      },
+      {
+        label: `${this.$t('人物')}`,
+        value: 3,
+      },
+    ];
+  }
+
   public filter = {
     name: '',
 
-    hasItem: false,
-    hasEnemy: false,
-    hasCharacter: false,
+    has: [],
   };
 
   public filterCache = new LRU<string, SkillList[]>(100);
@@ -69,9 +81,9 @@ export default class extends VueBase {
     if (!this.filterCache.has(key)) {
       this.filterCache.set(key, dataManager.skillEffects.filter((p) => (
         (!this.filter.name || p.id === +this.filter.name || p.name.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
-        && (!this.filter.hasItem || dataManager.itemsBySkill[p.id])
-        && (!this.filter.hasEnemy || dataManager.enemiesBySkill[p.id])
-        && (!this.filter.hasCharacter || dataManager.charactersBySkill[p.id])
+        && (!this.filter.has.includes(1) || dataManager.itemsBySkill[p.id])
+        && (!this.filter.has.includes(2) || dataManager.enemiesBySkill[p.id])
+        && (!this.filter.has.includes(3) || dataManager.charactersBySkill[p.id])
       )));
     }
     return this.filterCache.get(key);
@@ -83,6 +95,10 @@ export default class extends VueBase {
 
   public scrollTableTop() {
     (this.$refs.table as Vue).$el.scrollIntoView();
+  }
+
+  public resetPage() {
+    this.page = 1;
   }
 }
 </script>

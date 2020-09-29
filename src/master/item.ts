@@ -80,6 +80,7 @@ export class MVList {
   RCP_TYPE: number;
   LRCP_CHARA: LrcpChara[];
 
+  #attackSkill: SkillList;
   #elementChangeSkill: SkillList;
   #skillsCache = new Map<string, SkillList[]>();
   #elementCache = new Map<string, IElementResult>();

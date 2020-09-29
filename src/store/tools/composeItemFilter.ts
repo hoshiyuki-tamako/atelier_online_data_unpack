@@ -1,7 +1,8 @@
+import VuexModuleBase from '@/store/base/VuexModuleBase';
 import { Module, Mutation } from 'vuex-module-decorators';
 
 import { ItemModifier } from '../../logic/modifiers/ItemModifier';
-import VuexModuleBase from '../base/VuexModuleBase';
+
 
 export class MaterialOptions extends ItemModifier {
   public addonQuality = 0;

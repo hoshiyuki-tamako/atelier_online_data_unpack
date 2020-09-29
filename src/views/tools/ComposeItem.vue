@@ -67,6 +67,9 @@ div
             td {{ skill.effectValue }}, {{ skill.effectValue2 }}
           template(v-if="skill.type === 1")
             tr
+              th {{ $t('攻撃タイプ') }}
+              td {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
+            tr
               th {{ $t('属性') }}
               td {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
             tr

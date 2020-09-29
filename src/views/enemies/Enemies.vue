@@ -69,7 +69,7 @@ export default class extends VueWithMapFields {
 
   public get filteredEnemies() {
     const enemies = this.enemies.filter((p) => (
-      (!this.name || p.strName.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()))
+      (!this.name || p.DF === +this.name || p.strName.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()))
     ));
     if (this.sort === 1) {
       return enemies.reverse();
