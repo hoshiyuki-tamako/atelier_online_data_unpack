@@ -701,9 +701,9 @@ import { PlayerExportVersionConvertor } from '@/logic/convertor/PlayerExportVers
     'v-select': vSelect,
   },
   async beforeRouteLeave(to, from, next) {
-    if (this.initPlayer !== this.exportString) {
+    if (this.hasChange) {
       try {
-        await this.$confirm(`${this.$t('キャラクター保存されません，ページを離れますか')}？`, '', {
+        await this.$confirm(this.unsavedMessage, '', {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
           type: 'warning',
@@ -820,6 +820,15 @@ export default class extends VueBase {
   public skillChain = 0;
 
   public initPlayer = '';
+
+  // other
+  public get hasChange() {
+    return this.initPlayer !== this.exportString;
+  }
+
+  public get unsavedMessage() {
+    return `${this.$t('キャラクター保存されません，ページを離れますか')}？`;
+  }
 
   // item picker
   public get itemPickerItems() {
