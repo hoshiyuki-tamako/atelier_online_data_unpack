@@ -64,12 +64,14 @@ export default class extends VueBase {
 
   public mounted() {
     this.loadFbx().initializeRenderer().initializeControlls().animate();
-    window.addEventListener('resize', () => {
-      this.camera.aspect = window.innerWidth / window.innerHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    window.addEventListener('resize', this.resize);
   }
+
+  public resize = () => {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  };
 
   public beforeDestroy() {
     this.beforeUnmount();
@@ -77,6 +79,7 @@ export default class extends VueBase {
 
   public beforeUnmount() {
     this.renderLoop = false;
+    window.removeEventListener('resize', this.resize);
   }
 
   private initializeCamera() {
@@ -147,9 +150,9 @@ export default class extends VueBase {
     return this;
   }
 
-  private animate() {
+  private animate = () => {
     if (this.renderLoop) {
-      requestAnimationFrame(this.animate.bind(this));
+      requestAnimationFrame(this.animate);
       this.renderer.render(this.scene, this.camera);
     }
     return this;
