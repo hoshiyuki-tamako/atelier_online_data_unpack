@@ -6,7 +6,7 @@
 
 All exported files `images` `models` are NOT license in MIT as those were not belongs to me
 
-For developer, see `./development.md`
+For developer see `./development.md`
 
 ## Running The Script
 
@@ -18,13 +18,13 @@ For developer, see `./development.md`
 npm i
 ```
 
-#### Development
+### Development
 
 ```bash
 npm start
 ```
 
-##### Update Packages
+#### Update Packages
 
 Please find the packages in npm before running below commands
 
@@ -34,9 +34,9 @@ ncu -u
 npm i
 ```
 
-#### Production Build
+### Production Build
 
-As currently this project using github actions, does not required to manually build on commit
+Currently project were using github actions, does not required to manually build on commit
 
 ```bash
 npm run build
