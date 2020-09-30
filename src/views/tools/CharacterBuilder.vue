@@ -224,6 +224,7 @@ div.top-container
                           td
                             p(v-for="skill of element.skills") {{ skill.name }} {{ s(skill.effectValue) }}{{ skill.effectValue }}
           div
+            el-divider
             div(v-for="skill in player.character.getSkillWithComboSkills(player.characterModifier.level)")
               v-popover(placement="right-end" trigger="hover")
                 p {{ skill.name }}
@@ -268,37 +269,18 @@ div.top-container
               th {{ $t(element.label) }}
               td {{ element.value }}
         div(v-if="enemy.enemy.sParam.SKILL.length")
-          el-divider {{ $t('スキル') }}/{{ $t('効果') }}
+          el-divider
           div(v-for="(skill, i) of enemy.enemy.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)")
-            table.skill-table
-              tr
-                th {{ $t('名前') }}
-                td {{ skill.name }}
-              tr
-                th {{ $t('詳細') }}
-                td {{ skill.detail }}
-              tr
-                th {{ $t('数値') }}
-                td {{ skill.effectValue }}, {{ skill.effectValue2 }}
-              template(v-if="skill.type === 1")
-                tr
-                  th {{ $t('攻撃タイプ') }}
-                  td {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
-                tr
-                  th {{ $t('属性') }}
-                  td {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
-                tr
-                  th {{ $t('對象') }}
-                  td {{ $t(dataManager.lookup.targetTeam[skill.attackSkill.targetTeam]) }}{{ $t(dataManager.lookup.eFieldItemRange[skill.attackSkill.targetScope]) }}
-                tr(v-if="skill.attackSkill.stateOwn.length")
-                  th {{ $t('追加状態 (自)') }}
-                  td
-                    p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
-                tr(v-if="skill.attackSkill.state.length")
-                  th {{ $t('追加状態') }}
-                  td
-                    p(v-for="[state, abnormalState] of skill.attackSkill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
-            p(v-if="enemy.enemy.sParam.SKILL.length !== (i + 1)") {{ '>' }}
+            v-popover(placement="right-end" trigger="hover")
+              p {{ skill.name }}
+              template(slot="popover")
+                div.popover-base
+                  p.popover-base__detail(v-if="skill.detail") {{ skill.detail }}
+                  br
+                  p(v-if="skill.type === 1") {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }} {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
+                  p {{ skill.effectValue }}, {{ skill.effectValue2 }}
+                  p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}j
+                  p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
 
   div.character-builder-container
     div.top-equipment-container
