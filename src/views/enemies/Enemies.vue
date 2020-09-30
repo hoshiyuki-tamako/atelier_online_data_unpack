@@ -64,7 +64,7 @@ export default class extends VueWithMapFields {
   }
 
   public get enemies() {
-    return this.eKind === null ? dataManager.enemiesOrderByCategory : dataManager.enemiesByEKind[this.eKind] || [];
+    return this.eKind === null ? dataManager.enemiesOrderByCategory : (dataManager.enemiesByEKind[this.eKind] || []);
   }
 
   public get filteredEnemies() {
