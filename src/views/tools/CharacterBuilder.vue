@@ -751,79 +751,130 @@ div.top-container
         img.enemy__icon(v-if="enemy.enemy" :src="enemy.enemy.icon" :alt="enemy.enemy.strName")
       div(v-if="enemy.enemy")
         table
-          tr(v-if="player.equipment.weapon || player.character" v-for="attribute of [player.equipment.weapon && player.equipment.weapon.item.getAttackSkill() ? player.equipment.weapon.item.getAttackSkill().attribute : 0]")
-            template(v-for="element of [player.equipment.weapon && player.equipment.weapon.item.elementChangeSkill ? player.equipment.weapon.item.elementChangeSkill.element : 0]")
-              template(v-for="playerAttack of [player.totalState(attribute === 3 ? 'MATK' : 'SATK')]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, element, attribute, [])]")
-                  th {{ $t(dataManager.lookup.EBattleAttribute[attribute]) }}{{ $t('ダメージ' )}}
-                  td {{ receiveDamage.total }}
-                  td HP: {{ clamp(enemy.enemy.getState('HP', enemy.level).total - receiveDamage.total, 0, Infinity) }}
+          tr(v-if="player.equipment.weapon || player.character" v-for="playerAttack of [player.totalState(player.attributeState)]")
+            template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, player.element, player.attribute, player.skills)]")
+              th
+                v-popover(placement="left-end" trigger="hover")
+                  span {{ $t(dataManager.lookup.EBattleAttribute[player.attribute]) }}{{ $t('ダメージ' )}}
+                  template(slot="popover")
+                    div.popover-base
+                      table
+                        tr
+                          th {{ $t('ベース') }}
+                          td {{ playerAttack }}
+                        tr(v-if="receiveDamage.defense")
+                          th {{ $t('ディフェンス') }}
+                          td {{ -receiveDamage.defense }}
+                        tr(v-for="multiplier of receiveDamage.multipliers")
+                          th {{ $t(dataManager.lookup.element[multiplier.element]) }}
+                          td {{ multiplier.value }}
+                        tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
+                          th {{ skill.name }}
+                          td {{ skill.effectValue }}
+                        tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
+                          th {{ skill.name }}
+                          td {{ 1 + skill.effectValue }}
+                        tr(v-for="skill of receiveDamage.otherEffectSkills")
+                          th {{ skill.name }}
+                          td {{ skill.detail }}
+              td {{ receiveDamage.total }}
+              td HP: {{ receiveDamage.hp }}
           tr(v-if="player.character")
             template(v-for="skill of [player.character.getBlazeArt(player.characterModifier.level, player.characterModifier.blazeArtLevel)].filter((p) => p)")
               template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, skill.element, skill.attribute, [])]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
                       template(slot="popover")
                         div.popover-base
                           h4 {{ $t('ブレイズアーツ') }}
-                          br
-                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
-                          br
-                          table(v-if="receiveDamage.otherEffectSkills.length || receiveDamage.multipliersSkills.length")
-                            tr(v-for="skill of receiveDamage.multipliersSkills")
+                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}}
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td {{ playerAttack }}
+                            tr(v-if="receiveDamage.defense")
+                              th {{ $t('ディフェンス') }}
+                              td {{ -receiveDamage.defense }}
+                            tr(v-for="multiplier of receiveDamage.multipliers")
+                              th {{ $t(dataManager.lookup.element[multiplier.element]) }}
+                              td {{ multiplier.value }}
+                            tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                               th {{ skill.name }}
                               td {{ skill.effectValue }}
+                            tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
+                              th {{ skill.name }}
+                              td {{ 1 + skill.effectValue }}
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
                   td {{ receiveDamage.total }}
-                  td HP: {{ clamp(enemy.enemy.getState('HP', enemy.level).total - receiveDamage.total, 0, Infinity) }}
+                  td HP: {{ receiveDamage.hp }}
           tr(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).attribute")
             template(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
               template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, skill.element, skill.attribute, [])]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
                       template(slot="popover")
                         div.popover-base
                           h4 {{ $t('武器') }}
-                          br
-                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
-                          br
-                          table(v-if="receiveDamage.otherEffectSkills.length || receiveDamage.multipliersSkills.length")
-                            tr(v-for="skill of receiveDamage.multipliersSkills")
+                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}}
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td {{ playerAttack }}
+                            tr(v-if="receiveDamage.defense")
+                              th {{ $t('ディフェンス') }}
+                              td {{ -receiveDamage.defense }}
+                            tr(v-for="multiplier of receiveDamage.multipliers")
+                              th {{ $t(dataManager.lookup.element[multiplier.element]) }}
+                              td {{ multiplier.value }}
+                            tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                               th {{ skill.name }}
                               td {{ skill.effectValue }}
+                            tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
+                              th {{ skill.name }}
+                              td {{ 1 + skill.effectValue }}
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
                   td {{ receiveDamage.total }}
-                  td HP: {{ clamp(enemy.enemy.getState('HP', enemy.level).total - receiveDamage.total, 0, Infinity) }}
+                  td HP: {{ receiveDamage.hp }}
           tr(v-if="player.equipment.shield && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality) && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality).attribute")
             template(v-for="skill of [player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)]")
               template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, skill.element, skill.attribute, [])]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
                       template(slot="popover")
                         div.popover-base
                           h4 {{ $t('盾') }}
-                          br
-                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}} ({{ playerAttack }} - {{ receiveDamage.defense }}) {{ receiveDamage.multipliers.map((p) => `x ${p}`).join(' ') }} {{ receiveDamage.multipliersSkills.map((p) => `x ${p.effectValue}`).join(' ') }}
-                          br
-                          table(v-if="receiveDamage.otherEffectSkills.length || receiveDamage.multipliersSkills.length")
-                            tr(v-for="skill of receiveDamage.multipliersSkills")
+                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}}
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td {{ playerAttack }}
+                            tr(v-if="receiveDamage.defense")
+                              th {{ $t('ディフェンス') }}
+                              td {{ -receiveDamage.defense }}
+                            tr(v-for="multiplier of receiveDamage.multipliers")
+                              th {{ $t(dataManager.lookup.element[multiplier.element]) }}
+                              td {{ multiplier.value }}
+                            tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                               th {{ skill.name }}
-                              td x{{ skill.effectValue }}
+                              td {{ skill.effectValue }}
+                            tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
+                              th {{ skill.name }}
+                              td {{ 1 + skill.effectValue }}
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
                   td {{ receiveDamage.total }}
-                  td HP: {{ clamp(enemy.enemy.getState('HP', enemy.level).total - receiveDamage.total, 0, Infinity) }}
+                  td HP: {{ receiveDamage.hp }}
 </template>
 
 <script lang="ts">
@@ -1363,6 +1414,14 @@ export default class extends VueBase {
     try {
       const convertor = new PlayerExportVersionConvertor(this.$i18n.locale);
       const playerExport = plainToClass(PlayerExport, convertor.convert(JSON.parse(atob(str))));
+
+      // check does item exists
+      for (const [slot, equipment] of playerExport.player.equipments) {
+        if (!equipment.item) {
+          delete playerExport.player.equipment[slot];
+        }
+      }
+
       this.player = playerExport.player;
       this.skillChain = playerExport.skillChain;
       return true;
@@ -1412,15 +1471,6 @@ export default class extends VueBase {
     this.skillChain = 0;
     this.successNotification();
     this.resetHasChange();
-  }
-
-  // notification
-  public successNotification() {
-    this.$notify({
-      title: this.$t('成功').toString(),
-      message: '',
-      type: 'success',
-    });
   }
 
   // helpers

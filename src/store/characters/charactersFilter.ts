@@ -1,5 +1,5 @@
 import VuexModuleBase from '@/store/base/VuexModuleBase';
-import { Module } from 'vuex-module-decorators';
+import { Module, MutationAction } from 'vuex-module-decorators';
 
 // es-lint-disable no-shadow
 export enum CharacterType {
@@ -14,7 +14,16 @@ export enum CharacterType {
 export default class extends VuexModuleBase {
   public characterType = CharacterType.battle;
 
+  public name = '';
+
   public sort = 1;
 
-  public name = '';
+  @MutationAction({ mutate: ['characterType', 'name', 'sort'] })
+  public async reset() {
+    return {
+      characterType: CharacterType.battle,
+      name: '',
+      sort: 1,
+    };
+  }
 }

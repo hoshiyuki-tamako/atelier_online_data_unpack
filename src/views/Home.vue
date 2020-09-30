@@ -22,6 +22,8 @@ div.container
         el-switch(v-model="showBackTopButton" :active-text="$t('トップに移動ボタン')")
       div.filter
         el-switch(:value="showHiddenContent" @change="onShowHiddenContent" active-color="#f56c6c" :active-text="$t('ネタバレ')")
+      div.filter
+        el-button(v-if="!isProduction" @click="onResetSetting" type="danger" size="small") {{ $t('セッティングリセット') }}
   el-divider
   div
     div.categories__container(v-for="allPage of allPages")
@@ -451,6 +453,26 @@ export default class extends VueWithMapFields {
     }
     this.showHiddenContent = value;
     window.location.reload();
+  }
+
+  public async onResetSetting() {
+    await this.$confirm(`${this.$t('セッティングリセットよろしいでしか')}?`, '', {
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      type: 'warning',
+    });
+    await Promise.all([
+      this.$store.dispatch('home/reset'),
+      this.$store.dispatch('composeItemFilter/reset'),
+      this.$store.dispatch('characterRankingFilter/reset'),
+      this.$store.dispatch('enemyRankingFilter/reset'),
+      this.$store.dispatch('equipmentRankingFilter/reset'),
+      this.$store.dispatch('skillsFilter/reset'),
+      this.$store.dispatch('itemsFilter/reset'),
+      this.$store.dispatch('enemiesFilter/reset'),
+      this.$store.dispatch('charactersFilter/reset'),
+    ]);
+    this.successNotification();
   }
 }
 </script>

@@ -4,12 +4,22 @@ import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
 import { clamp } from 'lodash';
 
-export interface IEnemyReceiveDamage {
-  otherEffectSkills: SkillList[];
-  multipliersSkills: SkillList[];
-  multipliers: number[];
-  defense: number;
-  total: number;
+type multiplier = { element: string, value: number };
+
+export class EnemyReceiveDamage {
+  public otherEffectSkills = [] as SkillList[]
+
+  public zeroPlusMultiplierSkills = [] as SkillList[];
+
+  public onePlusMultiplierSkills = [] as SkillList[];
+
+  public multipliers = [] as multiplier[];
+
+  public defense = 0;
+
+  public total = 0;
+
+  public hp = 0;
 };
 
 export class Enemy {
@@ -27,19 +37,14 @@ export class Enemy {
     this.enemyId = enemy?.DF;
   }
 
-  public receiveDamage(damage: number, element = 0, attribute: EBattleAttribute = EBattleAttribute.eNONE, skills: SkillList[] = []) {
-    const result = {
-      otherEffectSkills: [],
-      multipliersSkills: [],
-      multipliers: [],
-      defense: 0,
-      total: 0,
-    } as IEnemyReceiveDamage;
+  public receiveDamage(damage: number, playerLevel = 0, element = 0, attribute: EBattleAttribute = EBattleAttribute.eNONE, skills: SkillList[] = []) {
+    const result = new EnemyReceiveDamage();
 
     const oneDamageSkills = this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eONE_DAMAGE);
     if (oneDamageSkills.length) {
       result.otherEffectSkills = oneDamageSkills;
       result.total = 1;
+      result.hp = clamp(this.enemy.getState('HP', this.level).total - result.total, 0, Infinity);
       return result;
     }
     /* unhandled effect
@@ -67,30 +72,59 @@ eDAMAGED_DARK,
 eDAMAGED_STRONG,
 eRECOVER,
     */
-    let multipliersSkills = attribute === EBattleAttribute.eMAGIC_DAMAGED
-        ? this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED_MAGIC && skill.effect === EBattleEffectKind.eDAMAGE_RATE)
-        : this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED_PHYSICS && skill.effect === EBattleEffectKind.eDAMAGE_RATE);
-    multipliersSkills = multipliersSkills.concat(this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
+   const multipliers = [] as multiplier[];
+   const zeroMultiplierSkills = [] as SkillList[];
+   const onePlusMultiplierSkills = [] as SkillList[];
 
-    const multipliers = [] as number[];
+    zeroMultiplierSkills.push(...attribute === EBattleAttribute.eMAGIC_DAMAGED
+        ? this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED_MAGIC && skill.effect === EBattleEffectKind.eDAMAGE_RATE)
+        : this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED_PHYSICS && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
+    zeroMultiplierSkills.push(...this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
+
+    if (this.enemy.eKind === 31) {
+      onePlusMultiplierSkills.push(...skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eATTACK_PUNI && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
+    }
+
+    if (playerLevel && this.level > playerLevel) {
+      onePlusMultiplierSkills.push(...skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eATTACK_STRONG && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
+    }
+
     switch (element) {
       case EElement.eFIRE:
-        multipliers.push(1 - this.enemy.sParam.ELM.FIRE / 100);
+        multipliers.push({
+          element: 'FIRE',
+          value: 1 - this.enemy.sParam.ELM.FIRE / 100,
+        });
         break;
       case EElement.eWATER:
-        multipliers.push(1 - this.enemy.sParam.ELM.WATER / 100);
+        multipliers.push({
+          element: 'FIRE',
+          value: 1 - this.enemy.sParam.ELM.WATER / 100,
+        });
         break;
       case EElement.eWIND:
-        multipliers.push(1 - this.enemy.sParam.ELM.WIND / 100);
+        multipliers.push({
+          element: 'WIND',
+          value: 1 - this.enemy.sParam.ELM.WIND / 100,
+        });
         break;
       case EElement.eEARTH:
-        multipliers.push(1 - this.enemy.sParam.ELM.EARTH / 100);
+        multipliers.push({
+          element: 'EARTH',
+          value: 1 - this.enemy.sParam.ELM.EARTH / 100,
+        });
         break;
       case EElement.eLIGHT:
-        multipliers.push(1 - this.enemy.sParam.ELM.LIGHT / 100);
+        multipliers.push({
+          element: 'LIGHT',
+          value: 1 - this.enemy.sParam.ELM.LIGHT / 100,
+        });
         break;
       case EElement.eDARK:
-        multipliers.push(1 - this.enemy.sParam.ELM.DARK / 100);
+        multipliers.push({
+          element: 'DARK',
+          value: 1 - this.enemy.sParam.ELM.DARK / 100,
+        });
         break;
       // 4 element?
     }
@@ -98,11 +132,18 @@ eRECOVER,
     const defenseState = attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MDEF' : 'SDEF';
     const defense = this.enemy.getState(defenseState, this.level).total;
 
-    const total = Math.round(multipliersSkills.map((p) => p.effectValue).concat(multipliers).reduce((sum, v) => sum * v, damage - defense));
+    const calculateMultipliers = [...multipliers.map((p) => p.value)].concat(
+      ...zeroMultiplierSkills.map((p) => p.effectValue),
+      ...onePlusMultiplierSkills.map((p) => 1 + p.effectValue),
+    );
+
+    const total = Math.round(calculateMultipliers.reduce((sum, v) => sum * v, damage - defense));
     result.total = total > 0 ? total : 1;
-    result.multipliersSkills = multipliersSkills;
-    result.defense = defense;
+    result.zeroPlusMultiplierSkills = zeroMultiplierSkills;
+    result.onePlusMultiplierSkills = onePlusMultiplierSkills;
     result.multipliers = multipliers;
+    result.defense = defense;
+    result.hp = clamp(this.enemy.getState('HP', this.level).total - result.total, 0, Infinity);
     return result;
   }
 }

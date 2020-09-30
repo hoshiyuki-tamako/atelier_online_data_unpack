@@ -36,6 +36,8 @@ export default class extends VueBase {
 
   public controls = new OrbitControls(this.camera, this.renderer.domElement);
 
+  public renderLoop: number | null = null;
+
   public setting = {
     renderLoop: true,
   };
@@ -65,7 +67,7 @@ export default class extends VueBase {
   }
 
   public mounted() {
-    this.loadFbx().initializeRenderer().initializeControlls().animate();
+    this.loadFbx().initializeRenderer().initializeControlls().initializeRenderLoop();
     window.addEventListener('resize', this.resize);
   }
 
@@ -80,7 +82,7 @@ export default class extends VueBase {
   }
 
   public beforeUnmount() {
-    this.setting.renderLoop = false;
+    clearInterval(this.renderLoop);
     window.removeEventListener('resize', this.resize);
   }
 
@@ -108,7 +110,7 @@ export default class extends VueBase {
         'bgmap', 'radar',
       ].map((p) => p.toLocaleLowerCase());
       object.traverse((child: Group & Object3D & Mesh) => {
-        if (process.env.NODE_ENV !== 'production') {
+        if (!this.isProduction) {
           console.log(child.name);
         }
         // they reuse iAreaId === 5 map for the sea effect, required to hide MapArea 5
@@ -117,7 +119,7 @@ export default class extends VueBase {
         }
 
         if (filters.some((p) => child.name.toLocaleLowerCase().includes(p))) {
-          if (process.env.NODE_ENV !== 'production') {
+          if (!this.isProduction) {
             console.log('^^^^^^^^^^ filtered ^^^^^^^^^^');
           }
           child.visible = false;
@@ -152,13 +154,16 @@ export default class extends VueBase {
     return this;
   }
 
-  private animate = () => {
-    if (this.setting.renderLoop) {
-      requestAnimationFrame(this.animate);
-      this.renderer.render(this.scene, this.camera);
-    }
-    return this;
-  };
+  private initializeRenderLoop() {
+    const targetFps = 240;
+    this.renderLoop = window.setInterval(() => {
+      if (!document.hidden) {
+        requestAnimationFrame(() => {
+          this.renderer.render(this.scene, this.camera);
+        });
+      }
+    }, 1000 / targetFps);
+  }
 }
 </script>
 

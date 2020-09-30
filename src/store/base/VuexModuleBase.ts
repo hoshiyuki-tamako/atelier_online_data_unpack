@@ -7,7 +7,7 @@ export default abstract class VuexModuleBase extends VuexModule {
   }
 
   @Mutation
-  public updateField(options: {path: string; value: unknown}) {
+  public updateField(options: { path: string; value: unknown }) {
     return updateField(this, options);
   }
 }

@@ -1,7 +1,7 @@
 import VuexModuleBase from '@/store/base/VuexModuleBase';
-import { Module, Mutation } from 'vuex-module-decorators';
+import { Module, Mutation, MutationAction } from 'vuex-module-decorators';
 
-import { ItemModifier } from '../../logic/modifiers/ItemModifier';
+import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 
 
 export class MaterialOptions extends ItemModifier {
@@ -24,5 +24,17 @@ export default class extends VuexModuleBase {
   @Mutation
   public updateMaterialOptions(materialOptions: MaterialOptions[]) {
     this.materialOptions = materialOptions;
+  }
+
+  @MutationAction({ mutate: ['itemDf', 'materialOptions', 'itemPicker'] })
+  public async reset() {
+    return {
+      itemDf: null,
+      materialOptions: [],
+      itemPicker: {
+        category: null,
+        keyword: '',
+      },
+    };
   }
 }

@@ -1,6 +1,6 @@
 import { MVList as CharacterMVList } from '@/master/chara';
 import VuexModuleBase from '@/store/base/VuexModuleBase';
-import { Module } from 'vuex-module-decorators';
+import { Module, MutationAction } from 'vuex-module-decorators';
 
 @Module({
   namespaced: true,
@@ -41,4 +41,28 @@ export default class extends VuexModuleBase {
   public showColumnLIGHT = true;
 
   public showColumnDARK = true;
+
+  @MutationAction({ mutate: ['foodLevel', 'level', 'showColumnTotalState', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK'] })
+  public async reset() {
+    return {
+      foodLevel: CharacterMVList.maxLevel,
+      level: CharacterMVList.maxLevel,
+      showColumnTotalState: true,
+      showColumnHP: true,
+      showColumnSATK: true,
+      showColumnSDEF: true,
+      showColumnMATK: true,
+      showColumnMDEF: true,
+      showColumnSPD: true,
+      showColumnQTH: true,
+      showColumnDDG: true,
+      showColumnTotalElement: true,
+      showColumnFIRE: true,
+      showColumnWATER: true,
+      showColumnEARTH: true,
+      showColumnWIND: true,
+      showColumnLIGHT: true,
+      showColumnDARK: true,
+    };
+  }
 }

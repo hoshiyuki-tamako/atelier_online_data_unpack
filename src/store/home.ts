@@ -1,4 +1,4 @@
-import { Module, Mutation } from 'vuex-module-decorators';
+import { Module, MutationAction } from 'vuex-module-decorators';
 
 import VuexModuleBase from './base/VuexModuleBase';
 
@@ -11,4 +11,13 @@ export default class extends VuexModuleBase {
   public showBackTopButton = true;
 
   public showHiddenContent = false;
+
+  @MutationAction({ mutate: ['showSideBar', 'showBackTopButton', 'showHiddenContent'] })
+  public async reset() {
+    return {
+      showSideBar: true,
+      showBackTopButton: true,
+      showHiddenContent: false,
+    };
+  }
 }

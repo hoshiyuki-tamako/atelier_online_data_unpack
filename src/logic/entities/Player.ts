@@ -68,7 +68,7 @@ export class Player {
   }
 
   public get equipments() {
-    return Object.entries(this.equipment).filter(([, p]) => p);
+    return Object.entries(this.equipment).filter(([, p]) => p) as [string, EquipmentItem][];
   }
 
   public get strength() {
@@ -114,6 +114,13 @@ export class Player {
   }
 
   // skills
+  public get skills() {
+    return this.equipments
+      .map(([slot, equipment]) => equipment.item.getSkills(this.equipmentModifiers[slot].quality))
+      .flat()
+      .concat(this.character?.getSkills(this.characterModifier.level) || []);
+  }
+
   public get skillMultipliers() {
     const equipmentBaseSkills = this.equipments.map(([slot]) => ({
       slot,
@@ -130,6 +137,7 @@ export class Player {
       equipmentBaseSkills,
       equipmentChainSkills,
       characterBaseSkills,
+
       characterChainSkills,
       base,
       chain: base + equipmentChainSkills.map((p) => p.skill).concat(characterChainSkills).reduce((sum, p) => sum + p.effectValue, 0),
@@ -140,6 +148,19 @@ export class Player {
     const { chain, base } = this.skillMultipliers;
     multiplier.push(skillChain > 0 ? (1 + chain) : (1 + base), 1 + skillChain * .2);
     return Math.round(multiplier.reduce((sum, v) => sum * v, 1));
+  }
+
+  // other helpers
+  public get attribute() {
+    return this.equipment.weapon?.item.getAttackSkill()?.attribute || 0;
+  }
+
+  public get attributeState() {
+    return this.attribute === 3 ? 'MATK' : 'SATK';
+  }
+
+  public get element() {
+    return this.equipment.weapon?.item.elementChangeSkill || 0;
   }
 }
 

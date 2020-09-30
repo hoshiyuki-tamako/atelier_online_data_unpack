@@ -26,7 +26,7 @@ import { dataManager } from '@/utils/DataManager';
 import { mapFields } from 'vuex-map-fields';
 
 abstract class VueWithMapFields extends VueBase {
-  public eKind!: number;
+  public eKind!: number | null;
 
   public name!: string;
 
@@ -64,7 +64,7 @@ export default class extends VueWithMapFields {
   }
 
   public get enemies() {
-    return this.eKind ? (dataManager.enemiesByEKind[this.eKind] || []) : dataManager.enemiesOrderByCategory;
+    return this.eKind === null ? dataManager.enemiesOrderByCategory : dataManager.enemiesByEKind[this.eKind] || [];
   }
 
   public get filteredEnemies() {
