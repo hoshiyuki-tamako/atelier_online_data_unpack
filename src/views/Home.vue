@@ -250,7 +250,7 @@ export default class extends VueWithMapFields {
       },
       {
         label: this.$t('NPC'),
-        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_20001.png',
+        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_3007_00.png',
         to: {
           name: 'Characters',
           query: {
@@ -263,7 +263,7 @@ export default class extends VueWithMapFields {
     if (this.showHiddenContent) {
       characters.push({
         label: this.$t('他のキャラクター'),
-        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_5018_00.png',
+        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_20001.png',
         to: {
           name: 'CharactersOtherCharacters',
         },

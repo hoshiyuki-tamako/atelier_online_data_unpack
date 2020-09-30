@@ -622,6 +622,7 @@ div.top-container
       template(v-if="player.character")
         div(v-for="skill of [player.character.getBlazeArt(player.characterModifier.level, player.characterModifier.blazeArtLevel)].filter((p) => p)")
           h4 {{ $t('ブレイズアーツ') }} (LV {{ player.characterModifier.blazeArtLevel }})
+          img.icon-small(:src="player.character.faceIcon" :alt="skill.name")
           p {{ skill.name }}
           p {{ skill.detail }}
           div(v-if="skill.attribute === 3")
@@ -785,7 +786,7 @@ div.top-container
                 template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
-                      img.icon-small(:src="skill.icon" :alt="skill.name")
+                      img.icon-small(:src="player.character.faceIcon" :alt="skill.name")
                       template(slot="popover")
                         div.popover-base
                           h4 {{ $t('ブレイズアーツ') }}

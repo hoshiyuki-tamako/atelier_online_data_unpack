@@ -165,6 +165,10 @@ export class MVList {
     return `img/icon_chara/Texture2D/icon_chara_all_${this.DF.toString().padStart(4, '0')}_00.png`;
   }
 
+  public get faceIcon() {
+    return `img/icon_chara/Texture2D/icon_chara_face_${this.DF.toString().padStart(4, '0')}.png`;
+  }
+
   public get genderTextIcon() {
     switch (this.GEN) {
       case 1:
