@@ -126,7 +126,6 @@ eRECOVER,
           value: 1 - this.enemy.sParam.ELM.DARK / 100,
         });
         break;
-      // 4 element?
     }
 
     const defenseState = attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MDEF' : 'SDEF';

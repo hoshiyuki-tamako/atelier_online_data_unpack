@@ -38,10 +38,6 @@ export default class extends VueBase {
 
   public renderLoop: number | null = null;
 
-  public setting = {
-    renderLoop: true,
-  };
-
   // loader
   public fbxLoader = new FBXLoader();
 

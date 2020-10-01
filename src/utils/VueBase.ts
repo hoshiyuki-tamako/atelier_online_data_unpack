@@ -14,6 +14,10 @@ export default abstract class VueBase extends Vue {
     return number > 0 ? '+' : '';
   }
 
+  public tickCross(condition: boolean) {
+    return condition ? '✓' : 'x';
+  }
+
   // notification
   public successNotification() {
     this.$notify({

@@ -173,11 +173,11 @@ export class PlayerExport {
   public player: Player;
 
   @Type(_ => Enemy)
-  public enemy: Enemy;
+  public enemy: Enemy | null;
 
   public skillChain = 0;
 
-  public constructor(locale: string, player: Player, enemy: Enemy | null= null) {
+  public constructor(locale: string, player: Player, enemy: Enemy | null = null) {
     this.locale = locale;
     this.player = player;
     this.enemy = enemy;

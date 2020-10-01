@@ -80,9 +80,9 @@ export class MVList {
   RCP_TYPE: number;
   LRCP_CHARA: LrcpChara[];
 
-  #attackSkill: SkillList;
   #elementChangeSkill: SkillList;
   #skillsCache = new Map<string, SkillList[]>();
+  #skillWithComboSkillCache = new Map<string, SkillList[]>();
   #elementCache = new Map<string, IElementResult>();
   #stateCache = new Map<string, IStateResult>();
 
@@ -169,18 +169,24 @@ export class MVList {
     return this.#skillsCache.get(key);
   }
 
+  public getSkillWithComboSkills(quality = MVList.equipmentMaxQuality) {
+    const key = JSON.stringify({ quality });
+    if (!this.#skillWithComboSkillCache.has(key)) {
+      this.#skillWithComboSkillCache.set(key, this.getSkills(quality).map((p) => [p].concat(p.combSkillList)).flat());
+    }
+    return this.#skillWithComboSkillCache.get(key);
+  }
 
   public getAttackSkill(quality = MVList.equipmentMaxQuality) {
     return this.getSkills(quality).find((p) => p.type === 1);
   }
-
 
   // elements
   public getElement(element: string, quality = MVList.equipmentMaxQuality, addonSkill: SkillList | null = null) {
     const key = JSON.stringify({ element, quality, addonSkill: addonSkill?.id });
     if (!this.#elementCache.has(key)) {
       const skillFilter = (p: SkillList) => dataManager.lookup.elementMapSkillEffectTarget[element].includes(p.effectTarget);
-      const skills = this.getSkills(quality).filter(skillFilter);
+      const skills = this.getSkillWithComboSkills(quality).filter(skillFilter);
       this.#elementCache.set(key, {
         element,
         label: dataManager.lookup.element[element],
@@ -213,7 +219,7 @@ export class MVList {
       const skillFilter = ['QTH', 'DDG'].includes(state) ?
         (p: SkillList) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state]
         : (p: SkillList) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state] && p.effect === EBattleEffectKind.eSTATUS_FIX;
-      const skills = this.getSkills(quality).filter(skillFilter);
+      const skills = this.getSkillWithComboSkills(quality).filter(skillFilter);
       this.#stateCache.set(key, {
         state,
         label: dataManager.lookup.state[state],

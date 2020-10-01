@@ -8,7 +8,9 @@ export type PathTree = { [s: string]: string | PathTree };
 
 export default class AtelierOnlineFileExport implements ISaveable {
   public export: PathTree = {};
+
   public img: PathTree = {};
+
   public models: PathTree = {};
 
   public constructor() {

@@ -1,5 +1,4 @@
 export class Formula {
-
   public static supportStates = ['SATK', 'SDEF', 'MATK', 'MDEF'];
 
   public static getSupportElement(value: number) {

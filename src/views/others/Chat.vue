@@ -12,7 +12,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { eChatTab } from '@/logic/Enums';
 
 @Component({

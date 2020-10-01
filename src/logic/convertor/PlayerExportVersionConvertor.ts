@@ -2,7 +2,6 @@ import { dataManager } from '@/utils/DataManager';
 import { plainToClass } from 'class-transformer';
 
 import { EquipmentsModifier, Player, PlayerExport } from '../entities/Player';
-import { Equipment } from '../items/Equipment';
 import { EquipmentItem } from '../items/EquipmentItem';
 import { CharacterModifier } from '../modifiers/CharacterModifier';
 import { PlayerExportV1 } from './PlayerExportV1';
