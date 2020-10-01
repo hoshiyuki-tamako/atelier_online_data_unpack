@@ -201,7 +201,7 @@ export default class extends VueWithMapFields {
 
   public filter = {
     skillKind: SkillKind.normal,
-    attribute: null,
+    attribute: '',
     element: '',
     targetTeam: '',
     targetScope: '',
@@ -233,7 +233,7 @@ export default class extends VueWithMapFields {
     const key = JSON.stringify(this.filter);
     if (!this.filterCache.has(key)) {
       const skills = this.skills.filter((p) => (
-        (this.filter.attribute === null || p.attackSkill.attribute === this.filter.attribute)
+        (this.filter.attribute === '' || p.attackSkill.attribute === +this.filter.attribute)
         && (this.filter.element === '' || p.attackSkill.element === +this.filter.element)
         && (this.filter.targetTeam === '' || p.targetTeam === +this.filter.targetTeam)
         && (this.filter.targetScope === '' || p.targetScope === +this.filter.targetScope)

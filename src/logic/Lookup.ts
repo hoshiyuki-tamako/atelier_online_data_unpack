@@ -189,9 +189,9 @@ export const lookup = {
   },
   EBattleAttribute:
   {
-    0: '物理',
+    0: '-',
     1: 'スラッシュ',
-    2: '爆発',
+    2: '打撃',
     3: '魔法',
   },
 };
