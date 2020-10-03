@@ -3,7 +3,7 @@ el-container.containter-main(v-loading="pageLoading")
   el-backtop.back-top(v-if="$store.state.home.showBackTopButton")
   el-aside(v-if="$store.state.home.showSideBar" width="")
     el-menu.menu(:active-text-color="menu.activeTextColor" :background-color="menu.backgroundColor" default-active="1" :collapse="true")
-      el-menu-item.menu__item(v-for="(menuItem, i) of menuItems" :index="i.toString()")
+      el-menu-item.menu__item(v-for="(menuItem, i) of menuItems" :key="menuItem.to.name" :index="i.toString()")
         span(slot="title") {{ menuItem.title }}
         router-link.menu__link(:to="menuItem.to")
           img.menu__icon(:src="menuItem.img.src" :alt="menuItem.title")

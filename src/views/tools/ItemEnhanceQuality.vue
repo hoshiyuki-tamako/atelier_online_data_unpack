@@ -12,10 +12,10 @@ div.item-enhance-quality
         div
           el-input-number(v-model="itemModifier.quality" size="mini" :min="1" :max="Quality.experiences.length" :step="1" step-strictly)
         div.item__icon(@click="remove(i)")
-          img.icon-small(:src="item.icon" :alt="$t('アイテム')")
+          img.icon-small(src="img/icon_item_s/Texture2D/icon_item_s_10020003.png" :alt="$t('アイテム')")
   div.right
     div.orginal-item
-      img(:src="item.icon" :alt="$t('アイテム')")
+      img(src="img/icon_item_s/Texture2D/icon_item_s_10020003.png" :alt="$t('アイテム')")
       div.orginal-item__edit
         span {{ $t('品質') }}
         el-input-number(v-model="originalQuality" size="mini" :min="1" :max="Quality.experiences.length" :step="1" step-strictly)
@@ -50,10 +50,6 @@ abstract class VueWithMapFields extends VueBase {
 export default class extends VueWithMapFields {
   public get Quality() {
     return Quality;
-  }
-
-  public get item() {
-    return this.dataManager.item.m_vList[0];
   }
 
   public get maxNextLevel() {

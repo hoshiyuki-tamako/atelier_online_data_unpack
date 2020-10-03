@@ -567,6 +567,7 @@ export default class extends VueWithMapFields {
       this.$store.dispatch('charactersFilter/reset'),
       this.$store.dispatch('composeItemFilter/reset'),
       this.$store.dispatch('itemEnhanceQuality/reset'),
+      this.$store.dispatch('questsFilter/reset'),
     ]);
     if (requiredRefreshPage) {
       window.location.reload();

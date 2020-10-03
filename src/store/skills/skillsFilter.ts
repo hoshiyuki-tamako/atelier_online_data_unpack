@@ -43,7 +43,7 @@ export default class extends VuexModuleBase {
       showColumnStateOwn: true,
       showColumnState: true,
       showColumnIcon: true,
-      showColumnHas: true
+      showColumnHas: true,
     };
   }
 }

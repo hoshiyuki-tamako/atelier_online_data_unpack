@@ -2,6 +2,7 @@ import charactersFilter from '@/store/characters/charactersFilter';
 import enemiesFilter from '@/store/enemies/enemiesFilter';
 import home from '@/store/home';
 import itemsFilter from '@/store/items/itemsFilter';
+import questsFilter from '@/store/quests/questsFilter';
 import skillsFilter from '@/store/skills/skillsFilter';
 import characterBuilder from '@/store/tools/characterBuilder';
 import composeItemFilter from '@/store/tools/composeItemFilter';
@@ -28,6 +29,7 @@ export default new Vuex.Store({
     characterBuilder,
     composeItemFilter,
     itemEnhanceQuality,
+    questsFilter,
   },
   plugins: [new VuexPersistence().plugin],
 });

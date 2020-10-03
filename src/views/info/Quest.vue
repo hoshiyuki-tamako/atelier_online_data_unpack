@@ -38,9 +38,20 @@ div.container
 
     div.filter
       el-switch(v-model="defaultExpandAll" :active-text="$t('すべて展開')")
+  div.filters
+    div.filter
+      el-checkbox(v-model="showColumnDF") DF
+      el-checkbox(v-model="showColumnNAME") {{ $t('名前') }}
+      el-checkbox(v-model="showColumnCATEG") {{ $t('カテゴリー') }}
+      el-checkbox(v-model="showColumnCOST") {{ $t('消費') }}
+      el-checkbox(v-model="showColumnENM") {{ $t('討伐') }}
+      el-checkbox(v-model="showColumnGET") {{ $t('調合入手') }}
+      el-checkbox(v-model="showColumnDLV") {{ `${$t('納品')}${$t('報告')}` }}
+      el-checkbox(v-model="showColumnDialog") {{ $t('ダイアログ') }}
+      el-checkbox(v-model="showColumnCharacter") {{ $t('キャラクター') }}
 
   div.content
-    el-table(ref="table" :data="filteredPaginationQuests" :default-expand-all.sync="defaultExpandAll" :row-key="getRowKey" @sort-change="onSortChange")
+    el-table.quest-table(ref="table" :data="filteredPaginationQuests" :default-expand-all.sync="defaultExpandAll" :row-key="getRowKey" @sort-change="onSortChange")
       el-table-column(type="expand")
         template(slot-scope="props")
           template(v-for="quest of [props.row]")
@@ -124,24 +135,24 @@ div.container
                   div
                     router-link(:to="{ name: 'CharactersCharacter', query: { df: quest.PARTY_IN } }")
                       img.icon-middle(:src="dataManager.characterById[quest.PARTY_IN].icon" :alt="dataManager.characterById[quest.PARTY_IN].NAME")
-      el-table-column(prop="DF" label="DF" width="100%" sortable="custom")
-      el-table-column(prop="NAME" :label="$t('名前')" sortable="custom")
-      el-table-column(prop="CATEG" :label="$t('カテゴリー')" sortable="custom")
+      el-table-column(v-if="showColumnDF" prop="DF" label="DF" width="100%" sortable="custom")
+      el-table-column(v-if="showColumnNAME" prop="NAME" :label="$t('名前')" sortable="custom")
+      el-table-column(v-if="showColumnCATEG" prop="CATEG" :label="$t('カテゴリー')" sortable="custom")
         template(slot-scope="scope") {{ $t(dataManager.lookup.EQuestCategory[scope.row.CATEG]) }}
-      el-table-column(prop="COST.WTH.CNT" :label="$t('消費')" width="100%" sortable="custom")
+      el-table-column(v-if="showColumnCOST" prop="COST.WTH.CNT" :label="$t('消費')" width="100%" sortable="custom")
         template(slot-scope="scope") {{ tickCross(scope.row.COST.WTH.CNT) }}
-      el-table-column(prop="ENM.length" :label="$t('討伐')" width="100%" sortable="custom")
+      el-table-column(v-if="showColumnENM" prop="ENM.length" :label="$t('討伐')" width="100%" sortable="custom")
         template(slot-scope="scope") {{ tickCross(scope.row.ENM.length) }}
-      el-table-column(prop="GET.length" :label="$t('調合入手')" width="100%" sortable="custom")
+      el-table-column(v-if="showColumnGET" prop="GET.length" :label="$t('調合入手')" width="100%" sortable="custom")
         template(slot-scope="scope") {{ tickCross(scope.row.GET.length) }}
-      el-table-column(prop="DLV.length" :label="`${$t('納品')}${$t('報告')}`" width="100%" sortable="custom")
+      el-table-column(v-if="showColumnDLV" prop="DLV.length" :label="`${$t('納品')}${$t('報告')}`" width="100%" sortable="custom")
         template(slot-scope="scope") {{ tickCross(scope.row.DLV.length) }}
-      el-table-column(prop="NPC_FD.length" :label="`${$t('ダイアログ')}`" width="130%" sortable="custom")
+      el-table-column(v-if="showColumnDialog" prop="NPC_FD.length" :label="`${$t('ダイアログ')}`" width="130%" sortable="custom")
         template(slot-scope="scope") {{ tickCross(scope.row.NPC_FD.some((i) => i.ADV)) }}
-      el-table-column(prop="CHARA" :label="$t('キャラクター')"  width="130%" sortable="custom")
+      el-table-column(v-if="showColumnCharacter" prop="CHARA" :label="$t('キャラクター')"  width="130%" sortable="custom")
         template(slot-scope="scope")
           img.character-preview(v-if="scope.row.CHARA" :src="dataManager.characterById[scope.row.CHARA].icon" :alt="dataManager.characterById[scope.row.CHARA].NAME")
-      el-table-column(prop="NPC_FD.length" :label="$t('ダイアログ')" width="120%" sortable="custom")
+      el-table-column(v-if="showColumnDialog" prop="NPC_FD.length" :label="$t('ダイアログ')" width="120%" sortable="custom")
         template(slot-scope="scope")
           el-button(v-if="scope.row.NPC_FD.some((p) => p.ADV)" @click="onOpenDialog(scope.row)" type="primary" size="small") {{ $t('ダイアログ') }}
     el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredQuests.length" layout="prev, pager, next" background="")
@@ -156,12 +167,36 @@ import { MVList as QuestMVList } from '@/master/quest';
 import LRU from 'lru-cache';
 import { IDialog } from '@/utils/AdvManager';
 import MobileDetect from 'mobile-detect';
+import { mapFields } from 'vuex-map-fields';
+
+abstract class VueWithMapFields extends VueBase {
+  public showColumnDF!: boolean;
+
+  public showColumnNAME!: boolean;
+
+  public showColumnCATEG!: boolean;
+
+  public showColumnCOST!: boolean;
+
+  public showColumnENM!: boolean;
+
+  public showColumnGET!: boolean;
+
+  public showColumnDLV!: boolean;
+
+  public showColumnDialog!: boolean;
+
+  public showColumnCharacter!: boolean;
+}
 
 @Component({
   components: {
   },
+  computed: {
+    ...mapFields('questsFilter', ['showColumnDF', 'showColumnNAME', 'showColumnCATEG', 'showColumnCOST', 'showColumnENM', 'showColumnGET', 'showColumnDLV', 'showColumnDialog', 'showColumnCharacter']),
+  },
 })
-export default class extends VueBase {
+export default class extends VueWithMapFields {
   public md = new MobileDetect(window.navigator.userAgent);
 
   public filter = {
@@ -334,6 +369,12 @@ export default class extends VueBase {
   }
 }
 </script>
+
+<style lang="sass">
+.quest-table
+  table
+    width: 100% !important
+</style>
 
 <style lang="sass" scoped>
 a
