@@ -1,4 +1,4 @@
-import { MVList as ItemMVList } from '@/master/item';
+import { MVList as EnemyMVList } from '@/master/enemy';
 import VuexModuleBase from '@/store/base/VuexModuleBase';
 import { Module, MutationAction } from 'vuex-module-decorators';
 
@@ -8,7 +8,7 @@ import { Module, MutationAction } from 'vuex-module-decorators';
 export default class extends VuexModuleBase {
   public eKind: number | null = null;
 
-  public level = ItemMVList.equipmentMaxLevel;
+  public level = EnemyMVList.defaultLevel;
 
   public showColumnTotalState = true;
 
@@ -48,7 +48,7 @@ export default class extends VuexModuleBase {
   public async reset() {
     return {
       eKind: null,
-      level: ItemMVList.equipmentMaxLevel,
+      level: EnemyMVList.defaultLevel,
       showColumnTotalState: true,
       showColumnEXP: true,
       showColumnHP: true,

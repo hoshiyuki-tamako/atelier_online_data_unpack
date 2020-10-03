@@ -1,18 +1,18 @@
 <template lang="pug">
 div.container
   el-dialog(title="" :visible.sync="fbxDialogVisible" width="90%")
-    model-fbx.item-fbx-container(:src="enemy.model" :position="fbxPosition" :rotation="fbxRotation" backgroundColor="rgb(169,169,169)")
+    model-fbx.item-fbx-container(v-loading="fbxLoading" @on-load="fbxLoading = false" :src="enemy.model" :position="fbxPosition" :rotation="fbxRotation" backgroundColor="rgb(169,169,169)")
 
   div.item-container
     div.item-container-left
       h3.item-name {{ enemy.strName }}
-      div.item-has-3d(v-if="enemy.model" @click="fbxDialogVisible = true")
+      div.item-has-3d(v-if="enemy.model" @click="openFbxViwer")
         img.icon-full(:src="enemy.icon" :alt="enemy.strName")
       div(v-else)
         img.icon-full(:src="enemy.icon" :alt="enemy.strName")
       p {{ enemy.strDesc }}
       p(v-if="enemy.model")
-          el-link(@click="fbxDialogVisible = true" :underline="false") 3D
+          el-link(@click="openFbxViwer" :underline="false") 3D
       br
       p DF: {{ enemy.DF }}
       p {{ $t('短い名前') }}: {{ enemy.AnotherName }}
@@ -94,12 +94,21 @@ export default class extends VueBase {
   // model
   public fbxDialogVisible = false;
 
+  public fbxLoading: boolean | null = null;
+
   public get fbxRotation() {
     return { x: 0, y: 0, z: 0 };
   }
 
   public get fbxPosition() {
     return { x: 0, y: 0, z: 0 };
+  }
+
+  public openFbxViwer() {
+    if (this.fbxLoading === null) {
+      this.fbxLoading = true;
+    }
+    this.fbxDialogVisible = true;
   }
 
   // enemy

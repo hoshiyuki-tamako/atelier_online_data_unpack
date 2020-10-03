@@ -256,7 +256,7 @@ div.top-container
         h3
           router-link(v-if="enemy.enemy" :to="{ name: 'EnemiesEnemy', query: { df: enemy.enemy.DF, level: enemy.level } }" target="_blank")
             span {{ enemy.enemy.strName }} (LV {{ enemy.level }})
-        img.enemy__icon(:src="enemy.enemy.icon" :alt="enemy.enemy.strName")
+        img.icon-full(:src="enemy.enemy.icon" :alt="enemy.enemy.strName")
         el-form
           el-form-item(label="LV")
             el-input-number(v-model="enemy.level" :min="1" size="small" step-strictly)
@@ -738,7 +738,7 @@ div.top-container
             template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, player.element, player.attribute, player.skills)]")
               th
                 v-popover(placement="left-end" trigger="hover")
-                  span {{ $t(dataManager.lookup.EBattleAttribute[player.attribute]) }}{{ $t('ダメージ' )}}
+                  span {{ $t(dataManager.lookup.EBattleAttribute[player.attribute]) }}
                   template(slot="popover")
                     div.popover-base
                       table
@@ -772,7 +772,7 @@ div.top-container
                       template(slot="popover")
                         div.popover-base
                           h4 {{ $t('ブレイズアーツ') }}
-                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}}
+                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
                           table
                             tr
                               th {{ $t('ベース') }}
@@ -804,7 +804,7 @@ div.top-container
                       template(slot="popover")
                         div.popover-base
                           h4 {{ $t('武器') }}
-                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}}
+                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
                           table
                             tr
                               th {{ $t('ベース') }}
@@ -836,7 +836,7 @@ div.top-container
                       template(slot="popover")
                         div.popover-base
                           h4 {{ $t('盾') }}
-                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}{{ $t('ダメージ' )}}
+                          p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
                           table
                             tr
                               th {{ $t('ベース') }}
@@ -858,6 +858,9 @@ div.top-container
                               td {{ skill.detail }}
                   td {{ receiveDamage.total }}
                   td HP: {{ receiveDamage.hp }}
+        el-divider(v-if="player.character")
+        div(v-if="player.character && false")
+          span {{ $t('ダメージ') }}
 </template>
 
 <script lang="ts">
@@ -1036,6 +1039,9 @@ export default class extends VueBase {
   public exportDialogVisible = false;
 
   public importString = '';
+
+  // equipment
+  public showEquipmentInfo = true;
 
   // data
   public player = new Player();
@@ -1568,11 +1574,12 @@ a
   width: 400px
 
 /* enemy editor
+.enemy-edit-picker
+  width: 70%
 .enemy-edit
   display: flex
-
 .enemy-edit-enemy
-  min-width: 25%
+  width: 25%
   h3
     text-align: center
   display: flex

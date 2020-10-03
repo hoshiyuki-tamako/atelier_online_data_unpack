@@ -232,7 +232,7 @@ export default class extends VueWithMapFields {
   public get filteredSkills() {
     const key = JSON.stringify(this.filter);
     if (!this.filterCache.has(key)) {
-      const skills = this.skills.filter((p) => (
+      let skills = this.skills.filter((p) => (
         (this.filter.attribute === '' || p.attackSkill.attribute === +this.filter.attribute)
         && (this.filter.element === '' || p.attackSkill.element === +this.filter.element)
         && (this.filter.targetTeam === '' || p.targetTeam === +this.filter.targetTeam)
@@ -245,12 +245,14 @@ export default class extends VueWithMapFields {
         && (!this.filter.has.includes(5) || dataManager.charactersBySkill[p.id])
       ));
       const findObject = (skill: SkillList) => this.filter.sort.split('.').reduce((o, i) => o[i], skill);
-      if (this.filter.sort) {
+      if (this.filter.order) {
         if (this.filter.order === 'ascending') {
           skills.sort((a, b) => findObject(a) - findObject(b));
         } else {
           skills.sort((a, b) => findObject(b) - findObject(a));
         }
+      } else {
+        skills = skills.reverse();
       }
       this.filterCache.set(key, skills);
     }
@@ -263,8 +265,9 @@ export default class extends VueWithMapFields {
   }
 
   public onSortChange({ prop, order }: { prop: string, order: string }) {
-    this.filter.sort = prop;
-    this.filter.order = order;
+    this.$set(this.filter, 'sort', prop);
+    this.$set(this.filter, 'order', order);
+    this.resetPage();
   }
 
   public scrollTableTop() {

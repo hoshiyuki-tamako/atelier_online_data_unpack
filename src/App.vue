@@ -39,7 +39,7 @@ el-container.containter-main(v-loading="pageLoading")
         span(slot="title") {{ $t('クェスト') }}
         router-link.menu__link(:to="{ name: 'InfoQuest' }")
           img.menu__icon(src="img/other/Texture2D/item_texture_0018.png" :alt="$t('クェスト')")
-  el-main.reset
+  el-main.reset(v-loading="loading")
     router-view(v-if="!pageLoading" :key="$route.fullPath")
 </template>
 
@@ -81,6 +81,8 @@ export default class extends VueBase {
   }
 
   // page
+  public loading = false;
+
   public pageLoading = true;
 
   public async beforeCreate() {
@@ -98,6 +100,16 @@ export default class extends VueBase {
         await sleep(ms('3s'));
       }
     }
+  }
+
+  public beforeMount() {
+    this.$router.beforeEach((from, to, next) => {
+      this.loading = true;
+      next();
+    });
+    this.$router.afterEach(() => {
+      this.loading = false;
+    });
   }
 }
 </script>

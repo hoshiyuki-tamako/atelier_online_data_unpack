@@ -2,9 +2,12 @@
 div
   el-dialog(title="" :visible.sync="itemPickerDialogVisible" fullscreen)
     div.item-picker-container
-      el-select.compose-input--size(v-model="itemPickerCategory" :placeholder="$t('種類')" filterable clearable)
-        el-option(v-for="item in itemCategories" :key="item.value" :label="item.label" :value="item.value")
-      el-input(v-model="itemPickerKeyword" :placeholder="`${$t('名前')}/DF`" clearable)
+      div.filters
+        div.filter
+          el-select.compose-input--size(v-model="itemPickerCategory" :placeholder="$t('種類')" filterable clearable)
+            el-option(v-for="item in itemCategories" :key="item.value" :label="item.label" :value="item.value")
+        div.filder
+          el-input(v-model="itemPickerKeyword" :placeholder="`${$t('名前')}/DF`" clearable)
       div.item-picker-items
         div(v-for="item in filteredItems" @click="onPickItem(item)")
           p {{ item.NAME }}

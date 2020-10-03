@@ -46,6 +46,14 @@ export class DataManager {
   public getGeneratedJsonUrl(file: string) {
     return `${this.generatedFolder}${file}`;
   }
+  public async loadJson(file: string) {
+    return fetch(this.getExportJsonUrl(`${file}.json`)).then((p) => p.json());
+  }
+  public async loadGeneratedJson(file: string) {
+    return fetch(this.getGeneratedJsonUrl(`${file}.json`)).then((p) => p.json());
+  }
+
+  public preloadPromise?: Promise<void>;
 
   // parsed raw data
   public blazeArt: BlazeArt;
@@ -73,7 +81,7 @@ export class DataManager {
   public chat: Chat;
   public extraQuest: ExtraQuest;
 
-  // processed data
+  // loaded data
   public itemById: { [df: string]: ItemMVList };
   public itemsByCategory: { [c: string]: ItemMVList[] };
   public itemsWeaponKindCategories: number[];
@@ -159,83 +167,83 @@ export class DataManager {
 
   public areaModelsById: { [iAreaId: string]: IAreaModel[] };
 
+  public unusedAdvs: { [s: string]: string[] };
+
+  public clear() {
+    this.preloadPromise = null;
+  }
+
   //
-  public load(locale: string, showHiddenContent = false) {
+  public preload() {
+    return this.preloadPromise = (async () => {
+      await Promise.all([
+        this.loadGeneratedGeneric('files'),
+      ]);
+    })();
+  }
+
+  public async load(locale: string, showHiddenContent = false) {
     this.showHiddenContent = showHiddenContent;
     this.locale = locale;
     this.advManager.setLocale(this.locale);
-    return this.loadData();
+    await this.loadData();
   }
 
   public async loadData() {
-    const [blazeArt, chara, degree, enemy, item, quest, skill, zone, zoneEffect, fieldName, areaDetail, areaInfo, townInfo, dungeonInfo, abnormalState, abnormalStateEffect, wealth, tips, treasure, gateInfo, adventBattle, fieldItem, chat, extraQuest, files, areaModel] = await Promise.all([
-      fetch(this.getExportJsonUrl('blaze_arts.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('chara.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('degree.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('enemy.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('item.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('quest.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('skill.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('zone.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('zoneeffect.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('fieldName.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('areaDetail.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('areaInfo.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('townInfo.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('dungeonInfo.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('abnormalstate.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('abnormalstateeffect.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('wealth.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('tips.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('treasure.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('gateInfo.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('adventbattle.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('fieldItem.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('chat.json')).then((p) => p.json()),
-      fetch(this.getExportJsonUrl('extraquest.json')).then((p) => p.json()),
+    if (!this.preloadPromise) {
+      this.preload();
+    }
 
-      fetch(this.getGeneratedJsonUrl('files.json')).then((p) => p.json()),
-      fetch(this.getGeneratedJsonUrl('areaModel.json')).then((p) => p.json()),
+    await this.preloadPromise;
+
+    await Promise.all([
+      this.loadItem(),
+      this.loadCharacter(),
+      this.loadBlazeArt(),
+      this.loadSkill(),
+      this.loadZone(),
+      this.loadAbnormalState(),
+      this.loadAbnormalStateEffect(),
+      this.loadZoneEffect(),
+      this.loadEnemy(),
+      this.loadWealth(),
+      this.loadDegree(),
+      this.loadQuest(),
+      this.loadFieldName(),
+      this.loadAreaDetail(),
+      this.loadAreaInfo(),
+      this.loadTownInfo(),
+      this.loadGateInfo(),
+      this.loadDungeonInfo(),
+      this.loadFieldItem(),
+      this.loadExtraQuest(),
+
+      this.loadGeneric('tips'),
+      this.loadGeneric('treasure'),
+      this.loadGeneric('chat'),
+      this.loadGeneric('adventbattle', 'adventBattle'),
+
+      this.loadAreaModel(),
+
+      this.spawnerDataManager.load(this.locale, this.files),
     ]);
-
-    const spawnerDataPromise = this.spawnerDataManager.load(this.locale, files);
-
-    // exported data
-    this.tips = tips;
-    this.treasure = treasure;
-    this.adventBattle = adventBattle;
-    this.chat = chat;
-
-    this.processBlazeArt(blazeArt);
-    this.processCharacter(chara);
-    this.processSkill(skill);
-    this.processZone(zone);
-    this.processItem(item);
-    this.processAbnormalState(abnormalState);
-    this.processAbnormalStateEffect(abnormalStateEffect);
-    this.processZoneEffect(zoneEffect);
-    this.processEnemy(enemy);
-    this.processWealth(wealth);
-    this.processDegree(degree);
-    this.processQuest(quest);
-    this.processFieldName(fieldName);
-    this.processAreaDetail(areaDetail);
-    this.processAreaInfo(areaInfo);
-    this.processTownInfo(townInfo);
-    this.processGateInfo(gateInfo);
-    this.processDungeonInfo(dungeonInfo);
-    this.processFieldItem(fieldItem);
-    this.processExtraQuest(extraQuest);
-
-    // other
-    this.files = files;
-    this.processAreaModel(areaModel);
-
-    await spawnerDataPromise;
+    this.afterLoadCharacter();
+    this.afterLoadSKill();
+    this.afterLoadItem();
+    this.afterLoadEnemy();
+    this.processAdvs();
   }
 
-  public processItem(item: Item) {
-    this.item = plainToClass(Item, item);
+  public async loadGeneric(name: string, key: string = '', value?: unknown) {
+    this[key || name] = value ? value : await this.loadJson(name);
+  }
+
+  public async loadGeneratedGeneric(name: string, key: string = '', value?: unknown) {
+    this[key || name] = value ? value : await this.loadGeneratedJson(name);
+  }
+
+  public async loadItem(item?: unknown) {
+    this.item = plainToClass(Item, item || await this.loadJson('item'));
     // order
     this.itemsOrderByCategory = Enumerable.from(this.item.m_vList).orderBy((p) => p.CATEG).toArray();
     // data
@@ -289,23 +297,26 @@ export class DataManager {
       })))
       .groupBy((p) => p.lrcp.DF)
       .toObject((p) => p.key(), (p) => p.select(({ item }) => item).toArray()) as { [df: string]: ItemMVList[] };
-    this.itemsByZone = Enumerable.from(this.zone.List)
-      .select((zone) => ({
-        zone,
-        items: this.itemsOrderByCategory.filter((item) =>
-          item.SPC
-            .map((p) => p.SKILL)
-            .flat()
-            .map((p) => this.skillById[p.DF])
-            .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)
-        ),
-      }))
-      .where((p) => !!p.items.length)
-      .toObject((p) => p.zone.id, (p) => p.items) as { [id: string]: ItemMVList[] };
   }
 
-  public processCharacter(chara: Chara) {
-    this.chara = plainToClass(Chara, chara);
+  public afterLoadItem() {
+    this.itemsByZone = Enumerable.from(this.zone.List)
+    .select((zone) => ({
+      zone,
+      items: this.itemsOrderByCategory.filter((item) =>
+        item.SPC
+          .map((p) => p.SKILL)
+          .flat()
+          .map((p) => this.skillById[p.DF])
+          .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)
+      ),
+    }))
+    .where((p) => !!p.items.length)
+    .toObject((p) => p.zone.id, (p) => p.items) as { [id: string]: ItemMVList[] };
+  }
+
+  public async loadCharacter(chara?: unknown) {
+    this.chara = plainToClass(Chara, chara || await this.loadJson('chara'));
     if (!this.showHiddenContent) {
       this.chara.m_vList = this.chara.m_vList.filter((p) => !CharacterMVList.hides.includes(p.DF));
     }
@@ -314,28 +325,30 @@ export class DataManager {
       .toObject((p) => p.DF, (p) => p) as { [df: string]: CharacterMVList };
     this.charactersCanBattle = this.chara.m_vList.filter((p) => p.EXC);
     this.characterNpcs = this.chara.m_vList.filter((p) => !p.EXC);
-
-    this.charactersBySkill = Enumerable.from(this.chara.m_vList)
-      .selectMany((character) => {
-        const normalSkillDfs = character.SKILL.map((skill) => skill.DF);
-        const blazeArtSkillDfs = character.BA.map((p) => this.blazeArtById[p.DF]?.LV.map((lv) => lv.SKILL_DF)).filter((p) => p).flat();
-        return [...new Set(normalSkillDfs.concat(blazeArtSkillDfs))].map((df) => ({
-          character,
-          df,
-        }));
-      })
-      .groupBy((p) => p.df)
-      .toObject(
-        p => p.key(),
-        p => p.groupBy(({ character }) => character.DF).select((p) => p.first().character).toArray(),
-      ) as { [id: string]: CharacterMVList[] };
     this.charactersByGroupDf = Enumerable.from(this.chara.m_vList)
       .groupBy((p) => p.GROUP_DF)
       .toObject((p) => p.key(), (p) => p) as { [GROUP_DF: string]: CharacterMVList[] };
   }
 
-  public processSkill(skill: Skill) {
-    this.skill = plainToClass(Skill, skill);
+  public afterLoadCharacter() {
+    this.charactersBySkill = Enumerable.from(this.chara.m_vList)
+    .selectMany((character) => {
+      const normalSkillDfs = character.SKILL.map((skill) => skill.DF);
+      const blazeArtSkillDfs = character.BA.map((p) => this.blazeArtById[p.DF]?.LV.map((lv) => lv.SKILL_DF)).filter((p) => p).flat();
+      return [...new Set(normalSkillDfs.concat(blazeArtSkillDfs))].map((df) => ({
+        character,
+        df,
+      }));
+    })
+    .groupBy((p) => p.df)
+    .toObject(
+      p => p.key(),
+      p => p.groupBy(({ character }) => character.DF).select((p) => p.first().character).toArray(),
+    ) as { [id: string]: CharacterMVList[] };
+  }
+
+  public async loadSkill(skill?: unknown) {
+    this.skill = plainToClass(Skill, skill || await this.loadJson('skill'));
     // filtered items
     this.skills = this.skill.m_vList.filter((p) => p.type === 1);
     this.skillEffects = this.skill.m_vList.filter((p) => p.type === 2 && !p.category);
@@ -352,18 +365,21 @@ export class DataManager {
       && !p.name.includes('【')
       && !p.name.includes('】')
     ));
+    // lookup
+    this.skillById = Enumerable.from(this.skill.m_vList).toObject((p) => p.id, (p) => p) as { [id: string]: SkillList };
+  }
+
+  public afterLoadSKill() {
     const characterBlazeArtSkillDfs = new Set(
       this.chara.m_vList
         .map((character) => character.BA.map((ba) => this.blazeArtById[ba.DF].LV.map((lv) => lv.SKILL_DF)))
         .flat(Infinity)
     );
     this.skillBlazeArts = this.skills.filter((p) => characterBlazeArtSkillDfs.has(p.id));
-    // lookup
-    this.skillById = Enumerable.from(this.skill.m_vList).toObject((p) => p.id, (p) => p) as { [id: string]: SkillList };
   }
 
-  public processAbnormalState(abnormalState: AbnormalState) {
-    this.abnormalState = abnormalState;
+  public async loadAbnormalState(abnormalState?: unknown) {
+    await this.loadGeneric('abnormalstate', 'abnormalState', abnormalState);
     this.abnormalStateById = Enumerable.from(this.abnormalState.m_vList)
       .toObject((p) => p.id, (p) => p) as { [id: string]: AbnormalStateMVList };
     this.abnormalStateTypes = Enumerable.from(this.abnormalState.m_vList)
@@ -372,28 +388,28 @@ export class DataManager {
       .toArray();
   }
 
-  public processAbnormalStateEffect(abnormalStateEffect: AbnormalStateEffect) {
-    this.abnormalStateEffect = abnormalStateEffect;
+  public async loadAbnormalStateEffect(abnormalStateEffect?: unknown) {
+    await this.loadGeneric('abnormalstateeffect', 'abnormalStateEffect', abnormalStateEffect);
     this.abnormalStateEffectById = Enumerable.from(this.abnormalStateEffect.m_vList)
       .toObject((p) => p.id, (p) => p) as { [id: string]: AbnormalStateEffectMVList };
   }
 
-  public processZone(zone: Zone) {
-    this.zone = zone;
+  public async loadZone(zone?: Zone) {
+    await this.loadGeneric('zone', '', zone);
     this.zoneNames = Enumerable.from(this.zone.List)
       .groupBy((p) => p.name.split(' ')[0])
       .select((p) => p.key())
       .toArray();
   }
 
-  public processZoneEffect(zoneEffect: ZoneEffect) {
-    this.zoneEffect = zoneEffect;
+  public async loadZoneEffect(zoneEffect?: unknown) {
+    await this.loadGeneric('zoneeffect', 'zoneEffect', zoneEffect);
     this.zoneEffectById = Enumerable.from(this.zoneEffect.List)
       .toObject((p) => p.id, (p) => p) as { [id: string]: ZoneEffectList };
   }
 
-  public processEnemy(enemy: Enemy) {
-    this.enemy = plainToClass(Enemy, enemy);
+  public async loadEnemy(enemy?: unknown) {
+    this.enemy = plainToClass(Enemy, enemy || await this.loadJson('enemy'));
     // data
     this.enemiesHasValidSpec = this.enemy.m_vList.filter((p) => p.sParam.SPEC.HP.R);
     // order
@@ -417,22 +433,25 @@ export class DataManager {
     this.enemiesByEKind = Enumerable.from(this.enemiesHasValidSpec)
       .groupBy((p) => p.eKind)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [id: string]: EnemyMVList[] };
-    this.enemiesByZone = Enumerable.from(this.zone.List)
-      .select((zone) => ({
-        zone,
-        enemies: this.enemiesOrderByCategory.filter((enemy) =>
-          enemy.sParam.SKILL
-            .map((p) => this.skillById[p.DF])
-            .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)
-        ),
-      }))
-      .where((p) => !!p.enemies.length)
-      .toObject((p) => p.zone.id, (p) => p.enemies) as { [id: string]: EnemyMVList[] };
     this.enemyKindListById = Enumerable.from(this.enemy.KindList).toObject((p) => p.iKind, (p) => p) as { [id: string]: KindList };
   }
 
-  public processWealth(wealth: Wealth) {
-    this.wealth = plainToClass(Wealth, wealth);
+  public afterLoadEnemy() {
+    this.enemiesByZone = Enumerable.from(this.zone.List)
+    .select((zone) => ({
+      zone,
+      enemies: this.enemiesOrderByCategory.filter((enemy) =>
+        enemy.sParam.SKILL
+          .map((p) => this.skillById[p.DF])
+          .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)
+      ),
+    }))
+    .where((p) => !!p.enemies.length)
+    .toObject((p) => p.zone.id, (p) => p.enemies) as { [id: string]: EnemyMVList[] };
+  }
+
+  public async loadWealth(wealth?: unknown) {
+    this.wealth = plainToClass(Wealth, wealth || await this.loadJson('wealth'));
     // order
     this.wealthOrderBySort = Enumerable.from(this.wealth.m_vList)
       .orderBy((p) => p.SORT)
@@ -441,20 +460,20 @@ export class DataManager {
     this.wealthById = Enumerable.from(this.wealth.m_vList).toObject((p) => p.DF, (p) => p) as { [df: string]: WealthMvList };
   }
 
-  public processDegree(degree: Degree) {
-    this.degree = plainToClass(Degree, degree);
+  public async loadDegree(degree?: Degree) {
+    this.degree = plainToClass(Degree, degree || await this.loadJson('degree'));
     this.degreeById = Enumerable.from(this.degree.List).toObject((p) => p.DF, (p) => p) as { [df: string]: DegreeList };
   }
 
-  public processBlazeArt(blazeArt: BlazeArt) {
-    this.blazeArt = blazeArt;
+  public async loadBlazeArt(blazeArt?: unknown) {
+    await this.loadGeneric('blaze_arts', 'blazeArt', blazeArt);
     // lookup
     this.blazeArtById = Enumerable.from(this.blazeArt.m_vList)
       .toObject((p) => p.DF, (p) => p) as { [df: string]: BlazeArtMvList };
   }
 
-  public processQuest(quest: Quest) {
-    this.quest = quest;
+  public async loadQuest(quest?: unknown) {
+    await this.loadGeneric('quest', '', quest);
     // lookup
     this.questById = Enumerable.from(this.quest.m_vList)
       .toObject((p) => p.DF, (p) => p) as { [df: string]: QuestMVList };
@@ -470,60 +489,70 @@ export class DataManager {
       .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
   }
 
-  public processFieldName(fieldName: FieldName) {
-    this.fieldName = fieldName;
+  public async loadFieldName(fieldName?: unknown) {
+    await this.loadGeneric('fieldName', '', fieldName);
     this.fieldNameById = Enumerable.from(this.fieldName.List).toObject((p) => p.iAreaNameId) as { [s: string]: FieldNameList };
   }
 
-  public processAreaDetail(areaDetail: AreaDetail) {
-    this.areaDetail = areaDetail;
+  public async loadAreaDetail(areaDetail?: unknown) {
+    await this.loadGeneric('areaDetail', '', areaDetail);
     this.areaDetailById = Enumerable.from(this.areaDetail.List).toObject((p) => p.iAreaID) as { [s: string]: AreaDetailList };
   }
 
-  public processAreaInfo(areaInfo: AreaInfo) {
-    this.areaInfo = areaInfo;
+  public async loadAreaInfo(areaInfo?: unknown) {
+    await this.loadGeneric('areaInfo', '', areaInfo);
     this.areaInfoById = Enumerable.from(this.areaInfo.List).toObject((p) => p.iAreaId) as { [s: string]: AreaInfoList };
   }
 
-  public processTownInfo(townInfo: TownInfo) {
-    this.townInfo = townInfo;
+  public async loadTownInfo(townInfo?: unknown) {
+    await this.loadGeneric('townInfo', '', townInfo);
     this.townInfosByAreaId = Enumerable.from(this.townInfo.List)
       .groupBy((p) => p.iAreaId)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: TownInfoList[] };
   }
 
-  public processGateInfo(gateInfo: GateInfo) {
-    this.gateInfo = gateInfo;
+  public async loadGateInfo(gateInfo?: unknown) {
+    await this.loadGeneric('gateInfo', '', gateInfo);
     this.gateInfoByAreaId = Enumerable.from(this.gateInfo.List)
       .groupBy((p) => p.iArea)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: GateInfoList[] };
   }
 
-  public processDungeonInfo(dungeonInfo: DungeonInfo) {
-    this.dungeonInfo = dungeonInfo;
+  public async loadDungeonInfo(dungeonInfo?: unknown) {
+    await this.loadGeneric('dungeonInfo', '', dungeonInfo);
     this.dungeonInfosByAreaId = Enumerable.from(this.dungeonInfo.List)
       .groupBy((p) => p.iAreaId)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: DungeonList[] };
   }
 
-  public processFieldItem(fieldItem: FieldItem) {
-    this.fieldItem = fieldItem;
+  public async loadFieldItem(fieldItem?: unknown) {
+    await this.loadGeneric('fieldItem', '', fieldItem);
     this.fieldItemById = Enumerable.from(this.fieldItem.List).toObject((p) => p.iItemId, (p) => p) as { [s: string]: FieldItemList };
   }
 
-  public processExtraQuest(extraQuest: ExtraQuest) {
-    this.extraQuest = extraQuest;
+  public async loadExtraQuest(extraQuest?: unknown) {
+    await this.loadGeneric('extraquest', 'extraQuest', extraQuest);
     this.extraQuestsByQuest = Enumerable.from(this.extraQuest.List)
       .groupBy((p) => p.iQuestDf)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [df: string]: ExtraQuestList[] };
   }
 
-  // custom
-  public processAreaModel(areaModel: IAreaModel[]) {
-    this.areaModel = areaModel;
+  // other load
+  public async loadAreaModel(areaModel?: IAreaModel[]) {
+    await this.loadGeneratedGeneric('areaModel', '', areaModel);
     this.areaModelsById = Enumerable.from(this.areaModel)
       .groupBy((p) => p.iAreaID)
       .toObject((p) => p.key(), (p) => p.orderBy((i) => i.iLevel).toArray()) as { [iAreaId: string]: IAreaModel[] };
+  }
+
+  public processAdvs() {
+    const advFiles = this.locale === 'zh-TW' ? dataManager.files.export.tw.adv : dataManager.files.export.adv;
+    const advs = Object.values(advFiles).map((p: string) => p.split('.')[0]) as string[];
+    const existingAdvs = dataManager.quest.m_vList.map((p) => p.NPC_FD.map((i) => i.ADV)).flat().filter((p) => p);
+    const notExistingAdvs = advs.filter((p) => !existingAdvs.includes(p));
+    this.unusedAdvs = Enumerable.from(notExistingAdvs)
+      .groupBy((p) => p.split('_')[0] || p)
+      .toObject((p) => p.key(), (p) => p.orderBy((p) => p).toArray()) as { [s: string]: string[] };
   }
 
   // skill helper
@@ -534,3 +563,4 @@ export class DataManager {
 }
 
 export const dataManager = new DataManager();
+dataManager.preload();

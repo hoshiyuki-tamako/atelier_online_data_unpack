@@ -2,7 +2,7 @@
 div.container
   h3 {{ $t('模型') }}
   el-dialog(title="" :visible.sync="fbxDialogVisible" width="90%")
-    model-fbx.item-fbx-container(:src="fbxModel" :rotation="{ x:0, y: 0, z: Math.PI }" backgroundColor="rgb(169,169,169)")
+    model-fbx.item-fbx-container(v-loading="fbxLoading" @on-load="fbxLoading = false" :src="fbxModel" :rotation="{ x:0, y: 0, z: Math.PI }" backgroundColor="rgb(169,169,169)")
 
   div.models-container
     div.model-container(v-for="model of models")
@@ -29,6 +29,8 @@ export default class extends VueBase {
   public fbxModel = '';
 
   public fbxDialogVisible = false;
+
+  public fbxLoading: boolean | null = null;
 
   public get unusedWeaponCategory() {
     return ['dual', 'hammer', 'knuckle'];
@@ -59,6 +61,9 @@ export default class extends VueBase {
 
   public openFbxDialog(fbxModel: string) {
     this.fbxModel = fbxModel;
+    if (this.fbxLoading === null) {
+      this.fbxLoading = true;
+    }
     this.fbxDialogVisible = true;
   }
 }

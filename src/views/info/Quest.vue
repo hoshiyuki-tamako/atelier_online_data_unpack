@@ -37,10 +37,10 @@ div.container
       el-switch(v-model="filter.extraQuest" @change="resetPage" :active-text="$t('EXクェスト')")
 
     div.filter
-      el-button(@click="onClickExpandAll") {{ $t('すべて展開') }}
+      el-switch(v-model="defaultExpandAll" :active-text="$t('すべて展開')")
 
   div.content
-    el-table(ref="table" :data="filteredPaginationQuests" :row-key="getRowKey" @sort-change="onSortChange")
+    el-table(ref="table" :data="filteredPaginationQuests" :default-expand-all.sync="defaultExpandAll" :row-key="getRowKey" @sort-change="onSortChange")
       el-table-column(type="expand")
         template(slot-scope="props")
           template(v-for="quest of [props.row]")
@@ -179,6 +179,8 @@ export default class extends VueBase {
 
   public take = 100;
 
+  public defaultExpandAll = false;
+
   public filterCache = new LRU<string, QuestMVList[]>(100);
 
   public currentRows = [] as QuestMVList[];
@@ -248,7 +250,7 @@ export default class extends VueBase {
         && (!this.filter.has.includes(5) || p.NPC_FD.some((i) => i.ADV))
       ));
 
-      if (this.filter.sort) {
+      if (this.filter.order) {
         const findObject = (quest: QuestMVList) => this.filter.sort.split('.').reduce((o, i) => o[i], quest);
         if (this.filter.sort === 'NAME') {
           if (this.filter.order === 'ascending') {
@@ -269,6 +271,9 @@ export default class extends VueBase {
 
   public get filteredPaginationQuests() {
     this.currentRows = this.filteredQuests.slice((this.page - 1) * this.take, this.page * this.take);
+    if (this.defaultExpandAll) {
+      this.$nextTick(this.expandAll.bind(this));
+    }
     return this.currentRows;
   }
 
@@ -280,11 +285,11 @@ export default class extends VueBase {
 
   public mounted() {
     if (this.$route.query.df) {
-      this.onClickExpandAll();
+      this.expandAll();
     }
   }
 
-  public onClickExpandAll() {
+  public expandAll() {
     this.currentRows.forEach((row) => (this.$refs.table as any).toggleRowExpansion(row, true));
   }
 
@@ -293,8 +298,9 @@ export default class extends VueBase {
   }
 
   public onSortChange({ prop, order }: { prop: string, order: string }) {
-    this.filter.sort = prop;
-    this.filter.order = order;
+    this.$set(this.filter, 'sort', prop);
+    this.$set(this.filter, 'order', order);
+    this.resetPage();
   }
 
   public scrollTableTop() {

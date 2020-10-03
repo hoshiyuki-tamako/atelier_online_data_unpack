@@ -16,6 +16,20 @@ Info for developer
 
 most file follow naming convention from the source code
 
+### Assets
+
+- master `./public/export/*`
+- adv `./public/export/adv/*`
+- SpawnList `./public/export/SpawnList/TextAsset/*`
+
+### Models
+
+- enemies `./public/models/enemies/**/*`
+- items `./public/models/items/**/*`
+- areas `./public/models/roots/**/*`
+
+### Images
+
 - Character `./public/img/icon_chara/*`
 - Item small `./public/img/icon_item_s/*`
 - Wealth `./public/img/icon_item01/*`
@@ -25,10 +39,10 @@ most file follow naming convention from the source code
 - Town `./public/img/map_town/*`
 - Pickup`./public/img/icon_pickup/*`
 
-those file were use for lookup/generate content for the site
+### Generated / Manual Input
 
 - Lookup `./public/generated/lookup.json`
-- Enum `./src/logic/Enum.ts`
+- Enum `./public/generated/enum.json` `./src/logic/Enum.ts`
 
 ## Item
 

@@ -1,12 +1,12 @@
 <template lang="pug">
 div.container
   el-dialog(title="" :visible.sync="fbxDialogVisible" width="90%")
-    model-fbx.item-fbx-container(:src="item.model" :position="fbxPosition" :rotation="fbxRotation" backgroundColor="rgb(169,169,169)")
+    model-fbx.item-fbx-container(v-loading="fbxLoading" @on-load="fbxLoading = false" :src="item.model" :position="fbxPosition" :rotation="fbxRotation" backgroundColor="rgb(169,169,169)")
 
   div.item-container(v-if="item")
     div.item-container-left
       h3.item-name {{ item.NAME }}
-      div.item-has-3d(v-if="item.model" @click="fbxDialogVisible = true")
+      div.item-has-3d(v-if="item.model" @click="openFbxViwer")
         img.icon-full(:src="item.icon" :alt="item.NAME")
       div(v-else)
         img.icon-full(:src="item.icon" :alt="item.NAME")
@@ -15,7 +15,7 @@ div.container
         p(v-if="item.RSP.length")
           router-link(:to="{ name: 'ToolsComposeItem', query: { df: item.DF, quality: itemModifier.quality } }") {{ $t('調合') }}
         p(v-if="item.model")
-          el-link(@click="fbxDialogVisible = true" :underline="false") 3D
+          el-link(@click="openFbxViwer" :underline="false") 3D
       br
       p DF: {{ item.DF }}
       p {{ $t('種類') }}: {{ $t(dataManager.lookup.itemCategory[item.CATEG]) }}
@@ -223,6 +223,8 @@ export default class extends VueBase {
   // model
   public fbxDialogVisible = false;
 
+  public fbxLoading: boolean | null = null;
+
   public get fbxRotation() {
     if (ItemMVList.weaponKindCategory.includes(this.item?.CATEG)) {
       return { x: 0, y: 0, z: Math.PI };
@@ -247,6 +249,13 @@ export default class extends VueBase {
       return { x: 0, y: 1.2, z: -1.2 };
     }
     return { x: 0, y: 0, z: 0 };
+  }
+
+  public openFbxViwer() {
+    if (this.fbxLoading === null) {
+      this.fbxLoading = true;
+    }
+    this.fbxDialogVisible = true;
   }
 
   // item

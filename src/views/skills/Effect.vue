@@ -9,7 +9,7 @@ div.container
         el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
 
   div.content
-    el-table(ref="table" :data="filteredPaginationSkills" default-expand-all)
+    el-table(ref="table" :data="filteredPaginationSkills" default-expand-all @sort-change="onSortChange")
       el-table-column(type="expand")
         template(slot-scope="props")
           div
@@ -25,10 +25,10 @@ div.container
               h3 {{ $t('人物') }}
               router-link(v-for="character in dataManager.charactersBySkill[props.row.id]" :key="character.DF" :to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
                 img.icon-small(:src="character.icon" :alt="character.NAME")
-      el-table-column(prop="id" label="ID" width="100%")
+      el-table-column(prop="id" label="ID" width="100%" sortable="custom")
       el-table-column(prop="name" :label="$t('名前')")
       el-table-column(prop="detail" :label="$t('詳細')")
-      el-table-column(prop="effectValue" :label="$t('数値')")
+      el-table-column(prop="effectValue" :label="$t('数値')" sortable="custom")
         template(slot-scope="scope") {{ scope.row.effectValue }}, {{ scope.row.effectValue2 }}
     el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredSkills.length" layout="prev, pager, next" background="")
 </template>
@@ -67,6 +67,9 @@ export default class extends VueBase {
     name: '',
 
     has: [],
+
+    sort: '',
+    order: null,
   };
 
   public filterCache = new LRU<string, SkillList[]>(100);
@@ -79,18 +82,35 @@ export default class extends VueBase {
   public get filteredSkills() {
     const key = JSON.stringify(this.filter);
     if (!this.filterCache.has(key)) {
-      this.filterCache.set(key, dataManager.skillEffects.filter((p) => (
+      let skills = dataManager.skillEffects.filter((p) => (
         (!this.filter.name || p.id === +this.filter.name || p.name.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
         && (!this.filter.has.includes(1) || dataManager.itemsBySkill[p.id])
         && (!this.filter.has.includes(2) || dataManager.enemiesBySkill[p.id])
         && (!this.filter.has.includes(3) || dataManager.charactersBySkill[p.id])
-      )));
+      ));
+      const findObject = (skill: SkillList) => this.filter.sort.split('.').reduce((o, i) => o[i], skill);
+      if (this.filter.order) {
+        if (this.filter.order === 'ascending') {
+          skills.sort((a, b) => findObject(a) - findObject(b));
+        } else {
+          skills.sort((a, b) => findObject(b) - findObject(a));
+        }
+      } else {
+        skills = skills.reverse();
+      }
+      this.filterCache.set(key, skills);
     }
     return this.filterCache.get(key);
   }
 
   public get filteredPaginationSkills() {
     return this.filteredSkills.slice((this.page - 1) * this.take, this.page * this.take);
+  }
+
+  public onSortChange({ prop, order }: { prop: string, order: string }) {
+    this.$set(this.filter, 'sort', prop);
+    this.$set(this.filter, 'order', order);
+    this.resetPage();
   }
 
   public scrollTableTop() {

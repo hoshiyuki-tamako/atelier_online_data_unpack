@@ -189,7 +189,7 @@ export const lookup = {
   },
   EBattleAttribute:
   {
-    0: '-',
+    0: '無',
     1: 'スラッシュ',
     2: '打撃',
     3: '魔法',

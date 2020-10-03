@@ -152,7 +152,7 @@ export class Player {
 
   // other helpers
   public get attribute() {
-    return this.equipment.weapon?.item.getAttackSkill()?.attribute || 0;
+    return this.equipment.weapon?.item.getAttackSkill()?.attribute || 2;
   }
 
   public get attributeState() {

@@ -16,14 +16,13 @@ div.container
     br
     div.filters
       div.filter
-        label
-          el-switch(v-model="showSideBar" active-color="#13ce66" :active-text="$t('サイドバー')")
+        el-switch(v-model="showSideBar" active-color="#13ce66" :active-text="$t('サイドバー')")
       div.filter
         el-switch(v-model="showBackTopButton" :active-text="$t('トップに移動ボタン')")
       div.filter
         el-switch(:value="showHiddenContent" @change="onShowHiddenContent" active-color="#f56c6c" :active-text="$t('ネタバレ')")
       div.filter
-        el-button(v-if="!isProduction" @click="onResetSetting" type="danger" size="small") {{ $t('セッティングリセット') }}
+        el-button(@click="onResetSetting" type="danger" icon="el-icon-refresh-left" size="small" :aria-label="$t('セッティングリセット')" round)
   el-divider
   div
     div.categories__container(v-for="allPage of allPages")
@@ -40,11 +39,17 @@ div.container
   div.strategy-guides
     h3 {{ $t('他の人の攻略サイト') }}
     br
-    div(v-for="page of otherStrategyPages")
+    div(v-for="(page, i) of otherStrategyPages")
       h4 {{ page.title }}
       p(v-for="link of page.links")
         el-link(:href="link.href" target="_blank" rel="noopener") {{ link.href }}
-      el-divider
+      el-divider(v-if="otherStrategyPages.length !== (i + 1)")
+  el-divider
+  div.other-links
+    h3 {{ $t('他のサイト') }}
+    div(v-for="otherLink of otherLinks")
+      el-link(:href="otherLink.href" target="_blank" rel="noopener") {{ otherLink.title }}
+      br
 </template>
 
 <script lang="ts">
@@ -437,6 +442,27 @@ export default class extends VueWithMapFields {
     ];
   }
 
+  public get otherLinks() {
+    return [
+      {
+        title: '【公式】アトリエオンライン',
+        href: 'https://twitter.com/ao_forest',
+      },
+      {
+        title: '『アトリエ オンライン』 4コマ漫画まとめ',
+        href: 'https://twitter.com/i/events/1037277820232163328',
+      },
+      {
+        title: 'アトリエ オンライン ～ブレセイルの錬金術士～',
+        href: 'https://play.google.com/store/apps/details?id=jp.nhnpa.SJAO',
+      },
+      {
+        title: '鍊金工房 Online ～布雷賽爾的鍊金術士～',
+        href: 'https://play.google.com/store/apps/details?id=com.boltrend.ateliertc',
+      },
+    ];
+  }
+
   public onChangeLocale(locale: string) {
     const url = new URL(window.location.href);
     url.searchParams.set('locale', locale);
@@ -461,6 +487,7 @@ export default class extends VueWithMapFields {
       cancelButtonText: 'Cancel',
       type: 'warning',
     });
+    const requiredRefreshPage = this.showHiddenContent;
     await Promise.all([
       this.$store.dispatch('home/reset'),
       this.$store.dispatch('composeItemFilter/reset'),
@@ -472,7 +499,11 @@ export default class extends VueWithMapFields {
       this.$store.dispatch('enemiesFilter/reset'),
       this.$store.dispatch('charactersFilter/reset'),
     ]);
-    this.successNotification();
+    if (requiredRefreshPage) {
+      window.location.reload();
+    } else {
+      this.successNotification();
+    }
   }
 }
 </script>
@@ -520,7 +551,7 @@ export default class extends VueWithMapFields {
 .category__image
   width: 100px
 
-.strategy-guides
+.strategy-guides, .other-links
   margin: 12px
   h3
     color: rgb(153, 122, 79)

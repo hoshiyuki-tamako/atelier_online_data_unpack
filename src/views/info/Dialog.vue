@@ -13,9 +13,11 @@ div.container
       el-button(@click="questDialogVisible = false" type="primary") {{ $t('閉じる') }}
 
   div.content
-    div.advs
-      div.adv(v-for="adv of unusedAdvs")
-        el-link(@click="onOpenDialog(adv)" type="primary" :underline="false") {{ adv }}
+    div(v-for="[category, advs] of Object.entries(dataManager.unusedAdvs)")
+      el-divider {{ category }}
+      div.advs
+        div.adv(v-for="adv of advs")
+          el-link(@click="onOpenDialog(adv)" type="primary" :underline="false") {{ adv }}
 </template>
 
 <script lang="ts">
@@ -32,8 +34,6 @@ import MobileDetect from 'mobile-detect';
 export default class extends VueBase {
   public md = new MobileDetect(window.navigator.userAgent);
 
-  public unusedAdvs = [] as string[];
-
   public questDialogVisible = false;
 
   public questDialogLoading = false;
@@ -41,13 +41,6 @@ export default class extends VueBase {
   public selectedAdv = '';
 
   public questDialogs: IDialog[] = [];
-
-  public beforeMount() {
-    const advFiles = this.dataManager.advManager.locale === 'zh-TW' ? dataManager.files.export.tw.adv : dataManager.files.export.adv;
-    const advs = Object.values(advFiles).map((p: string) => p.split('.')[0]) as string[];
-    const existingAdvs = dataManager.quest.m_vList.map((p) => p.NPC_FD.map((i) => i.ADV)).flat().filter((p) => p);
-    this.unusedAdvs = advs.filter((p) => !existingAdvs.includes(p));
-  }
 
   // dialog
   public async onOpenDialog(adv: string) {

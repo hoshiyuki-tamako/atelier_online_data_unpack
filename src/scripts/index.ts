@@ -2,7 +2,7 @@ import path from 'path';
 
 import AtelierOnlineExportProcessor from './AtelierOnlineExportProcessor';
 import AtelierOnlineFileExport from './AtelierOnlineFileExport';
-import Lookup from './Lookup';
+import StaticGenerate from './StaticGenerate';
 import ModelExport from './ModelExport';
 import TextureExport from './TextureExport';
 
@@ -14,7 +14,7 @@ class Main {
     await Promise.all([
       new TextureExport().process(sourceFolder, rootFolder),
       new ModelExport().process(sourceFolder, rootFolder),
-      new Lookup().save(rootFolder),
+      new StaticGenerate().save(rootFolder),
       new AtelierOnlineExportProcessor().process(path.join(__dirname, '..', '..', 'public', 'export')),
     ]);
     await new AtelierOnlineFileExport().save(rootFolder);
