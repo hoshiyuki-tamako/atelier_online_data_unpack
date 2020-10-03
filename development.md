@@ -107,7 +107,7 @@ item
       "R": 0,
       "B": 0
     },
-    "MATK": { // magic attack
+    "MATK": { // magic attack, note that enemy use enemy.SATK for both SATK and MATK and MATK is ignored
       "G": 0.0,
       "M": 0,
       "R": 0,

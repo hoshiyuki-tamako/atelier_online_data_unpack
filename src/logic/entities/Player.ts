@@ -1,14 +1,17 @@
-import { EBattleEffectTrigger } from './../Enums';
+import { EElement } from './../Enums';
+import { EBattleAttribute, EBattleEffectTrigger } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
 import { Equipment } from '@/logic/items/Equipment';
 import { EquipmentItem } from '@/logic/items/EquipmentItem';
 import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
 import { EquipmentModifier } from '@/logic/modifiers/EquipmentModifier';
 import { MVList as CharacterMVList } from '@/master/chara';
+import { Enemy } from '@/master/enemy';
 import { MVList as ItemMvList } from '@/master/item';
 import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
-import { Enemy } from '@/master/enemy';
+
+type multiplier = { element: string, value: number };
 
 export class EquipmentsModifier {
   @Type(_ => EquipmentModifier)
@@ -148,6 +151,42 @@ export class Player {
     const { chain, base } = this.skillMultipliers;
     multiplier.push(skillChain > 0 ? (1 + chain) : (1 + base), 1 + skillChain * .2);
     return Math.round(multiplier.reduce((sum, v) => sum * v, 1));
+  }
+
+  public receiveDamage(damage: number, attribute = EBattleAttribute.eNONE, element = EElement.eNONE) {
+    const totalHp = this.totalState('HP');
+    const defense = this.totalState(attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MDEF' : 'SDEF');
+
+    let multipliers = [] as multiplier[];
+    const label = EElement[element].substr(1);
+    if (label !== 'NONE') {
+      const value = this.totalElement(label);
+      if (value) {
+        multipliers.push({
+          element: label,
+          value: 1 - value / 100,
+        });
+      }
+    }
+
+    let total = multipliers.reduce((sum, multiplier) => sum * multiplier.value, damage - defense);
+    if (total <= 0) {
+      total = 1;
+    }
+
+    let hp = totalHp - total;
+    if (hp < 0) {
+      hp = 0;
+    }
+
+    return {
+      totalHp,
+      damage,
+      defense,
+      total: total > 0 ? total : 1,
+      hp,
+      multipliers,
+    };
   }
 
   // other helpers

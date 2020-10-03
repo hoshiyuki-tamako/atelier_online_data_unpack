@@ -1,5 +1,5 @@
-import escapeStringRegexp from 'escape-string-regexp';
 import fs from 'fs-extra';
+import { escapeRegExp } from 'lodash';
 import { ncp } from 'ncp';
 import path from 'path';
 import { promisify } from 'util';
@@ -45,7 +45,7 @@ export default class ModelExport {
 
   private async processItemModels(name: string, modelFolders: string[], rootFolder: string, modelFolder: string) {
     const outFolder = path.join(rootFolder, 'models', 'items');
-    const regex = new RegExp(`^${escapeStringRegexp(name)}.*`);
+    const regex = new RegExp(`^${escapeRegExp(name)}.*`);
     const itemFolders = modelFolders.filter((p) => regex.exec(p));
     await Promise.all(itemFolders.map(async (p) => {
       const sourceModelFolder = path.join(modelFolder, p);
@@ -59,7 +59,7 @@ export default class ModelExport {
 
   private async processEnemiesModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
     const outFolder = path.join(rootFolder, 'models', 'enemies');
-    const regex = new RegExp(`^${escapeStringRegexp('Enemy044')}.*`);
+    const regex = new RegExp(`^${escapeRegExp('Enemy044')}.*`);
     const enemiesFolders = modelFolders.filter((p) => regex.exec(p));
     await Promise.all(enemiesFolders.map(async (p) => {
       const sourceModelFolder = path.join(modelFolder, p);

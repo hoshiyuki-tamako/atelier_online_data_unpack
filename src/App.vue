@@ -26,7 +26,7 @@ import ms from 'ms';
       meta: [
         {
           name: 'description',
-          content: 'アトリエオンライン 資料庫 攻略',
+          content: 'アトリエオンライン 資料庫 攻略 鍊金工房Online',
         },
       ],
     };

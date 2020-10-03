@@ -71,7 +71,6 @@
     "@vue/test-utils": "^1.1.0",
     "chai": "^4.2.0",
     "directory-tree": "^2.2.4",
-    "escape-string-regexp": "^4.0.0",
     "eslint": "^7.10.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-vue": "^7.0.0",

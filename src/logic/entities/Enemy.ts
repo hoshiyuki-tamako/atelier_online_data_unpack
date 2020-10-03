@@ -37,7 +37,11 @@ export class Enemy {
     this.enemyId = enemy?.DF;
   }
 
-  public receiveDamage(damage: number, playerLevel = 0, element = 0, attribute: EBattleAttribute = EBattleAttribute.eNONE, skills: SkillList[] = []) {
+  public attack(attribute = EBattleAttribute.eNONE) {
+    return this.enemy.getState(attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MATK' : 'SATK', this.level).total;
+  }
+
+  public receiveDamage(damage: number, playerLevel = 0, element = EElement.eNONE, attribute = EBattleAttribute.eNONE, skills: SkillList[] = []) {
     const result = new EnemyReceiveDamage();
 
     const oneDamageSkills = this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eONE_DAMAGE);
@@ -98,7 +102,7 @@ eRECOVER,
         break;
       case EElement.eWATER:
         multipliers.push({
-          element: 'FIRE',
+          element: 'WATER',
           value: 1 - this.enemy.sParam.ELM.WATER / 100,
         });
         break;

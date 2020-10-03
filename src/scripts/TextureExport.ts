@@ -1,5 +1,5 @@
-import escapeStringRegexp from 'escape-string-regexp';
 import fs from 'fs-extra';
+import { escapeRegExp } from 'lodash';
 import path from 'path';
 
 export default class TextureExport {
@@ -15,7 +15,7 @@ export default class TextureExport {
 
   private async processTexture2D(name: string, files: string[], textureFolder: string, rootFolder: string) {
     const outFolder = path.join(rootFolder, 'img', name, 'Texture2D');
-    const regex = new RegExp(`^${escapeStringRegexp(name)}.*`);
+    const regex = new RegExp(`^${escapeRegExp(name)}.*`);
     const imagePaths = files.filter((p) => !p.includes('#') && regex.exec(p));
 
     await Promise.all(imagePaths.map(async (p) => {

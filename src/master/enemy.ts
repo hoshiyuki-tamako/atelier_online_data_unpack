@@ -149,10 +149,16 @@ export class MVList {
   public getState(state: string, level: number) {
     const key = JSON.stringify({ state, level });
     if (!this.#stateCache.has(key)) {
+      let value = this.sParam.SPEC[state].getValue(level);
+      // due to the game use SATK for magic attack, we need to work around for getState
+      if (!value && state === 'MATK') {
+        value = this.sParam.SPEC['SATK'].getValue(level);
+      }
+
       const result = {
         state,
         label: dataManager.lookup.state[state],
-        value: this.sParam.SPEC[state].getValue(level),
+        value,
         total: 0,
       };
       result.total = result.value;

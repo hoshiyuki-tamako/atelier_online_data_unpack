@@ -54,12 +54,17 @@ div.container
     h3 {{ $t('調合') }}{{ $t('品質') }}
     div
       p clamp(floor(sum({{ $t('品質') }}) / count) + sum({{ $t('品質特性') }}), 1, max)
+
+  el-divider
+  div
+    h3 {{ $t('材料強化') }}
+    div
+      p sum({{ $t('品質') }})
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { Formula } from '@/logic/Formula';
 
 @Component({
