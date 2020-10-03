@@ -22,6 +22,14 @@ const toolsRotes: Array<RouteConfig> = [
     },
   },
   {
+    path: '/tools/itemEnhanceQuality',
+    name: 'ToolsItemEnhanceQuality',
+    component: () => import(/* webpackChunkName: "ToolsItemEnhanceQuality" */ '@/views/tools/ItemEnhanceQuality.vue'),
+    meta: {
+      title: '材料強化',
+    }
+  },
+  {
     path: '/tools/equipmentRanking',
     name: 'ToolsEquipmentRanking',
     component: () => import(/* webpackChunkName: "ToolsEquipmentRanking" */ '@/views/tools/EquipmentRanking.vue'),

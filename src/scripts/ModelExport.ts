@@ -87,20 +87,20 @@ export default class ModelExport {
     const roots = modelFolders.filter((p) => p.includes('root'))
       .sort(new Intl.Collator(undefined, { numeric: true }).compare)
       .reverse();
-    const rootTexts = await Promise.all(roots.map((root) => fs.readFile(path.join(modelMetaFolder, root, 'root.fbx'), { encoding: 'utf-8' })));
-    const rootMetas = rootTexts.map((rootText, i) => {
-      const root = roots[i];
+    const rootMetas = (await Promise.all(roots.map(async (root) => {
+      const rootText = await fs.readFile(path.join(modelMetaFolder, root, 'root.fbx'), { encoding: 'utf-8' });
       const connections = rootText.match(/Connections((.|\n|\r)*)/gm)?.join() || '';
       const [, iAreaID, iLevel] = connections.match(/;Model::MapArea_(\d+)_(\d+), Model::root/) || [];
       if (!iAreaID) {
-        return;
+        return null;
       }
       return {
         iAreaID: +iAreaID,
         iLevel: +iLevel,
         root,
       } as IAreaModel;
-    }).filter((p) => p && !hideAreas.includes(p.iAreaID)).filter((p) => !hideAreaFilters.some((i) => i.iAreaID === p.iAreaID && i.iLevel === p.iLevel));
+    })))
+      .filter((p) => p && !hideAreas.includes(p.iAreaID) && !hideAreaFilters.some((i) => i.iAreaID === p.iAreaID && i.iLevel === p.iLevel));
 
     // de duplication
     const removeIndexes = [] as number[];

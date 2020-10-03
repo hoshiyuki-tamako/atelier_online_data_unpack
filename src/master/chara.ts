@@ -201,7 +201,7 @@ export class MVList {
   public getSkills(level = MVList.maxLevel) {
     const key = JSON.stringify({ level });
     if (!this.#skillCache.has(key)) {
-      this.#skillCache.set(key, dataManager.removeOverrideSkills(this.getRawSkills(level)));
+      this.#skillCache.set(key, SkillList.removeOverrideSkills(this.getRawSkills(level)));
     }
     return this.#skillCache.get(key);
   }
@@ -209,11 +209,7 @@ export class MVList {
   public getSkillWithComboSkills(level = MVList.maxLevel) {
     const key = JSON.stringify({ level });
     if (!this.#skillWithComboSkillCache.has(key)) {
-      this.#skillWithComboSkillCache.set(key, dataManager.removeOverrideSkills(
-        this.getSkills(level)
-        .map((p) => [p].concat(p.combSkillList))
-        .flat()
-      ));
+      this.#skillWithComboSkillCache.set(key, SkillList.removeOverrideSkills(this.getSkills(level).map((p) => p.withComboSkills).flat()));
     }
     return this.#skillWithComboSkillCache.get(key);
   }
@@ -234,15 +230,15 @@ export class MVList {
     if (!this.#elementCache.has(key)) {
       const skills = this.getSkillWithComboSkills(level)
       .filter((p) => dataManager.lookup.elementMapSkillEffectTarget[element].includes(p.effectTarget) && p.effect === EBattleEffectKind.eSTATUS_FIX);
-      this.#elementCache.set(key, {
+      const result = {
         element,
         label: dataManager.lookup.element[element],
         value: skills.reduce((sum, p) => sum + p.effectValue, 0),
         skills,
-        get total() {
-          return this.value;
-        },
-      });
+        total: 0,
+      };
+      result.total = result.value;
+      this.#elementCache.set(key, result);
     }
     return this.#elementCache.get(key);
   }
@@ -271,17 +267,17 @@ export class MVList {
       const skills = ['QTH', 'DDG'].includes(state) ?
         baseSkills.filter((p) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state])
         : baseSkills.filter((p) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state] && p.effect === EBattleEffectKind.eSTATUS_FIX);
-      this.#stateCache.set(key, {
+      const result = {
         state,
         label: dataManager.lookup.state[state],
         value: this.getBaseState(state, level),
         foodValue: this.getFoodState(state, foodLevel),
         skillValue: skills.reduce((sum, p) => sum + p.effectValue, 0),
-        get total() {
-          return this.value + this.foodValue + this.skillValue;
-        },
+        total: 0,
         skills,
-      });
+      };
+      result.total = result.value + result.foodValue + result.skillValue;
+      this.#stateCache.set(key, result);
     }
     return this.#stateCache.get(key);
   }

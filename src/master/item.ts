@@ -172,7 +172,7 @@ export class MVList {
   public getSkillWithComboSkills(quality = MVList.equipmentMaxQuality) {
     const key = JSON.stringify({ quality });
     if (!this.#skillWithComboSkillCache.has(key)) {
-      this.#skillWithComboSkillCache.set(key, this.getSkills(quality).map((p) => [p].concat(p.combSkillList)).flat());
+      this.#skillWithComboSkillCache.set(key, this.getSkills(quality).map((p) => p.withComboSkills).flat());
     }
     return this.#skillWithComboSkillCache.get(key);
   }
@@ -187,18 +187,18 @@ export class MVList {
     if (!this.#elementCache.has(key)) {
       const skillFilter = (p: SkillList) => dataManager.lookup.elementMapSkillEffectTarget[element].includes(p.effectTarget);
       const skills = this.getSkillWithComboSkills(quality).filter(skillFilter);
-      this.#elementCache.set(key, {
+      const result = {
         element,
         label: dataManager.lookup.element[element],
         skills,
         addonSkill,
         value: this.ELM[element],
         skillValue: skills.reduce((sum, p) => sum + p.effectValue, 0),
-        addonValue: addonSkill ? addonSkill.flatComboSkills.filter(skillFilter).reduce((sum, p) => sum + p.effectValue, 0) : 0,
-        get total() {
-          return this.value + this.skillValue + this.addonValue;
-        },
-      });
+        addonValue: addonSkill ? addonSkill.withComboSkills.filter(skillFilter).reduce((sum, p) => sum + p.effectValue, 0) : 0,
+        total: 0,
+      };
+      result.total = result.value + result.skillValue + result.addonValue;
+      this.#elementCache.set(key, result);
     }
 
     return this.#elementCache.get(key);
@@ -220,18 +220,18 @@ export class MVList {
         (p: SkillList) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state]
         : (p: SkillList) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state] && p.effect === EBattleEffectKind.eSTATUS_FIX;
       const skills = this.getSkillWithComboSkills(quality).filter(skillFilter);
-      this.#stateCache.set(key, {
+      const result = {
         state,
         label: dataManager.lookup.state[state],
         skills,
         addonSkill,
         value: state in this.EQU ? this.EQU[state].getValue(level) : 0,
         skillValue: skills.reduce((sum, p) => sum + p.effectValue, 0),
-        addonValue: addonSkill ? addonSkill.flatComboSkills.filter(skillFilter).reduce((sum, p) => sum + p.effectValue, 0) : 0,
-        get total() {
-          return this.value + this.skillValue + this.addonValue;
-        },
-      });
+        addonValue: addonSkill ? addonSkill.withComboSkills.filter(skillFilter).reduce((sum, p) => sum + p.effectValue, 0) : 0,
+        total: 0,
+      };
+      result.total = result.value + result.skillValue + result.addonValue;
+      this.#stateCache.set(key, result);
     }
 
     return this.#stateCache.get(key);

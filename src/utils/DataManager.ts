@@ -554,12 +554,6 @@ export class DataManager {
       .groupBy((p) => p.split('_')[0] || p)
       .toObject((p) => p.key(), (p) => p.orderBy((p) => p).toArray()) as { [s: string]: string[] };
   }
-
-  // skill helper
-  public removeOverrideSkills(skills: SkillList[]) {
-    const overrideIds = skills.map(p => p.overrideID).filter(p => p);
-    return skills.filter((p) => !overrideIds.includes(p.id));
-  }
 }
 
 export const dataManager = new DataManager();

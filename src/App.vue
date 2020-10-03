@@ -3,42 +3,10 @@ el-container.containter-main(v-loading="pageLoading")
   el-backtop.back-top(v-if="$store.state.home.showBackTopButton")
   el-aside(v-if="$store.state.home.showSideBar" width="")
     el-menu.menu(:active-text-color="menu.activeTextColor" :background-color="menu.backgroundColor" default-active="1" :collapse="true")
-      el-menu-item.menu__item(index="1")
-        span(slot="title") {{ $t('ホームページ') }}
-        router-link.menu__link(:to="{ name: 'Home' }")
-          img.menu__icon(src="img/icon_chara/Texture2D/icon_chara_face_3015.png" :alt="$t('ホームページ')")
-      el-menu-item.menu__item(index="2")
-        span(slot="title") {{ $t('キャラクタービルダー') }}
-        router-link.menu__link(:to="{ name: 'ToolsCharacterBuilder' }")
-          img.menu__icon(src="img/other/Texture2D/item_texture_0024.png" :alt="$t('キャラクタービルダー')")
-      el-menu-item.menu__item(index="3")
-        span(slot="title") {{ $t('調合アイテム') }}
-        router-link.menu__link(:to="{ name: 'ToolsComposeItem' }")
-          img.menu__icon(src="img/icon/icon_bowl.png" :alt="$t('調合アイテム')")
-      el-menu-item.menu__item(index="4")
-        span(slot="title") {{ $t('アイテム') }}
-        router-link.menu__link(:to="{ name: 'Items' }")
-          img.menu__icon(src="img/icon_item_s/Texture2D/icon_item_s_10010001.png" :alt="$t('アイテム')")
-      el-menu-item.menu__item(index="5")
-        span(slot="title") {{ $t('スキル') }}
-        router-link.menu__link(:to="{ name: 'Skills' }")
-          img.menu__icon(src="img/icon/icon_skill_00003.png" :alt="$t('スキル')")
-      el-menu-item.menu__item(index="6")
-        span(slot="title") {{ $t('キャラクター') }}
-        router-link.menu__link(:to="{ name: 'Characters' }")
-          img.menu__icon(src="img/icon_chara/Texture2D/icon_chara_face_0002.png" :alt="$t('キャラクター')")
-      el-menu-item.menu__item(index="7")
-        span(slot="title") {{ $t('敵') }}
-        router-link.menu__link(:to="{ name: 'Enemies' }")
-          img.menu__icon(src="img/icon_chara/Texture2D/icon_chara_all_9999_00.png" :alt="$t('敵')")
-      el-menu-item.menu__item(index="7")
-        span(slot="title") {{ $t('区域') }}
-        router-link.menu__link(:to="{ name: 'Areas' }")
-          img.menu__icon(src="img/icon/tree.png" :alt="$t('区域')")
-      el-menu-item.menu__item(index="7")
-        span(slot="title") {{ $t('クェスト') }}
-        router-link.menu__link(:to="{ name: 'InfoQuest' }")
-          img.menu__icon(src="img/other/Texture2D/item_texture_0018.png" :alt="$t('クェスト')")
+      el-menu-item.menu__item(v-for="(menuItem, i) of menuItems" :index="i.toString()")
+        span(slot="title") {{ menuItem.title }}
+        router-link.menu__link(:to="menuItem.to")
+          img.menu__icon(:src="menuItem.img.src" :alt="menuItem.title")
   el-main.reset(v-loading="loading")
     router-view(v-if="!pageLoading" :key="$route.fullPath")
 </template>
@@ -69,6 +37,7 @@ export default class extends VueBase {
   public routeToColor = {
     ToolsCharacterBuilder: '#e0c397',
     ToolsComposeItem: '#e0c397',
+    ToolsItemEnhanceQuality: '#e0c397',
     AreasArea: '#2F4F4F',
   };
 
@@ -78,6 +47,101 @@ export default class extends VueBase {
       backgroundColor,
       activeTextColor: backgroundColor,
     };
+  }
+
+  public get menuItems() {
+    return [
+      {
+        title: this.$t('ホームページ'),
+        img: {
+          src: 'img/icon_chara/Texture2D/icon_chara_face_3015.png',
+        },
+        to: {
+          name: 'Home',
+        },
+      },
+      {
+        title: this.$t('キャラクタービルダー'),
+        img: {
+          src: 'img/other/Texture2D/item_texture_0024.png',
+        },
+        to: {
+          name: 'ToolsCharacterBuilder',
+        },
+      },
+      {
+        title: this.$t('調合アイテム'),
+        img: {
+          src: 'img/icon/icon_bowl.png',
+        },
+        to: {
+          name: 'ToolsComposeItem',
+        },
+      },
+      {
+        title: this.$t('材料強化'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10020003.png',
+        },
+        to: {
+          name: 'ToolsItemEnhanceQuality',
+        },
+      },
+      {
+        title: this.$t('アイテム'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10010001.png',
+        },
+        to: {
+          name: 'Items',
+        },
+      },
+      {
+        title: this.$t('スキル'),
+        img: {
+          src: 'img/icon/icon_skill_00003.png',
+        },
+        to: {
+          name: 'Skills',
+        },
+      },
+      {
+        title: this.$t('キャラクター'),
+        img: {
+          src: 'img/icon_chara/Texture2D/icon_chara_face_0002.png',
+        },
+        to: {
+          name: 'Characters',
+        },
+      },
+      {
+        title: this.$t('敵'),
+        img: {
+          src: 'img/icon_chara/Texture2D/icon_chara_all_9999_00.png',
+        },
+        to: {
+          name: 'Enemies',
+        },
+      },
+      {
+        title: this.$t('区域'),
+        img: {
+          src: 'img/icon/tree.png',
+        },
+        to: {
+          name: 'Areas',
+        },
+      },
+      {
+        title: this.$t('クェスト'),
+        img: {
+          src: 'img/other/Texture2D/item_texture_0018.png',
+        },
+        to: {
+          name: 'InfoQuest',
+        },
+      },
+    ];
   }
 
   // page

@@ -149,14 +149,14 @@ export class MVList {
   public getState(state: string, level: number) {
     const key = JSON.stringify({ state, level });
     if (!this.#stateCache.has(key)) {
-      this.#stateCache.set(key, {
+      const result = {
         state,
         label: dataManager.lookup.state[state],
         value: this.sParam.SPEC[state].getValue(level),
-        get total() {
-          return this.value;
-        },
-      });
+        total: 0,
+      };
+      result.total = result.value;
+      this.#stateCache.set(key, result);
     }
     return this.#stateCache.get(key);
   }
@@ -169,14 +169,14 @@ export class MVList {
   public getElement(element: string) {
     const key = JSON.stringify({ element });
     if (!this.#elementCache.has(element)) {
-      this.#elementCache.set(key, {
+      const result = {
         element,
         label: dataManager.lookup.element[element],
         value: this.sParam.ELM[element],
-        get total() {
-          return this.value;
-        },
-      });
+        total: 0,
+      };
+      result.total = result.value;
+      this.#elementCache.set(key, result);
     }
     return this.#elementCache.get(key);
   }

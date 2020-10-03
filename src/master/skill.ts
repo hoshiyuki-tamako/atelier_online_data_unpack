@@ -29,6 +29,11 @@ export interface MGameObject {
 }
 
 export class List {
+  public static removeOverrideSkills(skills: List[]) {
+    const overrideIds = skills.map(p => p.overrideID).filter(p => p);
+    return skills.filter((p) => !overrideIds.includes(p.id));
+  }
+
     id:             number;
     name:           string;
     detail:         string;
@@ -71,8 +76,8 @@ export class List {
       return this.#attackSkill ||= this.combSkillList.find((i) => i.effect === 1) || this;
     }
 
-    public get flatComboSkills() {
-      return this.combSkillList.concat([this]);
+    public get withComboSkills() {
+      return [this as List].concat(this.combSkillList);
     }
 }
 
