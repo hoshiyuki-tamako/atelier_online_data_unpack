@@ -5,6 +5,7 @@ import itemsFilter from '@/store/items/itemsFilter';
 import skillsFilter from '@/store/skills/skillsFilter';
 import characterBuilder from '@/store/tools/characterBuilder';
 import composeItemFilter from '@/store/tools/composeItemFilter';
+import itemEnhanceQuality from '@/store/tools/itemEnhanceQuality';
 import characterRankingFilter from '@/store/tools/ranking/characterRankingFilter';
 import enemyRankingFilter from '@/store/tools/ranking/enemyRankingFilter';
 import equipmentRankingFilter from '@/store/tools/ranking/equipmentRankingFilter';
@@ -20,12 +21,13 @@ export default new Vuex.Store({
     charactersFilter,
     enemiesFilter,
     itemsFilter,
-    composeItemFilter,
+    skillsFilter,
     characterRankingFilter,
     enemyRankingFilter,
     equipmentRankingFilter,
     characterBuilder,
-    skillsFilter,
+    composeItemFilter,
+    itemEnhanceQuality,
   },
   plugins: [new VuexPersistence().plugin],
 });

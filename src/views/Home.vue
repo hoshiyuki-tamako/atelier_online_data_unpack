@@ -33,7 +33,7 @@ div.container
           h3
             router-link.category__link(:to="page.to")
               span {{ page.label }}
-              img.category__image(:src="page.imgSrc" :alt="page.label || page.imgAlt")
+              img.category__image(:class="page.img.class" :src="page.img.src" :alt="page.label || page.imgAlt")
 
   el-divider
   div.strategy-guides
@@ -118,16 +118,32 @@ export default class extends VueWithMapFields {
     return [
       {
         label: this.$t('キャラクタービルダー'),
-        imgSrc: 'img/other/Texture2D/item_texture_0024.png',
+        img: {
+          src: 'img/other/Texture2D/item_texture_0024.png',
+        },
         to: {
           name: 'ToolsCharacterBuilder',
         },
       },
       {
         label: this.$t('調合アイテム'),
-        imgSrc: 'img/icon/icon_bowl.png',
+        img: {
+          src: 'img/icon/icon_bowl.png',
+          class: {
+            'compose-item__image': true,
+          },
+        },
         to: {
           name: 'ToolsComposeItem',
+        },
+      },
+      {
+        label: this.$t('材料強化'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10020003.png',
+        },
+        to: {
+          name: 'ToolsItemEnhanceQuality',
         },
       },
     ];
@@ -137,7 +153,9 @@ export default class extends VueWithMapFields {
     return [
       {
         label: this.$t('ランキング'),
-        imgSrc: 'img/other/Texture2D/item_texture_0025.png',
+        img: {
+          src: 'img/other/Texture2D/item_texture_0025.png',
+        },
         to: {
           name: 'ToolsEquipmentRanking',
         },
@@ -147,7 +165,9 @@ export default class extends VueWithMapFields {
       .orderBy((p) => p.key())
       .select((p) => ({
         label: this.$t(dataManager.lookup.itemCategory[p.key()]),
-        imgSrc: p.first().icon,
+        img: {
+          src: p.first().icon,
+        },
         to: {
           name: 'Items',
           query: {
@@ -165,7 +185,9 @@ export default class extends VueWithMapFields {
       .orderBy((p) => p.key())
       .select((p) => ({
         label: this.$t(dataManager.lookup.itemCategory[p.key()]),
-        imgSrc: p.first().icon,
+        img: {
+          src: p.first().icon,
+        },
         to: {
           name: 'Items',
           query: {
@@ -178,7 +200,9 @@ export default class extends VueWithMapFields {
     if (this.showHiddenContent) {
       items.push({
         label: this.$t('未使用アイテム'),
-        imgSrc: 'img/icon_item_s/Texture2D/icon_item_s_20020010.png',
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_20020010.png',
+        },
         to: {
           name: 'ItemsUnusedItems',
         },
@@ -192,7 +216,9 @@ export default class extends VueWithMapFields {
     return [
       {
         label: this.$t('スキル'),
-        imgSrc: 'img/icon/icon_skill_00003.png',
+        img: {
+          src: 'img/icon/icon_skill_00003.png',
+        },
         to: {
           name: 'Skills',
           query: {
@@ -202,28 +228,36 @@ export default class extends VueWithMapFields {
       },
       {
         label: this.$t('効果'),
-        imgSrc: 'img/fx/Texture2D/FX_Skill2005_02.png',
+        img: {
+          src: 'img/fx/Texture2D/FX_Skill2005_02.png',
+        },
         to: {
           name: 'SkillsEffect',
         },
       },
       {
         label: this.$t('強化効果'),
-        imgSrc: 'img/icon_item_s/Texture2D/icon_item_s_10950010.png',
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10950010.png',
+        },
         to: {
           name: 'SkillsAddon',
         },
       },
       {
         label: this.$t('異常状態'),
-        imgSrc: 'img/fx/Texture2D/FX_smoke.png',
+        img: {
+          src: 'img/fx/Texture2D/FX_smoke.png',
+        },
         to: {
           name: 'SkillsAbnormalEffect',
         },
       },
       {
         label: this.$t('ブレイズアーツ'),
-        imgSrc: 'img/icon_item_s/Texture2D/icon_item_s_56010003.png',
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_56010003.png',
+        },
         to: {
           name: 'Skills',
           query: {
@@ -238,14 +272,18 @@ export default class extends VueWithMapFields {
     const characters = [
       {
         label: this.$t('ランキング'),
-        imgSrc: 'img/other/Texture2D/item_texture_0025.png',
+        img: {
+          src: 'img/other/Texture2D/item_texture_0025.png',
+        },
         to: {
           name: 'ToolsCharacterRanking',
         },
       },
       {
         label: this.$t('戦闘キャラクター'),
-        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_0001.png',
+        img: {
+          src: 'img/icon_chara/Texture2D/icon_chara_all_0001.png',
+        },
         to: {
           name: 'Characters',
           query: {
@@ -255,7 +293,9 @@ export default class extends VueWithMapFields {
       },
       {
         label: this.$t('NPC'),
-        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_3007_00.png',
+        img: {
+          src: 'img/icon_chara/Texture2D/icon_chara_all_3007_00.png',
+        },
         to: {
           name: 'Characters',
           query: {
@@ -268,7 +308,9 @@ export default class extends VueWithMapFields {
     if (this.showHiddenContent) {
       characters.push({
         label: this.$t('他のキャラクター'),
-        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_20001.png',
+        img: {
+          src: 'img/icon_chara/Texture2D/icon_chara_all_20001.png',
+        },
         to: {
           name: 'CharactersOtherCharacters',
         },
@@ -282,14 +324,18 @@ export default class extends VueWithMapFields {
     return [
       {
         label: this.$t('ランキング'),
-        imgSrc: 'img/other/Texture2D/item_texture_0025.png',
+        img: {
+          src: 'img/other/Texture2D/item_texture_0025.png',
+        },
         to: {
           name: 'ToolsEnemyRanking',
         },
       },
       {
         label: this.$t('敵'),
-        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_9999_00.png',
+        img: {
+          src: 'img/icon_chara/Texture2D/icon_chara_all_9999_00.png',
+        },
         to: {
           name: 'Enemies',
         },
@@ -301,42 +347,54 @@ export default class extends VueWithMapFields {
     return [
       {
         label: this.$t('区域'),
-        imgSrc: 'img/icon/tree.png',
+        img: {
+          src: 'img/icon/tree.png',
+        },
         to: {
           name: 'Areas',
         },
       },
       {
         label: this.$t('クェスト'),
-        imgSrc: 'img/other/Texture2D/item_texture_0018.png',
+        img: {
+          src: 'img/other/Texture2D/item_texture_0018.png',
+        },
         to: {
           name: 'InfoQuest',
         },
       },
       {
         label: this.$t('ダイアログ'),
-        imgSrc: 'img/icon_chara/Texture2D/icon_chara_all_1010_00.png',
+        img: {
+          src: 'img/icon_chara/Texture2D/icon_chara_all_1010_00.png',
+        },
         to: {
           name: 'InfoDialog',
         },
       },
       {
         label: this.$t('大事なもの'),
-        imgSrc: 'img/icon_item01/Texture2D/icon_item01_00001.png',
+        img: {
+          src: 'img/icon_item01/Texture2D/icon_item01_00001.png',
+        },
         to: {
           name: 'InfoWealth',
         },
       },
       {
         label: this.$t('称号'),
-        imgSrc: 'img/icon_degree/Texture2D/icon_degree_0605.png',
+        img: {
+          src: 'img/icon_degree/Texture2D/icon_degree_0605.png',
+        },
         to: {
           name: 'InfoDegree',
         },
       },
       {
         label: this.$t('ゾーン'),
-        imgSrc: 'img/icon_item_s/Texture2D/icon_item_s_10500014.png',
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10500014.png',
+        },
         to: {
           name: 'InfoZone',
         },
@@ -348,21 +406,27 @@ export default class extends VueWithMapFields {
     return [
       {
         label: this.$t('計算/公式'),
-        imgSrc: 'img/other/Texture2D/item_texture_0010.png',
+        img: {
+          src: 'img/other/Texture2D/item_texture_0010.png',
+        },
         to: {
           name: 'OthersCalculate',
         },
       },
       {
         label: this.$t('降臨バタル(昔)'),
-        imgSrc: 'img/enemy_tex/Texture2D/enemy_tex_023_03.png',
+        img: {
+          src: 'img/enemy_tex/Texture2D/enemy_tex_023_03.png',
+        },
         to: {
           name: 'OthersAdventBattle',
         },
       },
       {
         label: '',
-        imgSrc: 'img/tips/Texture2D/Tips_Chara_01.png',
+        img: {
+          src: 'img/tips/Texture2D/Tips_Chara_01.png',
+        },
         imgAlt: 'tips',
         to: {
           name: 'OthersTips',
@@ -370,14 +434,18 @@ export default class extends VueWithMapFields {
       },
       {
         label: this.$t('宝文字'),
-        imgSrc: 'img/other/Texture2D/item_texture_0020.png',
+        img: {
+          src: 'img/other/Texture2D/item_texture_0020.png',
+        },
         to: {
           name: 'OthersTreasureText',
         },
       },
       {
         label: this.$t('チャット'),
-        imgSrc: 'img/other/stamp.png',
+        img: {
+          src: 'img/other/stamp.png',
+        },
         to: {
           name: 'OthersChat',
         },
@@ -490,7 +558,6 @@ export default class extends VueWithMapFields {
     const requiredRefreshPage = this.showHiddenContent;
     await Promise.all([
       this.$store.dispatch('home/reset'),
-      this.$store.dispatch('composeItemFilter/reset'),
       this.$store.dispatch('characterRankingFilter/reset'),
       this.$store.dispatch('enemyRankingFilter/reset'),
       this.$store.dispatch('equipmentRankingFilter/reset'),
@@ -498,6 +565,8 @@ export default class extends VueWithMapFields {
       this.$store.dispatch('itemsFilter/reset'),
       this.$store.dispatch('enemiesFilter/reset'),
       this.$store.dispatch('charactersFilter/reset'),
+      this.$store.dispatch('composeItemFilter/reset'),
+      this.$store.dispatch('itemEnhanceQuality/reset'),
     ]);
     if (requiredRefreshPage) {
       window.location.reload();
@@ -550,6 +619,8 @@ export default class extends VueWithMapFields {
   text-decoration: none
 .category__image
   width: 100px
+.compose-item__image
+  margin-top: 18px
 
 .strategy-guides, .other-links
   margin: 12px
