@@ -44,7 +44,7 @@ export interface MGameObject {
   m_PathID: number;
 }
 export class MVList {
-  public static states = ['HP', 'SATK', 'SDEF', 'MATK', 'MDEF', 'SPD', 'QTH', 'DDG'];
+  public static states = ['HP', 'SATK', 'SDEF', 'MATK', 'MDEF', 'SPD', 'QTH', 'DDG', 'SADD'];
 
   public static weaponKindCategory = [ECategory.eWEAPON, ECategory.eSHIELD];
 

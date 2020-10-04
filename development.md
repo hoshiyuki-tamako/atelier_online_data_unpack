@@ -125,13 +125,13 @@ item
       "R": 0,
       "B": 0
     },
-    "SDA": {
+    "SDA": { // short distance accuracy
       "G": 0.0,
       "M": 0,
       "R": 0,
       "B": 0
     },
-    "LDA": {
+    "LDA": { // long distance accuracy
       "G": 0.0,
       "M": 0,
       "R": 0,
@@ -149,7 +149,7 @@ item
       "R": 0,
       "B": 0
     },
-    "SADD": {
+    "SADD": { // SP base
       "G": 0.0,
       "M": 0,
       "R": 0,

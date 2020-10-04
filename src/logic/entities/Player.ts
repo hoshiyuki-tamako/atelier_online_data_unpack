@@ -1,17 +1,17 @@
-import { EElement } from './../Enums';
-import { EBattleAttribute, EBattleEffectTrigger } from '@/logic/Enums';
+import { Enemy } from '@/logic/entities/Enemy';
+import { EAbnormalStateTarget, EBattleAttribute, EBattleEffectTrigger, EElement } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
 import { Equipment } from '@/logic/items/Equipment';
 import { EquipmentItem } from '@/logic/items/EquipmentItem';
 import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
 import { EquipmentModifier } from '@/logic/modifiers/EquipmentModifier';
+import { MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
 import { MVList as CharacterMVList } from '@/master/chara';
-import { Enemy } from '@/master/enemy';
 import { MVList as ItemMvList } from '@/master/item';
 import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
 
-type multiplier = { element: string, value: number };
+type multiplier = { translatedLabel?: string, label?: string, value: number };
 
 export class EquipmentsModifier {
   @Type(_ => EquipmentModifier)
@@ -80,6 +80,18 @@ export class Player {
       .flat()
       .concat(this.supports.map((p) => Formula.supportStates.map((state) => p.item.getBaseState(state, p.modifier.level))).flat())
       .reduce((sum, v) => sum + v, 0);
+  }
+
+  public abnormalStateIds = [] as number[];
+
+  public get abnormalStates() {
+    const states = this.abnormalStateIds.map((p) => dataManager.abnormalStateById[p]).filter((p) => p);
+    const removeStates = states.map((p) => p.weakStatelist).flat();
+    return states.filter((p) => !removeStates.includes(p.id));
+  }
+
+  public get abnormalStateEffects() {
+    return this.abnormalStates.map((p) => p.effectlist).flat().map((p) => dataManager.abnormalStateEffectById[p]);
   }
 
   // state
@@ -153,18 +165,56 @@ export class Player {
     return Math.round(multiplier.reduce((sum, v) => sum * v, 1));
   }
 
-  public receiveDamage(damage: number, attribute = EBattleAttribute.eNONE, element = EElement.eNONE) {
+  public receiveDamage(damage: number, attribute = EBattleAttribute.eNONE, element = EElement.eNONE, abnormalStateEffects: AbnormalStateEffectMVList[] = []) {
     const totalHp = this.totalState('HP');
     const defense = this.totalState(attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MDEF' : 'SDEF');
 
     let multipliers = [] as multiplier[];
-    const label = EElement[element].substr(1);
-    if (label !== 'NONE') {
-      const value = this.totalElement(label);
+    const _element = EElement[element].substr(1);
+    if (_element !== 'NONE') {
+      const value = this.totalElement(_element);
       if (value) {
         multipliers.push({
-          element: label,
+          label: dataManager.lookup.element[_element],
           value: 1 - value / 100,
+        });
+      }
+    }
+
+    // self abnormal state
+    for (const abnormalStateEffect of this.abnormalStateEffects) {
+      const target = EAbnormalStateTarget[abnormalStateEffect.trarget].substr(1);
+      if (
+          ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMDEF) ||
+          abnormalStateEffect.trarget === EAbnormalStateTarget.eSDEF) &&
+          dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
+      ) {
+        const upDownMultiplier = +abnormalStateEffect.name.toLocaleLowerCase().includes('down');
+        multipliers.push({
+          translatedLabel: abnormalStateEffect.name,
+          value: upDownMultiplier + abnormalStateEffect.value,
+        });
+      } else if (_element === target && dataManager.abnormalStateEffectsElements.includes(abnormalStateEffect)) {
+        const base = abnormalStateEffect.name.toLocaleLowerCase().includes('down') ? 0 : 1;
+        multipliers.push({
+          translatedLabel: abnormalStateEffect.name,
+          value: base + abnormalStateEffect.value / 100,
+        });
+      }
+    }
+
+    // other abnormal states
+    for (const abnormalStateEffect of abnormalStateEffects) {
+      const target = EAbnormalStateTarget[abnormalStateEffect.trarget].substr(1);
+      if (
+          ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMATK) ||
+          abnormalStateEffect.trarget === EAbnormalStateTarget.eSATK) &&
+          dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
+      ) {
+        const upDownMultiplier = abnormalStateEffect.name.toLocaleLowerCase().includes('down') ? 0 : 1;
+        multipliers.push({
+          translatedLabel: abnormalStateEffect.name,
+          value: upDownMultiplier + abnormalStateEffect.value,
         });
       }
     }
@@ -199,7 +249,7 @@ export class Player {
   }
 
   public get element() {
-    return this.equipment.weapon?.item.elementChangeSkill || 0;
+    return this.equipment.weapon?.item.elementChangeSkill?.effectValue || 0;
   }
 }
 

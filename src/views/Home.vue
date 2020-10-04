@@ -44,12 +44,12 @@ div.container
       p(v-for="link of page.links")
         el-link(:href="link.href" target="_blank" rel="noopener") {{ link.href }}
       el-divider(v-if="otherStrategyPages.length !== (i + 1)")
+
   el-divider
   div.other-links
     h3 {{ $t('他のサイト') }}
     div(v-for="otherLink of otherLinks")
       el-link(:href="otherLink.href" target="_blank" rel="noopener") {{ otherLink.title }}
-      br
 </template>
 
 <script lang="ts">

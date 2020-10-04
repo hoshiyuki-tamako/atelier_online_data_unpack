@@ -1,4 +1,5 @@
-import { EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
+import files from '@/../public/generated/files.json';
+import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
 import { lookup } from '@/logic/Lookup';
 import { AbnormalState, MVList as AbnormalStateMVList } from '@/master/abnormalState';
 import { AbnormalStateEffect, MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
@@ -52,8 +53,6 @@ export class DataManager {
   public async loadGeneratedJson(file: string) {
     return fetch(this.getGeneratedJsonUrl(`${file}.json`)).then((p) => p.json());
   }
-
-  public preloadPromise?: Promise<void>;
 
   // parsed raw data
   public blazeArt: BlazeArt;
@@ -120,6 +119,10 @@ export class DataManager {
   public abnormalStateTypes: string[];
 
   public abnormalStateEffectById: { [id: string]: AbnormalStateEffectMVList };
+  public abnormalStateEffectsByTarget: { [target: string]: AbnormalStateEffectMVList[] };
+  public abnormalStateEffectsElements: AbnormalStateEffectMVList[];
+  public abnormalStateEffectsAttackStates: AbnormalStateEffectMVList[];
+  public abnormalStateEffectsStates: AbnormalStateEffectMVList[];
 
   public characterById: { [df: string]: CharacterMVList };
   public charactersBySkill: { [df: string]: CharacterMVList[] };
@@ -162,26 +165,14 @@ export class DataManager {
 
   // custom data
   public lookup = lookup;
-  public files: any;
+  public files = files;
   public areaModel: IAreaModel[];
 
   public areaModelsById: { [iAreaId: string]: IAreaModel[] };
 
   public unusedAdvs: { [s: string]: string[] };
 
-  public clear() {
-    this.preloadPromise = null;
-  }
-
   //
-  public preload() {
-    return this.preloadPromise = (async () => {
-      await Promise.all([
-        this.loadGeneratedGeneric('files'),
-      ]);
-    })();
-  }
-
   public async load(locale: string, showHiddenContent = false) {
     this.showHiddenContent = showHiddenContent;
     this.locale = locale;
@@ -190,12 +181,6 @@ export class DataManager {
   }
 
   public async loadData() {
-    if (!this.preloadPromise) {
-      this.preload();
-    }
-
-    await this.preloadPromise;
-
     await Promise.all([
       this.loadItem(),
       this.loadCharacter(),
@@ -390,8 +375,13 @@ export class DataManager {
 
   public async loadAbnormalStateEffect(abnormalStateEffect?: unknown) {
     await this.loadGeneric('abnormalstateeffect', 'abnormalStateEffect', abnormalStateEffect);
-    this.abnormalStateEffectById = Enumerable.from(this.abnormalStateEffect.m_vList)
-      .toObject((p) => p.id, (p) => p) as { [id: string]: AbnormalStateEffectMVList };
+    this.abnormalStateEffectById = Enumerable.from(this.abnormalStateEffect.m_vList).toObject((p) => p.id, (p) => p) as { [id: string]: AbnormalStateEffectMVList };
+    this.abnormalStateEffectsByTarget = Enumerable.from(this.abnormalStateEffect.m_vList)
+      .groupBy((p) => p.trarget)
+      .toObject((p) => p.key(), (p) => p.orderBy((p) => p.id).toArray()) as { [target: string]: AbnormalStateEffectMVList[] };
+    this.abnormalStateEffectsElements = [EAbnormalStateTarget.eFIRE, EAbnormalStateTarget.eWATER, EAbnormalStateTarget.eEARTH, EAbnormalStateTarget.eWIND, EAbnormalStateTarget.eLIGHT, EAbnormalStateTarget.eDARK].map((p) => this.abnormalStateEffectsByTarget[p]).flat();
+    this.abnormalStateEffectsAttackStates = [EAbnormalStateTarget.eSATK, EAbnormalStateTarget.eMATK].map((p) => this.abnormalStateEffectsByTarget[p]).flat();
+    this.abnormalStateEffectsStates = [EAbnormalStateTarget.eHP, EAbnormalStateTarget.eSDEF, EAbnormalStateTarget.eMDEF, EAbnormalStateTarget.eSPD, EAbnormalStateTarget.eDDG, EAbnormalStateTarget.eQTH].map((p) => this.abnormalStateEffectsByTarget[p]).flat().concat(this.abnormalStateEffectsAttackStates);
   }
 
   public async loadZone(zone?: Zone) {
@@ -557,4 +547,3 @@ export class DataManager {
 }
 
 export const dataManager = new DataManager();
-dataManager.preload();

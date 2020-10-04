@@ -446,6 +446,9 @@ div.top-container
             router-link(v-if="player.character" :to="{ name: 'CharactersCharacter', query: { df: player.character.DF, level: player.characterModifier.level, foodLevel: player.characterModifier.foodLevel } }" target="_blank")
               span {{ player.character.NAME }} (LV {{ player.characterModifier.level }}) ({{ $t('食事') }} LV {{ player.characterModifier.foodLevel }})
           img(v-if="player.character" :src="player.character.icon" :alt="player.character.NAME")
+      div
+        el-select(v-model="player.abnormalStateIds" :placeholder="$t('異常状態')" multiple filterable clearable)
+          el-option(v-for="abnormalState of dataManager.abnormalState.m_vList" :key="abnormalState.id" :label="abnormalState.name" :value="abnormalState.id")
       table
         tr
           th
@@ -731,10 +734,13 @@ div.top-container
           router-link(v-if="enemy.enemy" :to="{ name: 'EnemiesEnemy', query: { df: enemy.enemy.DF, level: enemy.level } }" target="_blank")
             span {{ enemy.enemy.strName }} (LV {{ enemy.level }})
         img.enemy__icon(v-if="enemy.enemy" :src="enemy.enemy.icon" :alt="enemy.enemy.strName")
+      div
+        el-select(v-model="enemy.abnormalStateIds" :placeholder="$t('異常状態')" multiple filterable clearable)
+          el-option(v-for="abnormalState of dataManager.abnormalState.m_vList" :key="abnormalState.id" :label="abnormalState.name" :value="abnormalState.id")
       div(v-if="enemy.enemy")
         table
           tr(v-if="player.equipment.weapon || player.character" v-for="playerAttack of [player.totalState(player.attributeState)]")
-            template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, player.element, player.attribute, player.skills)]")
+            template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, player.element, player.attribute, player.skills, player.abnormalStateEffects)]")
               th
                 v-popover(placement="left-end" trigger="hover")
                   span {{ $t(dataManager.lookup.EBattleAttribute[player.attribute]) }}
@@ -748,7 +754,7 @@ div.top-container
                           th {{ $t('ディフェンス') }}
                           td {{ -receiveDamage.defense }}
                         tr(v-for="multiplier of receiveDamage.multipliers")
-                          th {{ $t(dataManager.lookup.element[multiplier.element]) }}
+                          th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                           td {{ multiplier.value }}
                         tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                           th {{ skill.name }}
@@ -764,7 +770,7 @@ div.top-container
           tr(v-if="player.character")
             template(v-for="skill of [player.character.getBlazeArt(player.characterModifier.level, player.characterModifier.blazeArtLevel)].filter((p) => p)")
               template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills, player.abnormalStateEffects)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="player.character.faceIcon" :alt="skill.name")
@@ -780,7 +786,7 @@ div.top-container
                               th {{ $t('ディフェンス') }}
                               td {{ -receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
-                              th {{ $t(dataManager.lookup.element[multiplier.element]) }}
+                              th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                               td {{ multiplier.value }}
                             tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                               th {{ skill.name }}
@@ -796,7 +802,7 @@ div.top-container
           tr(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).attribute")
             template(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
               template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills, player.abnormalStateEffects)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
@@ -812,7 +818,7 @@ div.top-container
                               th {{ $t('ディフェンス') }}
                               td {{ -receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
-                              th {{ $t(dataManager.lookup.element[multiplier.element]) }}
+                              th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                               td {{ multiplier.value }}
                             tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                               th {{ skill.name }}
@@ -828,7 +834,7 @@ div.top-container
           tr(v-if="player.equipment.shield && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality) && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality).attribute")
             template(v-for="skill of [player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)]")
               template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills, player.abnormalStateEffects)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
@@ -844,7 +850,7 @@ div.top-container
                               th {{ $t('ディフェンス') }}
                               td {{ -receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
-                              th {{ $t(dataManager.lookup.element[multiplier.element]) }}
+                              th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                               td {{ multiplier.value }}
                             tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                               th {{ skill.name }}
@@ -863,7 +869,7 @@ div.top-container
             img.icon-small(:src="player.character.faceIcon" :alt="player.character.NAME")
             span {{ player.character.NAME }}
           table
-            tr(v-for="receiveDamage of [player.receiveDamage(enemy.attack())]")
+            tr(v-for="receiveDamage of [player.receiveDamage(enemy.attack(), 0, 0, enemy.abnormalStateEffects)]")
               th
                 v-popover(placement="left-end" trigger="hover")
                   span {{ $t(dataManager.lookup.EBattleAttribute[0]) }}
@@ -877,12 +883,12 @@ div.top-container
                           th {{ $t('ディフェンス') }}
                           td {{ -receiveDamage.defense }}
                         tr(v-for="multiplier of receiveDamage.multipliers")
-                          th {{ $t(dataManager.lookup.element[multiplier.element]) }}
+                          th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                           td {{ multiplier.value }}
               td {{ receiveDamage.total.toFixed() }}
               td HP: {{ receiveDamage.hp.toFixed() }}
             tr(v-for="skill of enemy.enemy.skills.filter((p) => p.type === 1 && p.effect === 1)")
-              template(v-for="receiveDamage of [player.receiveDamage(enemy.attack(skill.attackSkill.attribute) * (1 + skill.effectValue), skill.attackSkill.attribute, skill.attackSkill.element)]")
+              template(v-for="receiveDamage of [player.receiveDamage(enemy.attack(skill.attackSkill.attribute) * (1 + skill.effectValue), skill.attackSkill.attribute, skill.attackSkill.element, enemy.abnormalStateEffects)]")
                 th
                   v-popover(placement="left-end" trigger="hover")
                     span {{ skill.name }}
@@ -897,7 +903,7 @@ div.top-container
                             th {{ $t('ディフェンス') }}
                             td {{ -receiveDamage.defense }}
                           tr(v-for="multiplier of receiveDamage.multipliers")
-                            th {{ $t(dataManager.lookup.element[multiplier.element]) }}
+                            th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                             td {{ multiplier.value }}
                 td {{ receiveDamage.total.toFixed() }}
                 td HP: {{ receiveDamage.hp.toFixed() }}
@@ -1447,6 +1453,7 @@ export default class extends VueBase {
       }
 
       this.player = playerExport.player;
+      this.enemy = playerExport.enemy || this.enemy;
       this.skillChain = playerExport.skillChain;
       return true;
     } catch (e) {
@@ -1465,7 +1472,7 @@ export default class extends VueBase {
   }
 
   public get exportString() {
-    const playerExport = new PlayerExport(this.$i18n.locale, this.player);
+    const playerExport = new PlayerExport(this.$i18n.locale, this.player, this.enemy);
     playerExport.skillChain = this.skillChain;
     return btoa(JSON.stringify(playerExport));
   }
@@ -1714,6 +1721,9 @@ td
 /* battle
 .battle
   padding: 48px
+
+.enemy
+  height: 300px
 
 .enemy__icon
   width: 240px

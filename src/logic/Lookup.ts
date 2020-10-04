@@ -74,11 +74,11 @@ export const lookup = {
     MATK: '魔法攻撃',
     MDEF: '魔法防禦',
     SPD: '速度',
-    SDA: 'SP上限?',
-    LDA: 'LDA',
+    SDA: '命中率(近く)',
+    LDA: '命中率(距離)',
     QTH: 'クリティカル',
     DDG: '回避',
-    SADD: 'SP回復量?',
+    SADD: 'SP回復量',
   },
 
   element: {

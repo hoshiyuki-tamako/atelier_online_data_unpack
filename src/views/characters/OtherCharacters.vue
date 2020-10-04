@@ -22,7 +22,7 @@ export default class extends VueBase {
 
   public get otherCharacters() {
     const characterIconDfs = this.existingCharacterIconDfs;
-    return Object.values(dataManager.files.img.icon_chara.Texture2D as string[])
+    return Object.values(dataManager.files.img.icon_chara.Texture2D)
       .filter((icon) => icon.startsWith('icon_chara_all_') && !characterIconDfs.some((iconDf) => new RegExp(`^icon_chara_all_${iconDf}`).exec(icon)))
       .map((icon) => ({
         icon,
