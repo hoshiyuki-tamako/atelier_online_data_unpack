@@ -755,13 +755,13 @@ div.top-container
                           td {{ -receiveDamage.defense }}
                         tr(v-for="multiplier of receiveDamage.multipliers")
                           th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                          td {{ multiplier.value }}
+                          td {{ +multiplier.value.toFixed(15) }}
                         tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                           th {{ skill.name }}
                           td {{ skill.effectValue }}
                         tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
                           th {{ skill.name }}
-                          td {{ 1 + skill.effectValue }}
+                          td {{ +(1 + skill.effectValue).toFixed(15) }}
                         tr(v-for="skill of receiveDamage.otherEffectSkills")
                           th {{ skill.name }}
                           td {{ skill.detail }}
@@ -787,13 +787,13 @@ div.top-container
                               td {{ -receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
                               th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                              td {{ multiplier.value }}
+                              td {{ +multiplier.value.toFixed(15) }}
                             tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                               th {{ skill.name }}
                               td {{ skill.effectValue }}
                             tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
                               th {{ skill.name }}
-                              td {{ 1 + skill.effectValue }}
+                              td {{ +(1 + skill.effectValue).toFixed(15) }}
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
@@ -819,13 +819,13 @@ div.top-container
                               td {{ -receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
                               th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                              td {{ multiplier.value }}
+                              td {{ +multiplier.value.toFixed(15) }}
                             tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                               th {{ skill.name }}
                               td {{ skill.effectValue }}
                             tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
                               th {{ skill.name }}
-                              td {{ 1 + skill.effectValue }}
+                              td {{ +(1 + skill.effectValue).toFixed(15) }}
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
@@ -851,13 +851,13 @@ div.top-container
                               td {{ -receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
                               th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                              td {{ multiplier.value }}
+                              td {{ +multiplier.value.toFixed(15) }}
                             tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                               th {{ skill.name }}
                               td {{ skill.effectValue }}
                             tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
                               th {{ skill.name }}
-                              td {{ 1 + skill.effectValue }}
+                              td {{ +(1 + skill.effectValue).toFixed(15) }}
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
@@ -884,11 +884,11 @@ div.top-container
                           td {{ -receiveDamage.defense }}
                         tr(v-for="multiplier of receiveDamage.multipliers")
                           th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                          td {{ multiplier.value }}
+                          td {{ +multiplier.value.toFixed(15) }}
               td {{ receiveDamage.total.toFixed() }}
               td HP: {{ receiveDamage.hp.toFixed() }}
             tr(v-for="skill of enemy.enemy.skills.filter((p) => p.type === 1 && p.effect === 1)")
-              template(v-for="receiveDamage of [player.receiveDamage(enemy.attack(skill.attackSkill.attribute) * (1 + skill.effectValue), skill.attackSkill.attribute, skill.attackSkill.element, enemy.abnormalStateEffects)]")
+              template(v-for="receiveDamage of [player.receiveDamage(enemy.attack(skill.attackSkill.attribute) * (+(1 + skill.effectValue).toFixed(15)), skill.attackSkill.attribute, skill.attackSkill.element, enemy.abnormalStateEffects)]")
                 th
                   v-popover(placement="left-end" trigger="hover")
                     span {{ skill.name }}
@@ -904,7 +904,7 @@ div.top-container
                             td {{ -receiveDamage.defense }}
                           tr(v-for="multiplier of receiveDamage.multipliers")
                             th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                            td {{ multiplier.value }}
+                            td {{ +multiplier.value.toFixed(15) }}
                 td {{ receiveDamage.total.toFixed() }}
                 td HP: {{ receiveDamage.hp.toFixed() }}
 </template>
@@ -1448,7 +1448,7 @@ export default class extends VueBase {
       // check does item exists
       for (const [slot, equipment] of playerExport.player.equipments) {
         if (!equipment.item) {
-          delete playerExport.player.equipment[slot];
+          playerExport.player.equipment[slot] = null;
         }
       }
 

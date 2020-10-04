@@ -246,7 +246,7 @@ export class MVList {
     return {
       state,
       label: dataManager.lookup.state[state],
-      value: state in this.EQU ? this.EQU[state].getSupportValue(level) : 0,
+      value: state in this.EQU && Formula.supportStates.includes(state) ? this.EQU[state].getSupportValue(level) : 0,
     };
   }
 

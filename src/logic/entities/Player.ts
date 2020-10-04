@@ -104,7 +104,7 @@ export class Player {
   }
 
   public totalSupportState(state: string) {
-    return this.supports.filter((p) => state in p.item.EQU).reduce((sum, p) => sum + p.item.EQU[state].getSupportValue(p.modifier.level), 0);
+    return this.supports.filter((p) => state in p.item.EQU).reduce((sum, p) => sum + p.item.getSupportState(state, p.modifier.level).value, 0);
   }
 
   public totalState(state: string) {
