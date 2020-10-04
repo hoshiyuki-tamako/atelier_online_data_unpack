@@ -195,7 +195,7 @@ export class Player {
           value: upDownMultiplier + abnormalStateEffect.value,
         });
       } else if (_element === target && dataManager.abnormalStateEffectsElements.includes(abnormalStateEffect)) {
-        const base = abnormalStateEffect.name.toLocaleLowerCase().includes('down') ? 0 : 1;
+        const base = +abnormalStateEffect.name.toLocaleLowerCase().includes('down');
         multipliers.push({
           translatedLabel: abnormalStateEffect.name,
           value: base + abnormalStateEffect.value / 100,

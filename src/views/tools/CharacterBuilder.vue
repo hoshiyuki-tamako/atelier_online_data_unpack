@@ -601,7 +601,7 @@ div.top-container
       br
       div
         span {{ $t('スキル') }}{{ $t('連携') }}
-        el-slider(v-model="skillChain" :step="1" :max="15")
+        el-slider(v-model="skillChain" :step="1" :max="14")
       br
       template(v-if="player.character")
         div(v-for="skill of [player.character.getBlazeArt(player.characterModifier.level, player.characterModifier.blazeArtLevel)].filter((p) => p)")
