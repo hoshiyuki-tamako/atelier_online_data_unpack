@@ -10,7 +10,7 @@ div.container
       el-select(v-model="weaponKind" searchable clearable :disabled="!enableWeaponKindFilter")
         el-option(v-for="item of weaponKindOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filters
-      el-checkbox(@change="onSupportChange" v-model="support") {{ $t('サブ裝備') }}
+      el-checkbox(@change="onSupportChange" v-model="support") {{ $t('サブ装備') }}
   div.filters
     div.filter
       span {{ $t('品質') }}

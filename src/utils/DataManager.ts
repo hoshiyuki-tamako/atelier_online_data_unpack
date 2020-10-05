@@ -379,9 +379,9 @@ export class DataManager {
     this.abnormalStateEffectsByTarget = Enumerable.from(this.abnormalStateEffect.m_vList)
       .groupBy((p) => p.trarget)
       .toObject((p) => p.key(), (p) => p.orderBy((p) => p.id).toArray()) as { [target: string]: AbnormalStateEffectMVList[] };
-    this.abnormalStateEffectsElements = [EAbnormalStateTarget.eFIRE, EAbnormalStateTarget.eWATER, EAbnormalStateTarget.eEARTH, EAbnormalStateTarget.eWIND, EAbnormalStateTarget.eLIGHT, EAbnormalStateTarget.eDARK].map((p) => this.abnormalStateEffectsByTarget[p]).flat();
-    this.abnormalStateEffectsAttackStates = [EAbnormalStateTarget.eSATK, EAbnormalStateTarget.eMATK].map((p) => this.abnormalStateEffectsByTarget[p]).flat();
-    this.abnormalStateEffectsStates = [EAbnormalStateTarget.eHP, EAbnormalStateTarget.eSDEF, EAbnormalStateTarget.eMDEF, EAbnormalStateTarget.eSPD, EAbnormalStateTarget.eDDG, EAbnormalStateTarget.eQTH].map((p) => this.abnormalStateEffectsByTarget[p]).flat().concat(this.abnormalStateEffectsAttackStates);
+    this.abnormalStateEffectsElements = [EAbnormalStateTarget.eFIRE, EAbnormalStateTarget.eWATER, EAbnormalStateTarget.eEARTH, EAbnormalStateTarget.eWIND, EAbnormalStateTarget.eLIGHT, EAbnormalStateTarget.eDARK].map((p) => this.abnormalStateEffectsByTarget[p] || []).flat();
+    this.abnormalStateEffectsAttackStates = [EAbnormalStateTarget.eSATK, EAbnormalStateTarget.eMATK].map((p) => this.abnormalStateEffectsByTarget[p] || []).flat();
+    this.abnormalStateEffectsStates = [EAbnormalStateTarget.eHP, EAbnormalStateTarget.eSDEF, EAbnormalStateTarget.eMDEF, EAbnormalStateTarget.eSPD, EAbnormalStateTarget.eDDG, EAbnormalStateTarget.eQTH].map((p) => this.abnormalStateEffectsByTarget[p] || []).flat().concat(this.abnormalStateEffectsAttackStates);
   }
 
   public async loadZone(zone?: Zone) {

@@ -84,7 +84,7 @@ export default class extends VueWithMapFields {
         pages: this.pageTools,
       },
       {
-        title: this.$t('裝備'),
+        title: this.$t('装備'),
         pages: this.pageWeapons,
       },
       {

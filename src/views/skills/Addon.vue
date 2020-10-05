@@ -2,7 +2,7 @@
 div.container
   div.filters
     div.filter
-      el-switch(v-model="equipmentUseful" :active-text="$t('裝備有効')")
+      el-switch(v-model="equipmentUseful" :active-text="$t('装備有効')")
 
   div.content
     el-table(:data="filteredSills")
@@ -12,7 +12,7 @@ div.container
       el-table-column(prop="effectValue" :label="$t('数値')" sortable)
         template(slot-scope="scope") {{ scope.row.effectValue }}, {{ scope.row.effectValue2 }}
       el-table-column(prop="rarity" :label="$t('レア度')" sortable)
-        template(slot-scope="scope") {{ new Array(scope.row.rarity).fill('⭐').join('') }}
+        template(slot-scope="scope") {{ '⭐'.repeat(scope.row.rarity) }}
 </template>
 
 <script lang="ts">

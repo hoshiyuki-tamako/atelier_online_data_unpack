@@ -7,7 +7,7 @@ div.container
       el-table-column(prop="TYP" :label="$t('種類')" :filters="typeFilters" :filter-method="typeFilderHandler" sortable)
         template(slot-scope="scope") {{ $t(dataManager.lookup.EDegreeMissonType[scope.row.TYP]) }}
       el-table-column(prop="RTY" :label="$t('レア度')" sortable)
-        template(slot-scope="scope") {{ new Array(scope.row.RTY).fill('⭐').join('') }}
+        template(slot-scope="scope") {{ '⭐'.repeat(scope.row.RTY) }}
       el-table-column(prop="NAME" :label="$t('名前')" sortable)
       el-table-column(prop="DESC" :label="$t('詳細')" sortable)
       el-table-column(:label="$t('画像')")

@@ -14,7 +14,7 @@ div.container
       div.wealth-container(v-for="grow of character.GROW")
         img(src="img/icon_item01/Texture2D/icon_item01_00006.png" :alt="$t('武器種類')")
         span {{ grow.STONE }}
-        span {{ new Array(grow.STAR).fill('⭐').join('') }}
+        span {{ '⭐'.repeat(grow.STAR) }}
 
     div.item-container-right
       div(v-if="character.EXC")

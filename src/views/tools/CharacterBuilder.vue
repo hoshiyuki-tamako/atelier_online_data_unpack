@@ -64,7 +64,7 @@ div.top-container
         img.icon-small(:src="supportItemSelected.icon" :alt="supportItemSelected.name")
         div.filters
           div.filter
-            el-button(@click="itemPickerDialogVisible = true") {{ $t('裝備を選ぶ') }}
+            el-button(@click="itemPickerDialogVisible = true") {{ $t('装備を選ぶ') }}
             el-button(@click="onAddSupportItem" type="primary") +
           div.filter
             span LV {{ $t('設定') }}
@@ -413,7 +413,7 @@ div.top-container
           div.sub-equipment-menu
             div.filters
               el-button(@click="openSupportItemEditDialog" type="success" icon="el-icon-edit" circle)
-              span {{ $t('サブ裝備') }} x {{ player.supports.length }}
+              span {{ $t('サブ装備') }} x {{ player.supports.length }}
 
           div.sub-equipment-items
             div(v-for="(support, i) of player.supports")
@@ -448,7 +448,7 @@ div.top-container
           img(v-if="player.character" :src="player.character.icon" :alt="player.character.NAME")
       div
         el-select(v-model="player.abnormalStateIds" :placeholder="$t('異常状態')" multiple filterable clearable)
-          el-option(v-for="abnormalState of dataManager.abnormalState.m_vList" :key="abnormalState.id" :label="abnormalState.name" :value="abnormalState.id")
+          el-option(v-for="abnormalState of abnormalStates" :key="abnormalState.id" :label="abnormalState.name" :value="abnormalState.id")
       table
         tr
           th
@@ -478,11 +478,13 @@ div.top-container
                         img.icon-small(:src="equipment.item.icon" :alt="equipment.item.NAME")
                       td {{ $t('ベース') }} {{ state.value }} / {{ $t('スキル') }} {{ state.skillValue }} / {{ $t('特性') }} {{ state.addonValue }}
                     tr(v-for="value of [player.supports.reduce((sum, p) => sum + p.item.getSupportState(state, p.modifier.level).value, 0)].filter((p) => p)")
-                      th {{ $t('サブ裝備') }}
+                      th {{ $t('サブ装備') }}
                       td {{ value }}
           td
             v-popover(placement="left-end" trigger="hover")
-              span {{ player.totalState(state) }}
+              span
+                span {{ player.totalState(state) }}
+                span(v-if="state === 'SADD' && player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).spAdd")  x {{ 1 + player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).spAdd }}
               template(slot="popover")
                 div.equipment-popover
                   span {{ $t(dataManager.lookup.state[state]) }}
@@ -495,8 +497,12 @@ div.top-container
                       th
                         img.icon-small(:src="equipment.item.icon" :alt="equipment.item.NAME")
                       td {{ $t('ベース') }} {{ state.value }} / {{ $t('スキル') }} {{ state.skillValue }} / {{ $t('特性') }} {{ state.addonValue }}
+                    tr(v-if="state === 'SADD' && player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).spAdd")
+                      th
+                        img.icon-small(:src="player.equipment.weapon.item.icon" :alt="player.equipment.weapon.item.NAME")
+                      td x {{ 1 + player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).spAdd }}
                     tr(v-for="value of [player.supports.reduce((sum, p) => sum + p.item.getSupportState(state, p.modifier.level).value, 0)].filter((p) => p)")
-                      th {{ $t('サブ裝備') }}
+                      th {{ $t('サブ装備') }}
                       td {{ value }}
         tr(v-for="[element, label] of Object.entries(dataManager.lookup.element)")
           th
@@ -515,7 +521,7 @@ div.top-container
                         img.icon-small(:src="getEquipmentImage(slot)" :alt="equipment.item.NAME")
                       td {{ $t('ベース') }} {{ element.value }} / {{ $t('スキル') }} {{ element.skillValue }} / {{ $t('特性') }} {{ element.addonValue }}
                     tr(v-for="value of [player.supports.reduce((sum, p) => sum + p.item.getSupportElement(element).value, 0)].filter((p) => p)")
-                      th {{ $t('サブ裝備') }}
+                      th {{ $t('サブ装備') }}
                       td {{ value }}
           td
             v-popover(placement="left-end" trigger="hover")
@@ -533,7 +539,7 @@ div.top-container
                         img.icon-small(:src="getEquipmentImage(slot)" :alt="equipment.item.NAME")
                       td {{ $t('ベース') }} {{ element.value }} / {{ $t('スキル') }} {{ element.skillValue }} / {{ $t('特性') }} {{ element.addonValue }}
                     tr(v-for="value of [player.supports.reduce((sum, p) => sum + p.item.getSupportElement(element).value, 0)].filter((p) => p)")
-                      th {{ $t('サブ裝備') }}
+                      th {{ $t('サブ装備') }}
                       td {{ value }}
         tr
           th
@@ -600,7 +606,7 @@ div.top-container
                         td {{ skill.effectValue }}
       br
       div
-        span {{ $t('スキル') }}{{ $t('連携') }}
+        span {{ $t('スキル') }}{{ $t('連携') }} x {{ +(1 + skillChain * .2).toFixed(15) }}
         el-slider(v-model="skillChain" :step="1" :max="14")
       br
       template(v-if="player.character")
@@ -736,7 +742,7 @@ div.top-container
         img.enemy__icon(v-if="enemy.enemy" :src="enemy.enemy.icon" :alt="enemy.enemy.strName")
       div
         el-select(v-model="enemy.abnormalStateIds" :placeholder="$t('異常状態')" multiple filterable clearable)
-          el-option(v-for="abnormalState of dataManager.abnormalState.m_vList" :key="abnormalState.id" :label="abnormalState.name" :value="abnormalState.id")
+          el-option(v-for="abnormalState of abnormalStates" :key="abnormalState.id" :label="abnormalState.name" :value="abnormalState.id")
       div(v-if="enemy.enemy")
         table
           tr(v-if="player.equipment.weapon || player.character" v-for="playerAttack of [player.totalState(player.attributeState)]")
@@ -923,7 +929,7 @@ import { Player, PlayerExport } from '@/logic/entities/Player';
 import { Enemy } from '@/logic/entities/Enemy';
 import { Formula } from '@/logic/Formula';
 import { EquipmentItem } from '@/logic/items/EquipmentItem';
-import { ECategory } from '@/logic/Enums';
+import { EAbnormalStateTarget, ECategory } from '@/logic/Enums';
 import { pascalCase } from 'pascal-case';
 import { plainToClass } from 'class-transformer';
 import { PlayerExportVersionConvertor } from '@/logic/convertor/PlayerExportVersionConvertor';
@@ -961,6 +967,16 @@ export default class extends VueBase {
 
   public get clamp() {
     return clamp;
+  }
+
+  //
+  public get abnormalStates() {
+    const effectIds = this.dataManager.abnormalStateEffectsAttackStates
+      .concat(this.dataManager.abnormalStateEffectsElements)
+      .concat(this.dataManager.abnormalStateEffectsByTarget[EAbnormalStateTarget.eSDEF] || [])
+      .concat(this.dataManager.abnormalStateEffectsByTarget[EAbnormalStateTarget.eMDEF] || [])
+      .map((p) => p.id);
+    return this.dataManager.abnormalState.m_vList.filter((p) => p.effectlist.some((i) => effectIds.includes(i)));
   }
 
   // dialog
@@ -1004,7 +1020,7 @@ export default class extends VueBase {
       value,
     }))
       .concat(itemStates.map((value) => ({
-        label: `${this.$t(dataManager.lookup.state[value])}(${this.$t('サブ裝備')})`,
+        label: `${this.$t(dataManager.lookup.state[value])}(${this.$t('サブ装備')})`,
         value: `${value}_base`,
       })))
       .concat(Object.entries(dataManager.lookup.element).map(([value, label]) => ({
@@ -1012,7 +1028,7 @@ export default class extends VueBase {
         value,
       })))
       .concat(Object.entries(dataManager.lookup.element).map(([value, label]) => ({
-        label: `${label}(${this.$t('サブ裝備')})`,
+        label: `${label}(${this.$t('サブ装備')})`,
         value: `${value}_base`,
       })));
   }

@@ -22,7 +22,7 @@ div.container
       p LV 80 {{ $t('物理攻撃') }} SATK = 51
 
     br
-    h3 {{ $t('サブ裝備') }}
+    h3 {{ $t('サブ装備') }}
     div
       p x = 上值 * 0.05
       p x {{ '>' }}= 0 ? ceil(x) : floor(x)
@@ -40,7 +40,7 @@ div.container
         el-input-number(v-model="state.level" placeholder="Level" size="mini" :min="0" :step="1" step-strictly)
       el-form-item(label="=")
         el-input.calculate__result(:value="stateResult" size="mini")
-      el-form-item(:label="$t('サブ裝備')")
+      el-form-item(:label="$t('サブ装備')")
         el-input.calculate__result(:value="stateSupportResult" size="mini")
 
   el-divider
@@ -59,7 +59,7 @@ div.container
   div
     h3 {{ $t('材料強化') }}
     div
-      p sum({{ $t('品質') }})
+      p sum({{ $t('品質') }}{{ $t('経験値') }})
 </template>
 
 <script lang="ts">
