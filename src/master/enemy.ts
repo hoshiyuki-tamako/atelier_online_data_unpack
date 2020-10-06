@@ -1,7 +1,8 @@
-import { dataManager } from './../utils/DataManager';
-import { Type } from 'class-transformer';
+import { EBattleEffectKind } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
 import { List as SkillList } from '@/master/skill';
+import { dataManager } from '@/utils/DataManager';
+import { Type } from 'class-transformer';
 
 // custom types
 export interface IElementResult {
@@ -117,6 +118,8 @@ export class MVList {
     @Type(_ => SParam)
     sParam:            SParam;
 
+  #elementChangeSkill: SkillList;
+  #skills: SkillList[];
   #elementCache = new Map<string, IElementResult>();
   #stateCache = new Map<string, IStateResult>();
 
@@ -138,11 +141,15 @@ export class MVList {
 
   // skill
   public get skills() {
-    return this.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p);
+    return this.#skills ??= this.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p);
   }
 
   public get attackSkills() {
     return this.skills.filter((p) => p.type === 1);
+  }
+
+  public get elementChangeSkill() {
+    return this.#elementChangeSkill ??= this.skills.find((skill) => skill.type === 2 && skill.effect === EBattleEffectKind.eELEMENT_CHANGE);
   }
 
   // state

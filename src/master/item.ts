@@ -146,7 +146,7 @@ export class MVList {
 
   // skills
   public get elementChangeSkill() {
-    return this.#elementChangeSkill ||= this.SPC.map((p) => p.SKILL)
+    return this.#elementChangeSkill ??= this.SPC.map((p) => p.SKILL)
       .flat()
       .map((p) => dataManager.skillById[p.DF])
       .find((skill) => skill.type === 2 && skill.effect === EBattleEffectKind.eELEMENT_CHANGE);

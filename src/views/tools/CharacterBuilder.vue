@@ -867,7 +867,7 @@ div.top-container
             img.icon-small(:src="player.character.faceIcon" :alt="player.character.NAME")
             span {{ player.character.NAME }}
           table
-            tr(v-for="receiveDamage of [player.receiveDamage(enemy.attack().multipliers, 0, 0, enemy.abnormalStateEffects)]")
+            tr(v-for="receiveDamage of [player.receiveDamage(enemy.attack().multipliers, 0, enemy.enemy.elementChangeSkill ? enemy.enemy.elementChangeSkill.effectValue : 0, enemy.abnormalStateEffects)]")
               th
                 v-popover(placement="left-end" trigger="hover")
                   span {{ $t(dataManager.lookup.EBattleAttribute[0]) }}
