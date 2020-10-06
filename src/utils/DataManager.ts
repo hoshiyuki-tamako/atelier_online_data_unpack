@@ -210,7 +210,7 @@ export class DataManager {
 
       this.loadAreaModel(),
 
-      this.spawnerDataManager.load(this.locale, this.files),
+      this.spawnerDataManager.load(this.locale),
     ]);
     this.afterLoadCharacter();
     this.afterLoadSKill();

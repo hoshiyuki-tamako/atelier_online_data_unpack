@@ -1,3 +1,4 @@
+import files from '@/../public/generated/files.json';
 import { eSpawnerKind } from '@/logic/Enums';
 import csv from 'csvtojson';
 import Enumerable from 'linq';
@@ -23,22 +24,21 @@ export class SpawnerDataManager {
   public enemyIdsInAreaByAreaId: { [id: string]: IEnemyMap[] } = {};
   public enemyIdsInDungeonByAreaId: { [id: string]: IEnemyMap[] } = {};
 
-  public async load(locale: string, files: any) {
+  public async load(locale: string) {
     this.spawnLists.clear();
 
     this.locale = locale;
 
-    let spawnFiles = files.export;
-    const spawnListFolders = ['export'];
-    if (this.locale === 'zh-TW') {
-      spawnFiles = spawnFiles.tw;
-      spawnListFolders.push('tw');
-    }
-    spawnListFolders.push('SpawnList', 'TextAsset');
+    const spawnFiles = this.locale === 'zh-TW'
+      ? files.export.tw.SpawnList.TextAsset
+      : files.export.SpawnList.TextAsset;
+    const spawnListFolders = this.locale === 'zh-TW'
+      ? 'export/tw/SpawnList/TextAsset'
+      : 'export/SpawnList/TextAsset';
 
-    await Promise.all(Object.values(spawnFiles.SpawnList.TextAsset).map(async (csvFileName: string) => {
+    await Promise.all(Object.values(spawnFiles).map(async (csvFileName: string) => {
       try {
-        const url = `${spawnListFolders.join('/')}/${csvFileName}`;
+        const url = `${spawnListFolders}/${csvFileName}`;
         const spawnLists = await csv({
           noheader: true,
           output: 'csv',
