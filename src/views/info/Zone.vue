@@ -2,9 +2,8 @@
 div.container
   div.filters
     div.filter
-      el-switch(v-model="filter.hasItem" :active-text="$t('アイテム')")
-    div.filter
-      el-switch(v-model="filter.hasEnemy" :active-text="$t('敵')")
+      el-checkbox-group(v-model="filter.has" @change="resetPage" size="small")
+        el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
   div.content
     el-table(:data="filterdZones")
       el-table-column(prop="id" label="ID" width="100%" sortable)
@@ -36,15 +35,27 @@ import { List as ZoneList } from '@/master/zone';
   },
 })
 export default class extends VueBase {
+  public get hasFilter() {
+    return [
+      {
+        label: this.$t('アイテム'),
+        value: 1,
+      },
+      {
+        label: `${this.$t('敵')}`,
+        value: 2,
+      },
+    ];
+  }
+
   public filter = {
-    hasItem: false,
-    hasEnemy: false,
+    has: [],
   };
 
   public get filterdZones() {
     return dataManager.zone.List.filter((p) => (
-      (!this.filter.hasItem || dataManager.itemsByZone[p.id])
-      && (!this.filter.hasEnemy || dataManager.enemiesByZone[p.id])
+      (!this.filter.has.includes(1) || dataManager.itemsByZone[p.id])
+      && (!this.filter.has.includes(2) || dataManager.enemiesByZone[p.id])
     ));
   }
 
