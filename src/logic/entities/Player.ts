@@ -166,10 +166,11 @@ export class Player {
   }
 
   public attack(skill: SkillList | null = null, skillChain = 0) {
+    const attribute = skill?.attackSkill.attribute || this.attribute;
     const skillMultipliers = this.skillMultipliers;
     const multipliers = [{
       label: 'ベース',
-      value: this.totalState(this.attributeState),
+      value: this.totalState(attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MATK' : 'SATK'),
     }] as multiplier[];
 
     if (skill?.attackSkill.attribute) {
