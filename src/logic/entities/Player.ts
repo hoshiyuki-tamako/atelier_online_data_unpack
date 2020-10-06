@@ -8,6 +8,7 @@ import { EquipmentModifier } from '@/logic/modifiers/EquipmentModifier';
 import { MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
 import { MVList as CharacterMVList } from '@/master/chara';
 import { MVList as ItemMvList } from '@/master/item';
+import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
 
@@ -76,9 +77,9 @@ export class Player {
 
   public get strength() {
     return this.equipments
-      .map(([slot, p]) => Formula.supportStates.map((state) => p.item.getBaseState(state, this.equipmentModifiers[slot].level)))
+      .map(([slot, p]) => Formula.strengthState.map((state) => p.item.getBaseState(state, this.equipmentModifiers[slot].level)))
       .flat()
-      .concat(this.supports.map((p) => Formula.supportStates.map((state) => p.item.getBaseState(state, p.modifier.level))).flat())
+      .concat(this.supports.map((p) => Formula.strengthState.map((state) => p.item.getBaseState(state, p.modifier.level))).flat())
       .reduce((sum, v) => sum + v, 0);
   }
 
@@ -152,24 +153,60 @@ export class Player {
       equipmentBaseSkills,
       equipmentChainSkills,
       characterBaseSkills,
-
       characterChainSkills,
       base,
       chain: base + equipmentChainSkills.map((p) => p.skill).concat(characterChainSkills).reduce((sum, p) => sum + p.effectValue, 0),
     };
   }
 
-  public attack(multiplier: number[] = [], skillChain = 0) {
+  public attackTest(multiplier: number[] = [], skillChain = 0) {
     const { chain, base } = this.skillMultipliers;
     multiplier.push(skillChain > 0 ? (1 + chain) : (1 + base), 1 + skillChain * .2);
     return Math.round(multiplier.reduce((sum, v) => sum * v, 1));
   }
 
-  public receiveDamage(damage: number, attribute = EBattleAttribute.eNONE, element = EElement.eNONE, abnormalStateEffects: AbnormalStateEffectMVList[] = []) {
+  public attack(skill: SkillList | null = null, skillChain = 0) {
+    const skillMultipliers = this.skillMultipliers;
+    const multipliers = [{
+      label: 'ベース',
+      value: this.totalState(this.attributeState),
+    }] as multiplier[];
+
+    if (skill?.attackSkill.attribute) {
+      multipliers.push({
+        label: '攻撃スキル',
+        value: skill.attackSkill.effectValue,
+      });
+      if (skillChain > 0) {
+        multipliers.push({
+          label: '連携',
+          value: 1 + skillChain * .2,
+        });
+        if (skillMultipliers.chain) {
+          multipliers.push({
+            label: 'スキル',
+            value: 1 + skillMultipliers.chain,
+          });
+        }
+      } else if (skillMultipliers.base) {
+        multipliers.push({
+          label: 'スキル',
+          value: 1 + skillMultipliers.base,
+        });
+      }
+    }
+
+    const total = Math.round(multipliers.reduce((sum, m) => sum * m.value, 1));
+    return {
+      multipliers,
+      total,
+    };
+  }
+
+  public receiveDamage(multipliers: multiplier[] = [], attribute = EBattleAttribute.eNONE, element = EElement.eNONE, abnormalStateEffects: AbnormalStateEffectMVList[] = []) {
     const totalHp = this.totalState('HP');
     const defense = this.totalState(attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MDEF' : 'SDEF');
 
-    let multipliers = [] as multiplier[];
     const _element = EElement[element].substr(1);
     if (_element !== 'NONE') {
       const value = this.totalElement(_element);
@@ -205,7 +242,6 @@ export class Player {
 
     // other abnormal states
     for (const abnormalStateEffect of abnormalStateEffects) {
-      const target = EAbnormalStateTarget[abnormalStateEffect.trarget].substr(1);
       if (
           ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMATK) ||
           abnormalStateEffect.trarget === EAbnormalStateTarget.eSATK) &&
@@ -219,7 +255,7 @@ export class Player {
       }
     }
 
-    let total = multipliers.reduce((sum, multiplier) => sum * multiplier.value, damage - defense);
+    let total =  Math.round(multipliers.reduce((sum, multiplier) => sum * multiplier.value, 1) - defense);
     if (total <= 0) {
       total = 1;
     }
@@ -231,7 +267,6 @@ export class Player {
 
     return {
       totalHp,
-      damage,
       defense,
       total: total > 0 ? total : 1,
       hp,

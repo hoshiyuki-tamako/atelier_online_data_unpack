@@ -48,11 +48,27 @@ export class Enemy {
     return this.abnormalStates.map((p) => p.effectlist).flat().map((p) => dataManager.abnormalStateEffectById[p]);
   }
 
-  public attack(attribute = EBattleAttribute.eNONE) {
-    return this.enemy.getState(attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MATK' : 'SATK', this.level).total;
+  public attack(skill: SkillList | null = null) {
+    const multipliers = [{
+      label: 'ベース',
+      value: this.enemy.getState(skill?.attackSkill.attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MATK' : 'SATK', this.level).total,
+    }] as multiplier[];
+
+    if (skill?.attackSkill.attribute) {
+      multipliers.push({
+        label: '攻撃スキル',
+        value: 1 + skill.attackSkill.effectValue,
+      });
+    }
+
+    const total = Math.round(multipliers.reduce((sum, m) => sum * m.value, 1));
+    return {
+      multipliers,
+      total,
+    };
   }
 
-  public receiveDamage(damage: number, playerLevel = 0, element = EElement.eNONE, attribute = EBattleAttribute.eNONE, skills: SkillList[] = [], abnormalStateEffects: AbnormalStateEffectMVList[] = []) {
+  public receiveDamage(multipliers: multiplier[] = [], playerLevel = 0, element = EElement.eNONE, attribute = EBattleAttribute.eNONE, skills: SkillList[] = [], abnormalStateEffects: AbnormalStateEffectMVList[] = []) {
     const result = new EnemyReceiveDamage();
 
     const oneDamageSkills = this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eONE_DAMAGE);
@@ -87,7 +103,6 @@ eDAMAGED_DARK,
 eDAMAGED_STRONG,
 eRECOVER,
     */
-   const multipliers = [] as multiplier[];
    const zeroMultiplierSkills = [] as SkillList[];
    const onePlusMultiplierSkills = [] as SkillList[];
 
@@ -140,7 +155,6 @@ eRECOVER,
 
     // other abnormal states
     for (const abnormalStateEffect of abnormalStateEffects) {
-      const target = EAbnormalStateTarget[abnormalStateEffect.trarget].substr(1);
       if (
           ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMATK) ||
           abnormalStateEffect.trarget === EAbnormalStateTarget.eSATK) &&
@@ -162,7 +176,7 @@ eRECOVER,
       ...onePlusMultiplierSkills.map((p) => 1 + p.effectValue),
     );
 
-    const total = Math.round(calculateMultipliers.reduce((sum, v) => sum * v, damage - defense));
+    const total = Math.round(calculateMultipliers.reduce((sum, v) => sum * v, 1) - defense);
     result.total = total > 0 ? total : 1;
     result.zeroPlusMultiplierSkills = zeroMultiplierSkills;
     result.onePlusMultiplierSkills = onePlusMultiplierSkills;

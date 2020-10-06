@@ -1,5 +1,7 @@
 export class Formula {
-  public static supportStates = ['SATK', 'SDEF', 'MATK', 'MDEF'];
+  public static strengthState = ['SATK', 'SDEF', 'MATK', 'MDEF'];
+
+  public static supportStates = Formula.strengthState.concat(['SPD']);
 
   public static getSupportElement(value: number) {
     if (!value) {

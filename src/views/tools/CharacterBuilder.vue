@@ -469,7 +469,7 @@ div.top-container
                 div.equipment-popover
                   span {{ $t(dataManager.lookup.state[state]) }}
                   table
-                    tr(v-if="player.character")
+                    tr(v-if="player.character && player.character.getState(state, player.characterModifier.level, player.characterModifier.foodLevel).total")
                       th
                         img.icon-small(:src="player.character.icon" :alt="player.character.NAME")
                       td {{ $t('ベース') }} {{ player.character.getBaseState(state, player.characterModifier.level) }} / {{ $t('食事') }} {{ player.character.getFoodState(state, player.characterModifier.foodLevel) }} / {{ $t('スキル') }} {{ player.character.getState(state, player.characterModifier.level, player.characterModifier.foodLevel).skillValue }}
@@ -477,6 +477,10 @@ div.top-container
                       th
                         img.icon-small(:src="equipment.item.icon" :alt="equipment.item.NAME")
                       td {{ $t('ベース') }} {{ state.value }} / {{ $t('スキル') }} {{ state.skillValue }} / {{ $t('特性') }} {{ state.addonValue }}
+                    tr(v-if="state === 'SADD' && player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).spAdd")
+                      th
+                        img.icon-small(:src="player.equipment.weapon.item.icon" :alt="player.equipment.weapon.item.NAME")
+                      td x {{ 1 + player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).spAdd }}
                     tr(v-for="value of [player.supports.reduce((sum, p) => sum + p.item.getSupportState(state, p.modifier.level).value, 0)].filter((p) => p)")
                       th {{ $t('サブ装備') }}
                       td {{ value }}
@@ -489,7 +493,7 @@ div.top-container
                 div.equipment-popover
                   span {{ $t(dataManager.lookup.state[state]) }}
                   table
-                    tr(v-if="player.character")
+                    tr(v-if="player.character && player.character.getState(state, player.characterModifier.level, player.characterModifier.foodLevel).total")
                       th
                         img.icon-small(:src="player.character.icon" :alt="player.character.NAME")
                       td {{ $t('ベース') }} {{ player.character.getBaseState(state, player.characterModifier.level) }} / {{ $t('食事') }} {{ player.character.getFoodState(state, player.characterModifier.foodLevel) }} / {{ $t('スキル') }} {{ player.character.getState(state, player.characterModifier.level, player.characterModifier.foodLevel).skillValue }}
@@ -615,40 +619,40 @@ div.top-container
           img.icon-small(:src="player.character.faceIcon" :alt="skill.name")
           p {{ skill.name }}
           p {{ skill.detail }}
-          div(v-if="skill.attribute === 3")
+          div(v-if="skill.attackSkill.attribute === 3")
             table
               tr
                 th 正常
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
                 th 魔法攻撃UP中
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.3], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3], skillChain) }}
               tr
                 th 上+魔法防御DOWN大
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.3, 1.4], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
               tr
                 th 上+屬性(-100)
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
                 th 全超+-
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
-          div(v-else-if="skill.attribute")
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+          div(v-else-if="skill.attackSkill.attribute")
             table
               tr
                 th 正常
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
                 th 物攻増UP中+
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.35], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35], skillChain) }}
               tr
                 th 上+物理防御DOWN大
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.35, 1.4], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
               tr
                 th 上+屬性(-100)
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
                 th 全超+-
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
         br
       template(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)")
         div(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
@@ -656,40 +660,40 @@ div.top-container
           img.icon-small(:src="skill.icon" :alt="skill.name")
           p {{ skill.name }}
           p {{ skill.detail }}
-          div(v-if="skill.attribute === 3")
+          div(v-if="skill.attackSkill.attribute === 3")
             table
               tr
                 th 正常
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
                 th 魔法攻撃UP中
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.3], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3], skillChain) }}
               tr
                 th 上+魔法防御DOWN大
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.3, 1.4], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
               tr
                 th 上+屬性(-100)
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
                 th 全超+-
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
-          div(v-else-if="skill.attribute")
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+          div(v-else-if="skill.attackSkill.attribute")
             table
               tr
                 th 正常
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
                 th 物攻増UP中+
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.35], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35], skillChain) }}
               tr
                 th 上+物理防御DOWN大
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.35, 1.4], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
               tr
                 th 上+屬性(-100)
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
                 th 全超+-
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
         br
       template(v-if="player.equipment.shield && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)")
         div(v-for="skill of [player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)]")
@@ -697,40 +701,40 @@ div.top-container
           img.icon-small(:src="`img/icon_skill/Texture2D/${skill.iconPath}.png`" :alt="skill.name")
           p {{ skill.name }}
           p {{ skill.detail }}
-          div(v-if="skill.attribute === 3")
+          div(v-if="skill.attackSkill.attribute === 3")
             table
               tr
                 th 正常
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
                 th 魔法攻撃UP中
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.3], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3], skillChain) }}
               tr
                 th 上+魔法防御DOWN大
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.3, 1.4], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
               tr
                 th 上+屬性(-100)
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
                 th 全超+-
-                td {{ player.attack([player.totalState('MATK'), skill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
-          div(v-else-if="skill.attribute")
+                td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+          div(v-else-if="skill.attackSkill.attribute")
             table
               tr
                 th 正常
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
                 th 物攻増UP中+
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.35], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35], skillChain) }}
               tr
                 th 上+物理防御DOWN大
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.35, 1.4], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
               tr
                 th 上+屬性(-100)
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
                 th 全超+-
-                td {{ player.attack([player.totalState('SATK'), skill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
 
     div.battle
       div.enemy
@@ -745,20 +749,14 @@ div.top-container
           el-option(v-for="abnormalState of abnormalStates" :key="abnormalState.id" :label="abnormalState.name" :value="abnormalState.id")
       div(v-if="enemy.enemy")
         table
-          tr(v-if="player.equipment.weapon || player.character" v-for="playerAttack of [player.totalState(player.attributeState)]")
-            template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, player.element, player.attribute, player.skills, player.abnormalStateEffects)]")
+          tr(v-if="player.equipment.weapon || player.character")
+            template(v-for="receiveDamage of [enemy.receiveDamage(player.attack().multipliers, player.character ? player.characterModifier.level : 0, player.element, player.attribute, player.skills, player.abnormalStateEffects)]")
               th
                 v-popover(placement="left-end" trigger="hover")
                   span {{ $t(dataManager.lookup.EBattleAttribute[player.attribute]) }}
                   template(slot="popover")
                     div.popover-base
                       table
-                        tr
-                          th {{ $t('ベース') }}
-                          td {{ playerAttack }}
-                        tr(v-if="receiveDamage.defense")
-                          th {{ $t('ディフェンス') }}
-                          td {{ -receiveDamage.defense }}
                         tr(v-for="multiplier of receiveDamage.multipliers")
                           th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                           td {{ +multiplier.value.toFixed(15) }}
@@ -771,12 +769,15 @@ div.top-container
                         tr(v-for="skill of receiveDamage.otherEffectSkills")
                           th {{ skill.name }}
                           td {{ skill.detail }}
+                        tr(v-if="receiveDamage.defense")
+                          th {{ $t('ディフェンス') }}
+                          td {{ -receiveDamage.defense }}
               td {{ receiveDamage.total.toFixed() }}
               td HP: {{ receiveDamage.hp.toFixed() }}
           tr(v-if="player.character")
             template(v-for="skill of [player.character.getBlazeArt(player.characterModifier.level, player.characterModifier.blazeArtLevel)].filter((p) => p)")
-              template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills, player.abnormalStateEffects)]")
+              template(v-for="playerAttack of [player.attack(skill, skillChain)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills, player.abnormalStateEffects)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="player.character.faceIcon" :alt="skill.name")
@@ -785,12 +786,6 @@ div.top-container
                           h4 {{ $t('ブレイズアーツ') }}
                           p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
                           table
-                            tr
-                              th {{ $t('ベース') }}
-                              td {{ playerAttack }}
-                            tr(v-if="receiveDamage.defense")
-                              th {{ $t('ディフェンス') }}
-                              td {{ -receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
                               th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                               td {{ +multiplier.value.toFixed(15) }}
@@ -803,12 +798,15 @@ div.top-container
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
+                            tr(v-if="receiveDamage.defense")
+                              th {{ $t('ディフェンス') }}
+                              td {{ -receiveDamage.defense }}
                   td {{ receiveDamage.total.toFixed() }}
                   td HP: {{ receiveDamage.hp.toFixed() }}
           tr(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).attribute")
             template(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
-              template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills, player.abnormalStateEffects)]")
+              template(v-for="playerAttack of [player.attack(skill, skillChain)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills, player.abnormalStateEffects)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
@@ -817,12 +815,6 @@ div.top-container
                           h4 {{ $t('武器') }}
                           p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
                           table
-                            tr
-                              th {{ $t('ベース') }}
-                              td {{ playerAttack }}
-                            tr(v-if="receiveDamage.defense")
-                              th {{ $t('ディフェンス') }}
-                              td {{ -receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
                               th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                               td {{ +multiplier.value.toFixed(15) }}
@@ -835,12 +827,15 @@ div.top-container
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
+                            tr(v-if="receiveDamage.defense")
+                              th {{ $t('ディフェンス') }}
+                              td {{ -receiveDamage.defense }}
                   td {{ receiveDamage.total.toFixed() }}
                   td HP: {{ receiveDamage.hp.toFixed() }}
           tr(v-if="player.equipment.shield && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality) && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality).attribute")
             template(v-for="skill of [player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)]")
-              template(v-for="playerAttack of [player.attack([player.totalState(skill.attribute === 3 ? 'MATK' : 'SATK'), skill.effectValue], skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills, player.abnormalStateEffects)]")
+              template(v-for="playerAttack of [player.attack(skill, skillChain)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.element, skill.attribute, player.skills, player.abnormalStateEffects)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
@@ -849,12 +844,6 @@ div.top-container
                           h4 {{ $t('盾') }}
                           p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
                           table
-                            tr
-                              th {{ $t('ベース') }}
-                              td {{ playerAttack }}
-                            tr(v-if="receiveDamage.defense")
-                              th {{ $t('ディフェンス') }}
-                              td {{ -receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
                               th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                               td {{ +multiplier.value.toFixed(15) }}
@@ -867,6 +856,9 @@ div.top-container
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
+                            tr(v-if="receiveDamage.defense")
+                              th {{ $t('ディフェンス') }}
+                              td {{ -receiveDamage.defense }}
                   td {{ receiveDamage.total.toFixed() }}
                   td HP: {{ receiveDamage.hp.toFixed() }}
         el-divider(v-if="player.character")
@@ -875,26 +867,23 @@ div.top-container
             img.icon-small(:src="player.character.faceIcon" :alt="player.character.NAME")
             span {{ player.character.NAME }}
           table
-            tr(v-for="receiveDamage of [player.receiveDamage(enemy.attack(), 0, 0, enemy.abnormalStateEffects)]")
+            tr(v-for="receiveDamage of [player.receiveDamage(enemy.attack().multipliers, 0, 0, enemy.abnormalStateEffects)]")
               th
                 v-popover(placement="left-end" trigger="hover")
                   span {{ $t(dataManager.lookup.EBattleAttribute[0]) }}
                   template(slot="popover")
                     div.popover-base
                       table
-                        tr
-                          th {{ $t('ダメージ') }}{{ $t('ベース') }}
-                          td {{ receiveDamage.damage.toFixed() }}
-                        tr(v-if="receiveDamage.defense")
-                          th {{ $t('ディフェンス') }}
-                          td {{ -receiveDamage.defense }}
                         tr(v-for="multiplier of receiveDamage.multipliers")
                           th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                           td {{ +multiplier.value.toFixed(15) }}
+                        tr(v-if="receiveDamage.defense")
+                          th {{ $t('ディフェンス') }}
+                          td {{ -receiveDamage.defense }}
               td {{ receiveDamage.total.toFixed() }}
               td HP: {{ receiveDamage.hp.toFixed() }}
             tr(v-for="skill of enemy.enemy.skills.filter((p) => p.type === 1 && p.effect === 1)")
-              template(v-for="receiveDamage of [player.receiveDamage(enemy.attack(skill.attackSkill.attribute) * (+(1 + skill.effectValue).toFixed(15)), skill.attackSkill.attribute, skill.attackSkill.element, enemy.abnormalStateEffects)]")
+              template(v-for="receiveDamage of [player.receiveDamage(enemy.attack(skill).multipliers, skill.attackSkill.attribute, skill.attackSkill.element, enemy.abnormalStateEffects)]")
                 th
                   v-popover(placement="left-end" trigger="hover")
                     span {{ skill.name }}
@@ -902,15 +891,12 @@ div.top-container
                       div.popover-base
                         h4 {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }} {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
                         table
-                          tr
-                            th {{ $t('ダメージ') }}{{ $t('ベース') }}
-                            td {{ receiveDamage.damage.toFixed() }}
-                          tr(v-if="receiveDamage.defense")
-                            th {{ $t('ディフェンス') }}
-                            td {{ -receiveDamage.defense }}
                           tr(v-for="multiplier of receiveDamage.multipliers")
                             th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                             td {{ +multiplier.value.toFixed(15) }}
+                          tr(v-if="receiveDamage.defense")
+                            th {{ $t('ディフェンス') }}
+                            td {{ -receiveDamage.defense }}
                 td {{ receiveDamage.total.toFixed() }}
                 td HP: {{ receiveDamage.hp.toFixed() }}
 </template>
@@ -1015,21 +1001,24 @@ export default class extends VueBase {
   // item picker dialog
   public get itemPickerSortOption() {
     const itemStates = ['SATK', 'SDEF', 'MATK', 'MDEF', 'SPD', 'QTH', 'DDG'];
+    if (this.itemPickerShowStateType === 1) {
+      return itemStates.map((value) => ({
+        label: `${this.$t(dataManager.lookup.state[value])}(${this.$t('サブ装備')})`,
+        value: `${value}_base`,
+      }))
+        .concat(Object.entries(dataManager.lookup.element).map(([value, label]) => ({
+          label: `${label}(${this.$t('サブ装備')})`,
+          value: `${value}_base`,
+        })));
+    }
+
     return itemStates.map((value) => ({
       label: this.$t(dataManager.lookup.state[value]),
       value,
     }))
-      .concat(itemStates.map((value) => ({
-        label: `${this.$t(dataManager.lookup.state[value])}(${this.$t('サブ装備')})`,
-        value: `${value}_base`,
-      })))
       .concat(Object.entries(dataManager.lookup.element).map(([value, label]) => ({
         label,
         value,
-      })))
-      .concat(Object.entries(dataManager.lookup.element).map(([value, label]) => ({
-        label: `${label}(${this.$t('サブ装備')})`,
-        value: `${value}_base`,
       })));
   }
 
@@ -1193,10 +1182,12 @@ export default class extends VueBase {
   }
 
   public onCloseSupportItemDialog() {
+    this.itemPickerShowStateType = 0;
     if (this.itemPickerSortOriginal) {
       this.itemPickerSort = this.itemPickerSortOriginal;
+    } else if (this.itemPickerSort.includes('_base') && this.itemPickerSortOption.some((p) => p.value === this.itemPickerSort.replace('_base', ''))) {
+      this.itemPickerSort = this.itemPickerSort.replace('_base', '');
     }
-    this.itemPickerShowStateType = 0;
   }
 
   public onAddSupportItem() {
@@ -1599,6 +1590,7 @@ a
   display: flex
   flex-wrap: wrap
   width: 60%
+  height: 100%
 
   > div
     border: 1px solid rgba(0, 0, 0, 0)

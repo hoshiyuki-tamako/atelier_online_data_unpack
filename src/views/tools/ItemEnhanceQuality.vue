@@ -12,8 +12,9 @@ div.item-enhance-quality
       div.item(v-for="(quality, i) of qualities")
         div
           el-input-number(v-model="quality.quality" size="mini" :min="1" :max="Quality.experiences.length" :step="1" step-strictly)
-        div.item__icon(@click="remove(i)")
-          img.icon-small(src="img/icon_item_s/Texture2D/icon_item_s_10020003.png" :alt="$t('アイテム')")
+        el-tooltip(effect="light" :content="`${$t('品質')}${$t('経験値')} ${quality}`" placement="right")
+          div.item__icon(@click="remove(i)")
+            img.icon-small(src="img/icon_item_s/Texture2D/icon_item_s_10020003.png" :alt="$t('アイテム')")
   div.right
     div.orginal-item
       img(src="img/icon_item_s/Texture2D/icon_item_s_10020003.png" :alt="$t('アイテム')")
@@ -22,8 +23,8 @@ div.item-enhance-quality
         el-input-number(v-model="originalQuality" size="mini" :min="1" :max="Quality.experiences.length" :step="1" step-strictly)
         span {{ $t('次まで') }}
         el-input-number(v-model="untilNextQuality" size="mini" :min="0" :max="maxNextLevel" :step="1" step-strictly)
-    div.after-item
-      div x{{ qualities.length }}{{ $t('個') }} / {{ $t('品質') }} {{ result.quality }} / {{ $t('次まで') }} {{ result.untilNext }}
+      div.after-item
+        div x{{ qualities.length }}{{ $t('個') }} / {{ $t('品質') }} {{ result.quality }} / {{ $t('次まで') }} {{ result.untilNext }} / {{ $t('品質') }}{{ $t('経験値') }} {{ result }}
 </template>
 
 <script lang="ts">
