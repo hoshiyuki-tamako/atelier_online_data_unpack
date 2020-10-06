@@ -70,9 +70,11 @@ div.container
                 p {{ $t('キークェスト') }}: {{ tickCross(quest.KEYQUEST) }}
                 p {{ $t('重要') }}: {{ tickCross(quest.IMPORTANT) }}
                 p {{ $t('挑戦') }}: {{ tickCross(quest.CHALLENGE) }}
-                p(v-if="quest.AREA") {{ $t('区域') }}:
-                  template(v-for="area of [dataManager.areaInfoById[quest.AREA]].filter((p) => p)")
-                    template(v-for="fieldName of [dataManager.fieldNameById[area.iAreaNameId]].filter((p) => p)") {{ fieldName.strAreaName }}
+                p(v-if="quest.AREA")
+                  span {{ $t('区域') }}:
+                  router-link(:to="{ name: 'Areas', query: { df: quest.AREA } }" target="_blank")
+                    template(v-for="area of [dataManager.areaInfoById[quest.AREA]].filter((p) => p)")
+                      template(v-for="fieldName of [dataManager.fieldNameById[area.iAreaNameId]].filter((p) => p)") {{ fieldName.strAreaName }}
               div.item-container-right
                 div(v-if="quest.CONDITION")
                   h4 {{ $t('達成條件') }}
