@@ -1,5 +1,6 @@
+import { EJobKind, EWealthKind } from './../Enums';
 import { Enemy } from '@/logic/entities/Enemy';
-import { EAbnormalStateTarget, EBattleAttribute, EBattleEffectTrigger, EElement } from '@/logic/Enums';
+import { EAbnormalStateTarget, EBattleAttribute, EBattleEffectTrigger, EElement, EWeaponKind } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
 import { Equipment } from '@/logic/items/Equipment';
 import { EquipmentItem } from '@/logic/items/EquipmentItem';
@@ -7,7 +8,7 @@ import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
 import { EquipmentModifier } from '@/logic/modifiers/EquipmentModifier';
 import { MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
 import { MVList as CharacterMVList } from '@/master/chara';
-import { MVList as ItemMvList } from '@/master/item';
+import { MVList as ItemMVList } from '@/master/item';
 import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
@@ -58,8 +59,8 @@ export class Player {
     this.characterModifier.blazeArtLevel = 5;
 
     for (const modifier of Object.values(this.equipmentModifiers)) {
-      modifier.quality = ItemMvList.equipmentMaxQuality;
-      modifier.level = ItemMvList.equipmentMaxLevel;
+      modifier.quality = ItemMVList.equipmentMaxQuality;
+      modifier.level = ItemMVList.equipmentMaxLevel;
     }
   }
 
@@ -277,7 +278,7 @@ export class Player {
 
   // other helpers
   public get attribute() {
-    return this.equipment.weapon?.item.getAttackSkill()?.attribute || 2;
+    return ItemMVList.magicDamageWeaponKinds.includes(this.equipment.weapon?.item.WPN_KIND) ? EBattleAttribute.eMAGIC_DAMAGED : EBattleAttribute.eSLASH_DAMAGED;
   }
 
   public get attributeState() {

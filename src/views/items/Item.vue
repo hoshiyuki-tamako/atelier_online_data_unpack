@@ -24,7 +24,7 @@ div.container
       template(v-if="item.WPN_KIND")
         p {{ $t('武器種類') }}: {{ $t(dataManager.lookup.weaponKind[item.WPN_KIND]) }}
         p {{ $t('攻撃属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[item.elementChangeSkill ? item.elementChangeSkill.effectValue : 0]) }}
-        p(v-if="item.getAttackSkill()") {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.EBattleAttribute[item.getAttackSkill().attribute]) }}
+        p(v-if="item.WPN_KIND !== EWeaponKind.eSHIELD") {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.attackType[+ItemMVList.magicDamageWeaponKinds.includes(item.WPN_KIND)]) }}
         template(v-if="item.JOB.length")
           p {{ $t('職業') }}: {{ item.JOB.map(p => $t(dataManager.lookup.EJobKind[p])).join(',') }}
         p(v-if="item.getAttackSkill()") {{ $t('SP回復率') }}{{ item.getAttackSkill().spAdd }}{{ $t('倍') }}
@@ -212,7 +212,7 @@ import { MVList as ItemMVList } from '@/master/item';
 import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 import { clamp } from 'lodash';
 import { ModelFbx } from 'vue-3d-model';
-import { ECategory } from '@/logic/Enums';
+import { EWeaponKind, ECategory } from '@/logic/Enums';
 
 @Component({
   components: {
@@ -220,6 +220,14 @@ import { ECategory } from '@/logic/Enums';
   },
 })
 export default class extends VueBase {
+  public get ItemMVList() {
+    return ItemMVList;
+  }
+
+  public get EWeaponKind() {
+    return EWeaponKind;
+  }
+
   // model
   public fbxDialogVisible = false;
 

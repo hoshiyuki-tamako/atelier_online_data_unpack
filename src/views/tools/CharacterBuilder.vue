@@ -35,7 +35,7 @@ div.top-container
                       span {{ element.value }}
                       span(v-if="element.skillValue")  {{ s(element.skillValue) }} {{ element.skillValue }}
                   tr(v-if="item.GROUP_DF && dataManager.charactersByGroupDf[item.GROUP_DF]")
-                    th {{ $t('キャラクター專用') }}
+                    th {{ $t('専用装備') }}
                     td
                       p(v-for="character of dataManager.charactersByGroupDf[item.GROUP_DF]")
                         img.icon-small(:src="character.icon" :alt="character.NAME")
@@ -53,7 +53,7 @@ div.top-container
                     th {{ $t(dataManager.lookup.element[element]) }}
                     td {{ s(value) }}{{ value }}
                   tr(v-if="item.GROUP_DF && dataManager.charactersByGroupDf[item.GROUP_DF]")
-                    th {{ $t('キャラクター專用') }}
+                    th {{ $t('専用装備') }}
                     td
                       p(v-for="character of dataManager.charactersByGroupDf[item.GROUP_DF]")
                         img.icon-small(:src="character.icon" :alt="character.NAME")
@@ -96,7 +96,7 @@ div.top-container
               th {{ $t(element.label) }}
               td {{ s(element.value) }}{{ element.value }}
             tr(v-if="support.item.GROUP_DF && dataManager.charactersByGroupDf[support.item.GROUP_DF]")
-              th {{ $t('キャラクター專用') }}
+              th {{ $t('専用装備') }}
               td
                 p(v-for="character of dataManager.charactersByGroupDf[support.item.GROUP_DF]")
                   img.icon-small(:src="character.icon" :alt="character.NAME")
@@ -342,7 +342,7 @@ div.top-container
                                 span(v-if="element.addonValue")  {{ s(element.addonValue) }} {{ element.addonValue }}
                                 span )
                         tr(v-if="player.equipment[slot].item.GROUP_DF && dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
-                          th {{ $t('キャラクター專用') }}
+                          th {{ $t('専用装備') }}
                           td
                             p(v-for="character of dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
                               img.icon-small(:src="character.icon" :alt="character.NAME")
@@ -399,7 +399,7 @@ div.top-container
                                 span(v-if="element.addonValue")  {{ s(element.addonValue) }} {{ element.addonValue }}
                                 span )
                         tr(v-if="player.equipment[slot].item.GROUP_DF && dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
-                          th {{ $t('キャラクター專用') }}
+                          th {{ $t('専用装備') }}
                           td
                             p(v-for="character of dataManager.charactersByGroupDf[player.equipment[slot].item.GROUP_DF]")
                               img.icon-small(:src="character.icon" :alt="character.NAME")
@@ -432,7 +432,7 @@ div.top-container
                         th {{ $t(element.label) }}
                         td {{ s(element.value) }}{{ element.value }}
                       tr(v-if="support.item.GROUP_DF && dataManager.charactersByGroupDf[support.item.GROUP_DF]")
-                        th {{ $t('キャラクター專用') }}
+                        th {{ $t('專用裝備') }}
                         td
                           p(v-for="character of dataManager.charactersByGroupDf[support.item.GROUP_DF]")
                             img.icon-small(:src="character.icon" :alt="character.NAME")

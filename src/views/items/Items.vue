@@ -20,7 +20,7 @@ div.container
       span {{ $t('レジェンドレシピ') }}
       el-switch(v-model="legendRecipe")
     div.filter
-      span {{ $t('キャラクター專用') }}
+      span {{ $t('専用装備') }}
       el-switch(v-model="characterOnlyItem")
   div.items
     router-link(v-for="item of filteredItems" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }")

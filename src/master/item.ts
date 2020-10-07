@@ -48,6 +48,8 @@ export class MVList {
 
   public static weaponKindCategory = [ECategory.eWEAPON, ECategory.eSHIELD];
 
+  public static magicDamageWeaponKinds = [EWeaponKind.eROD, EWeaponKind.eBOOK];
+
   public static equipmentMaxLevel = 80;
 
   public static equipmentMaxQuality = 120;

@@ -95,6 +95,11 @@ export const lookup = {
     2: '効果',
   },
 
+  attackType: {
+    0: '物理',
+    1: '魔法'
+  },
+
   // enum lookup
   ESubCategory: {
     0: '全種類',
