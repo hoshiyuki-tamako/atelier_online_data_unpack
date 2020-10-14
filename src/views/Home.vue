@@ -4,7 +4,7 @@ div.container
     h2 {{ $t('アトリエオンライン資料庫') }}
     p
       span.version-link__container
-        span Game Version 3.12.1 (日本語)
+        span Game Version 3.13.0 (日本語)
         el-link(v-if="$i18n.locale !== 'ja-JP'" type="success" :underline="false" @click="onChangeLocale('ja-JP')") link
       br
       span.version-link__container
@@ -493,6 +493,14 @@ export default class extends VueWithMapFields {
         links: [
           {
             href: 'https://atelieronline.gamerch.com/',
+          },
+        ],
+      },
+      {
+        title: 'アトリエオンライン攻略',
+        links: [
+          {
+            href: 'https://appmedia.jp/atelier-online',
           },
         ],
       },

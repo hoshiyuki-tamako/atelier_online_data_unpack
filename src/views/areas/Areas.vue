@@ -13,6 +13,7 @@ div.container
       template(v-for="areaInfo of [dataManager.areaInfoById[areaDetail.iAreaID]]")
         template(v-for="fieldName of [dataManager.fieldNameById[areaInfo.iAreaNameId]]")
           div.item-container-left
+            img.icon-full(:src="areaDetail.icon" :alt="areaDetail.iAreaID")
             h3(v-if="fieldName") {{ fieldName.strAreaName }} {{ fieldName.strAreaNameSub.trim() ? `/ ${fieldName.strAreaNameSub}` : '' }}
             p iAreaID: {{ areaDetail.iAreaID }}
             p iLevel: {{areaDetail.iLevel }}

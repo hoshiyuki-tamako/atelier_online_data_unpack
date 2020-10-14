@@ -219,12 +219,12 @@ export class DataManager {
     this.processAdvs();
   }
 
-  public async loadGeneric(name: string, key: string = '', value?: unknown) {
-    this[key || name] = value ? value : await this.loadJson(name);
+  public async loadGeneric(name: string, key = '', value?: unknown) {
+    this[key || name] = value || await this.loadJson(name);
   }
 
-  public async loadGeneratedGeneric(name: string, key: string = '', value?: unknown) {
-    this[key || name] = value ? value : await this.loadGeneratedJson(name);
+  public async loadGeneratedGeneric(name: string, key = '', value?: unknown) {
+    this[key || name] = value || await this.loadGeneratedJson(name);
   }
 
   public async loadItem(item?: unknown) {
@@ -485,7 +485,7 @@ export class DataManager {
   }
 
   public async loadAreaDetail(areaDetail?: unknown) {
-    await this.loadGeneric('areaDetail', '', areaDetail);
+    this.areaDetail = plainToClass(AreaDetail, areaDetail || await this.loadJson('areaDetail'));
     this.areaDetailById = Enumerable.from(this.areaDetail.List).toObject((p) => p.iAreaID) as { [s: string]: AreaDetailList };
   }
 

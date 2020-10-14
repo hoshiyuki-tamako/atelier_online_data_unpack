@@ -9,7 +9,7 @@ export default class TextureExport {
       return;
     }
     const files = await fs.readdir(textureFolder);
-    const names = ['icon_chara', 'icon_degree', 'icon_item_s', 'icon_item01', 'icon_skill', 'enemy_tex', 'map_town', 'item_pickup'];
+    const names = ['icon_chara', 'icon_degree', 'icon_item_s', 'icon_item01', 'icon_skill', 'enemy_tex', 'map_town', 'item_pickup', 'icon_area'];
     await Promise.all(names.map((name) => this.processTexture2D(name, files, textureFolder, rootFolder)));
   }
 
