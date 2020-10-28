@@ -4,7 +4,7 @@ import path from 'path';
 
 import { ISaveable } from './interfaces/saveable';
 
-export type PathTree = { [s: string]: string | PathTree };
+export type PathTree = { [s: string]: PathTree | string | null };
 
 export default class AtelierOnlineFileExport implements ISaveable {
   public export: PathTree = {};

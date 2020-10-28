@@ -4,7 +4,7 @@ div.container
     h2 {{ $t('アトリエオンライン資料庫') }}
     p
       span.version-link__container
-        span Game Version 3.13.0 (日本語)
+        span Game Version 3.14.0 (日本語)
         el-link(v-if="$i18n.locale !== 'ja-JP'" type="success" :underline="false" @click="onChangeLocale('ja-JP')") link
       br
       span.version-link__container
