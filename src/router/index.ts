@@ -134,15 +134,17 @@ const skillsRoutes: Array<RouteConfig> = [
     name: 'Skills',
     component: () => import(/* webpackChunkName: "Skills" */ '@/views/skills/Skills.vue'),
     meta: {
-      title: 'スキル',
+      title: 'スキル / 効果',
     },
   },
   {
     path: '/skills/Effect',
     name: 'SkillsEffect',
-    component: () => import(/* webpackChunkName: "SkillsEffect" */ '@/views/skills/Effect.vue'),
-    meta: {
-      title: '効果',
+    redirect: {
+      name: 'Skills',
+      query: {
+        skillKind: '3',
+      },
     },
   },
   {

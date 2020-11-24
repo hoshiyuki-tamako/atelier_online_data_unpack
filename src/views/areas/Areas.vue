@@ -12,7 +12,7 @@ div.container
     div.item-container.area-container(v-for="areaDetail of dataManager.areaDetail.List" :id="`DF-${areaDetail.iAreaID}`")
       template(v-for="areaInfo of [dataManager.areaInfoById[areaDetail.iAreaID]]")
         template(v-for="fieldName of [dataManager.fieldNameById[areaInfo.iAreaNameId]]")
-          div.item-container-left
+          div.item-container-left.areas-item-container-left
             img.icon-full(:src="areaDetail.icon" :alt="areaDetail.iAreaID")
             h3(v-if="fieldName") {{ fieldName.strAreaName }} {{ fieldName.strAreaNameSub.trim() ? `/ ${fieldName.strAreaNameSub}` : '' }}
             p iAreaID: {{ areaDetail.iAreaID }}
@@ -20,7 +20,15 @@ div.container
             br
             template(v-if="dataManager.areaModelsById[areaDetail.iAreaID]")
               div(v-for="{ root, iLevel } of dataManager.areaModelsById[areaDetail.iAreaID]")
-                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, root } }") 3D{{ $t('地図') }} {{ iLevel }}
+                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, root } }") {{ $t('地図') }} {{ iLevel }}
+            br
+            template(v-if="dataManager.areaDungeonBattleAreas[areaDetail.iAreaID]")
+              div(v-for="{ folder, iLevel } of dataManager.areaBattleAreas[areaDetail.iAreaID]")
+                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, battleArea: folder } }") {{ $t('バトルエリア') }} {{ iLevel }}
+            br
+            template(v-if="dataManager.areaDungeonBattleAreas[areaDetail.iAreaID]")
+              div(v-for="{ folder, iLevel } of dataManager.areaDungeonBattleAreas[areaDetail.iAreaID]")
+                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, battleArea: folder } }") {{ $t('バトルエリア') }}{{ $t('ダンジョン') }} {{ iLevel }}
 
           div.item-container-right
             div(v-if="areaDetail.iItemIDList.length")
@@ -48,7 +56,7 @@ div.container
               div
                 div(v-for="(dungeonInfo, i) of dataManager.dungeonInfosByAreaId[areaDetail.iAreaID]")
                   template(v-for="dungeonFieldName of [dataManager.fieldNameById[dungeonInfo.iAreaNameId]]")
-                    p(v-if="dungeonFieldName") {{ fieldName.strAreaName }} {{ fieldName.strAreaNameSub.trim() ? `/ ${fieldName.strAreaNameSub}` : '' }}
+                    p(v-if="dungeonFieldName") {{ dungeonFieldName.strAreaName }} {{ dungeonFieldName.strAreaNameSub.trim() ? `/ ${dungeonFieldName.strAreaNameSub}` : '' }}
                     p {{ $t('最大階層') }}: {{ dungeonInfo.iMaxFloor }}
                     p(v-for="returnFieldName of [dataManager.fieldNameById[dataManager.areaInfoById[dungeonInfo.iReturnArea].iAreaNameId]].filter((p) => p)") {{ $t('脱出区域') }}: {{ returnFieldName.strAreaName }}
                   p(v-if="dataManager.dungeonInfosByAreaId[areaDetail.iAreaID].length !== (i + 1)") &#x3E;
@@ -127,6 +135,10 @@ export default class extends VueBase {
 <style lang="sass" scoped>
 a
   text-decoration: none
+
+.areas-item-container-left
+  min-width: 240px
+  max-width: 240px
 
 .area-container:not(:last-child)
   margin-bottom: 200px

@@ -174,7 +174,8 @@ div.container
           table(v-for="(skill, i) of skills")
             tr
               th {{ $t('名前') }}
-              td {{ skill.name }}
+              td
+                router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
             tr
               th {{ $t('詳細') }}
               td {{ skill.detail }}

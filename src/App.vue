@@ -199,6 +199,10 @@ export default class extends VueBase {
 
 .item-has-3d
   cursor: pointer
+
+.skill-table
+  th
+    width: 110px
 </style>
 
 <style lang="sass" scoped>

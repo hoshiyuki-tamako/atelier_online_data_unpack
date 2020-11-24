@@ -4,11 +4,15 @@ div.container
     div.filter
       span {{ $t('カテゴリー') }}
       el-select(v-model="category" clearable filterable)
-        el-option(v-for="item in categoryOptions" :key="item.value" :label="item.label" :value="item.value")
+        el-option(v-for="item of categoryOptions" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('攻撃属性') }}
+      el-select(v-model="battleElement" clearable filterable)
+        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
     div.filter
       span {{ $t('武器種類') }}
       el-select(v-model="weaponKind" clearable filterable :disabled="!enableWeaponKindFilter")
-        el-option(v-for="item in weaponKindOptions" :key="item.value" :label="item.label" :value="item.value")
+        el-option(v-for="item of weaponKindOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('名前') }}/DF
       el-input(v-model="name" clearable)
@@ -40,6 +44,8 @@ abstract class VueWithMapFields extends VueBase {
 
   public weaponKind!: number | null;
 
+  public battleElement!: number | null;
+
   public name!: string;
 
   public sort!: number;
@@ -53,7 +59,7 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('itemsFilter', ['category', 'weaponKind', 'name', 'sort', 'legendRecipe', 'characterOnlyItem']),
+    ...mapFields('itemsFilter', ['category', 'weaponKind', 'battleElement', 'name', 'sort', 'legendRecipe', 'characterOnlyItem']),
   },
 })
 export default class extends VueWithMapFields {
@@ -103,13 +109,9 @@ export default class extends VueWithMapFields {
       this.weaponKind = null;
     }
 
-    let { items } = this;
-    if (this.weaponKind) {
-      items = items.filter((p) => p.WPN_KIND === this.weaponKind);
-    }
-
-    items = items.filter((p) => (
+    const items = this.items.filter((p) => (
       (!this.weaponKind || p.WPN_KIND === this.weaponKind)
+      && ([null, '', -1].includes(this.battleElement) || (p.elementChangeSkill?.effectValue ?? 0) === this.battleElement)
       && (!this.name || p.DF === +this.name || p.NAME.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()))
       && (!this.legendRecipe || p.LRCP_CHARA.length)
       && (!this.characterOnlyItem || p.GROUP_DF)
@@ -134,6 +136,7 @@ export default class extends VueWithMapFields {
     this.category = null;
     this.name = '';
     this.weaponKind = null;
+    this.battleElement = null;
     this.sort = 1;
     this.legendRecipe = false;
     this.characterOnlyItem = false;

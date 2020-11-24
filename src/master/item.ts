@@ -89,7 +89,11 @@ export class MVList {
   #stateCache = new Map<string, IStateResult>();
 
   public get icon() {
-    return `img/icon_item_s/Texture2D/icon_item_s_${this.DF}.png`;
+    const filename = `icon_item_s_${this.DF}.png`;
+    if (!dataManager.files.img.icon_item_s.Texture2D[filename]) {
+      return 'data:,';
+    }
+    return `img/icon_item_s/Texture2D/${filename}`;
   }
 
   public get modelFolderName() {
@@ -151,7 +155,7 @@ export class MVList {
     return this.#elementChangeSkill ??= this.SPC.map((p) => p.SKILL)
       .flat()
       .map((p) => dataManager.skillById[p.DF])
-      .find((skill) => skill.type === 2 && skill.effect === EBattleEffectKind.eELEMENT_CHANGE);
+      .find((skill) => skill && skill.type === 2 && skill.effect === EBattleEffectKind.eELEMENT_CHANGE);
   }
 
   public get hasSkill() {

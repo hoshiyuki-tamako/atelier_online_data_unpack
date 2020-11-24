@@ -49,7 +49,8 @@ div.container
           table.skill-table
             tr
               th {{ $t('名前') }}
-              td {{ skill.name }}
+              td
+                router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
             tr
               th {{ $t('詳細') }}
               td {{ skill.detail }}
@@ -154,8 +155,4 @@ th
 th, td
   text-align: left
   padding: 4px
-
-.skill-table
-  th
-    width: 110px
 </style>

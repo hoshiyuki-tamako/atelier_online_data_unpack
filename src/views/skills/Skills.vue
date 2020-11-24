@@ -21,8 +21,17 @@ div.container
       el-select(v-model="filter.targetScope" @change="resetPage" clearable filterable)
         el-option(v-for="item of targetScopeFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
+      span {{ $t('エフェクトトリガー') }}
+      el-select(v-model="filter.trigger" @change="resetPage" clearable filterable)
+        el-option(v-for="item of triggerFilter" :key="item.value" :label="item.label" :value="item.value")
+  div.filters
+    div.filter
       span {{ $t('名前') }}/ID
       el-input(v-model="filter.name" @change="resetPage" clearable)
+    div.filter
+      span {{ $t('詳細') }}
+      el-input(v-model="filter.detail" @change="resetPage" clearable)
+  div.filters
     div.filter
       el-checkbox-group(v-model="filter.has" @change="resetPage" size="small")
         el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
@@ -30,26 +39,50 @@ div.container
     div.filter
       el-checkbox(v-model="showColumnId") ID
       el-checkbox(v-model="showColumnName") {{ $t('名前') }}
-      el-checkbox(v-model="showColumnDetail") {{ $t('詳細') }}
-      el-checkbox(v-model="showColumnEffectValue") {{ $t('数値') }}
-      el-checkbox(v-model="showColumnSpAdd") {{ $t('SP回復率') }}
       el-checkbox(v-model="showColumnAttackSkillAttribute") {{ $t('攻撃タイプ') }}
       el-checkbox(v-model="showColumnAttackSkillElement") {{ $t('属性') }}
       el-checkbox(v-model="showColumnTargetTeam") {{ $t('對象') }}
       el-checkbox(v-model="showColumnStateOwn") {{ $t('追加状態 (自)') }}
       el-checkbox(v-model="showColumnState") {{ $t('追加状態') }}
-      el-checkbox(v-model="showColumnIcon") {{ $t('画像') }}
-      el-checkbox(v-model="showColumnHas") {{ `${$t('アイテム')}/${$t('人物')}/${$t('敵')}` }}
 
   div.content
-    el-table(ref="table" :data="filteredPaginationSkills" @sort-change="onSortChange")
+    el-table(ref="table" :data="filteredPaginationSkills" default-expand-all @sort-change="onSortChange")
+      el-table-column(type="expand")
+        template(slot-scope="props")
+          div.item-container
+            div.item-container-left
+              p(v-if="props.row.iconPath")
+                img.icon-small(:src="props.row.icon" :alt="props.row.name")
+              h3 {{ props.row.name }}
+              p(v-if="props.row.detail") {{ props.row.detail }}
+              br
+              p ID: {{ props.row.id }}
+              p {{ $t('数値') }}1: {{ props.row.effectValue }}
+              p {{ $t('数値') }}2: {{ props.row.effectValue2 }}
+              p(v-if="props.row.spAdd") {{ $t('SP回復率') }}: {{ props.row.spAdd }}{{ $t('倍') }}
+              p(v-if="props.row.trigger") {{ $t('エフェクトトリガー') }}: {{ EBattleEffectTrigger[props.row.trigger] || props.row.trigger }}
+              //- p effectTarget {{ props.row.effectTarget }}
+              p(v-if="props.row.coolTime") {{ $t('クールダウンタイム') }}: {{ props.row.coolTime }}{{ $t('ターン') }}
+              br
+              div(v-if="props.row.combSkillList.length")
+                h4 {{ $t('含まれるスキル') }}
+                p(v-for="(skill, i) of props.row.combSkillList")
+                  router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+            div.item-container-right
+              div(v-if="dataManager.itemsBySkill[props.row.id]")
+                h3 {{ $t('アイテム') }}
+                router-link(v-for="item in dataManager.itemsBySkill[props.row.id]" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }")
+                  img.icon-small(:src="item.icon" :alt="item.NAME")
+              div(v-if="dataManager.enemiesBySkill[props.row.id]")
+                h3 {{ $t('敵') }}
+                router-link(v-for="enemy in dataManager.enemiesBySkill[props.row.id]" :key="enemy.DF" :to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }")
+                  img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
+              div(v-if="dataManager.charactersBySkill[props.row.id]")
+                h3 {{ $t('人物') }}
+                router-link(v-for="character in dataManager.charactersBySkill[props.row.id]" :key="character.DF" :to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
+                  img.icon-small(:src="character.icon" :alt="character.NAME")
       el-table-column(v-if="showColumnId" prop="id" label="ID" width="100%" sortable="custom")
       el-table-column(v-if="showColumnName" prop="name" :label="$t('名前')")
-      el-table-column(v-if="showColumnDetail" prop="detail" :label="$t('詳細')")
-      el-table-column(v-if="showColumnEffectValue" prop="effectValue" :label="$t('数値')" sortable="custom")
-        template(slot-scope="scope") {{ scope.row.effectValue }}, {{ scope.row.effectValue2 }}
-      el-table-column(v-if="showColumnSpAdd" prop="spAdd" :label="$t('SP回復率')" sortable="custom")
-        template(slot-scope="scope") {{ scope.row.spAdd }}{{ $t('倍') }}
       el-table-column(v-if="showColumnAttackSkillAttribute" prop="attackSkill.attribute" :label="$t('攻撃タイプ')" sortable="custom")
         template(slot-scope="scope") {{ $t(dataManager.lookup.EBattleAttribute[scope.row.attackSkill.attribute]) }}
       el-table-column(v-if="showColumnAttackSkillElement" prop="attackSkill.element" :label="$t('属性')" sortable="custom")
@@ -62,24 +95,6 @@ div.container
       el-table-column(v-if="showColumnState" prop="state.length" :label="$t('追加状態')" sortable="custom")
         template(slot-scope="scope")
           p(v-for="[state, abnormalState] of scope.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
-      el-table-column(v-if="showColumnIcon" prop="iconPath" :label="$t('画像')" width="100%")
-        template(slot-scope="scope")
-          img.icon-small(v-if="scope.row.iconPath" :src="scope.row.icon" :alt="scope.row.name")
-      el-table-column(v-if="showColumnHas" :label="`${$t('アイテム')}/${$t('人物')}/${$t('敵')}`")
-        template(slot-scope="scope")
-          div
-            div(v-if="dataManager.itemsBySkill[scope.row.id]")
-              h3 {{ $t('アイテム') }}
-              router-link(v-for="item in dataManager.itemsBySkill[scope.row.id]" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }")
-                img.icon-small(:src="item.icon" :alt="item.NAME")
-            div(v-if="dataManager.enemiesBySkill[scope.row.id]")
-              h3 {{ $t('敵') }}
-              router-link(v-for="enemy in dataManager.enemiesBySkill[scope.row.id]" :key="enemy.DF" :to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }")
-                img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
-            div(v-if="dataManager.charactersBySkill[scope.row.id]")
-              h3 {{ $t('人物') }}
-              router-link(v-for="character in dataManager.charactersBySkill[scope.row.id]" :key="character.DF" :to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
-                img.icon-small(:src="character.icon" :alt="character.NAME")
     el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredSkills.length" layout="prev, pager, next" background="")
 </template>
 
@@ -91,17 +106,12 @@ import { dataManager } from '@/utils/DataManager';
 import { List as SkillList } from '@/master/skill';
 import LRU from 'lru-cache';
 import { mapFields } from 'vuex-map-fields';
+import { EBattleEffectTrigger } from '@/logic/Enums';
 
 abstract class VueWithMapFields extends VueBase {
   public showColumnId!: boolean;
 
   public showColumnName!: boolean;
-
-  public showColumnDetail!: boolean;
-
-  public showColumnEffectValue!: boolean;
-
-  public showColumnSpAdd!: boolean;
 
   public showColumnAttackSkillAttribute!: boolean;
 
@@ -112,10 +122,6 @@ abstract class VueWithMapFields extends VueBase {
   public showColumnStateOwn!: boolean;
 
   public showColumnState!: boolean;
-
-  public showColumnIcon!: boolean;
-
-  public showColumnHas!: boolean;
 }
 
 // eslint-disable-next-line no-shadow
@@ -123,16 +129,21 @@ export enum SkillKind {
   none,
   normal,
   blazeArt,
+  effect,
 }
 
 @Component({
   components: {
   },
   computed: {
-    ...mapFields('skillsFilter', ['showColumnId', 'showColumnName', 'showColumnDetail', 'showColumnEffectValue', 'showColumnSpAdd', 'showColumnAttackSkillAttribute', 'showColumnAttackSkillElement', 'showColumnTargetTeam', 'showColumnStateOwn', 'showColumnState', 'showColumnIcon', 'showColumnHas']),
+    ...mapFields('skillsFilter', ['showColumnId', 'showColumnName', 'showColumnAttackSkillAttribute', 'showColumnAttackSkillElement', 'showColumnTargetTeam', 'showColumnStateOwn', 'showColumnState']),
   },
 })
 export default class extends VueWithMapFields {
+  public get EBattleEffectTrigger() {
+    return EBattleEffectTrigger;
+  }
+
   public get skillKindFilter() {
     return [
       {
@@ -142,6 +153,10 @@ export default class extends VueWithMapFields {
       {
         label: this.$t('ブレイズアーツ'),
         value: SkillKind.blazeArt,
+      },
+      {
+        label: this.$t('効果'),
+        value: SkillKind.effect,
       },
     ];
   }
@@ -174,6 +189,15 @@ export default class extends VueWithMapFields {
     }));
   }
 
+  public get triggerFilter() {
+    return Object.values(EBattleEffectTrigger)
+      .filter((p) => typeof p === 'string')
+      .map((label) => ({
+        label,
+        value: EBattleEffectTrigger[label],
+      }));
+  }
+
   public get hasFilter() {
     return [
       {
@@ -200,12 +224,14 @@ export default class extends VueWithMapFields {
   }
 
   public filter = {
-    skillKind: SkillKind.normal,
+    skillKind: null,
     attribute: '',
     element: '',
     targetTeam: '',
     targetScope: '',
+    trigger: null,
     name: '',
+    detail: '',
     has: [],
 
     sort: '',
@@ -220,12 +246,15 @@ export default class extends VueWithMapFields {
 
   public get skills() {
     switch (this.filter.skillKind) {
+      case SkillKind.normal:
+        return dataManager.skills;
       case SkillKind.blazeArt:
         return dataManager.skillBlazeArts;
-      case SkillKind.normal:
+      case SkillKind.effect:
+        return this.dataManager.skillEffects;
       case SkillKind.none:
       default:
-        return dataManager.skills;
+        return this.dataManager.skill.m_vList.filter((p) => !p.category);
     }
   }
 
@@ -237,7 +266,9 @@ export default class extends VueWithMapFields {
         && (this.filter.element === '' || p.attackSkill.element === +this.filter.element)
         && (this.filter.targetTeam === '' || p.targetTeam === +this.filter.targetTeam)
         && (this.filter.targetScope === '' || p.targetScope === +this.filter.targetScope)
+        && ([null, '', -1].includes(this.filter.trigger) || p.trigger === this.filter.trigger)
         && (!this.filter.name || p.id === +this.filter.name || p.name.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
+        && (!this.filter.detail || p.detail.toLocaleLowerCase().includes(this.filter.detail.toLocaleLowerCase()))
         && (!this.filter.has.includes(1) || p.stateOwn.length)
         && (!this.filter.has.includes(2) || p.state.length)
         && (!this.filter.has.includes(3) || dataManager.itemsBySkill[p.id])
@@ -279,8 +310,12 @@ export default class extends VueWithMapFields {
   }
 
   public beforeMount() {
-    if (typeof this.$route.query.skillKind !== 'undefined') {
+    if (this.$route.query.skillKind) {
       this.$set(this.filter, 'skillKind', +this.$route.query.skillKind);
+    }
+
+    if (this.$route.query.id) {
+      this.$set(this.filter, 'name', this.$route.query.id);
     }
   }
 }

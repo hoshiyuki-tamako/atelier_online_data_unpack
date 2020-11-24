@@ -1,3 +1,4 @@
+import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
 
 export class AreaDetail {
@@ -16,7 +17,11 @@ export class List {
   iEnemyIDList: number[];
 
   public get icon() {
-    return `img/icon_area/Texture2D/icon_area_${this.iAreaID.toString().padStart(2, '0')}.png`;
+    const filename = `icon_area_${this.iAreaID.toString().padStart(2, '0')}.png`;
+    if (!dataManager.files.img.icon_area.Texture2D[filename]) {
+      return 'data:,';
+    }
+    return `img/icon_area/Texture2D/${filename}`;
   }
 }
 

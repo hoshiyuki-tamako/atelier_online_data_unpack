@@ -162,7 +162,11 @@ export class MVList {
   #stateCache = new Map<string, IStateResult>();
 
   public get icon() {
-    return `img/icon_chara/Texture2D/icon_chara_all_${this.DF.toString().padStart(4, '0')}_00.png`;
+    const filename = `icon_chara_all_${this.DF.toString().padStart(4, '0')}_00.png`;
+    if (!dataManager.files.img.icon_chara.Texture2D[filename]) {
+      return 'data:,';
+    }
+    return `img/icon_chara/Texture2D/${filename}`;
   }
 
   public get faceIcon() {

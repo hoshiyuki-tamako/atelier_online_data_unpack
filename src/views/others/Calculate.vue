@@ -53,7 +53,7 @@ div.container
   div.calculation-quality
     h3 {{ $t('調合') }}{{ $t('品質') }}
     div
-      p clamp(floor(sum({{ $t('品質') }}) / count) + sum({{ $t('品質特性') }}), 1, max)
+      p {{ $t('調合') }}{{ $t('品質') }} = clamp(floor(sum({{ $t('品質') }}) / count) + sum({{ $t('品質特性') }}), 1, 100)
 
   el-divider
   div

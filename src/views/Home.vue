@@ -4,12 +4,17 @@ div.container
     h2 {{ $t('アトリエオンライン資料庫') }}
     p
       span.version-link__container
-        span Game Version 3.14.0 (日本語)
-        el-link(v-if="$i18n.locale !== 'ja-JP'" type="success" :underline="false" @click="onChangeLocale('ja-JP')") link
+        span
+          span Game Version 3.14.0 &nbsp
+          span(v-if="$i18n.locale !== 'ja-JP'")
+            el-link(type="success" :underline="false" @click="onChangeLocale('ja-JP')") (日本語)
+          span(v-else) (日本語)
       br
       span.version-link__container
-        span Game Version 3.5.0 (中文)
-        el-link(v-if="$i18n.locale !== 'zh-TW'" type="success" :underline="false" @click="onChangeLocale('zh-TW')") link
+        span Game Version 3.5.0 &nbsp
+          span(v-if="$i18n.locale !== 'zh-TW'")
+            el-link(type="success" :underline="false" @click="onChangeLocale('zh-TW')") (中文)
+          span(v-else) (中文)
     p
       span Twitter
       el-link(href="https://twitter.com/hoshiyuki_git" target="_blank" rel="noopener" type="primary") @hoshiyuki_git
@@ -232,7 +237,10 @@ export default class extends VueWithMapFields {
           src: 'img/fx/Texture2D/FX_Skill2005_02.png',
         },
         to: {
-          name: 'SkillsEffect',
+          name: 'Skills',
+          query: {
+            skillKind: SkillKind.effect,
+          },
         },
       },
       {
@@ -442,7 +450,7 @@ export default class extends VueWithMapFields {
         },
       },
       {
-        label: this.$t('チャット'),
+        label: this.$t('チャット資料'),
         img: {
           src: 'img/other/stamp.png',
         },

@@ -9,12 +9,6 @@ export default class extends VuexModuleBase {
 
   public showColumnName = true;
 
-  public showColumnDetail = true;
-
-  public showColumnEffectValue = true;
-
-  public showColumnSpAdd = true;
-
   public showColumnAttackSkillAttribute = true;
 
   public showColumnAttackSkillElement = true;
@@ -25,25 +19,16 @@ export default class extends VuexModuleBase {
 
   public showColumnState = true;
 
-  public showColumnIcon = true;
-
-  public showColumnHas = true;
-
-  @MutationAction({ mutate: ['showColumnId', 'showColumnName', 'showColumnDetail', 'showColumnEffectValue', 'showColumnSpAdd', 'showColumnAttackSkillAttribute', 'showColumnAttackSkillElement', 'showColumnTargetTeam', 'showColumnStateOwn', 'showColumnState', 'showColumnIcon', 'showColumnHas'] })
+  @MutationAction({ mutate: ['showColumnId', 'showColumnName', 'showColumnAttackSkillAttribute', 'showColumnAttackSkillElement', 'showColumnTargetTeam', 'showColumnStateOwn', 'showColumnState'] })
   public async reset() {
     return {
       showColumnId: true,
       showColumnName: true,
-      showColumnDetail: true,
-      showColumnEffectValue: true,
-      showColumnSpAdd: true,
       showColumnAttackSkillAttribute: true,
       showColumnAttackSkillElement: true,
       showColumnTargetTeam: true,
       showColumnStateOwn: true,
       showColumnState: true,
-      showColumnIcon: true,
-      showColumnHas: true,
     };
   }
 }

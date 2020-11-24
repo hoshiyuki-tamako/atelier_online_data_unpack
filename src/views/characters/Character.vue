@@ -111,13 +111,14 @@ div.container
             table.skill-table
               tr
                 th {{ $t('名前') }}
-                td {{ skill.name }}
+                td
+                  router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
               tr
                 th {{ $t('詳細') }}
                 td {{ skill.detail }}
               tr
                 th {{ $t('数値') }}
-                td {{ skill.effectValue2 }}
+                td {{ skill.effectValue }}, {{ skill.effectValue2 }}
               tr(v-if="skill.stateOwn.length")
                 th {{ $t('追加状態 (自)') }}
                 td
@@ -137,7 +138,8 @@ div.container
               table.skill-table
                 tr
                   th {{ $t('名前') }}
-                  td {{ skill.name }}
+                  td
+                    router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
                 tr
                   th {{ $t('詳細') }}
                   td {{ skill.detail }}
@@ -241,10 +243,6 @@ th, td
   flex-wrap: wrap
   > div:last-child
     margin-left: 10%
-
-.skill-table
-  th
-    width: 110px
 
 .character-food__items
   display: flex

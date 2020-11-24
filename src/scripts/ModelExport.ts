@@ -12,6 +12,11 @@ export interface IAreaModel {
   root: string;
 }
 
+export interface IBattleArea {
+  iLevel: number;
+  folder: string;
+}
+
 export default class ModelExport {
   public ncp = promisify(ncp);
 
@@ -30,6 +35,7 @@ export default class ModelExport {
       this.processItemsModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
       this.processEnemiesModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
       this.processAreaModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
+      this.processBattleAreaModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
     ]);
   }
 
@@ -73,7 +79,7 @@ export default class ModelExport {
 
   private async processAreaModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
     // custom meta
-    const hideAreas = [101, 102, 90];
+    const hideAreas = [90];
     const deDuplicationAreas = [5, 6];
     const hideAreaFilters = [
       {
@@ -128,6 +134,21 @@ export default class ModelExport {
         }
         await this.ncp(sourceModelFolder, outFolder);
       })),
+    ]);
+  }
+
+  private async processBattleAreaModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
+    const modelOutFolder = path.join(rootFolder, 'models', 'battleAreas');
+    const battleAreas = modelFolders.filter((p) => p.startsWith('BattleArea_'));
+    await Promise.all([
+      battleAreas.map(async (folder) => {
+        const sourceModelFolder = path.join(modelFolder, folder);
+        const outFolder = path.join(modelOutFolder, folder);
+        if (await fs.pathExists(outFolder)) {
+          return;
+        }
+        await this.ncp(sourceModelFolder, outFolder);
+      }),
     ]);
   }
 }

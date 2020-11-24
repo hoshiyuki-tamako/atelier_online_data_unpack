@@ -30,7 +30,7 @@ div
               img(:src="material.icon" :alt="material.NAME")
             template(slot="popover")
               div.item-popover
-                p {{ material.NAME }}
+                router-link(:to="{ name: 'ItemsItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ material.NAME }}
                 p {{ material.DESC }}
                 router-link(v-if="material.RSP.length" :to="{ name: 'ToolsComposeItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ $t('調合') }}
 
@@ -46,9 +46,8 @@ div
             img(:src="compose.icon" :alt="compose.NAME")
           template(slot="popover")
             div.item-popover
-              p {{ compose.NAME }}
+              router-link(:to="{ name: 'ItemsItem', query: { df: compose.DF, quality: composeQuality } }" target="_blank") {{ compose.NAME }}
               p {{ compose.DESC }}
-              router-link(:to="{ name: 'ItemsItem', query: { df: compose.DF, quality: composeQuality } }" target="_blank") {{ $t('アイテム') }}
 
     div.compose-result
       h3 {{ $t('品質') }} {{ composeQuality }}
@@ -61,7 +60,8 @@ div
         table
           tr
             th {{ $t('名前') }}
-            td {{ skill.name }}
+            td
+              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
           tr
             th {{ $t('詳細') }}
             td {{ skill.detail }}

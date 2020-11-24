@@ -9,6 +9,8 @@ export default class extends VuexModuleBase {
 
   public weaponKind: number | null = null;
 
+  public battleElement: number | null = null;
+
   public name = '';
 
   public sort = 1;
@@ -17,11 +19,12 @@ export default class extends VuexModuleBase {
 
   public characterOnlyItem = false;
 
-  @MutationAction({ mutate: ['category', 'weaponKind', 'name', 'sort', 'legendRecipe', 'characterOnlyItem'] })
+  @MutationAction({ mutate: ['category', 'weaponKind', 'battleElement', 'name', 'sort', 'legendRecipe', 'characterOnlyItem'] })
   public async reset() {
     return {
       category: null,
       weaponKind: null,
+      battleElement: null,
       name: '',
       sort: 1,
       legendRecipe: false,

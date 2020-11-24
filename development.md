@@ -41,7 +41,7 @@ most file follow naming convention from the source code
 
 ### Generated / Manual Input
 
-- Lookup `./public/generated/lookup.json`
+- Lookup `./public/generated/lookup.json` `./src/logic/Lookup.ts`
 - Enum `./public/generated/enum.json` `./src/logic/Enum.ts`
 
 ## Item
@@ -290,7 +290,7 @@ skill
   "targetTeam": 1,
   "targetScope": 1, // EBattleTargetAreaDefine
   "element": 0, // element of the skill, normally use for skill.type == 1 && skill.effect == 1
-  "shield": 0,
+  "shield": 0, // shield == 1 mean its a shield skill
   "spAdd": 2.0, // sp recover rate, when weapon normal attack will recover this amount for the skill to be able to active
   "coolTime": 0, // how many turn before this skill can be use again, mostly use for enemy
   "iconPath": "icon_skill_01111", // the icon image
@@ -327,7 +327,7 @@ abnormalstate
   "naturalheal": 1,
   "icon": "icon_abnormal_status_1001",
   "telop": "{0}は目を覚ました！",
-  "skillLow": 0, // this value show 
+  "skillLow": 0, // this value show
   "skillHigh": 0,
   "stateList": [],
   "effectListJ": [],

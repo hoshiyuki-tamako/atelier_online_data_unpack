@@ -1,3 +1,4 @@
+import { IBattleArea } from './../scripts/ModelExport';
 import files from '@/../public/generated/files.json';
 import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
 import { lookup } from '@/logic/Lookup';
@@ -169,6 +170,8 @@ export class DataManager {
   public areaModel: IAreaModel[];
 
   public areaModelsById: { [iAreaId: string]: IAreaModel[] };
+  public areaBattleAreas: { [iAreaId: string]: IBattleArea[] };
+  public areaDungeonBattleAreas: { [iAreaId: string]: IBattleArea[] };
 
   public unusedAdvs: { [s: string]: string[] };
 
@@ -438,6 +441,16 @@ export class DataManager {
     }))
     .where((p) => !!p.enemies.length)
     .toObject((p) => p.zone.id, (p) => p.enemies) as { [id: string]: EnemyMVList[] };
+
+    for (const skill of this.skill.m_vList) {
+      for (const enemyId of skill.enemyList) {
+        const enemy = this.enemyById[enemyId];
+        if (enemy) {
+          this.enemiesBySkill[skill.id] ||= []
+          this.enemiesBySkill[skill.id].push(enemy);
+        }
+      }
+    }
   }
 
   public async loadWealth(wealth?: unknown) {
@@ -533,6 +546,32 @@ export class DataManager {
     this.areaModelsById = Enumerable.from(this.areaModel)
       .groupBy((p) => p.iAreaID)
       .toObject((p) => p.key(), (p) => p.orderBy((i) => i.iLevel).toArray()) as { [iAreaId: string]: IAreaModel[] };
+
+    const battleAreas = Object.keys(this.files.models.battleAreas);
+    this.areaBattleAreas = Enumerable.from(battleAreas)
+      .where((folder) => !!folder.match(/^BattleArea_\d+/))
+      .select((folder) => {
+        const match = folder.replace('BattleArea_', '').match(/^(\d{3})(\d+)/);
+        return {
+          folder,
+          iAreaId: +match[1],
+          iLevel: +match[2],
+        };
+      })
+      .groupBy((battleAreas) => battleAreas.iAreaId)
+      .toObject((p) => p.key(), (p) => p.toArray()) as { [iAreaId: string]: IBattleArea[] };
+    this.areaDungeonBattleAreas = Enumerable.from(battleAreas)
+      .where((folder) => folder.startsWith('BattleArea_Dun'))
+      .select((folder) => {
+        const match = folder.replace('BattleArea_Dun', '').match(/^(\d{3})(\d+)/);
+        return {
+          folder,
+          iAreaId: +match[1],
+          iLevel: +match[2],
+        };
+      })
+      .groupBy((battleAreas) => battleAreas.iAreaId)
+      .toObject((p) => p.key(), (p) => p.toArray()) as { [iAreaId: string]: IBattleArea[] };
   }
 
   public processAdvs() {

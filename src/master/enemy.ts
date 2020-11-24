@@ -132,7 +132,11 @@ export class MVList {
   }
 
   public get icon() {
-    return `img/enemy_tex/Texture2D/enemy_tex_${this.sParam.MDL}.png`;
+    const filename = `enemy_tex_${this.sParam.MDL}.png`;
+    if (!dataManager.files.img.enemy_tex.Texture2D[filename]) {
+      return 'data:,';
+    }
+    return `img/enemy_tex/Texture2D/${filename}`;
   }
 
   public get viewAngleDegree() {

@@ -55,4 +55,5 @@ npm run build
 5. export all models fbx version 7.5 binary with folder to `./source/models/**/*`
 6. export all models fbx version 7.5 ascii to `./source/modelsMeta/**/*`
 7. update other images/models/Enums/lookup if any
-8. run `npm run process`
+8. delete `./public/models/roots/**/*`
+9. run `npm run process`

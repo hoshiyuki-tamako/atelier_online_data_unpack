@@ -46,8 +46,14 @@ export default class extends VueBase {
 
   public root = '';
 
+  public battleArea = '';
+
   public get fbx() {
-    return `models/roots/${this.root}/root.fbx`;
+    if (this.root) {
+      return `models/roots/${this.root}/root.fbx`;
+    }
+
+    return `models/battleAreas/${this.battleArea}/${this.battleArea}.fbx`;
   }
 
   public beforeMount() {
@@ -58,6 +64,12 @@ export default class extends VueBase {
     }
 
     this.root = this.$route.query.root as string;
+    this.battleArea = this.$route.query.battleArea as string;
+
+    if (!(this.root || this.battleArea)) {
+      this.$router.push({ name: 'Areas' });
+      return;
+    }
 
     this.initializeCamera().initializeLights();
   }
@@ -105,18 +117,24 @@ export default class extends VueBase {
         'light',
         'bgmap', 'radar',
       ].map((p) => p.toLocaleLowerCase());
-      object.traverse((child: Group & Object3D & Mesh) => {
-        if (!this.isProduction) {
-          console.log(child.name);
-        }
-        // they reuse iAreaId === 5 map for the sea effect, required to hide MapArea 5
-        if (this.area.iAreaID === 6) {
-          filters.push('MapArea_05'.toLocaleLowerCase());
-        }
 
+      // they reuse iAreaId === 5 map for the sea effect, required to hide MapArea 5
+      if (this.area.iAreaID === 6) {
+        filters.push('MapArea_05_001'.toLocaleLowerCase());
+      }
+
+      // battle areas filter
+      filters.push('skillbg'.toLocaleLowerCase());
+
+      // for some reason they put battle_01_001 in iAreaID === 10 map
+      if (this.area.iAreaID === 10) {
+        filters.push('battle_01_001'.toLocaleLowerCase());
+      }
+
+      object.traverse((child: Group & Object3D & Mesh) => {
         if (filters.some((p) => child.name.toLocaleLowerCase().includes(p))) {
           if (!this.isProduction) {
-            console.log('^^^^^^^^^^ filtered ^^^^^^^^^^');
+            console.log(`filtered: ${child.name}`);
           }
           child.visible = false;
           return;
@@ -151,7 +169,7 @@ export default class extends VueBase {
   }
 
   private initializeRenderLoop() {
-    const targetFps = 240;
+    const targetFps = 60;
     this.renderLoop = window.setInterval(() => {
       if (!document.hidden) {
         requestAnimationFrame(() => {

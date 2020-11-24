@@ -7,6 +7,9 @@ div.top-container
           el-select(v-if="itemPickerShowSort" v-model="itemPickerSort" :placeholder="$t('ソート')" filterable clearable)
             el-option(v-for="item of itemPickerSortOption" :key="item.value" :label="item.label" :value="item.value")
         div.filter
+          el-select(v-model="itemPickerFilterBattleElement" :placeholder="$t('攻撃属性')" clearable filterable)
+            el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+        div.filter
           el-input(v-model="itemPickerFilterKeyword" :placeholder="`${$t('名前')}/DF`" clearable)
         div.filter
           el-switch(v-model="itemPickerShowStates" :active-text="$t('情報を表示')")
@@ -1028,6 +1031,7 @@ export default class extends VueBase {
       this.itemPickerShowStates,
       this.itemPickerShowStateType,
       this.itemPickerFilterCategory,
+      this.itemPickerFilterBattleElement,
       this.itemPickerFilterKeyword,
       this.itemPickerFilterCharacterGender,
       this.itemPickerFilterWeaponGen,
@@ -1048,6 +1052,8 @@ export default class extends VueBase {
   public itemPickerDialogVisible = false;
 
   public itemPickerFilterCategory: number | null = null;
+
+  public itemPickerFilterBattleElement: number | null = null;
 
   public itemPickerFilterKeyword = '';
 
@@ -1126,6 +1132,7 @@ export default class extends VueBase {
         && (!this.itemPickerFilterCharacterGender || p.canGenderUseEquipment(this.itemPickerFilterCharacterGender))
         && (!this.itemPickerFilterWeaponGen.length || this.itemPickerFilterWeaponGen.includes(p.GEN))
         && (!this.itemPickerFilterGroupDf || !p.GROUP_DF || this.itemPickerFilterGroupDf === p.GROUP_DF)
+        && ([null, '', -1].includes(this.itemPickerFilterBattleElement) || (p.elementChangeSkill?.effectValue ?? 0) === this.itemPickerFilterBattleElement)
       ));
 
       if (this.itemPickerSort in dataManager.lookup.state) {
