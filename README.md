@@ -29,8 +29,8 @@ npm start
 Please find the packages in npm before running below commands
 
 ```bash
-typesync
 ncu -u
+typesync
 npm i
 ```
 

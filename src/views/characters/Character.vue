@@ -112,7 +112,7 @@ div.container
               tr
                 th {{ $t('名前') }}
                 td
-                  router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+                  router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
               tr
                 th {{ $t('詳細') }}
                 td {{ skill.detail }}
@@ -139,7 +139,7 @@ div.container
                 tr
                   th {{ $t('名前') }}
                   td
-                    router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+                    router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
                 tr
                   th {{ $t('詳細') }}
                   td {{ skill.detail }}

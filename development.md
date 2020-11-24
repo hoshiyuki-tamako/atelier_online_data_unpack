@@ -1096,7 +1096,7 @@ zoneeffect
   "m_Name": "1008ADV_01", // name of the file
   "vOrderList": [
     {
-      "eOrder": 22,
+      "eOrder": 22, // EOrderType
       "vsParam": []
     },
     {
@@ -1142,7 +1142,7 @@ zoneeffect
       ]
     },
     {
-      "eOrder": 18,
+      "eOrder": 18, // eOrder 18 === EOrderType.eCHARA_TALK
       "vsParam": [
         "1008", // character id
         "クフェア", // character name

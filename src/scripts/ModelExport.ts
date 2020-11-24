@@ -17,6 +17,11 @@ export interface IBattleArea {
   folder: string;
 }
 
+export interface IHideAreaFilter {
+  iAreaID: number;
+  iLevel: number;
+}
+
 export default class ModelExport {
   public ncp = promisify(ncp);
 
@@ -79,14 +84,9 @@ export default class ModelExport {
 
   private async processAreaModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
     // custom meta
-    const hideAreas = [90];
-    const deDuplicationAreas = [5, 6];
-    const hideAreaFilters = [
-      {
-        iAreaID: 3,
-        iLevel: 901,
-      }
-    ];
+    const hideAreas = [] as number[];
+    const deDuplicationAreas = [5, 6] as number[];
+    const hideAreaFilters = [] as IHideAreaFilter[];
 
     // start process
     const modelOutFolder = path.join(rootFolder, 'models', 'roots');
