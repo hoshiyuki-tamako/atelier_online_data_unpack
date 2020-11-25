@@ -172,6 +172,7 @@ export class DataManager {
   public areaModelsById: { [iAreaId: string]: IAreaModel[] };
   public areaBattleAreas: { [iAreaId: string]: IBattleArea[] };
   public areaDungeonBattleAreas: { [iAreaId: string]: IBattleArea[] };
+  public fieldTitlesByAreaId: { [iAreaId: string]: string[] };
 
   public unusedAdvs: { [s: string]: string[] };
 
@@ -572,6 +573,13 @@ export class DataManager {
       })
       .groupBy((battleAreas) => battleAreas.iAreaId)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [iAreaId: string]: IBattleArea[] };
+    this.fieldTitlesByAreaId = Enumerable.from(Object.values(this.files.img.field_title.Texture2D))
+      .select((fileName) => ({
+        id: +fileName.split('_')[0],
+        fileName,
+      }))
+      .groupBy((p) => p.id)
+      .toObject((p) => p.key(), (p) => p.select((i) => i.fileName).toArray()) as { [iAreaId: string]: string[] };
   }
 
   public processAdvs() {

@@ -1,4 +1,4 @@
-import { EWeaponKind } from './Enums';
+import { EBattleEffectTrigger, EWeaponKind } from './Enums';
 
 export const lookup = {
   // value lookups
@@ -192,8 +192,7 @@ export const lookup = {
     5017: '対話',
     5018: '対話納品'
   },
-  EBattleAttribute:
-  {
+  EBattleAttribute: {
     0: '無',
     1: 'スラッシュ',
     2: '打撃',

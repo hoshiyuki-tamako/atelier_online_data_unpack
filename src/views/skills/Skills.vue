@@ -20,10 +20,19 @@ div.container
       span {{ $t('範囲') }}
       el-select(v-model="filter.targetScope" @change="resetPage" clearable filterable)
         el-option(v-for="item of targetScopeFilter" :key="item.value" :label="item.label" :value="item.value")
+  div.filters
     div.filter
-      span {{ $t('エフェクトトリガー') }}
+      span {{ $t('トリガー') }}
       el-select(v-model="filter.trigger" @change="resetPage" clearable filterable)
         el-option(v-for="item of triggerFilter" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('エフェクト') }}
+      el-select(v-model="filter.effect" @change="resetPage" clearable filterable)
+        el-option(v-for="item of effectFilter" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('エフェクトターゲット') }}
+      el-select(v-model="filter.effectTarget" @change="resetPage" clearable filterable)
+        el-option(v-for="item of effectTargetFilter" :key="item.value" :label="item.label" :value="item.value")
   div.filters
     div.filter
       span {{ $t('名前') }}/ID
@@ -59,15 +68,28 @@ div.container
               p ID: {{ props.row.id }}
               p {{ $t('数値') }}1: {{ props.row.effectValue }}
               p {{ $t('数値') }}2: {{ props.row.effectValue2 }}
+              p {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.EBattleAttribute[props.row.attackSkill.attribute]) }}
+              p {{ $t('属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[props.row.attackSkill.element]) }}
+              p {{ $t('對象') }}: {{ $t(dataManager.lookup.targetTeam[props.row.targetTeam]) }}{{ $t(dataManager.lookup.eFieldItemRange[props.row.targetScope]) }}
               p(v-if="props.row.spAdd") {{ $t('SP回復率') }}: {{ props.row.spAdd }}{{ $t('倍') }}
-              p(v-if="props.row.trigger") {{ $t('エフェクトトリガー') }}: {{ EBattleEffectTrigger[props.row.trigger] || props.row.trigger }}
-              //- p effectTarget {{ props.row.effectTarget }}
+              p(v-if="props.row.trigger") {{ $t('トリガー') }}: {{ EBattleEffectTrigger[props.row.trigger] || props.row.trigger }}
+              p(v-if="props.row.effect") {{ $t('エフェクト') }} {{ EBattleEffectKind[props.row.effect] || props.row.effect }}
+              p(v-if="props.row.effectTarget") {{ $t('エフェクトターゲット') }} {{ EBattleEffectTarget[props.row.effectTarget] || props.row.effectTarget }}
               p(v-if="props.row.coolTime") {{ $t('クールダウンタイム') }}: {{ props.row.coolTime }}{{ $t('ターン') }}
-              br
               div(v-if="props.row.combSkillList.length")
+                br
                 h4 {{ $t('含まれるスキル') }}
                 p(v-for="(skill, i) of props.row.combSkillList")
                   router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+              div(v-if="props.row.stateOwn.length")
+                br
+                h4 {{ $t('追加状態 (自)') }}
+                p(v-for="[state, abnormalState] of props.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
+              div(v-if="props.row.state.length")
+                br
+                h4 {{ $t('追加状態') }}
+                p(v-for="[state, abnormalState] of props.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
+
             div.item-container-right
               div(v-if="dataManager.itemsBySkill[props.row.id]")
                 h3 {{ $t('アイテム') }}
@@ -81,6 +103,7 @@ div.container
                 h3 {{ $t('人物') }}
                 router-link(v-for="character in dataManager.charactersBySkill[props.row.id]" :key="character.DF" :to="{ name: 'CharactersCharacter', query: { df: character.DF } }" target="_blank")
                   img.icon-small(:src="character.icon" :alt="character.NAME")
+
       el-table-column(v-if="showColumnId" prop="id" label="ID" width="100%" sortable="custom")
       el-table-column(v-if="showColumnName" prop="name" :label="$t('名前')")
       el-table-column(v-if="showColumnAttackSkillAttribute" prop="attackSkill.attribute" :label="$t('攻撃タイプ')" sortable="custom")
@@ -106,7 +129,7 @@ import { dataManager } from '@/utils/DataManager';
 import { List as SkillList } from '@/master/skill';
 import LRU from 'lru-cache';
 import { mapFields } from 'vuex-map-fields';
-import { EBattleEffectTrigger } from '@/logic/Enums';
+import { EBattleEffectKind, EBattleEffectTarget, EBattleEffectTrigger } from '@/logic/Enums';
 
 abstract class VueWithMapFields extends VueBase {
   public showColumnId!: boolean;
@@ -144,10 +167,18 @@ export default class extends VueWithMapFields {
     return EBattleEffectTrigger;
   }
 
+  public get EBattleEffectKind() {
+    return EBattleEffectKind;
+  }
+
+  public get EBattleEffectTarget() {
+    return EBattleEffectTarget;
+  }
+
   public get skillKindFilter() {
     return [
       {
-        label: this.$t('スキル'),
+        label: this.$t('アクティブスキル'),
         value: SkillKind.normal,
       },
       {
@@ -155,7 +186,7 @@ export default class extends VueWithMapFields {
         value: SkillKind.blazeArt,
       },
       {
-        label: this.$t('効果'),
+        label: this.$t('パッシブスキル'),
         value: SkillKind.effect,
       },
     ];
@@ -198,6 +229,24 @@ export default class extends VueWithMapFields {
       }));
   }
 
+  public get effectFilter() {
+    return Object.values(EBattleEffectKind)
+      .filter((p) => typeof p === 'string')
+      .map((label) => ({
+        label,
+        value: EBattleEffectKind[label],
+      }));
+  }
+
+  public get effectTargetFilter() {
+    return Object.values(EBattleEffectTarget)
+      .filter((p) => typeof p === 'string')
+      .map((label) => ({
+        label,
+        value: EBattleEffectTarget[label],
+      }));
+  }
+
   public get hasFilter() {
     return [
       {
@@ -230,6 +279,8 @@ export default class extends VueWithMapFields {
     targetTeam: '',
     targetScope: '',
     trigger: null,
+    effect: null,
+    effectTarget: null,
     name: '',
     detail: '',
     has: [],
@@ -267,6 +318,8 @@ export default class extends VueWithMapFields {
         && (this.filter.targetTeam === '' || p.targetTeam === +this.filter.targetTeam)
         && (this.filter.targetScope === '' || p.targetScope === +this.filter.targetScope)
         && ([null, '', -1].includes(this.filter.trigger) || p.trigger === this.filter.trigger)
+        && ([null, '', -1].includes(this.filter.effect) || p.effect === this.filter.effect)
+        && ([null, '', -1].includes(this.filter.effectTarget) || p.effectTarget === this.filter.effectTarget)
         && (!this.filter.name || p.id === +this.filter.name || p.name.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
         && (!this.filter.detail || p.detail.toLocaleLowerCase().includes(this.filter.detail.toLocaleLowerCase()))
         && (!this.filter.has.includes(1) || p.stateOwn.length)

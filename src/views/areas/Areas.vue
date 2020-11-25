@@ -70,6 +70,12 @@ div.container
                     router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
                       img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
 
+            div(v-if="dataManager.gateInfoByAreaId[areaDetail.iAreaID]")
+              el-divider {{ $t('ゲート') }}
+              div.area-gates
+                div(v-for="gateInfo of dataManager.gateInfoByAreaId[areaDetail.iAreaID]")
+                  p {{ gateInfo.strName }}
+
             div(v-if="dataManager.townInfosByAreaId[areaDetail.iAreaID]")
               el-divider {{ $t('町') }}
               div
@@ -80,11 +86,10 @@ div.container
                       p(v-for="townIcon of getTownIcons(townInfo.iTownId)")
                         img.area-towns__image(:src="townIcon" :alt="fieldName.strAreaName")
 
-            div(v-if="dataManager.gateInfoByAreaId[areaDetail.iAreaID]")
-              el-divider {{ $t('ゲート') }}
-              div.area-gates
-                div(v-for="gateInfo of dataManager.gateInfoByAreaId[areaDetail.iAreaID]")
-                  p {{ gateInfo.strName }}
+            div(v-if="dataManager.fieldTitlesByAreaId[areaDetail.iAreaID]")
+              el-divider {{ $t('画像') }}
+              div(v-for="fieldTitle of dataManager.fieldTitlesByAreaId[areaDetail.iAreaID]")
+                img.area-field-title__img(:src="`img/field_title/Texture2D/${fieldTitle}`" :alt="fieldTitle")
 </template>
 
 <script lang="ts">
@@ -162,4 +167,7 @@ a
   flex-wrap: wrap
 .area-towns__image
   width: 240px
+
+.area-field-title__img
+  max-width: 100vw
 </style>

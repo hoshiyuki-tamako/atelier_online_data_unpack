@@ -9,8 +9,16 @@ div.container
           img.dialog-character-image(v-if="scope.row.characterDf" :src="`img/icon_chara/Texture2D/icon_chara_all_${scope.row.characterDf.toString().padStart(4, '0')}_00.png`" :alt="dataManager.characterById[scope.row.characterDf] ? dataManager.characterById[scope.row.characterDf].NAME : scope.row.characterDf")
       el-table-column
         template(slot-scope="scope")
-          h4 {{ scope.row.name }}
-          p {{ scope.row.dialog }}
+          div(v-if="scope.row.order === EOrderType.eCHARA_TALK")
+            h4 {{ replaceWithPlayerName(scope.row.name) }}
+            p {{ replaceWithPlayerName(scope.row.dialog) }}
+          div(v-else-if="scope.row.order === EOrderType.eSELECTION")
+            h4 {{ $t('選択') }}
+            p(v-for="option of scope.row.options") {{ replaceWithPlayerName(option) }}
+          div(v-else-if="scope.row.order === EOrderType.eBG")
+            h4 {{ $t('背景') }}
+            p {{ replaceWithPlayerName(scope.row.text1 || '') }}
+            p {{ replaceWithPlayerName(scope.row.text2 || '') }}
     div(slot="footer")
       el-button(@click="questDialogVisible = false" type="primary") {{ $t('閉じる') }}
 
@@ -167,9 +175,10 @@ import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
 import { MVList as QuestMVList } from '@/master/quest';
 import LRU from 'lru-cache';
-import { IDialog } from '@/utils/AdvManager';
+import { IAdventure } from '@/utils/AdvManager';
 import MobileDetect from 'mobile-detect';
 import { mapFields } from 'vuex-map-fields';
+import { EOrderType } from '@/logic/Enums';
 
 abstract class VueWithMapFields extends VueBase {
   public showColumnDF!: boolean;
@@ -199,6 +208,10 @@ abstract class VueWithMapFields extends VueBase {
   },
 })
 export default class extends VueWithMapFields {
+  public get EOrderType() {
+    return EOrderType;
+  }
+
   public md = new MobileDetect(window.navigator.userAgent);
 
   public filter = {
@@ -229,7 +242,7 @@ export default class extends VueWithMapFields {
 
   public selectedQuest: QuestMVList | null = null;
 
-  public questDialogs: IDialog[] = [];
+  public questDialogs: IAdventure[] = [];
 
   public get categoryFilter() {
     return Object.keys(dataManager.questsByCategory)
@@ -355,12 +368,7 @@ export default class extends VueWithMapFields {
       this.questDialogs = [];
       this.questDialogVisible = true;
       this.questDialogLoading = true;
-      const dialogs = await Promise.all(
-        quest.NPC_FD
-          .filter((p) => p.ADV)
-          .map((p) => dataManager.advManager.getDialog(p.ADV)),
-      );
-      this.questDialogs = dialogs.flat().map((p) => Object.assign(p, { dialog: p.dialog.replace('[px]', `[${this.$t('プレーヤー')}${this.$t('名前')}]`) }));
+      this.questDialogs = await this.dataManager.advManager.getDialog(quest.NPC_FD.map((p) => p.ADV).filter((p) => p));
     } catch (e) {
       this.questDialogVisible = false;
       this.$message.error(e.toString());
@@ -368,6 +376,10 @@ export default class extends VueWithMapFields {
     } finally {
       this.questDialogLoading = false;
     }
+  }
+
+  public replaceWithPlayerName(text: string) {
+    return text.replace('[px]', `[${this.$t('プレーヤー')}${this.$t('名前')}]`);
   }
 }
 </script>

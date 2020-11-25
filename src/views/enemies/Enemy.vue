@@ -44,7 +44,7 @@ div.container
           router-link(:to="{ name: 'Areas', query: { df: area.iAreaId } }") {{ dataManager.fieldNameById[area.iAreaNameId].strAreaName }}
 
       div(v-if="enemy.sParam.SKILL.length")
-        el-divider {{ $t('スキル') }}/{{ $t('効果') }}
+        el-divider {{ $t('スキル') }}
         div(v-for="(skill, i) of enemy.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)")
           table.skill-table
             tr

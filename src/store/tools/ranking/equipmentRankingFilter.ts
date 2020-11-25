@@ -12,6 +12,8 @@ export default class extends VuexModuleBase {
 
   public battleElement: number | null = null;
 
+  public skillElement: number | null = null;
+
   public support = false;
 
   public quality = ItemMVList.equipmentMaxQuality;
@@ -48,12 +50,13 @@ export default class extends VuexModuleBase {
 
   public showColumnDARK = true;
 
-  @MutationAction({ mutate: ['category', 'weaponKind', 'battleElement', 'support', 'quality', 'level', 'showColumnTotalState', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK'] })
+  @MutationAction({ mutate: ['category', 'weaponKind', 'battleElement', 'skillElement', 'support', 'quality', 'level', 'showColumnTotalState', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK'] })
   public async reset() {
     return {
       category: null,
       weaponKind: null,
       battleElement: null,
+      skillElement: null,
       support: null,
       quality: ItemMVList.equipmentMaxQuality,
       level: ItemMVList.equipmentMaxLevel,

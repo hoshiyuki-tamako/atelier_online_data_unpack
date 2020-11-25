@@ -134,7 +134,7 @@ const skillsRoutes: Array<RouteConfig> = [
     name: 'Skills',
     component: () => import(/* webpackChunkName: "Skills" */ '@/views/skills/Skills.vue'),
     meta: {
-      title: 'スキル / 効果',
+      title: 'スキル',
     },
   },
   {

@@ -10,6 +10,9 @@ div.top-container
           el-select(v-model="itemPickerFilterBattleElement" :placeholder="$t('攻撃属性')" clearable filterable)
             el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
         div.filter
+          el-select(v-model="itemPickerFilterSkillElement" :placeholder="$t('スキル属性')" clearable filterable)
+            el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+        div.filter
           el-input(v-model="itemPickerFilterKeyword" :placeholder="`${$t('名前')}/DF`" clearable)
         div.filter
           el-switch(v-model="itemPickerShowStates" :active-text="$t('情報を表示')")
@@ -1032,6 +1035,7 @@ export default class extends VueBase {
       this.itemPickerShowStateType,
       this.itemPickerFilterCategory,
       this.itemPickerFilterBattleElement,
+      this.itemPickerFilterSkillElement,
       this.itemPickerFilterKeyword,
       this.itemPickerFilterCharacterGender,
       this.itemPickerFilterWeaponGen,
@@ -1054,6 +1058,8 @@ export default class extends VueBase {
   public itemPickerFilterCategory: number | null = null;
 
   public itemPickerFilterBattleElement: number | null = null;
+
+  public itemPickerFilterSkillElement: number | null = null;
 
   public itemPickerFilterKeyword = '';
 
@@ -1133,6 +1139,7 @@ export default class extends VueBase {
         && (!this.itemPickerFilterWeaponGen.length || this.itemPickerFilterWeaponGen.includes(p.GEN))
         && (!this.itemPickerFilterGroupDf || !p.GROUP_DF || this.itemPickerFilterGroupDf === p.GROUP_DF)
         && ([null, '', -1].includes(this.itemPickerFilterBattleElement) || (p.elementChangeSkill?.effectValue ?? 0) === this.itemPickerFilterBattleElement)
+        && ([null, '', -1].includes(this.itemPickerFilterSkillElement) || p.getAttackSkill()?.element === this.itemPickerFilterSkillElement)
       ));
 
       if (this.itemPickerSort in dataManager.lookup.state) {

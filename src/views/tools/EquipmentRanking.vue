@@ -6,13 +6,17 @@ div.container
       el-select(v-model="category" searchable clearable)
         el-option(v-for="item of itemCategoryOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
+      span {{ $t('武器種類') }}
+      el-select(v-model="weaponKind" searchable clearable :disabled="!enableWeaponKindFilter")
+        el-option(v-for="item of weaponKindOptions" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
       span {{ $t('攻撃属性') }}
       el-select(v-model="battleElement" clearable filterable)
         el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
     div.filter
-      span {{ $t('武器種類') }}
-      el-select(v-model="weaponKind" searchable clearable :disabled="!enableWeaponKindFilter")
-        el-option(v-for="item of weaponKindOptions" :key="item.value" :label="item.label" :value="item.value")
+      span {{ $t('スキル属性') }}
+      el-select(v-model="skillElement" clearable filterable)
+        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
     div.filters
       el-checkbox(@change="onSupportChange" v-model="support") {{ $t('サブ装備') }}
   div.filters
@@ -75,11 +79,13 @@ import { MVList as ItemMVList } from '@/master/item';
 import { mapFields } from 'vuex-map-fields';
 
 abstract class VueWithMapFields extends VueBase {
-  public category: number | null;
+  public category!: number | null;
 
-  public weaponKind: number | null;
+  public weaponKind!: number | null;
 
-  public battleElement: number | null;
+  public battleElement!: number | null;
+
+  public skillElement!: number | null;
 
   public support!: boolean;
 
@@ -122,7 +128,7 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('equipmentRankingFilter', ['category', 'weaponKind', 'battleElement', 'support', 'quality', 'level', 'showColumnTotalState', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
+    ...mapFields('equipmentRankingFilter', ['category', 'weaponKind', 'battleElement', 'skillElement', 'support', 'quality', 'level', 'showColumnTotalState', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
   },
 })
 export default class extends VueWithMapFields {
@@ -188,7 +194,10 @@ export default class extends VueWithMapFields {
   }
 
   private get filteredItems() {
-    return this.items.filter((p) => [null, '', -1].includes(this.battleElement) || (p.elementChangeSkill?.effectValue ?? 0) === this.battleElement);
+    return this.items.filter((p) => (
+      ([null, '', -1].includes(this.battleElement) || (p.elementChangeSkill?.effectValue ?? 0) === this.battleElement)
+      && ([null, '', -1].includes(this.skillElement) || p.getAttackSkill()?.element === this.skillElement)
+    ));
   }
 
   private get supportEquipments() {

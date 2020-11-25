@@ -220,7 +220,7 @@ export default class extends VueWithMapFields {
   public get pageSkills() {
     return [
       {
-        label: this.$t('スキル'),
+        label: this.$t('アクティブスキル'),
         img: {
           src: 'img/icon/icon_skill_00003.png',
         },
@@ -232,7 +232,7 @@ export default class extends VueWithMapFields {
         },
       },
       {
-        label: this.$t('効果'),
+        label: this.$t('パッシブスキル'),
         img: {
           src: 'img/fx/Texture2D/FX_Skill2005_02.png',
         },

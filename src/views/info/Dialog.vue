@@ -7,8 +7,16 @@ div.container
           img.dialog-character-image(v-if="scope.row.characterDf" :src="`img/icon_chara/Texture2D/icon_chara_all_${scope.row.characterDf.toString().padStart(4, '0')}_00.png`" :alt="dataManager.characterById[scope.row.characterDf] ? dataManager.characterById[scope.row.characterDf].NAME : scope.row.characterDf")
       el-table-column
         template(slot-scope="scope")
-          h4 {{ scope.row.name }}
-          p {{ scope.row.dialog }}
+          div(v-if="scope.row.order === EOrderType.eCHARA_TALK")
+            h4 {{ replaceWithPlayerName(scope.row.name) }}
+            p {{ replaceWithPlayerName(scope.row.dialog) }}
+          div(v-else-if="scope.row.order === EOrderType.eSELECTION")
+            h4 {{ $t('選択') }}
+            p(v-for="option of scope.row.options") {{ replaceWithPlayerName(option) }}
+          div(v-else-if="scope.row.order === EOrderType.eBG")
+            h4 {{ $t('背景') }}
+            p {{ replaceWithPlayerName(scope.row.text1 || '') }}
+            p {{ replaceWithPlayerName(scope.row.text2 || '') }}
     div(slot="footer")
       el-button(@click="questDialogVisible = false" type="primary") {{ $t('閉じる') }}
 
@@ -24,14 +32,19 @@ div.container
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
-import { IDialog } from '@/utils/AdvManager';
+import { IAdventure } from '@/utils/AdvManager';
 import MobileDetect from 'mobile-detect';
+import { EOrderType } from '@/logic/Enums';
 
 @Component({
   components: {
   },
 })
 export default class extends VueBase {
+  public get EOrderType() {
+    return EOrderType;
+  }
+
   public md = new MobileDetect(window.navigator.userAgent);
 
   public questDialogVisible = false;
@@ -40,7 +53,7 @@ export default class extends VueBase {
 
   public selectedAdv = '';
 
-  public questDialogs: IDialog[] = [];
+  public questDialogs: IAdventure[] = [];
 
   // dialog
   public async onOpenDialog(adv: string) {
@@ -49,8 +62,7 @@ export default class extends VueBase {
       this.questDialogs = [];
       this.questDialogVisible = true;
       this.questDialogLoading = true;
-      const dialogs = await dataManager.advManager.getDialog(adv);
-      this.questDialogs = dialogs.flat().map((p) => Object.assign(p, { dialog: p.dialog.replace('[px]', `[${this.$t('プレーヤー')}${this.$t('名前')}]`) }));
+      this.questDialogs = await dataManager.advManager.getDialog(adv);
     } catch (e) {
       this.questDialogVisible = false;
       this.$message.error(e.toString());
@@ -58,6 +70,10 @@ export default class extends VueBase {
     } finally {
       this.questDialogLoading = false;
     }
+  }
+
+  public replaceWithPlayerName(text: string) {
+    return text.replace('[px]', `[${this.$t('プレーヤー')}${this.$t('名前')}]`);
   }
 }
 </script>

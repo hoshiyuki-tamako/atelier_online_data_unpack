@@ -37,7 +37,8 @@ most file follow naming convention from the source code
 - Degree `./public/img/icon_degree/*`
 - Enemy `./public/img/enemy_tex/*`
 - Town `./public/img/map_town/*`
-- Pickup`./public/img/icon_pickup/*`
+- Pickup `./public/img/icon_pickup/*`
+- Field titles `./public/img/field_title/*`
 
 ### Generated / Manual Input
 
@@ -1161,6 +1162,59 @@ zoneeffect
         "ru_m2_001" // voice
       ]
     }
+  ]
+}
+```
+
+### EOrderType.eMUSIC = 4
+
+```ts
+{
+  "eOrder": 4,
+  "vsParam": [
+    "-1"
+  ]
+}
+```
+
+### EOrderType.eCHARA_TALK = 18
+
+```ts
+{
+  "eOrder": 18,
+  "vsParam": [
+    "1004", // character DF
+    "ルー", // display name
+    "ふむ……。\nやはり先史文明は、噴火の影響で……", // dialog
+    "0",
+    "",
+    "",
+    "ru_m2_001" // voice
+  ]
+}
+```
+
+### EOrderType.eSELECTION = 20
+
+```ts
+{
+  "eOrder":20,
+  "vsParam": [
+    "「平気だよ」", // option 1
+    "「考えすぎだって」" // option 2
+  ]
+}
+```
+
+### EOrderType.eBG = 48
+
+```ts
+{
+  "eOrder":48,
+  "vsParam": [
+    "1", // background texture id
+    "[px]のアトリエ", // text line 1
+    "Atelier" // text line 2
   ]
 }
 ```

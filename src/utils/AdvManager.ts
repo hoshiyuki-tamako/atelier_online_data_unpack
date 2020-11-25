@@ -1,40 +1,102 @@
+import { EOrderType } from '@/logic/Enums';
 import { Adv } from '@/master/adv';
-import cjk from 'cjk-regex';
 
-export interface IDialog {
+export interface IAdventure {
+  order: EOrderType;
+}
+
+export interface IDialog extends IAdventure {
+  characterDf?: number;
   name: string;
   dialog: string;
+  voice?: string;
+}
+
+export interface ISelection extends IAdventure {
+  options: string[];
+}
+
+export interface IBackground extends IAdventure {
+  background: string;
+  text1: string;
+  text2: string;
+}
+
+export interface IMusic extends IAdventure {
+  id: number;
 }
 
 export class AdvManager {
   public locale = 'ja-JP';
 
-  #cjkRegex = cjk().toRegExp();
-
-  #advCache = new Map<string, IDialog[]>();
+  #advCache = new Map<string, Adv>();
+  #dialogCache = new Map<string, IAdventure[]>();
 
   public setLocale(locale: string) {
     this.locale = locale;
     this.#advCache.clear();
+    this.#dialogCache.clear();
   }
 
-  public async getDialog(adv: string) {
-    const jsonPath = `export/${this.locale === 'zh-TW' ? 'tw/' : ''}adv/${adv}.json`;
-    if (!this.#advCache.has(jsonPath)) {
-      try {
-        const data = await fetch(jsonPath).then((p) => p.json()) as Adv;
-        this.#advCache.set(jsonPath, data.vOrderList
-          .filter((p) => p.vsParam.length >= 3 && (this.#cjkRegex.test(p.vsParam[1]) || this.#cjkRegex.test(p.vsParam[2])))
-          .map(({ vsParam: [characterDf, name, dialog] }) => ({
-            characterDf,
-            name,
-            dialog,
-          }) as IDialog));
-      } catch (e) {
-        console.error(e);
-        return [];
-      }
+  public async getAdv(adv: string) {
+    const url = this.getAdvJsonUrl(adv);
+    if (!this.#advCache.has(url)) {
+      this.#advCache.set(url, await fetch(url).then((p) => p.json()));
     }
-    return this.#advCache.get(jsonPath);
+    return this.#advCache.get(url);
+  }
+
+  public async getDialog(adv: string | string[]): Promise<IAdventure[]> {
+    if (Array.isArray(adv)) {
+      const dialogs = await Promise.all(adv.map((a) => this.getDialog(a)));
+      return dialogs.flat();
+    }
+
+    const url = this.getAdvJsonUrl(adv);
+    if (!this.#dialogCache.has(url)) {
+      const data = await this.getAdv(adv);
+      const supportedOrders = [EOrderType.eCHARA_TALK, EOrderType.eSELECTION, EOrderType.eBG];
+      this.#dialogCache.set(url, data.vOrderList
+        .filter((p) => supportedOrders.includes(p.eOrder))
+        .map((p) => {
+          switch(p.eOrder) {
+            case EOrderType.eCHARA_TALK:
+              return {
+                order: p.eOrder,
+                characterDf: +p.vsParam[0],
+                name: p.vsParam[1],
+                dialog: p.vsParam[2],
+                voice: p.vsParam[6],
+              } as IDialog;
+            case EOrderType.eSELECTION:
+              return {
+                order: p.eOrder,
+                options: p.vsParam,
+              } as ISelection;
+            case EOrderType.eBG:
+              return {
+                order: p.eOrder,
+                background: p.vsParam[0],
+                text1: p.vsParam[1],
+                text2: p.vsParam[2],
+              } as IBackground;
+            case EOrderType.eMUSIC:
+              return {
+                order: p.eOrder,
+                id: +p.vsParam[0],
+              } as IMusic;
+            default:
+              return {
+                order: p.eOrder,
+                ... p,
+              };
+          }
+        }));
+    }
+    return this.#dialogCache.get(url);
+  }
+
+  private getAdvJsonUrl(adv: string) {
+    return `export/${this.locale === 'zh-TW' ? 'tw/' : ''}adv/${adv}.json`;
   }
 }

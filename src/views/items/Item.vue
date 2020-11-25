@@ -170,7 +170,7 @@ div.container
 
       div(v-if="item.SPC.length")
         div(v-for="[spc, skills] of item.SPC.map((spc) => [spc, spc.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)]).filter((p) => p[1].length)")
-          el-divider {{ $t('スキル') }}/{{ $t('効果') }} ({{ $t('品質') }} {{ spc.THR }})
+          el-divider {{ $t('スキル') }} ({{ $t('品質') }} {{ spc.THR }})
           table(v-for="(skill, i) of skills")
             tr
               th {{ $t('名前') }}
