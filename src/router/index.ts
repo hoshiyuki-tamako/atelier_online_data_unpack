@@ -265,7 +265,7 @@ const othersRoutes: Array<RouteConfig> = [
     name: 'OthersChat',
     component: () => import(/* webpackChunkName: "OthersChat" */ '@/views/others/Chat.vue'),
     meta: {
-      title: 'チャット',
+      title: 'チャット資料',
     },
   },
 ];
@@ -291,11 +291,7 @@ const routes: Array<RouteConfig> = [
 
 const router = new VueRouter({
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    }
-
-    return {
+    return savedPosition || {
       x: 0,
       y: 0,
     };
