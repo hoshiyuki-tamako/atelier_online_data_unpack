@@ -80,9 +80,10 @@ export default class extends VueBase {
   }
 
   public resize = () => {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
+    const container = this.$refs.three as HTMLElement;
+    this.camera.aspect = container.clientWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(container.clientWidth, window.innerHeight);
   };
 
   public beforeDestroy() {
@@ -148,15 +149,17 @@ export default class extends VueBase {
           child.receiveShadow = true;
         }
       });
+
       this.scene.add(object);
     });
+
     return this;
   }
 
   private initializeRenderer() {
     const container = this.$refs.three as HTMLElement;
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(container.clientWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
     container.appendChild(this.renderer.domElement);
     return this;
@@ -169,14 +172,18 @@ export default class extends VueBase {
   }
 
   private initializeRenderLoop() {
-    const targetFps = 60;
-    this.renderLoop = window.setInterval(() => {
-      if (!document.hidden) {
-        requestAnimationFrame(() => {
-          this.renderer.render(this.scene, this.camera);
-        });
-      }
-    }, 1000 / targetFps);
+    this.controls.addEventListener('change', this.render);
+
+    const targetFps = 1;
+    this.renderLoop = window.setInterval(this.render, 1000 / targetFps);
+  }
+
+  private render = () => {
+    if (!document.hidden) {
+      requestAnimationFrame(() => {
+        this.renderer.render(this.scene, this.camera);
+      });
+    }
   }
 }
 </script>
