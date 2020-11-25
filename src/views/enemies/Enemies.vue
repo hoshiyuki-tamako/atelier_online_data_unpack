@@ -5,12 +5,29 @@ div.container
       el-select(v-model="eKind" :placeholder="$t('種類')" clearable filterable)
         el-option(v-for="item of enemyCategoryFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
+      span {{ $t('攻撃目標') }}
+      el-select(v-model="attackTargetKind" clearable filterable)
+        el-option(v-for="item in attackTargetKindOptions" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('大きさ') }}
+      el-select(v-model="enemySize" clearable filterable)
+        el-option(v-for="item in enemySizeOptions" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('出現エリア') }}
+      el-select(v-model="appearArea" clearable filterable)
+        el-option(v-for="item in appearAreaOptions" :key="item.value" :label="item.label" :value="item.value")
+  div.filters
+    div.filter
       span {{ $t('名前') }}/DF
       el-input(v-model="name" clearable)
     div.filter
       span {{ $t('ソート') }}
       el-select(v-model="sort" clearable filterable)
         el-option(v-for="item in sortOptions" :key="item.value" :label="item.label" :value="item.value")
+  div.filters
+    div.filter
+      el-checkbox-group(v-model="has" size="small")
+        el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
   div.enemies
     el-card.enemy(v-for="enemy of filteredEnemies" :key="enemy.DF")
       h3
@@ -28,16 +45,24 @@ import { mapFields } from 'vuex-map-fields';
 abstract class VueWithMapFields extends VueBase {
   public eKind!: number | null;
 
+  public attackTargetKind!: number | null;
+
+  public enemySize!: number | null;
+
+  public appearArea!: number | null;
+
   public name!: string;
 
   public sort!: number;
+
+  public has!: number[];
 }
 
 @Component({
   components: {
   },
   computed: {
-    ...mapFields('enemiesFilter', ['eKind', 'name', 'sort']),
+    ...mapFields('enemiesFilter', ['eKind', 'attackTargetKind', 'enemySize', 'appearArea', 'name', 'sort', 'has']),
   },
 })
 export default class extends VueWithMapFields {
@@ -48,6 +73,29 @@ export default class extends VueWithMapFields {
         label: p.strName,
         value: p.iKind,
       }));
+  }
+
+  public get attackTargetKindOptions() {
+    return Object.entries(this.dataManager.lookup.EAttackTargetKind)
+      .map(([value, label]) => ({
+        label: this.$t(label),
+        value: +value,
+      }));
+  }
+
+  public get enemySizeOptions() {
+    return Object.entries(this.dataManager.lookup.eEnemySize)
+      .map(([value, label]) => ({
+        label: this.$t(label),
+        value: +value,
+      }));
+  }
+
+  public get appearAreaOptions() {
+    return this.dataManager.areaInfo.List.map((p) => ({
+      label: this.dataManager.fieldNameById[p.iAreaNameId]?.strAreaName || p.iAreaId,
+      value: p.iAreaId,
+    }));
   }
 
   public get sortOptions() {
@@ -63,13 +111,41 @@ export default class extends VueWithMapFields {
     ];
   }
 
+  public get hasFilter() {
+    return [
+      {
+        label: this.$t('ボス'),
+        value: 1,
+      },
+      {
+        label: this.$t('オンラインオーンリー'),
+        value: 2,
+      },
+      {
+        label: this.$t('クェスト'),
+        value: 3,
+      },
+      {
+        label: this.$t('普通'),
+        value: 4,
+      },
+    ];
+  }
+
   public get enemies() {
     return !this.eKind ? dataManager.enemiesOrderByCategory : (dataManager.enemiesByEKind[this.eKind] || []);
   }
 
   public get filteredEnemies() {
     const enemies = this.enemies.filter((p) => (
-      (!this.name || p.DF === +this.name || p.strName.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()))
+      ([null, '', -1].includes(this.attackTargetKind) || p.eAttackTargetKind === this.attackTargetKind)
+      && ([null, '', -1].includes(this.enemySize) || p.eSize === this.enemySize)
+      && (!this.appearArea || p.appearAreas.some((i) => i.iAreaId === this.appearArea))
+      && (!this.name || p.DF === +this.name || p.strName.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()))
+      && (!this.has.includes(1) || p.bBoss)
+      && (!this.has.includes(2) || p.bOnlyOnline)
+      && (!this.has.includes(3) || this.dataManager.questsByEnemy[p.DF])
+      && (!this.has.includes(4) || !this.dataManager.questsByEnemy[p.DF])
     ));
     if (this.sort === 1) {
       return enemies.reverse();

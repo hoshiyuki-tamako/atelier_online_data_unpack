@@ -37,9 +37,10 @@ div
       div.compose-item(@click="itemPickerDialogVisible = true")
         div.compose-requirement
           p(v-for="pickedItem in [compose]")
-            span.wealth-container(v-if="pickedItem.ALT && pickedItem.ALT.CST")
-              img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="$t('エーテル')")
-              span {{ pickedItem.ALT.CST }}
+            el-tooltip(:content="dataManager.wealthById[2].NAME" placement="right")
+              span.wealth-container(v-if="pickedItem.ALT && pickedItem.ALT.CST")
+                img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="dataManager.wealthById[2].NAME")
+                span {{ pickedItem.ALT.CST }}
 
         v-popover(placement="right-end" trigger="hover")
           div.compose-item-image

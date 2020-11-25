@@ -27,25 +27,22 @@ div.container
       span {{ $t('カテゴリー') }}
       el-select(v-model="filter.category" @change="resetPage" clearable filterable)
         el-option(v-for="item of categoryFilter" :key="item.value" :label="item.label" :value="item.value")
-
     div.filter
       span {{ $t('キャラクター') }}
       el-select(v-model="filter.character" @change="resetPage" clearable filterable)
         el-option(v-for="item of characterFilter" :key="item.value" :label="item.label" :value="item.value")
-
-    div.filter
-      el-checkbox-group(v-model="filter.has" @change="resetPage" size="small")
-        el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
-
+  div.filters
     div.filter
       span {{ $t('名前') }}/DF
       el-input(v-model="filter.name" @change="resetPage" clearable)
-
     div.filter
       el-switch(v-model="filter.extraQuest" @change="resetPage" :active-text="$t('EXクェスト')")
-
     div.filter
       el-switch(v-model="defaultExpandAll" :active-text="$t('すべて展開')")
+  div.filters
+    div.filter
+      el-checkbox-group(v-model="filter.has" @change="resetPage" size="small")
+        el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
   div.filters
     div.filter
       el-checkbox(v-model="showColumnDF") DF
@@ -89,9 +86,10 @@ div.container
                   p {{ quest.CONDITION }}
                 div(v-if="quest.COST.WTH.CNT")
                   el-divider {{ $t('消費') }}
-                  span.wealth-container
-                    img(:src="dataManager.wealthById[quest.COST.WTH.DF].icon" :alt="dataManager.wealthById[quest.COST.WTH.DF].NAME")
-                    span {{ quest.COST.WTH.CNT }}
+                  el-tooltip(:content="dataManager.wealthById[quest.COST.WTH.DF].NAME" placement="right")
+                    span.wealth-container
+                      img(:src="dataManager.wealthById[quest.COST.WTH.DF].icon" :alt="dataManager.wealthById[quest.COST.WTH.DF].NAME")
+                      span {{ quest.COST.WTH.CNT }}
 
                 div(v-if="quest.ENM.length")
                   el-divider {{ $t('討伐') }}
@@ -127,13 +125,15 @@ div.container
                       img(:src="item.icon" :alt="item.NAME")
                       p x {{ rwd.CNT }}
                   div(v-for="[rwd, wealth] of quest.RWD_WTH.map((rwd) => [rwd, dataManager.wealthById[rwd.DF]])")
+                    el-tooltip(:content="wealth.NAME" placement="right")
                       span.wealth-container
                         img(:src="wealth.icon" :alt="wealth.NAME")
                         span {{ rwd.CNT }}
                   div(v-if="quest.RNK_PT")
-                    span.wealth-container
-                      img(src="img/icon_item01/Texture2D/icon_item01_00009.png" :alt="$t('アカデミーポイント')")
-                      span {{ quest.RNK_PT }}
+                    el-tooltip(:content="dataManager.wealthById[9999].NAME" placement="right")
+                      span.wealth-container
+                        img(src="img/icon_item01/Texture2D/icon_item01_00009.png" :alt="dataManager.wealthById[9999].NAME")
+                        span {{ quest.RNK_PT }}
 
                 div(v-if="quest.UNLOCK.length")
                   el-divider {{ $t('必要称号') }}

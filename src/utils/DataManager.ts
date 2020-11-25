@@ -1,4 +1,3 @@
-import { IBattleArea } from './../scripts/ModelExport';
 import files from '@/../public/generated/files.json';
 import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
 import { lookup } from '@/logic/Lookup';
@@ -31,6 +30,8 @@ import { AdvManager } from '@/utils/AdvManager';
 import { SpawnerDataManager } from '@/utils/SpawnerDataManager';
 import { plainToClass } from 'class-transformer';
 import Enumerable from 'linq';
+
+import { IBattleArea } from './../scripts/ModelExport';
 
 export class DataManager {
   // settings
@@ -138,7 +139,9 @@ export class DataManager {
 
   public questById: { [id: string]: QuestMVList };
   public questsByCategory: { [CATEG: string]: QuestMVList[] };
+  public questsByDeliverItem: { [df: string]: QuestMVList[] }
   public questsByRewardItem: { [df: string]: QuestMVList[] };
+  public questsByEnemy: { [df: string]: QuestMVList[] };
 
   public fieldNameById: { [id: string]: FieldNameList };
 
@@ -484,12 +487,26 @@ export class DataManager {
     this.questsByCategory = Enumerable.from(this.quest.m_vList)
       .groupBy((p) => p.CATEG)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [CATEG: string]: QuestMVList[] };
+    this.questsByDeliverItem = Enumerable.from(this.quest.m_vList)
+      .selectMany((quest) => quest.DLV.map((dlv) => ({
+        quest,
+        dlv,
+      })))
+      .groupBy((p) => p.dlv.DF)
+      .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
     this.questsByRewardItem = Enumerable.from(this.quest.m_vList)
       .selectMany((quest) => quest.RWD_ITEM.map((rwd) => ({
         quest,
         rwd,
       })))
       .groupBy((p) => p.rwd.DF)
+      .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
+    this.questsByEnemy = Enumerable.from(this.quest.m_vList)
+      .selectMany((quest) => quest.ENM.map((enm) => ({
+        quest,
+        enm,
+      })))
+      .groupBy((p) => p.enm.DF)
       .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
   }
 

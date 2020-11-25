@@ -12,7 +12,7 @@ div.container
         p {{ $t('性別') }}: {{ character.genderTextIcon }}
       p(v-if="character.WEAPON.length") {{ $t('武器種類') }}: {{ weapons }}
       div.wealth-container(v-for="grow of character.GROW")
-        img(src="img/icon_item01/Texture2D/icon_item01_00006.png" :alt="$t('武器種類')")
+        img(src="img/icon_item01/Texture2D/icon_item01_00006.png" :alt="$t('限界キャンディ')")
         span {{ grow.STONE }}
         span {{ '⭐'.repeat(grow.STAR) }}
 

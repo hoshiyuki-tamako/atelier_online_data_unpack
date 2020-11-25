@@ -17,6 +17,7 @@ div.container
       span {{ $t('スキル属性') }}
       el-select(v-model="skillElement" clearable filterable)
         el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+  div.filters
     div.filter
       span {{ $t('名前') }}/DF
       el-input(v-model="name" clearable)
@@ -30,6 +31,10 @@ div.container
     div.filter
       span {{ $t('専用装備') }}
       el-switch(v-model="characterOnlyItem")
+  div.filters
+    div.filter
+      el-checkbox-group(v-model="has" size="small")
+        el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
   div.items
     router-link(v-for="item of filteredItems" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }")
       el-card.item
@@ -59,13 +64,15 @@ abstract class VueWithMapFields extends VueBase {
   public legendRecipe!: boolean;
 
   public characterOnlyItem!: boolean;
+
+  public has!: number[];
 }
 
 @Component({
   components: {
   },
   computed: {
-    ...mapFields('itemsFilter', ['category', 'weaponKind', 'battleElement', 'skillElement', 'name', 'sort', 'legendRecipe', 'characterOnlyItem']),
+    ...mapFields('itemsFilter', ['category', 'weaponKind', 'battleElement', 'skillElement', 'name', 'sort', 'legendRecipe', 'characterOnlyItem', 'has']),
   },
 })
 export default class extends VueWithMapFields {
@@ -100,6 +107,27 @@ export default class extends VueWithMapFields {
     return !this.category || dataManager.itemsWeaponKindCategories.includes(this.category);
   }
 
+  public get hasFilter() {
+    return [
+      {
+        label: this.$t('材料'),
+        value: 1,
+      },
+      {
+        label: this.$t('調合'),
+        value: 2,
+      },
+      {
+        label: this.$t('納品'),
+        value: 3,
+      },
+      {
+        label: this.$t('報酬'),
+        value: 4,
+      },
+    ];
+  }
+
   public get items() {
     if (this.category) {
       return dataManager.itemsByCategory[this.category];
@@ -122,6 +150,10 @@ export default class extends VueWithMapFields {
       && (!this.name || p.DF === +this.name || p.NAME.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()))
       && (!this.legendRecipe || p.LRCP_CHARA.length)
       && (!this.characterOnlyItem || p.GROUP_DF)
+      && (!this.has.includes(1) || this.dataManager.itemsByRecipe[p.DF])
+      && (!this.has.includes(2) || p.RSP.length)
+      && (!this.has.includes(3) || this.dataManager.questsByDeliverItem[p.DF])
+      && (!this.has.includes(4) || this.dataManager.questsByRewardItem[p.DF])
     ));
 
     if (this.sort === 1) {

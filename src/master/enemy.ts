@@ -1,3 +1,4 @@
+import { List as AreaInfoList } from '@/master/areaInfo';
 import { EBattleEffectKind } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
 import { List as SkillList } from '@/master/skill';
@@ -118,6 +119,8 @@ export class MVList {
     @Type(_ => SParam)
     sParam:            SParam;
 
+  #appearAreas: AreaInfoList[];
+
   #elementChangeSkill: SkillList;
   #skills: SkillList[];
   #elementCache = new Map<string, IElementResult>();
@@ -141,6 +144,27 @@ export class MVList {
 
   public get viewAngleDegree() {
     return Math.round(Math.acos(this.fViewCos) * (180/Math.PI));
+  }
+
+  public get appearAreas() {
+    if (!this.#appearAreas) {
+      const spawnerDataAreaIds = [...dataManager.spawnerDataManager.spawnLists.entries()].map(([csvFileName, spawnerDatas]) => ({
+        csvFileName,
+        spawners: spawnerDatas.filter((i) => i.spawnerKind === 3 && i.DF === this.DF),
+      }))
+        .filter((p) => p.spawners.length)
+        .map((p) => +p.csvFileName.split('_')[1]);
+
+      const areaIds = dataManager.areaDetail.List
+        .filter((i) => i.iEnemyIDList.includes(this.DF))
+        .map((p) => p.iAreaID);
+
+      this.#appearAreas = [...new Set(spawnerDataAreaIds.concat(areaIds))]
+        .sort((a, b) => a - b)
+        .map((id) => dataManager.areaInfoById[id])
+        .filter((p) => p);
+    }
+    return this.#appearAreas;
   }
 
   // skill

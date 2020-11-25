@@ -38,10 +38,15 @@ div.container
             th {{ $t(element.label) }}
             td {{ element.value }}
 
-      div(v-if="appareAreas.length")
+      div(v-if="enemy.appearAreas.length")
         el-divider {{ $t('出現エリア') }}
-        p(v-for="area of appareAreas")
+        p(v-for="area of enemy.appearAreas")
           router-link(:to="{ name: 'Areas', query: { df: area.iAreaId } }") {{ dataManager.fieldNameById[area.iAreaNameId].strAreaName }}
+
+      div(v-if="dataManager.questsByEnemy[enemy.DF]")
+        el-divider {{ $t('クェスト') }}
+        p(v-for="quest of dataManager.questsByEnemy[enemy.DF]")
+          router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
 
       div(v-if="enemy.sParam.SKILL.length")
         el-divider {{ $t('スキル') }}
@@ -124,24 +129,6 @@ export default class extends VueBase {
     if (!this.enemy) {
       this.$router.push({ name: 'Enemies' });
     }
-  }
-
-  public get appareAreas() {
-    const spawnerDataAreaIds = [...dataManager.spawnerDataManager.spawnLists.entries()].map(([csvFileName, spawnerDatas]) => ({
-      csvFileName,
-      spawners: spawnerDatas.filter((i) => i.spawnerKind === 3 && i.DF === this.enemy.DF),
-    }))
-      .filter((p) => p.spawners.length)
-      .map((p) => +p.csvFileName.split('_')[1]);
-
-    const areaIds = dataManager.areaDetail.List
-      .filter((i) => i.iEnemyIDList.includes(this.enemy.DF))
-      .map((p) => p.iAreaID);
-
-    return [...new Set(spawnerDataAreaIds.concat(areaIds))]
-      .sort((a, b) => a - b)
-      .map((id) => dataManager.areaInfoById[id])
-      .filter((p) => p);
   }
 }
 </script>

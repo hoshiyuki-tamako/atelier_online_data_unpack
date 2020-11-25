@@ -21,7 +21,9 @@ export default class extends VuexModuleBase {
 
   public characterOnlyItem = false;
 
-  @MutationAction({ mutate: ['category', 'weaponKind', 'battleElement', 'skillElement', 'name', 'sort', 'legendRecipe', 'characterOnlyItem'] })
+  public has = [] as number[];
+
+  @MutationAction({ mutate: ['category', 'weaponKind', 'battleElement', 'skillElement', 'name', 'sort', 'legendRecipe', 'characterOnlyItem', 'has'] })
   public async reset() {
     return {
       category: null,
@@ -32,6 +34,7 @@ export default class extends VuexModuleBase {
       sort: 1,
       legendRecipe: false,
       characterOnlyItem: false,
+      has: [],
     };
   }
 }

@@ -7,13 +7,13 @@ div.container
         span
           span Game Version 3.14.0 &nbsp
           span(v-if="$i18n.locale !== 'ja-JP'")
-            el-link(type="success" :underline="false" @click="onChangeLocale('ja-JP')") (日本語)
+            el-link(type="success" :underline="false" :href="changeLocaleHref('ja-JP')") (日本語)
           span(v-else) (日本語)
       br
       span.version-link__container
         span Game Version 3.5.0 &nbsp
           span(v-if="$i18n.locale !== 'zh-TW'")
-            el-link(type="success" :underline="false" @click="onChangeLocale('zh-TW')") (中文)
+            el-link(type="success" :underline="false" :href="changeLocaleHref('zh-TW')") (中文)
           span(v-else) (中文)
     p
       span Twitter
@@ -547,10 +547,10 @@ export default class extends VueWithMapFields {
     ];
   }
 
-  public onChangeLocale(locale: string) {
+  public changeLocaleHref(locale: string) {
     const url = new URL(window.location.href);
     url.searchParams.set('locale', locale);
-    window.location.href = url.toString();
+    return url.toString();
   }
 
   public async onShowHiddenContent(value: boolean) {

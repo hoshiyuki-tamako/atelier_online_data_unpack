@@ -33,10 +33,11 @@ div.container
         p {{ $t('レシピ種類') }}: {{ item.RCP_TYPE === 1 ? $t('レジェンドレシピ') : $t('一般レシピ') }}
         p {{ $t('おすすめ錬金 LV') }} {{ item.ALT ? item.ALT.LV : '-' }}
       p
-        span.wealth-container
-          span {{ $t('売却') }}
-          img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="$t('エーテル')")
-          span {{ item.RST.MN }}
+        el-tooltip(:content="dataManager.wealthById[2].NAME" placement="right")
+          span.wealth-container
+            span {{ $t('売却') }}
+            img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="dataManager.wealthById[2].NAME")
+            span {{ item.RST.MN }}
 
     div.item-container-right
       div(v-if="item.hasSkill || item.EQU_BRD")
@@ -128,6 +129,11 @@ div.container
           p
             router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
               img.icon-middle(:src="character.icon" :alt="character.NAME")
+      div(v-if="dataManager.questsByDeliverItem[item.DF]")
+        el-divider {{ $t('クェスト納品') }}
+        div(v-for="quest of dataManager.questsByDeliverItem[item.DF]")
+          p
+            router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
       div(v-if="dataManager.questsByRewardItem[item.DF]")
         el-divider {{ $t('クェスト報酬') }}
         div(v-for="quest of dataManager.questsByRewardItem[item.DF]")
@@ -153,9 +159,10 @@ div.container
         el-divider {{ $t('調合條件') }}
         div(v-if="item.ALT.CST")
           p
-            span.wealth-container
-              img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="$t('エーテル')")
-              span {{ item.ALT.CST }}
+            el-tooltip(:content="dataManager.wealthById[2].NAME" placement="right")
+              span.wealth-container
+                img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="dataManager.wealthById[2].NAME")
+                span {{ item.ALT.CST }}
         div.item-compose-items
           div.item-compose-item(v-for="[rsp, item] of item.RSP.map((rsp) => [rsp, dataManager.itemById[rsp.DF]])")
             router-link(:to="{ name: 'ItemsItem', query: { df: rsp.DF } }")
