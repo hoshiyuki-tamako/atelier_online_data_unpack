@@ -157,7 +157,7 @@ export default class extends VueWithMapFields {
     ));
 
     if (this.sort === 1) {
-      return [...items].reverse();
+      return items.reverse();
     }
 
     return items;
