@@ -49,7 +49,7 @@ import deepmerge from 'deepmerge';
 
 abstract class VueWithMapFields extends VueBase {
   public id!: number | null;
-  public scores!: { [id: string]: { [enemyIndex: string]: ScoreValue[] } };
+  public scores!: rankScores;
 }
 
 @Component({
