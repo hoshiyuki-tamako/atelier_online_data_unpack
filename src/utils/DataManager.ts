@@ -3,7 +3,7 @@ import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger } from '@
 import { lookup } from '@/logic/Lookup';
 import { AbnormalState, MVList as AbnormalStateMVList } from '@/master/abnormalState';
 import { AbnormalStateEffect, MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
-import { AdventBattle } from '@/master/adventBattle';
+import { AdventBattle, RankingList } from '@/master/adventBattle';
 import { AreaDetail, List as AreaDetailList } from '@/master/areaDetail';
 import { AreaInfo, List as AreaInfoList } from '@/master/areaInfo';
 import { BlazeArt, MVList as BlazeArtMvList } from '@/master/blazeArt';
@@ -166,6 +166,8 @@ export class DataManager {
 
   public extraQuestsByQuest: { [df: string]: ExtraQuestList[] };
 
+  public adventBattleById:{ [id: string]: RankingList };
+
   // other managers
   public spawnerDataManager = new SpawnerDataManager();
   public advManager = new AdvManager();
@@ -217,11 +219,11 @@ export class DataManager {
       this.loadDungeonInfo(),
       this.loadFieldItem(),
       this.loadExtraQuest(),
+      this.loadAdventBattle(),
 
       this.loadGeneric('tips'),
       this.loadGeneric('treasure'),
       this.loadGeneric('chat'),
-      this.loadGeneric('adventbattle', 'adventBattle'),
 
       this.loadAreaModel(),
 
@@ -488,7 +490,7 @@ export class DataManager {
   }
 
   public async loadBlazeArt(blazeArt?: unknown) {
-    await this.loadGeneric('blaze_arts', 'blazeArt', blazeArt);
+    this.blazeArt = plainToClass(BlazeArt, blazeArt || await this.loadJson('blaze_arts'));
     // lookup
     this.blazeArtById = Enumerable.from(this.blazeArt.m_vList)
       .toObject((p) => p.DF, (p) => p) as { [df: string]: BlazeArtMvList };
@@ -579,6 +581,11 @@ export class DataManager {
     this.extraQuestsByQuest = Enumerable.from(this.extraQuest.List)
       .groupBy((p) => p.iQuestDf)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [df: string]: ExtraQuestList[] };
+  }
+
+  public async loadAdventBattle(adventBattle?: unknown) {
+    await this.loadGeneric('adventbattle', 'adventBattle', adventBattle),
+    this.adventBattleById = Enumerable.from(this.adventBattle.RankingList).toObject((p) => p.ID) as { [id: string]: RankingList };
   }
 
   // other load

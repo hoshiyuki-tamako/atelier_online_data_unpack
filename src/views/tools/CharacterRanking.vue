@@ -29,9 +29,9 @@ div.container
   el-table(:data="filteredData")
     el-table-column(prop="NAME" :label="$t('名前')")
       template(slot-scope="scope")
-        span {{ scope.row.NAME }}
         router-link(:to="{ name: 'CharactersCharacter', query: { df: scope.row.DF } }" target="_blank")
           img.icon-small(:src="scope.row.icon" :alt="scope.row.NAME")
+        span {{ scope.row.NAME }}
     el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" width="100%" sortable)
     el-table-column(v-if="showColumnHP" prop="HP" :label="$t('HP')" width="100%" sortable)
     el-table-column(v-if="showColumnSATK" prop="SATK" :label="$t('物理攻撃')" width="100%" sortable)

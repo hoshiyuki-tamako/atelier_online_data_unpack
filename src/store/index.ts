@@ -2,6 +2,7 @@ import charactersFilter from '@/store/characters/charactersFilter';
 import enemiesFilter from '@/store/enemies/enemiesFilter';
 import home from '@/store/home';
 import itemsFilter from '@/store/items/itemsFilter';
+import adventBattleFilter from '@/store/others/adventBattleFilter';
 import questsFilter from '@/store/quests/questsFilter';
 import skillsFilter from '@/store/skills/skillsFilter';
 import characterBuilder from '@/store/tools/characterBuilder';
@@ -30,6 +31,7 @@ export default new Vuex.Store({
     composeItemFilter,
     itemEnhanceQuality,
     questsFilter,
+    adventBattleFilter,
   },
   plugins: [new VuexPersistence().plugin],
 });

@@ -135,8 +135,8 @@ div.container
         el-divider {{ $t('ブレイズアーツ') }} (BA)
         div(v-for="ba of character.BA")
           div(v-for="[lv, blazeArt] of dataManager.blazeArtById[ba.DF].LV.entries()")
-            template(v-for="skill of [dataManager.skillById[blazeArt.SKILL_DF]]")
-              el-divider LV {{ ba.LV }} / BA LV {{ lv + 1 }}
+            template(v-for="[skill, baLevel] of [[dataManager.skillById[blazeArt.SKILL_DF], lv + 1]]")
+              el-divider LV {{ ba.LV }} / BA LV {{ baLevel }} / EXP {{ dataManager.blazeArtById[ba.DF].levelExperience(baLevel) }}
               table.skill-table
                 tr
                   th {{ $t('名前') }}
