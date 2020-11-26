@@ -139,6 +139,7 @@ export class DataManager {
 
   public questById: { [id: string]: QuestMVList };
   public questsByCategory: { [CATEG: string]: QuestMVList[] };
+  public questsByGetItem: { [df: string]: QuestMVList[] }
   public questsByDeliverItem: { [df: string]: QuestMVList[] }
   public questsByRewardItem: { [df: string]: QuestMVList[] };
   public questsByEnemy: { [df: string]: QuestMVList[] };
@@ -154,10 +155,12 @@ export class DataManager {
   public gateInfoByAreaId: { [id: string]: GateInfoList[] };
 
   public dungeonInfosByAreaId: { [id: string]: DungeonList[] };
+  public dungeonInfoById: { [s: string]: DungeonList };
 
   public wealthById: { [df: string]: WealthMvList };
 
   public degreeById: { [df: string]: DegreeList };
+  public degreeByIdStep: { [df: string]: { [step: string]: DegreeList } };
 
   public fieldItemById: { [id: string]: FieldItemList };
 
@@ -171,13 +174,18 @@ export class DataManager {
   public lookup = lookup;
   public files = files;
   public areaModel: IAreaModel[];
+  public areaDungeonModel: IAreaModel[];
 
   public areaModelsById: { [iAreaId: string]: IAreaModel[] };
+  public areaDungeonsById: { [iAreaId: string]: IAreaModel[] };
   public areaBattleAreas: { [iAreaId: string]: IBattleArea[] };
   public areaDungeonBattleAreas: { [iAreaId: string]: IBattleArea[] };
   public fieldTitlesByAreaId: { [iAreaId: string]: string[] };
+  public dungeonModelsByLevel: { [level: string]: string[] };
 
   public unusedAdvs: { [s: string]: string[] };
+
+  public townIcons = [] as string[];
 
   //
   public async load(locale: string, showHiddenContent = false) {
@@ -223,6 +231,7 @@ export class DataManager {
     this.afterLoadSKill();
     this.afterLoadItem();
     this.afterLoadEnemy();
+    this.processFiles();
     this.processAdvs();
   }
 
@@ -470,6 +479,12 @@ export class DataManager {
   public async loadDegree(degree?: Degree) {
     this.degree = plainToClass(Degree, degree || await this.loadJson('degree'));
     this.degreeById = Enumerable.from(this.degree.List).toObject((p) => p.DF, (p) => p) as { [df: string]: DegreeList };
+    this.degreeByIdStep = Enumerable.from(this.degree.List)
+      .groupBy((p) => p.DF)
+      .toObject(
+        (p) => p.key(),
+        (p) => p.groupBy((o) => o.STP).toObject((o) => o.key(), (o) => o.firstOrDefault())
+      ) as { [df: string]: { [step: string]: DegreeList } };
   }
 
   public async loadBlazeArt(blazeArt?: unknown) {
@@ -487,6 +502,13 @@ export class DataManager {
     this.questsByCategory = Enumerable.from(this.quest.m_vList)
       .groupBy((p) => p.CATEG)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [CATEG: string]: QuestMVList[] };
+    this.questsByGetItem = Enumerable.from(this.quest.m_vList)
+    .selectMany((quest) => quest.GET.map((get) => ({
+      quest,
+      get,
+    })))
+    .groupBy((p) => p.get.DF)
+    .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
     this.questsByDeliverItem = Enumerable.from(this.quest.m_vList)
       .selectMany((quest) => quest.DLV.map((dlv) => ({
         quest,
@@ -526,7 +548,7 @@ export class DataManager {
   }
 
   public async loadTownInfo(townInfo?: unknown) {
-    await this.loadGeneric('townInfo', '', townInfo);
+    this.townInfo = plainToClass(TownInfo, townInfo || await this.loadJson('townInfo'));
     this.townInfosByAreaId = Enumerable.from(this.townInfo.List)
       .groupBy((p) => p.iAreaId)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: TownInfoList[] };
@@ -544,6 +566,7 @@ export class DataManager {
     this.dungeonInfosByAreaId = Enumerable.from(this.dungeonInfo.List)
       .groupBy((p) => p.iAreaId)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: DungeonList[] };
+    this.dungeonInfoById = Enumerable.from(this.dungeonInfo.List).toObject((p) => p.iDungeonId) as { [s: string]: DungeonList };
   }
 
   public async loadFieldItem(fieldItem?: unknown) {
@@ -559,12 +582,17 @@ export class DataManager {
   }
 
   // other load
-  public async loadAreaModel(areaModel?: IAreaModel[]) {
-    await this.loadGeneratedGeneric('areaModel', '', areaModel);
+  public async loadAreaModel(areaModel?: IAreaModel[], areaDungeonModel?: IAreaModel[]) {
+    await Promise.all([
+      this.loadGeneratedGeneric('areaModel', '', areaModel),
+      this.loadGeneratedGeneric('areaDungeonModel', '', areaDungeonModel),
+    ]);
     this.areaModelsById = Enumerable.from(this.areaModel)
       .groupBy((p) => p.iAreaID)
       .toObject((p) => p.key(), (p) => p.orderBy((i) => i.iLevel).toArray()) as { [iAreaId: string]: IAreaModel[] };
-
+    this.areaDungeonsById = Enumerable.from(this.areaDungeonModel)
+    .groupBy((p) => p.iAreaID)
+    .toObject((p) => p.key(), (p) => p.orderBy((i) => i.iLevel).toArray()) as { [iAreaId: string]: IAreaModel[] };
     const battleAreas = Object.keys(this.files.models.battleAreas);
     this.areaBattleAreas = Enumerable.from(battleAreas)
       .where((folder) => !!folder.match(/^BattleArea_\d+/))
@@ -597,6 +625,14 @@ export class DataManager {
       }))
       .groupBy((p) => p.id)
       .toObject((p) => p.key(), (p) => p.select((i) => i.fileName).toArray()) as { [iAreaId: string]: string[] };
+    this.dungeonModelsByLevel = Enumerable.from(Object.keys(this.files.models.dungeons))
+      .groupBy((p) => +p.split('_')[1])
+      .toObject((p) => p.key() || '', (p) => p.toArray()) as { [level: string]: string[] };
+  }
+
+  public processFiles() {
+    this.townIcons = Object.values(dataManager.files.img.map_town.Texture2D)
+      .filter((p) => !p.endsWith('_02.png'));
   }
 
   public processAdvs() {

@@ -12,7 +12,7 @@ div.container
       el-table-column(prop="DESC" :label="$t('詳細')" sortable)
       el-table-column(:label="$t('画像')")
         template(slot-scope="scope")
-          img.content-table__image(v-if="scope.row.TYP" :src="scope.row.icon" :alt="scope.row.NAME")
+          img.icon-degree(v-if="scope.row.TYP" :src="scope.row.icon" :alt="scope.row.NAME")
 </template>
 
 <script lang="ts">
@@ -38,8 +38,3 @@ export default class extends VueBase {
   }
 }
 </script>
-
-<style lang="sass" scoped>
-.content-table__image
-  width: 80px
-</style>

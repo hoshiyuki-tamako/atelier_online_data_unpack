@@ -103,7 +103,11 @@ export default class extends VueBase {
   public fbxLoading: boolean | null = null;
 
   public get fbxRotation() {
-    return { x: 0, y: 0, z: 0 };
+    if (this.enemy.sParam.MDL.startsWith('044')) {
+      return { x: 0, y: 0, z: 0 };
+    }
+
+    return { x: 0, y: Math.PI, z: Math.PI };
   }
 
   public get fbxPosition() {

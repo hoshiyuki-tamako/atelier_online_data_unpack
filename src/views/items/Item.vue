@@ -129,6 +129,11 @@ div.container
           p
             router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
               img.icon-middle(:src="character.icon" :alt="character.NAME")
+      div(v-if="dataManager.questsByGetItem[item.DF]")
+        el-divider {{ $t('クェスト調合/採取') }}
+        div(v-for="quest of dataManager.questsByGetItem[item.DF]")
+          p
+            router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
       div(v-if="dataManager.questsByDeliverItem[item.DF]")
         el-divider {{ $t('クェスト納品') }}
         div(v-for="quest of dataManager.questsByDeliverItem[item.DF]")
@@ -165,15 +170,17 @@ div.container
                 span {{ item.ALT.CST }}
         div.item-compose-items
           div.item-compose-item(v-for="[rsp, item] of item.RSP.map((rsp) => [rsp, dataManager.itemById[rsp.DF]])")
-            router-link(:to="{ name: 'ItemsItem', query: { df: rsp.DF } }")
-              img.icon-small(:src="item.icon" :alt="item.NAME")
-              span x{{ rsp.NC }}
+            el-tooltip(:content="item.NAME" placement="top")
+              router-link(:to="{ name: 'ItemsItem', query: { df: rsp.DF } }")
+                img.icon-small(:src="item.icon" :alt="item.NAME")
+                span x{{ rsp.NC }}
       div(v-if="dataManager.itemsByRecipe[item.DF]")
         el-divider {{ $t('材料') }}
         div.item-making-container
           div(v-for="otherItem of dataManager.itemsByRecipe[item.DF]")
             router-link(:to="{ name: 'ItemsItem', query: { df: otherItem.DF } }")
-              img.icon-small(:src="otherItem.icon" :alt="otherItem.DF")
+              el-tooltip(:content="otherItem.NAME" placement="top")
+                img.icon-small(:src="otherItem.icon" :alt="otherItem.DF")
 
       div(v-if="item.SPC.length")
         div(v-for="[spc, skills] of item.SPC.map((spc) => [spc, spc.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)]).filter((p) => p[1].length)")

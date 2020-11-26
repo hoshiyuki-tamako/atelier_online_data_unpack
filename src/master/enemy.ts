@@ -127,11 +127,12 @@ export class MVList {
   #stateCache = new Map<string, IStateResult>();
 
   public get model() {
-    if (!this.sParam.MDL || !this.sParam.MDL.startsWith('044') ) {
+    const folder = `Enemy${this.sParam.MDL}`;
+    if (!(this.sParam.MDL && dataManager.files.models.enemies[folder])) {
       return '';
     }
 
-    return `models/enemies/Enemy${this.sParam.MDL}/Enemy${this.sParam.MDL}.fbx`;
+    return `models/enemies/${folder}/${folder}.fbx`;
   }
 
   public get icon() {

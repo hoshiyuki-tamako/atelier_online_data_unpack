@@ -45,7 +45,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { mapFields } from 'vuex-map-fields';
 
 abstract class VueWithMapFields extends VueBase {
@@ -77,15 +76,15 @@ abstract class VueWithMapFields extends VueBase {
 })
 export default class extends VueWithMapFields {
   public get categoryOptions() {
-    return Object.keys(dataManager.itemsByCategory).map((value) => ({
-      label: this.$t(dataManager.lookup.itemCategory[value]),
+    return Object.keys(this.dataManager.itemsByCategory).map((value) => ({
+      label: this.$t(this.dataManager.lookup.itemCategory[value]),
       value: +value,
     }));
   }
 
   public get weaponKindOptions() {
-    return Object.keys(dataManager.itemsByWeaponKind).map((value) => ({
-      label: this.$t(dataManager.lookup.weaponKind[value]),
+    return Object.keys(this.dataManager.itemsByWeaponKind).map((value) => ({
+      label: this.$t(this.dataManager.lookup.weaponKind[value]),
       value: +value,
     })).filter((p) => p.value);
   }
@@ -104,7 +103,7 @@ export default class extends VueWithMapFields {
   }
 
   public get enableWeaponKindFilter() {
-    return !this.category || dataManager.itemsWeaponKindCategories.includes(this.category);
+    return !this.category || this.dataManager.itemsWeaponKindCategories.includes(this.category);
   }
 
   public get hasFilter() {
@@ -118,24 +117,32 @@ export default class extends VueWithMapFields {
         value: 2,
       },
       {
-        label: this.$t('納品'),
+        label: this.$t('フィールド用'),
         value: 3,
       },
       {
-        label: this.$t('報酬'),
+        label: this.$t('クェスト調合/採取'),
         value: 4,
+      },
+      {
+        label: this.$t('クェスト納品'),
+        value: 5,
+      },
+      {
+        label: this.$t('クェスト報酬'),
+        value: 6,
       },
     ];
   }
 
   public get items() {
     if (this.category) {
-      return dataManager.itemsByCategory[this.category];
+      return this.dataManager.itemsByCategory[this.category];
     }
     if (this.sort !== null) {
-      return dataManager.item.m_vList;
+      return this.dataManager.item.m_vList;
     }
-    return dataManager.itemsOrderByCategory;
+    return this.dataManager.itemsOrderByCategory;
   }
 
   public get filteredItems() {
@@ -152,8 +159,10 @@ export default class extends VueWithMapFields {
       && (!this.characterOnlyItem || p.GROUP_DF)
       && (!this.has.includes(1) || this.dataManager.itemsByRecipe[p.DF])
       && (!this.has.includes(2) || p.RSP.length)
-      && (!this.has.includes(3) || this.dataManager.questsByDeliverItem[p.DF])
-      && (!this.has.includes(4) || this.dataManager.questsByRewardItem[p.DF])
+      && (!this.has.includes(3) || this.dataManager.fieldItemById[p.DF])
+      && (!this.has.includes(4) || this.dataManager.questsByGetItem[p.DF])
+      && (!this.has.includes(5) || this.dataManager.questsByDeliverItem[p.DF])
+      && (!this.has.includes(6) || this.dataManager.questsByRewardItem[p.DF])
     ));
 
     if (this.sort === 1) {

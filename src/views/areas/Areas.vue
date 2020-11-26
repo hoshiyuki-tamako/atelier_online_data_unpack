@@ -17,16 +17,20 @@ div.container
             h3(v-if="fieldName") {{ fieldName.strAreaName }} {{ fieldName.strAreaNameSub.trim() ? `/ ${fieldName.strAreaNameSub}` : '' }}
             p iAreaID: {{ areaDetail.iAreaID }}
             p iLevel: {{areaDetail.iLevel }}
-            br
             template(v-if="dataManager.areaModelsById[areaDetail.iAreaID]")
+              br
               div(v-for="{ root, iLevel } of dataManager.areaModelsById[areaDetail.iAreaID]")
                 router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, root } }") {{ $t('地図') }} {{ iLevel }}
-            br
+            template(v-if="dataManager.areaDungeonsById[areaDetail.iAreaID]")
+              br
+              div(v-for="{ root, iLevel } of dataManager.areaDungeonsById[areaDetail.iAreaID]")
+                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, root } }") {{ $t('ダンジョン') }} {{ iLevel }}
             template(v-if="dataManager.areaDungeonBattleAreas[areaDetail.iAreaID]")
+              br
               div(v-for="{ folder, iLevel } of dataManager.areaBattleAreas[areaDetail.iAreaID]")
                 router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, battleArea: folder } }") {{ $t('バトルエリア') }} {{ iLevel }}
-            br
             template(v-if="dataManager.areaDungeonBattleAreas[areaDetail.iAreaID]")
+              br
               div(v-for="{ folder, iLevel } of dataManager.areaDungeonBattleAreas[areaDetail.iAreaID]")
                 router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, battleArea: folder } }") {{ $t('バトルエリア') }}{{ $t('ダンジョン') }} {{ iLevel }}
 
@@ -36,21 +40,24 @@ div.container
               div.example-container
                 div(v-for="item of areaDetail.iItemIDList.map((p) => dataManager.itemById[p])")
                   router-link(:to="{ name: 'ItemsItem', query: { df: item.DF }}")
-                    img.icon-small(:src="item.icon" :alt="item.NAME")
+                    el-tooltip(:content="item.NAME" placement="top")
+                      img.icon-small(:src="item.icon" :alt="item.NAME")
             div(v-if="areaDetail.iEnemyIDList.length")
               el-divider {{ $t('敵') }}
               div.example-container
                 div(v-for="enemy of areaDetail.iEnemyIDList.map((p) => dataManager.enemyById[p])")
                   router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
-                    img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
-            div(v-if="getOtherEnemies(areaDetail.iAreaID).length")
+                    el-tooltip(:content="enemy.strName" placement="top")
+                      img.icon-small(:src="enemy.icon" :alt="enemy.strName")
+            div(v-if="areaDetail.otherEnemies.length")
               el-divider {{ $t('他の敵') }}
-              div(v-for="{ level, enemies } of getOtherEnemies(areaDetail.iAreaID)")
-                el-divider {{ level }}
+              div(v-for="{ level, enemies } of areaDetail.otherEnemies")
+                el-divider {{ $t('地図') }} {{ level }}
                 div.example-container
                   div(v-for="enemy of enemies")
                     router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
-                      img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
+                      el-tooltip(:content="enemy.strName" placement="top")
+                        img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
             div(v-if="dataManager.dungeonInfosByAreaId[areaDetail.iAreaID]")
               el-divider {{ $t('ダンジョン') }}
               div
@@ -61,14 +68,15 @@ div.container
                     p(v-for="returnFieldName of [dataManager.fieldNameById[dataManager.areaInfoById[dungeonInfo.iReturnArea].iAreaNameId]].filter((p) => p)") {{ $t('脱出区域') }}: {{ returnFieldName.strAreaName }}
                   p(v-if="dataManager.dungeonInfosByAreaId[areaDetail.iAreaID].length !== (i + 1)") &#x3E;
 
-            div(v-if="getDungeonEnemies(areaDetail.iAreaID).length")
+            div(v-if="areaDetail.dungeonEnemies.length")
               el-divider {{ $t('ダンジョン') }}{{ $t('敵') }}
-              div(v-for="{ level, enemies } of getDungeonEnemies(areaDetail.iAreaID)")
-                el-divider {{ level }}
+              div(v-for="{ level, enemies } of areaDetail.dungeonEnemies")
+                el-divider {{ $t('ダンジョン') }} {{ level }}
                 div.example-container
                   div(v-for="enemy of enemies")
                     router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
-                      img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
+                      el-tooltip(:content="enemy.strName" placement="top")
+                        img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
 
             div(v-if="dataManager.gateInfoByAreaId[areaDetail.iAreaID]")
               el-divider {{ $t('ゲート') }}
@@ -83,7 +91,7 @@ div.container
                   template(v-for="fieldName of [dataManager.fieldNameById[townInfo.iAreaNameId]].filter((p) => p)")
                     p {{ fieldName.strAreaName }} {{ fieldName.strAreaNameSub.trim() ? `/ ${fieldName.strAreaNameSub}` : '' }}
                     div.area-towns__images
-                      p(v-for="townIcon of getTownIcons(townInfo.iTownId)")
+                      p(v-for="townIcon of townInfo.townIcons")
                         img.area-towns__image(:src="townIcon" :alt="fieldName.strAreaName")
 
             div(v-if="dataManager.fieldTitlesByAreaId[areaDetail.iAreaID]")
@@ -95,7 +103,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import ms from 'ms';
 
 @Component({
@@ -103,32 +110,6 @@ import ms from 'ms';
   },
 })
 export default class extends VueBase {
-  public townIcons = Object.values(dataManager.files.img.map_town.Texture2D).filter((p: string) => !p.endsWith('_02.png')) as string[];
-
-  public getOtherEnemies(id: number) {
-    return this.dataManager.spawnerDataManager.enemyIdsInAreaByAreaId[id]
-      ?.map(({ level, enemyIds }) => ({
-        level,
-        enemies: enemyIds.map((p) => dataManager.enemyById[p]).filter((p) => p).sort((a, b) => a.eKind - b.eKind),
-      }))
-      .filter(({ enemies }) => enemies.length) || [];
-  }
-
-  public getDungeonEnemies(id: number) {
-    return this.dataManager.spawnerDataManager.enemyIdsInDungeonByAreaId[id]
-      ?.map(({ level, enemyIds }) => ({
-        level,
-        enemies: enemyIds.map((p) => dataManager.enemyById[p]).filter((p) => p).sort((a, b) => a.eKind - b.eKind),
-      }))
-      .filter(({ enemies }) => enemies.length) || [];
-  }
-
-  public getTownIcons(iTownId: number) {
-    return this.townIcons
-      .filter((p) => p.startsWith(`Map_Town_${iTownId.toString().padStart(2, '0')}`))
-      .map((p) => `img/map_town/Texture2D/${p}`);
-  }
-
   public mounted() {
     if (this.$route.query.df) {
       setTimeout(() => this.$scrollTo(`#DF-${this.$route.query.df}`, -1), ms('1s'));

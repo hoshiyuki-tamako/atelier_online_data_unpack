@@ -19,12 +19,14 @@ export default class extends VuexModuleBase {
 
   public showColumnDLV = true;
 
+  public showColumnARA = true;
+
   public showColumnDialog = true;
 
   public showColumnCharacter = true;
 
 
-  @MutationAction({ mutate: ['showColumnDF', 'showColumnNAME', 'showColumnCATEG', 'showColumnCOST', 'showColumnENM', 'showColumnGET', 'showColumnDLV', 'showColumnDialog', 'showColumnCharacter'] })
+  @MutationAction({ mutate: ['showColumnDF', 'showColumnNAME', 'showColumnCATEG', 'showColumnCOST', 'showColumnENM', 'showColumnGET', 'showColumnDLV', 'showColumnARA', 'showColumnDialog', 'showColumnCharacter'] })
   public async reset() {
     return {
       showColumnDF: true,
@@ -34,6 +36,7 @@ export default class extends VuexModuleBase {
       showColumnENM: true,
       showColumnGET: true,
       showColumnDLV: true,
+      showColumnARA: true,
       showColumnDialog: true,
       showColumnCharacter: true,
     };

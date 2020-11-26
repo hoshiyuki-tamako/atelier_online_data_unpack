@@ -94,15 +94,18 @@ div.container
               div(v-if="dataManager.itemsBySkill[props.row.id]")
                 h3 {{ $t('アイテム') }}
                 router-link(v-for="item in dataManager.itemsBySkill[props.row.id]" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }" target="_blank")
-                  img.icon-small(:src="item.icon" :alt="item.NAME")
+                  el-tooltip(:content="item.NAME" placement="top")
+                    img.icon-small(:src="item.icon" :alt="item.NAME")
               div(v-if="dataManager.enemiesBySkill[props.row.id]")
                 h3 {{ $t('敵') }}
                 router-link(v-for="enemy in dataManager.enemiesBySkill[props.row.id]" :key="enemy.DF" :to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }" target="_blank")
-                  img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
+                  el-tooltip(:content="enemy.strName" placement="top")
+                    img.icon-small(:src="enemy.icon" :alt="enemy.strName")
               div(v-if="dataManager.charactersBySkill[props.row.id]")
                 h3 {{ $t('人物') }}
                 router-link(v-for="character in dataManager.charactersBySkill[props.row.id]" :key="character.DF" :to="{ name: 'CharactersCharacter', query: { df: character.DF } }" target="_blank")
-                  img.icon-small(:src="character.icon" :alt="character.NAME")
+                  el-tooltip(:content="character.NAME" placement="top")
+                    img.icon-small(:src="character.icon" :alt="character.NAME")
 
       el-table-column(v-if="showColumnId" prop="id" label="ID" width="100%" sortable="custom")
       el-table-column(v-if="showColumnName" prop="name" :label="$t('名前')")

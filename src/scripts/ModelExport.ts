@@ -41,6 +41,7 @@ export default class ModelExport {
       this.processEnemiesModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
       this.processAreaModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
       this.processBattleAreaModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
+      this.processDungeonModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
     ]);
   }
 
@@ -70,7 +71,7 @@ export default class ModelExport {
 
   private async processEnemiesModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
     const outFolder = path.join(rootFolder, 'models', 'enemies');
-    const regex = new RegExp(`^${escapeRegExp('Enemy044')}.*`);
+    const regex = new RegExp(`^${escapeRegExp('Enemy')}.*`, 'i');
     const enemiesFolders = modelFolders.filter((p) => regex.exec(p));
     await Promise.all(enemiesFolders.map(async (p) => {
       const sourceModelFolder = path.join(modelFolder, p);
@@ -93,25 +94,36 @@ export default class ModelExport {
     const roots = modelFolders.filter((p) => p.includes('root'))
       .sort(new Intl.Collator(undefined, { numeric: true }).compare)
       .reverse();
-    const rootMetas = (await Promise.all(roots.map(async (root) => {
+    const areas = [] as IAreaModel[];
+    const areaDungeons = [] as IAreaModel[];
+
+    // parse files and map
+    await Promise.all(roots.map(async (root) => {
       const rootText = await fs.readFile(path.join(modelMetaFolder, root, 'root.fbx'), { encoding: 'utf-8' });
       const connections = rootText.match(/Connections((.|\n|\r)*)/gm)?.join() || '';
-      const [, iAreaID, iLevel] = connections.match(/;Model::MapArea_(\d+)_(\d+), Model::root/) || [];
-      if (!iAreaID) {
-        return null;
-      }
-      return {
+      const [, iAreaID, iLevel, isDungeon] = connections.match(/;Model::MapArea_(\d+)_(\d+)(\_Dun)?, Model::root/) || [];
+
+      const meta = {
         iAreaID: +iAreaID,
         iLevel: +iLevel,
         root,
       } as IAreaModel;
-    })))
-      .filter((p) => p && !hideAreas.includes(p.iAreaID) && !hideAreaFilters.some((i) => i.iAreaID === p.iAreaID && i.iLevel === p.iLevel));
 
-    // de duplication
+      if (hideAreas.includes(meta.iAreaID) || hideAreaFilters.some((i) => i.iAreaID === meta.iAreaID && i.iLevel === meta.iLevel)) {
+        return;
+      }
+
+      if (isDungeon) {
+        areaDungeons.push(meta);
+      } else if (iAreaID) {
+        areas.push(meta);
+      }
+    }));
+
+    // de-duplication
     const removeIndexes = [] as number[];
     const iAreaIdExistsLookup = new Set<number>();
-    for (const [i, { iAreaID }] of rootMetas.entries()) {
+    for (const [i, { iAreaID }] of areas.entries()) {
       if (!deDuplicationAreas.includes(iAreaID)) {
         continue;
       }
@@ -121,12 +133,12 @@ export default class ModelExport {
         iAreaIdExistsLookup.add(iAreaID);
       }
     }
-
-    const meta = rootMetas.filter((_, i) => !removeIndexes.includes(i));
+    const filteredAreas = areas.filter((_, i) => !removeIndexes.includes(i));
 
     await Promise.all([
-      fs.writeJson(path.join(rootFolder, 'generated', 'areaModel.json'), meta),
-      Promise.all(meta.map(async ({ root }) => {
+      fs.writeJson(path.join(rootFolder, 'generated', 'areaModel.json'), filteredAreas),
+      fs.writeJson(path.join(rootFolder, 'generated', 'areaDungeonModel.json'), areaDungeons),
+      Promise.all(filteredAreas.concat(areaDungeons).map(async ({ root }) => {
         const sourceModelFolder = path.join(modelFolder, root);
         const outFolder = path.join(modelOutFolder, root);
         if (await fs.pathExists(outFolder)) {
@@ -151,4 +163,30 @@ export default class ModelExport {
       }),
     ]);
   }
+
+  private async processDungeonModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
+    const modelOutFolder = path.join(rootFolder, 'models', 'dungeons');
+    const dungeonFolders = modelFolders.filter((p) => p.startsWith('Dungeon_'))
+      .sort(new Intl.Collator(undefined, { numeric: true }).compare)
+      .reverse();
+    const dungeons = {} as { [objectName: string]: string };
+    for (const dungeonFolder of dungeonFolders) {
+      const objectName = dungeonFolder.replace(/\s*\(\d+\)/, '');
+      if (!(objectName in dungeons)) {
+        dungeons[objectName] = dungeonFolder;
+      }
+    }
+
+    await Promise.all([
+      Object.values(dungeons).map(async (folder) => {
+        const sourceModelFolder = path.join(modelFolder, folder);
+        const outFolder = path.join(modelOutFolder, folder);
+        if (await fs.pathExists(outFolder)) {
+          return;
+        }
+        await this.ncp(sourceModelFolder, outFolder);
+      }),
+    ]);
+  }
+
 }

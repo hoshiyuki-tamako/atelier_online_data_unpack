@@ -48,25 +48,27 @@ export default class extends VueBase {
 
   public battleArea = '';
 
+  public dungeon = '';
+
   public get fbx() {
     if (this.root) {
       return `models/roots/${this.root}/root.fbx`;
     }
 
-    return `models/battleAreas/${this.battleArea}/${this.battleArea}.fbx`;
+    if (this.battleArea) {
+      return `models/battleAreas/${this.battleArea}/${this.battleArea}.fbx`;
+    }
+
+    return `models/dungeons/${this.dungeon}/${this.dungeon.replace(/\s*\(\d+\)/, '')}.fbx`;
   }
 
   public beforeMount() {
     this.area = this.dataManager.areaDetailById[this.$route.query.iAreaID as string];
-    if (!this.area) {
-      this.$router.push({ name: 'Areas' });
-      return;
-    }
-
     this.root = this.$route.query.root as string;
     this.battleArea = this.$route.query.battleArea as string;
+    this.dungeon = this.$route.query.dungeon as string;
 
-    if (!(this.root || this.battleArea)) {
+    if (!(this.root || this.battleArea || this.dungeon)) {
       this.$router.push({ name: 'Areas' });
       return;
     }
@@ -101,7 +103,7 @@ export default class extends VueBase {
   }
 
   private initializeLights() {
-    if (this.area.iAreaID === 3) {
+    if (this.area?.iAreaID === 3) {
       this.light.intensity = 4;
     } else {
       this.light.intensity = 2;
@@ -120,7 +122,7 @@ export default class extends VueBase {
       ].map((p) => p.toLocaleLowerCase());
 
       // they reuse iAreaId === 5 map for the sea effect, required to hide MapArea 5
-      if (this.area.iAreaID === 6) {
+      if (this.area?.iAreaID === 6) {
         filters.push('MapArea_05_001'.toLocaleLowerCase());
       }
 
@@ -128,8 +130,12 @@ export default class extends VueBase {
       filters.push('skillbg'.toLocaleLowerCase());
 
       // for some reason they put battle_01_001 in iAreaID === 10 map
-      if (this.area.iAreaID === 10) {
+      if (this.area?.iAreaID === 10) {
         filters.push('battle_01_001'.toLocaleLowerCase());
+      }
+
+      if (this.dungeon) {
+        filters.push('door'.toLocaleLowerCase());
       }
 
       object.traverse((child: Group & Object3D & Mesh) => {
@@ -151,6 +157,9 @@ export default class extends VueBase {
       });
 
       this.scene.add(object);
+    }, undefined, (err) => {
+      this.$message.error(err.error);
+      console.error(err);
     });
 
     return this;

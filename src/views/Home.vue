@@ -5,13 +5,13 @@ div.container
     p
       span.version-link__container
         span
-          span Game Version 3.14.0 &nbsp
+          span Game Version 3.14.0 &nbsp;
           span(v-if="$i18n.locale !== 'ja-JP'")
             el-link(type="success" :underline="false" :href="changeLocaleHref('ja-JP')") (日本語)
           span(v-else) (日本語)
       br
       span.version-link__container
-        span Game Version 3.5.0 &nbsp
+        span Game Version 3.5.0 &nbsp;
           span(v-if="$i18n.locale !== 'zh-TW'")
             el-link(type="success" :underline="false" :href="changeLocaleHref('zh-TW')") (中文)
           span(v-else) (中文)
@@ -107,6 +107,10 @@ export default class extends VueWithMapFields {
       {
         title: this.$t('敵'),
         pages: this.pageEnemies,
+      },
+      {
+        title: this.$t('地図'),
+        pages: this.pageArea,
       },
       {
         title: this.$t('他の資料'),
@@ -351,7 +355,7 @@ export default class extends VueWithMapFields {
     ];
   }
 
-  public get pageInfo() {
+  public get pageArea() {
     return [
       {
         label: this.$t('区域'),
@@ -362,6 +366,20 @@ export default class extends VueWithMapFields {
           name: 'Areas',
         },
       },
+      {
+        label: this.$t('ダンジョン'),
+        img: {
+          src: 'img/item_pickup/Texture2D/Item_PickUp001_Stone.png',
+        },
+        to: {
+          name: 'AreasDungeons',
+        },
+      },
+    ];
+  }
+
+  public get pageInfo() {
+    return [
       {
         label: this.$t('クェスト'),
         img: {

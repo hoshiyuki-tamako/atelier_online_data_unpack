@@ -592,7 +592,7 @@ quest
   ],
   "LAST": 0,
   "INVISIBLE": 0,
-  "IMPORTANT": 0,
+  "IMPORTANT": 0, // is important quest, currently unused
   "PARTY_IN": 0, // required character in party. relationship to chara.DF
   "KEY_QUEST": 0,
   "OFFICIAL_EXAMINATION": 0, // the icon that above the quest in 3d world
@@ -691,7 +691,7 @@ quest
     }
   ],
   "ALC": [], // not in use
-  "GET": [ // gather
+  "GET": [ // gather / compose
     {
       "DF": 10090001, // relationship to item.DF
       "CATEG": 0,
@@ -701,7 +701,7 @@ quest
     }
   ],
   "PIC": [], // not in use
-  "REG": [ // required enter
+  "REG": [ // enter an area
     {
       "DF": 1, // relationship to areaDetail.iAreaID
       "CATEG": 0,
@@ -710,7 +710,7 @@ quest
       "AREA": 0
     }
   ],
-  "DUN": [ // required enter dungeon
+  "DUN": [ // required enter dungeon, currently unused
     {
       "DF": 10002, // relationship to dungeonInfo.iDungeonId
       "CATEG": 0,
@@ -729,9 +729,9 @@ quest
       "AREA": 0
     }
   ],
-  "VIL": [ // 村
+  "VIL": [ // town
     {
-      "DF": 1,
+      "DF": 1, // relationship to townInfo.iTownId
       "CATEG": 0,
       "BDR": 1,
       "QTY": 0,
@@ -747,13 +747,13 @@ quest
       "AREA": 0
     }
   ],
-  "ARA": [ // arrive area?
+  "ARA": [ // arrive location inside a area
     {
-      "DF": 15004,
+      "DF": 15004, // relationship to spawnList id. use for lookup event position
       "CATEG": 0,
       "BDR": 1,
       "QTY": 0,
-      "AREA": 2
+      "AREA": 2 // relationship to areaInfo, areaDetail
     }
   ]
 }
@@ -1082,6 +1082,8 @@ zoneeffect
 ```
 
 ## Adv
+
+for more info of each eOrder see other example at below this example
 
 ```ts
 {

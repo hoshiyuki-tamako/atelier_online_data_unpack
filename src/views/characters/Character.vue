@@ -96,12 +96,14 @@ div.container
         el-divider {{ $t('専用アイテム') }}
         template(v-for="item of onlyItems")
           router-link(:to="{ name: 'ItemsItem', query: { df: item.DF } }")
-            img.icon-small(:src="item.icon" :alt="item.NAME")
+            el-tooltip(:content="item.NAME" placement="top")
+              img.icon-small(:src="item.icon" :alt="item.NAME")
       div(v-if="dataManager.itemsByCharacterLegendRecipe[character.DF]")
         el-divider {{ $t('レジェンドレシピ') }}
         template(v-for="item of dataManager.itemsByCharacterLegendRecipe[character.DF]")
           router-link(:to="{ name: 'ItemsItem', query: { df: item.DF } }")
-            img.icon-small(:src="item.icon" :alt="item.NAME")
+            el-tooltip(:content="item.NAME" placement="top")
+              img.icon-small(:src="item.icon" :alt="item.NAME")
 
       div(v-if="character.SKILL.length")
         el-divider {{ $t('スキル') }}
@@ -171,9 +173,10 @@ div.container
           div.character-food__item(v-for="fdm of character.FDM")
             el-divider LV{{ fdm.NO }}
             template(v-for="[fd, item] of fdm.FD.map((p) => [p, dataManager.itemById[p.DF]])")
-              router-link.character-food__consume(:to="item.RSP.length ? { name: 'ToolsComposeItem', query: { df: item.DF, quality: fd.QTY } } : { name: 'ItemsItem', query: { df: item.DF } }")
-                span.character-food__quality-text {{ $t('品質') }} {{ fd.QTY }}
-                img.icon-small(:src="item.icon" :alt="item.NAME")
+              el-tooltip(:content="item.NAME" placement="left")
+                router-link.character-food__consume(:to="item.RSP.length ? { name: 'ToolsComposeItem', query: { df: item.DF, quality: fd.QTY } } : { name: 'ItemsItem', query: { df: item.DF } }")
+                  span.character-food__quality-text {{ $t('品質') }} {{ fd.QTY }}
+                  img.icon-small(:src="item.icon" :alt="item.NAME")
             table
               tr(v-for="state of Object.keys(character.SPEC)")
                 td {{ $t(dataManager.lookup.state[state] )}}

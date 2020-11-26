@@ -182,6 +182,14 @@ const areasRoutes: Array<RouteConfig> = [
       title: '区域',
     },
   },
+  {
+    path: '/areas/dungeons',
+    name: 'AreasDungeons',
+    component: () => import(/* webpackChunkName: "AreasDungeons" */ '@/views/areas/Dungeons.vue'),
+    meta: {
+      title: 'ダンジョン',
+    },
+  },
 ];
 
 const infoRoutes: Array<RouteConfig> = [

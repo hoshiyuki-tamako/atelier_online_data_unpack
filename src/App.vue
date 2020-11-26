@@ -184,6 +184,7 @@ export default class extends VueBase {
 @import "./design/styles/item.sass"
 @import "./design/styles/popover.sass"
 @import "./design/styles/wealth.sass"
+@import "./design/styles/degree.sass"
 
 *, .reset
   padding: 0

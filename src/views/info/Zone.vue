@@ -17,11 +17,13 @@ div.container
             div(v-if="dataManager.itemsByZone[scope.row.id]")
               h3 {{ $t('アイテム') }}
               router-link.example(v-for="item of dataManager.itemsByZone[scope.row.id]" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }")
-                img(:src="item.icon" :alt="item.NAME")
+                el-tooltip(:content="item.NAME" placement="top")
+                  img(:src="item.icon" :alt="item.NAME")
             div(v-if="dataManager.enemiesByZone[scope.row.id]")
               h3 {{ $t('敵') }}
               router-link.example(v-for="enemy of dataManager.enemiesByZone[scope.row.id]" :key="enemy.DF" :to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }")
-                img(:src="enemy.icon" :alt="enemy.NAME")
+                el-tooltip(:content="enemy.strName" placement="top")
+                  img(:src="enemy.icon" :alt="enemy.strName")
 </template>
 
 <script lang="ts">
