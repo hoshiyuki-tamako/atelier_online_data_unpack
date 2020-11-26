@@ -122,13 +122,15 @@ div.container
         el-divider {{ $t('キャラクター專用') }}
         p(v-for="character of dataManager.charactersByGroupDf[item.GROUP_DF]")
           router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
-            img.icon-middle(:src="character.icon" :alt="character.NAME")
+            el-tooltip(:content="character.NAME" placement="top")
+              img.icon-middle(:src="character.icon" :alt="character.NAME")
       div(v-if="item.LRCP_CHARA.length")
         el-divider {{ $t('レジェンドレシピ') }}
         div(v-for="character of item.LRCP_CHARA.map((p) => dataManager.characterById[p.DF]).filter((p) => p)")
           p
             router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
-              img.icon-middle(:src="character.icon" :alt="character.NAME")
+              el-tooltip(:content="character.NAME" placement="top")
+                img.icon-middle(:src="character.icon" :alt="character.NAME")
       div(v-if="dataManager.questsByGetItem[item.DF]")
         el-divider {{ $t('クェスト調合/採取') }}
         div(v-for="quest of dataManager.questsByGetItem[item.DF]")
