@@ -30,6 +30,14 @@ const toolsRotes: Array<RouteConfig> = [
     }
   },
   {
+    path: '/tools/blazeArtLeveling',
+    name: 'ToolsBlazeArtLeveling',
+    component: () => import(/* webpackChunkName: "ToolsBlazeArtLeveling" */ '@/views/tools/BlazeArtLeveling.vue'),
+    meta: {
+      title: 'ブレイズアーツレベリング',
+    }
+  },
+  {
     path: '/tools/equipmentRanking',
     name: 'ToolsEquipmentRanking',
     component: () => import(/* webpackChunkName: "ToolsEquipmentRanking" */ '@/views/tools/EquipmentRanking.vue'),

@@ -5,6 +5,7 @@ import itemsFilter from '@/store/items/itemsFilter';
 import adventBattleFilter from '@/store/others/adventBattleFilter';
 import questsFilter from '@/store/quests/questsFilter';
 import skillsFilter from '@/store/skills/skillsFilter';
+import blazeArtLeveling from '@/store/tools/blazeArtLeveling';
 import characterBuilder from '@/store/tools/characterBuilder';
 import composeItemFilter from '@/store/tools/composeItemFilter';
 import itemEnhanceQuality from '@/store/tools/itemEnhanceQuality';
@@ -32,6 +33,7 @@ export default new Vuex.Store({
     itemEnhanceQuality,
     questsFilter,
     adventBattleFilter,
+    blazeArtLeveling,
   },
   plugins: [new VuexPersistence().plugin],
 });

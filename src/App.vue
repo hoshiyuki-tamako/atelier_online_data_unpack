@@ -38,6 +38,7 @@ export default class extends VueBase {
     ToolsCharacterBuilder: '#e0c397',
     ToolsComposeItem: '#e0c397',
     ToolsItemEnhanceQuality: '#e0c397',
+    ToolsBlazeArtLeveling: '#e0c397',
     AreasArea: '#2F4F4F',
   };
 

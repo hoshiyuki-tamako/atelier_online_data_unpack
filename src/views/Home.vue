@@ -155,6 +155,15 @@ export default class extends VueWithMapFields {
           name: 'ToolsItemEnhanceQuality',
         },
       },
+      {
+        label: this.$t('ブレイズアーツレベリング'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_56010002.png',
+        },
+        to: {
+          name: 'ToolsBlazeArtLeveling',
+        },
+      },
     ];
   }
 
@@ -603,6 +612,7 @@ export default class extends VueWithMapFields {
       this.$store.dispatch('itemEnhanceQuality/reset'),
       this.$store.dispatch('questsFilter/reset'),
       this.$store.dispatch('adventBattleFilter/reset'),
+      this.$store.dispatch('blazeArtLeveling/reset'),
     ]);
     if (requiredRefreshPage) {
       window.location.reload();
