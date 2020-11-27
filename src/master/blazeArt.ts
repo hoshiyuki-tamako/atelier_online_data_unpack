@@ -20,11 +20,11 @@ export class MVList {
     LV: LV[];
 
   public levelExperience(level: number) {
-    level -= 1;
-    if (level <= 0) {
+    const index = level - 2;
+    if (index < 0) {
       return 0;
     }
-    return this.LV[level]?.EXP_PT || 0;
+    return this.LV[index]?.EXP_PT || 0;
   }
 }
 
