@@ -10,7 +10,7 @@ div.item-enhance-quality
     br
     br
     div.items
-      div.item(v-for="(item, i) of items" :key="i" @click="onClickRemoveItem(i)")
+      div.item(v-for="(item, i) of items" @click="onClickRemoveItem(i)")
         el-tooltip(:content="`${item.SPC[0].SKILL[0].VAL} ${$t('経験値')}`" placement="top")
           img.icon-middle(:src="item.icon" :alt="item.NAME")
   div.right
