@@ -225,6 +225,15 @@ export default class extends VueWithMapFields {
           name: 'ItemsUnusedItems',
         },
       });
+      items.push({
+        label: this.$t('他の投げ物'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10350010.png',
+        },
+        to: {
+          name: 'ItemsThrowables',
+        },
+      });
     }
 
     return items;
@@ -378,10 +387,19 @@ export default class extends VueWithMapFields {
       {
         label: this.$t('ダンジョン'),
         img: {
-          src: 'img/item_pickup/Texture2D/Item_PickUp001_Stone.png',
+          src: 'img/item_pickup/Texture2D/Item_PickUp002_Stone.png',
         },
         to: {
           name: 'AreasDungeons',
+        },
+      },
+      {
+        label: this.$t('他の物'),
+        img: {
+          src: 'img/item_pickup/Texture2D/Item_PickUp001_Stone.png',
+        },
+        to: {
+          name: 'AreasGimmicks',
         },
       },
     ];

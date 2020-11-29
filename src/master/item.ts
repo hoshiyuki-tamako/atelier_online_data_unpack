@@ -96,7 +96,11 @@ export class MVList {
     return `img/icon_item_s/Texture2D/${filename}`;
   }
 
-  public get modelFolderName() {
+  public get model() {
+    return this.modelItem || this.modelThrowable;
+  }
+
+  public get itemModelFolderName() {
     if (MVList.weaponKindCategory.includes(this.CATEG)) {
       return EWeaponKind[this.WPN_KIND]?.substring(1).toLocaleLowerCase() || '';
     }
@@ -120,18 +124,32 @@ export class MVList {
     return '';
   }
 
-  public get model() {
+  public get modelItem() {
     if (!this.MDL) {
       return '';
     }
 
-    const name = this.modelFolderName;
+    // weapon
+    const name = this.itemModelFolderName;
     if (!name) {
       return name;
     }
 
     const id = this.MDL.toString().padStart(4, '0');
     return `models/items/${name}${id}/${name}${id}.fbx`;
+  }
+
+  public get modelThrowableName() {
+    return `throw${this.DF}`;
+  }
+
+  public get modelThrowable() {
+    const throwable = Object.keys(dataManager.files.models.throwables).find((folder) => dataManager.folderLabel(folder) === `throw${this.DF}`);
+      if (!throwable) {
+        return '';
+      }
+
+      return `models/throwables/${throwable}/${dataManager.folderLabel(throwable)}.fbx`;
   }
 
   public get genderTextIcon() {

@@ -88,6 +88,14 @@ const itemsRoutes: Array<RouteConfig> = [
       title: '未使用アイテム',
     },
   },
+  {
+    path: '/items/throwables',
+    name: 'ItemsThrowables',
+    component: () => import(/* webpackChunkName: "ItemsThrowables" */ '@/views/items/Throwables.vue'),
+    meta: {
+      title: '他の投げ物',
+    },
+  },
 ];
 
 const charactersRoutes: Array<RouteConfig> = [
@@ -196,6 +204,14 @@ const areasRoutes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "AreasDungeons" */ '@/views/areas/Dungeons.vue'),
     meta: {
       title: 'ダンジョン',
+    },
+  },
+  {
+    path: '/areas/gimmicks',
+    name: 'AreasGimmicks',
+    component: () => import(/* webpackChunkName: "AreasGimmicks" */ '@/views/areas/Gimmicks.vue'),
+    meta: {
+      title: '他の物',
     },
   },
 ];

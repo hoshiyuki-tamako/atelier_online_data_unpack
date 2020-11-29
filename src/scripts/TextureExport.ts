@@ -6,6 +6,7 @@ export default class TextureExport {
   public async process(sourceFolder: string, rootFolder: string) {
     const textureFolder = path.join(sourceFolder, 'Texture2D');
     if (!await fs.pathExists(textureFolder)) {
+      console.log(`skipping texture process: missing ${textureFolder}`);
       return;
     }
     const files = await fs.readdir(textureFolder);

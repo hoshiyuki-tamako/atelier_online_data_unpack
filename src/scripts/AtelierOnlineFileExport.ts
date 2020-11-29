@@ -2,7 +2,7 @@ import dirTree, { DirectoryTree } from 'directory-tree';
 import fs from 'fs-extra';
 import path from 'path';
 
-import { ISaveable } from './interfaces/saveable';
+import { ISaveable } from './interfaces/ISaveable';
 
 export type PathTree = { [s: string]: PathTree | string | null };
 

@@ -16,7 +16,8 @@ div.container
             img.icon-full(:src="areaDetail.icon" :alt="areaDetail.iAreaID")
             h3(v-if="fieldName") {{ fieldName.strAreaName }} {{ fieldName.strAreaNameSub.trim() ? `/ ${fieldName.strAreaNameSub}` : '' }}
             p iAreaID: {{ areaDetail.iAreaID }}
-            p iLevel: {{areaDetail.iLevel }}
+            p iLevel: {{ areaDetail.iLevel }}
+            p(v-if="areaInfo.iHardMode") {{ $t('ハードモード') }}: {{ tickCross(true) }}
             template(v-if="dataManager.areaModelsById[areaDetail.iAreaID]")
               br
               div(v-for="{ root, iLevel } of dataManager.areaModelsById[areaDetail.iAreaID]")
@@ -82,8 +83,9 @@ div.container
               el-divider {{ $t('ゲート') }}
               div.area-gates
                 div(v-for="gateInfo of dataManager.gateInfoByAreaId[areaDetail.iAreaID]")
-                  p {{ gateInfo.strName }}
-
+                  p
+                    span {{ gateInfo.strName }}
+                    span(v-if="gateInfo.bDungeon") ({{ $t('ダンジョンある') }})
             div(v-if="dataManager.townInfosByAreaId[areaDetail.iAreaID]")
               el-divider {{ $t('町') }}
               div

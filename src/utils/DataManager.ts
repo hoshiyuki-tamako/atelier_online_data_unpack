@@ -651,6 +651,11 @@ export class DataManager {
       .groupBy((p) => p.split('_')[0] || p)
       .toObject((p) => p.key(), (p) => p.orderBy((p) => p).toArray()) as { [s: string]: string[] };
   }
+
+  // helper
+  public folderLabel(folder: string) {
+    return folder.replace(/\s*\(\d+\)/, '');
+  }
 }
 
 export const dataManager = new DataManager();

@@ -1,9 +1,9 @@
 <template lang="pug">
 div.container
-  h3 {{ $t('模型') }}
   el-dialog(title="" :visible.sync="fbxDialogVisible" width="90%")
     model-fbx.item-fbx-container(v-loading="fbxLoading" @on-load="fbxLoading = false" :src="fbxModel" :rotation="{ x:0, y: 0, z: Math.PI }" backgroundColor="rgb(169,169,169)")
 
+  h3 {{ $t('模型') }}
   div.models-container
     div.model-container(v-for="model of models")
       el-link(@click="openFbxDialog(`models/items/${model}/${model}.fbx`)" type="primary" :underline="false") {{ model }}

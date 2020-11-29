@@ -4,7 +4,13 @@ div.container
     el-divider {{ level || '' }}
     div.dungeon(v-for="folder of folders")
       router-link(:to="{ name: 'AreasArea', query: { dungeon: folder } }" v-slot="{ href, navigate }")
-        el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ folderLabel(folder) }}
+        el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ dataManager.folderLabel(folder) }}
+
+  el-divider
+  div.dungeons
+    div.dungeon(v-for="{ label, folder } of fieldDungeons")
+      router-link(:to="{ name: 'AreasArea', query: { fieldDungeon: folder } }" v-slot="{ href, navigate }")
+        el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ label }}
 </template>
 
 <script lang="ts">
@@ -24,8 +30,12 @@ export default class extends VueBase {
       }));
   }
 
-  public folderLabel(folder: string) {
-    return folder.replace(/\s*\(\d+\)/, '');
+  public get fieldDungeons() {
+    return Object.keys(this.dataManager.files.models.fieldDungeons)
+      .map((folder) => ({
+        label: this.dataManager.folderLabel(folder),
+        folder,
+      }));
   }
 }
 </script>

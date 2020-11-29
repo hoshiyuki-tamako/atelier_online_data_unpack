@@ -50,6 +50,10 @@ export default class extends VueBase {
 
   public dungeon = '';
 
+  public fieldDungeon = '';
+
+  public raw = '';
+
   public get fbx() {
     if (this.root) {
       return `models/roots/${this.root}/root.fbx`;
@@ -59,7 +63,15 @@ export default class extends VueBase {
       return `models/battleAreas/${this.battleArea}/${this.battleArea}.fbx`;
     }
 
-    return `models/dungeons/${this.dungeon}/${this.dungeon.replace(/\s*\(\d+\)/, '')}.fbx`;
+    if (this.dungeon) {
+      return `models/dungeons/${this.dungeon}/${this.dungeon.replace(/\s*\(\d+\)/, '')}.fbx`;
+    }
+
+    if (this.fieldDungeon) {
+      return `models/fieldDungeons/${this.fieldDungeon}/${this.fieldDungeon.replace(/\s*\(\d+\)/, '')}.fbx`;
+    }
+
+    return this.raw;
   }
 
   public beforeMount() {
@@ -67,8 +79,10 @@ export default class extends VueBase {
     this.root = this.$route.query.root as string;
     this.battleArea = this.$route.query.battleArea as string;
     this.dungeon = this.$route.query.dungeon as string;
+    this.fieldDungeon = this.$route.query.fieldDungeon as string;
+    this.raw = this.$route.query.raw as string;
 
-    if (!(this.root || this.battleArea || this.dungeon)) {
+    if (!(this.root || this.battleArea || this.dungeon || this.fieldDungeon || this.raw)) {
       this.$router.push({ name: 'Areas' });
       return;
     }
@@ -134,8 +148,13 @@ export default class extends VueBase {
         filters.push('battle_01_001'.toLocaleLowerCase());
       }
 
-      if (this.dungeon) {
+      if (this.dungeon || this.fieldDungeon) {
         filters.push('door'.toLocaleLowerCase());
+      }
+
+      // if raw ignore all filters
+      if (this.raw) {
+        filters.length = 0;
       }
 
       object.traverse((child: Group & Object3D & Mesh) => {

@@ -22,6 +22,11 @@ export interface IHideAreaFilter {
   iLevel: number;
 }
 
+export interface IGenericModelOption {
+  outFolder: string;
+  startsWith: string[];
+}
+
 export default class ModelExport {
   public ncp = promisify(ncp);
 
@@ -33,6 +38,7 @@ export default class ModelExport {
       fs.pathExists(modelMetaFolder),
     ]);
     if (!requireFolderExists.every((p) => p)) {
+      console.log(`skipping model process: missing ${modelFolder} or ${modelMetaFolder}`);
       return;
     }
     const modelFolders = await fs.readdir(modelFolder);
@@ -40,8 +46,7 @@ export default class ModelExport {
       this.processItemsModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
       this.processEnemiesModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
       this.processAreaModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
-      this.processBattleAreaModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
-      this.processDungeonModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
+      this.processGenericModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
     ]);
   }
 
@@ -149,44 +154,59 @@ export default class ModelExport {
     ]);
   }
 
-  private async processBattleAreaModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
-    const modelOutFolder = path.join(rootFolder, 'models', 'battleAreas');
-    const battleAreas = modelFolders.filter((p) => p.startsWith('BattleArea_'));
+  private async processGenericModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
+    const options = [
+      {
+        outFolder: 'battleAreas',
+        startsWith: ['BattleArea_'],
+      },
+      {
+        outFolder: 'dungeons',
+        startsWith: ['Dungeon_'],
+      },
+      {
+        outFolder: 'fieldDungeons',
+        startsWith: ['FieldDungeon_'],
+      },
+      {
+        outFolder: 'throwables',
+        startsWith: ['throw', 'Throw_'],
+      },
+      {
+        outFolder: 'gimmicks',
+        startsWith: ['Gimmick_'],
+      },
+    ] as IGenericModelOption[];
+    await Promise.all(options.map(({ outFolder, startsWith }) => this.processGenericModel(outFolder, startsWith, rootFolder, modelFolders, modelFolder) ));
+  }
+
+  private async processGenericModel(outFolder: string, startsWith: string[], rootFolder: string, modelFolders: string[], modelFolder: string) {
+    const modelOutFolder = path.join(rootFolder, 'models', outFolder);
+    const folders = modelFolders.filter((p) => startsWith.some((s) => p.startsWith(s)))
+      .sort(new Intl.Collator(undefined, { numeric: true }).compare)
+      .reverse();
     await Promise.all([
-      battleAreas.map(async (folder) => {
-        const sourceModelFolder = path.join(modelFolder, folder);
+      Object.values(this.getLatestFromDifferences(folders)).map(async (folder) => {
         const outFolder = path.join(modelOutFolder, folder);
         if (await fs.pathExists(outFolder)) {
           return;
         }
+        const sourceModelFolder = path.join(modelFolder, folder);
         await this.ncp(sourceModelFolder, outFolder);
       }),
     ]);
   }
 
-  private async processDungeonModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
-    const modelOutFolder = path.join(rootFolder, 'models', 'dungeons');
-    const dungeonFolders = modelFolders.filter((p) => p.startsWith('Dungeon_'))
-      .sort(new Intl.Collator(undefined, { numeric: true }).compare)
-      .reverse();
-    const dungeons = {} as { [objectName: string]: string };
-    for (const dungeonFolder of dungeonFolders) {
-      const objectName = dungeonFolder.replace(/\s*\(\d+\)/, '');
-      if (!(objectName in dungeons)) {
-        dungeons[objectName] = dungeonFolder;
+  // helpers
+  private getLatestFromDifferences(folders: string[]) {
+    const result = {} as { [objectName: string]: string };
+    for (const folder of folders) {
+      const objectName = folder.replace(/\s*\(\d+\)/, '');
+      if (!(objectName in result)) {
+        result[objectName] = folder;
       }
     }
-
-    await Promise.all([
-      Object.values(dungeons).map(async (folder) => {
-        const sourceModelFolder = path.join(modelFolder, folder);
-        const outFolder = path.join(modelOutFolder, folder);
-        if (await fs.pathExists(outFolder)) {
-          return;
-        }
-        await this.ncp(sourceModelFolder, outFolder);
-      }),
-    ]);
+    return result;
   }
 
 }
