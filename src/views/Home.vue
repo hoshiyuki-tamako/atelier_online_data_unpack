@@ -5,7 +5,7 @@ div.container
     p
       span.version-link__container
         span
-          span Game Version 3.14.0 &nbsp;
+          span Game Version 3.15.0 &nbsp;
           span(v-if="$i18n.locale !== 'ja-JP'")
             el-link(type="success" :underline="false" :href="changeLocaleHref('ja-JP')") (日本語)
           span(v-else) (日本語)
@@ -25,6 +25,8 @@ div.container
       div.filter
         el-switch(v-model="showBackTopButton" :active-text="$t('トップに移動ボタン')")
       div.filter
+        el-switch(:value="darkMode" @change="onDarkMode" active-color="#13ce66" :active-text="$t('ダークモード')")
+      div.filter
         el-switch(:value="showHiddenContent" @change="onShowHiddenContent" active-color="#f56c6c" :active-text="$t('ネタバレ')")
       div.filter
         el-button(@click="onResetSetting" type="danger" icon="el-icon-refresh-left" size="small" :aria-label="$t('セッティングリセット')" round)
@@ -35,10 +37,9 @@ div.container
         h2 {{ allPage.title }}
       div.categories
         div.category__container(v-for="page in allPage.pages")
-          h3
-            router-link.category__link(:to="page.to")
-              span {{ page.label }}
-              img.category__image(:class="page.img.class" :src="page.img.src" :alt="page.label || page.imgAlt")
+          router-link.category__link(:to="page.to")
+            h3 {{ page.label }}
+            img.category__image(:class="page.img.class" :src="page.img.src" :alt="page.label || page.imgAlt")
 
   el-divider
   div.strategy-guides
@@ -72,13 +73,15 @@ abstract class VueWithMapFields extends VueBase {
   public showBackTopButton!: boolean;
 
   public showHiddenContent!: boolean;
+
+  public darkMode!: boolean | null;
 }
 
 @Component({
   components: {
   },
   computed: {
-    ...mapFields('home', ['showSideBar', 'showBackTopButton', 'showHiddenContent']),
+    ...mapFields('home', ['showSideBar', 'showBackTopButton', 'showHiddenContent', 'darkMode']),
   },
 })
 export default class extends VueWithMapFields {
@@ -610,13 +613,17 @@ export default class extends VueWithMapFields {
     window.location.reload();
   }
 
+  public onDarkMode(value: boolean) {
+    this.darkMode = value;
+    window.location.reload();
+  }
+
   public async onResetSetting() {
     await this.$confirm(`${this.$t('セッティングリセットよろしいでしか')}?`, '', {
       confirmButtonText: 'OK',
       cancelButtonText: 'Cancel',
       type: 'warning',
     });
-    const requiredRefreshPage = this.showHiddenContent;
     await Promise.all([
       this.$store.dispatch('home/reset'),
       this.$store.dispatch('characterRankingFilter/reset'),
@@ -632,11 +639,7 @@ export default class extends VueWithMapFields {
       this.$store.dispatch('adventBattleFilter/reset'),
       this.$store.dispatch('blazeArtLeveling/reset'),
     ]);
-    if (requiredRefreshPage) {
-      window.location.reload();
-    } else {
-      this.successNotification();
-    }
+    window.location.reload();
   }
 }
 </script>

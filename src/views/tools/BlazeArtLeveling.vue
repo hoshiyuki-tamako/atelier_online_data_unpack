@@ -129,6 +129,10 @@ export default class extends VueWithMapFields {
 a
   text-decoration: none
 
+.dark-mode
+  .left
+    background: inherit
+
 .item-enhance-quality
   display: flex
 

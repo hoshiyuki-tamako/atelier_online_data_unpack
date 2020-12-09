@@ -8,6 +8,10 @@ All exported files `images` `models` are NOT license in MIT as those were not be
 
 For developer see `./development.md`
 
+### Darkmode
+
+due to element-ui / element-theme-dark cannot be toggle easily, currently using conditional link element to load css when darkmode
+
 ## Running The Script
 
 ### Required

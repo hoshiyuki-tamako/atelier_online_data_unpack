@@ -116,6 +116,11 @@ a
   width: 100%
   max-width: 480px
   padding: 36px
+
+.dark-mode
+  .left
+    background: inherit
+
 .left
   background: rgb(224, 195, 151)
   min-height: 100vh

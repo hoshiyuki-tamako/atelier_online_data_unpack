@@ -29,7 +29,7 @@ div
             div
               img(:src="material.icon" :alt="material.NAME")
             template(slot="popover")
-              div.item-popover
+              div.popover-base.item-popover
                 router-link(:to="{ name: 'ItemsItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ material.NAME }}
                 p {{ material.DESC }}
                 router-link(v-if="material.RSP.length" :to="{ name: 'ToolsComposeItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ $t('調合') }}
@@ -46,7 +46,7 @@ div
           div.compose-item-image
             img(:src="compose.icon" :alt="compose.NAME")
           template(slot="popover")
-            div.item-popover
+            div.popover-base.item-popover
               router-link(:to="{ name: 'ItemsItem', query: { df: compose.DF, quality: composeQuality } }" target="_blank") {{ compose.NAME }}
               p {{ compose.DESC }}
 
@@ -258,6 +258,10 @@ a
 .compose-container
   display: flex
 
+.dark-mode
+  .compose-material-container
+    background: inherit
+
 .compose-material-container
   display: flex
   flex-direction: column
@@ -303,12 +307,7 @@ a
   align-items: center
 
 .item-popover
-  border: 2px solid green
   width: 200px
-  color: black
-  background: white
-  height: auto
-  padding: 4px
 
 /* compose result
 .compose-result

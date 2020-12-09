@@ -12,12 +12,15 @@ export default class extends VuexModuleBase {
 
   public showHiddenContent = false;
 
-  @MutationAction({ mutate: ['showSideBar', 'showBackTopButton', 'showHiddenContent'] })
+  public darkMode: boolean | null = null;
+
+  @MutationAction({ mutate: ['showSideBar', 'showBackTopButton', 'showHiddenContent', 'darkMode'] })
   public async reset() {
     return {
       showSideBar: true,
       showBackTopButton: true,
       showHiddenContent: false,
+      darkMode: null,
     };
   }
 }

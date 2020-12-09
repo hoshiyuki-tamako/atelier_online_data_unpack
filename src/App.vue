@@ -17,9 +17,17 @@ import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
 import sleep from 'sleep-promise';
 import ms from 'ms';
+import { mapFields } from 'vuex-map-fields';
+
+abstract class VueWithMapFields extends VueBase {
+  public darkMode!: boolean | null;
+}
 
 @Component({
   components: {
+  },
+  computed: {
+    ...mapFields('home', ['darkMode']),
   },
   metaInfo() {
     return {
@@ -32,7 +40,7 @@ import ms from 'ms';
     };
   },
 })
-export default class extends VueBase {
+export default class extends VueWithMapFields {
   // menu
   public routeToColor = {
     ToolsCharacterBuilder: '#e0c397',
@@ -43,7 +51,7 @@ export default class extends VueBase {
   };
 
   public get menu() {
-    const backgroundColor = this.routeToColor[this.$route.name] || '#ffffff';
+    const backgroundColor = this.darkMode ? '' : this.routeToColor[this.$route.name] || '';
     return {
       backgroundColor,
       activeTextColor: backgroundColor,
@@ -167,6 +175,16 @@ export default class extends VueBase {
     }
   }
 
+  public created() {
+    if (this.darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.add('light-mode');
+    }
+
+    this.loadDarkMode();
+  }
+
   public beforeMount() {
     this.$router.beforeEach((from, to, next) => {
       this.loading = true;
@@ -175,6 +193,16 @@ export default class extends VueBase {
     this.$router.afterEach(() => {
       this.loading = false;
     });
+  }
+
+  public loadDarkMode() {
+    this.darkMode ??= window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (this.darkMode) {
+      const link = document.createElement('link');
+      link.setAttribute('rel', 'stylesheet');
+      link.setAttribute('href', 'css/element-theme-dark/index.css');
+      document.head.appendChild(link);
+    }
   }
 }
 </script>
@@ -186,10 +214,15 @@ export default class extends VueBase {
 @import "./design/styles/popover.sass"
 @import "./design/styles/wealth.sass"
 @import "./design/styles/degree.sass"
+@import "./design/styles/vue-select.sass"
+@import "./design/styles/element-ui.sass"
 
 *, .reset
   padding: 0
   margin: 0
+
+.el-main
+  padding: 0 !important
 
 .container
   margin: 12px
@@ -205,16 +238,24 @@ export default class extends VueBase {
 .skill-table
   th
     width: 110px
+
+.dark-mode a
+  color: #409EFF
 </style>
 
 <style lang="sass" scoped>
 .containter-main
   min-height: 100vh
+
 .back-top
   background: #e0c397
   color: white
   width: 40px
   height: 40px
+
+.dark-mode .back-top
+  background: #313846
+  color: #222933
 
 .menu
   height: 100%

@@ -1562,6 +1562,10 @@ a
 .top-container
   height: 100%
 
+.dark-mode
+  .top-equipment-container, .equipment-container
+    background: inherit
+
 /* item picker dialog
 .item-picker-items
   display: flex
@@ -1650,6 +1654,7 @@ a
   flex-direction: column
 .enemy-edit-enemy__state-table
   width: 200px
+
 /* equipment
 .top-equipment-container
   background: rgb(224, 195, 151)
@@ -1669,6 +1674,10 @@ a
   background: white
   height: auto
   padding: 4px
+
+.dark-mode .equipment-popover
+  color: #eee
+  background: #222933
 
 .equipment-popover > h3
   text-align: center
