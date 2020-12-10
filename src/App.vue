@@ -176,12 +176,6 @@ export default class extends VueWithMapFields {
   }
 
   public created() {
-    if (this.darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.add('light-mode');
-    }
-
     this.loadDarkMode();
   }
 
@@ -198,10 +192,13 @@ export default class extends VueWithMapFields {
   public loadDarkMode() {
     this.darkMode ??= window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (this.darkMode) {
+      document.body.classList.add('dark-mode');
       const link = document.createElement('link');
       link.setAttribute('rel', 'stylesheet');
       link.setAttribute('href', 'css/element-theme-dark/index.css');
       document.head.appendChild(link);
+    } else {
+      document.body.classList.add('light-mode');
     }
   }
 }
