@@ -38,7 +38,8 @@ div.container
       div.categories
         div.category__container(v-for="page in allPage.pages")
           router-link.category__link(:to="page.to")
-            h3 {{ page.label }}
+            span(v-if="darkMode") {{ page.label }}
+            h3(v-else) {{ page.label }}
             img.category__image(:class="page.img.class" :src="page.img.src" :alt="page.label || page.imgAlt")
 
   el-divider
