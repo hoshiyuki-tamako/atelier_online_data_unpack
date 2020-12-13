@@ -228,17 +228,29 @@ export class Player {
           abnormalStateEffect.trarget === EAbnormalStateTarget.eSDEF) &&
           dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
       ) {
-        const upDownMultiplier = +abnormalStateEffect.name.toLocaleLowerCase().includes('down');
-        multipliers.push({
-          translatedLabel: abnormalStateEffect.name,
-          value: upDownMultiplier + abnormalStateEffect.value,
-        });
+        if (abnormalStateEffect.name.toLocaleLowerCase().includes('down')) {
+          multipliers.push({
+            translatedLabel: abnormalStateEffect.name,
+            value: 1 + abnormalStateEffect.value,
+          });
+        } else {
+          multipliers.push({
+            translatedLabel: abnormalStateEffect.name,
+            value: 1 - abnormalStateEffect.value,
+          });
+        }
       } else if (_element === target && dataManager.abnormalStateEffectsElements.includes(abnormalStateEffect)) {
-        const base = +abnormalStateEffect.name.toLocaleLowerCase().includes('down');
-        multipliers.push({
-          translatedLabel: abnormalStateEffect.name,
-          value: base + abnormalStateEffect.value / 100,
-        });
+        if (abnormalStateEffect.name.toLocaleLowerCase().includes('down')) {
+          multipliers.push({
+            translatedLabel: abnormalStateEffect.name,
+            value: 1 + abnormalStateEffect.value / 100,
+          });
+        } else {
+          multipliers.push({
+            translatedLabel: abnormalStateEffect.name,
+            value: 1 - abnormalStateEffect.value / 100,
+          });
+        }
       }
     }
 
@@ -249,10 +261,9 @@ export class Player {
           abnormalStateEffect.trarget === EAbnormalStateTarget.eSATK) &&
           dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
       ) {
-        const upDownMultiplier = abnormalStateEffect.name.toLocaleLowerCase().includes('down') ? 0 : 1;
         multipliers.push({
           translatedLabel: abnormalStateEffect.name,
-          value: upDownMultiplier + abnormalStateEffect.value,
+          value: 1 + abnormalStateEffect.value,
         });
       }
     }
