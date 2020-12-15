@@ -4,7 +4,7 @@ import Enumerable from 'linq';
 import path from 'path';
 
 import { EOrderType } from '../logic/Enums';
-import { Adv } from '../master/Adv';
+import { Adv } from '../master/adv';
 import { ExportBase } from './ExportBase';
 
 export type CharacterVoiceMap = { [characterDf: string]: string[] };
