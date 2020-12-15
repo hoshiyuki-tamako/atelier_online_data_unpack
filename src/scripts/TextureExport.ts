@@ -2,14 +2,23 @@ import fs from 'fs-extra';
 import { escapeRegExp } from 'lodash';
 import path from 'path';
 
-export default class TextureExport {
+import { ExportBase } from './ExportBase';
+
+
+export default class TextureExport extends ExportBase {
   public async process(sourceFolder: string, rootFolder: string) {
     const textureFolder = path.join(sourceFolder, 'Texture2D');
     if (!await fs.pathExists(textureFolder)) {
       console.log(`skipping texture process: missing ${textureFolder}`);
       return;
     }
+
     const files = await fs.readdir(textureFolder);
+    if (!files.length) {
+      console.log(`empty texture folder: ${textureFolder}`);
+      return;
+    }
+
     await Promise.all([
       this.processGenericTexture2D(files, textureFolder, rootFolder),
       this.processFieldTitle(files, textureFolder, rootFolder),
@@ -29,7 +38,7 @@ export default class TextureExport {
     await Promise.all(imagePaths.map(async (p) => {
       const imagePath = path.join(textureFolder, p);
       const outPath = path.join(outFolder, p);
-      if (await fs.pathExists(outPath)) {
+      if (await this.isFileUpToDate(imagePath, outPath)) {
         return;
       }
       await fs.copy(imagePath, outPath);
@@ -43,7 +52,7 @@ export default class TextureExport {
     await Promise.all(imagePaths.map(async (p) => {
       const imagePath = path.join(textureFolder, p);
       const outPath = path.join(outFolder, p);
-      if (await fs.pathExists(outPath)) {
+      if (await this.isFileUpToDate(imagePath, outPath)) {
         return;
       }
       await fs.copy(imagePath, outPath);

@@ -5,6 +5,7 @@ import path from 'path';
 import { promisify } from 'util';
 
 import { EWeaponKind } from '../logic/Enums';
+import { ExportBase } from './ExportBase';
 
 export interface IAreaModel {
   iAreaID: number;
@@ -27,7 +28,17 @@ export interface IGenericModelOption {
   startsWith: string[];
 }
 
-export default class ModelExport {
+async function isDirectoryEmpty(folder: string) {
+  const directoryIterator = await fs.opendir(folder);
+  const { done } = await directoryIterator[Symbol.asyncIterator]().next();
+  if (done) {
+    return done;
+  }
+  await directoryIterator.close();
+  return done;
+}
+
+export default class ModelExport extends ExportBase {
   public ncp = promisify(ncp);
 
   public async process(sourceFolder: string, rootFolder: string) {
@@ -41,7 +52,20 @@ export default class ModelExport {
       console.log(`skipping model process: missing ${modelFolder} or ${modelMetaFolder}`);
       return;
     }
-    const modelFolders = await fs.readdir(modelFolder);
+
+    const [modelFolders, isModelMetaFolderEmpty] = await Promise.all([
+      fs.readdir(modelFolder),
+      isDirectoryEmpty(modelMetaFolder),
+    ]);
+    if (!modelFolders.length) {
+      console.log(`empty model folder: ${modelFolder}`);
+      return;
+    }
+    if (isModelMetaFolderEmpty) {
+      console.log(`empty modelMeta folder: ${modelMetaFolder}`);
+      return;
+    }
+
     await Promise.all([
       this.processItemsModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
       this.processEnemiesModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
@@ -91,7 +115,7 @@ export default class ModelExport {
   private async processAreaModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
     // custom meta
     const hideAreas = [] as number[];
-    const deDuplicationAreas = [5, 6] as number[];
+    const deDuplicationAreas = [5, 6, 106] as number[];
     const hideAreaFilters = [] as IHideAreaFilter[];
 
     // start process

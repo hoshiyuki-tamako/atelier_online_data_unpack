@@ -1174,7 +1174,7 @@ for more info of each eOrder see other example at below this example
 {
   "eOrder": 4,
   "vsParam": [
-    "-1"
+    "-1" // enum eMusicID
   ]
 }
 ```

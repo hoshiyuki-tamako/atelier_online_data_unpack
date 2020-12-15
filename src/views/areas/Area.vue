@@ -135,8 +135,8 @@ export default class extends VueBase {
         'bgmap', 'radar',
       ].map((p) => p.toLocaleLowerCase());
 
-      // they reuse iAreaId === 5 map for the sea effect, required to hide MapArea 5
-      if (this.area?.iAreaID === 6) {
+      // they reuse iAreaId === 5 map for the sea effect in some area, required to hide MapArea 5
+      if ([6, 106].includes(this.area?.iAreaID)) {
         filters.push('MapArea_05_001'.toLocaleLowerCase());
       }
 

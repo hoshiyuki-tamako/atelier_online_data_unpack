@@ -470,6 +470,15 @@ export default class extends VueWithMapFields {
           name: 'OthersCalculate',
         },
       },
+      !this.isProduction ? {
+        label: this.$t('音楽 / ボイス'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10950041.png',
+        },
+        to: {
+          name: 'OthersAudios',
+        },
+      } : null,
       {
         label: this.$t('降臨バタル(昔)'),
         img: {
@@ -507,7 +516,7 @@ export default class extends VueWithMapFields {
           name: 'OthersChat',
         },
       },
-    ];
+    ].filter((p) => p);
   }
 
   public get otherStrategyPages() {

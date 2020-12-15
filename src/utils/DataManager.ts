@@ -1,3 +1,4 @@
+import characterVoices from '@/../public/generated/characterVoices.json';
 import files from '@/../public/generated/files.json';
 import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
 import { lookup } from '@/logic/Lookup';
@@ -177,7 +178,9 @@ export class DataManager {
   public files = files;
   public areaModel: IAreaModel[];
   public areaDungeonModel: IAreaModel[];
+  public characterVoices = characterVoices;
 
+  // processed custom data
   public areaModelsById: { [iAreaId: string]: IAreaModel[] };
   public areaDungeonsById: { [iAreaId: string]: IAreaModel[] };
   public areaBattleAreas: { [iAreaId: string]: IBattleArea[] };
@@ -188,6 +191,7 @@ export class DataManager {
   public unusedAdvs: { [s: string]: string[] };
 
   public townIcons = [] as string[];
+
 
   //
   public async load(locale: string, showHiddenContent = false) {

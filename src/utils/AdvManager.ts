@@ -55,7 +55,7 @@ export class AdvManager {
     const url = this.getAdvJsonUrl(adv);
     if (!this.#dialogCache.has(url)) {
       const data = await this.getAdv(adv);
-      const supportedOrders = [EOrderType.eCHARA_TALK, EOrderType.eSELECTION, EOrderType.eBG];
+      const supportedOrders = [EOrderType.eCHARA_TALK, EOrderType.eSELECTION, EOrderType.eBG, EOrderType.eMUSIC];
       this.#dialogCache.set(url, data.vOrderList
         .filter((p) => supportedOrders.includes(p.eOrder))
         .map((p) => {

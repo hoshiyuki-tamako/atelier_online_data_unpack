@@ -269,6 +269,14 @@ const othersRoutes: Array<RouteConfig> = [
     },
   },
   {
+    path: '/others/audios',
+    name: 'OthersAudios',
+    component: () => import(/* webpackChunkName: "OthersAudios" */ '@/views/others/Audios.vue'),
+    meta: {
+      title: '音楽 / ボイス',
+    },
+  },
+  {
     path: '/others/adventBattle',
     name: 'OthersAdventBattle',
     component: () => import(/* webpackChunkName: "OthersAdventBattle" */ '@/views/others/AdventBattle.vue'),

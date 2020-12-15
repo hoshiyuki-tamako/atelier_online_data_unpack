@@ -12,6 +12,8 @@ div.container
           div(v-if="scope.row.order === EOrderType.eCHARA_TALK")
             h4 {{ replaceWithPlayerName(scope.row.name) }}
             p {{ replaceWithPlayerName(scope.row.dialog) }}
+            audio(v-if="scope.row.voice && dataManager.files.audios.voice[`${scope.row.voice}.wav`]" controls)
+              source(:src="`audios/voice/${scope.row.voice}.wav`" type="audio/mpeg")
           div(v-else-if="scope.row.order === EOrderType.eSELECTION")
             h4 {{ $t('選択') }}
             p(v-for="option of scope.row.options") {{ replaceWithPlayerName(option) }}
@@ -19,6 +21,11 @@ div.container
             h4 {{ $t('背景') }}
             p {{ replaceWithPlayerName(scope.row.text1 || '') }}
             p {{ replaceWithPlayerName(scope.row.text2 || '') }}
+          div(v-else-if="scope.row.order === EOrderType.eMUSIC")
+            h4 {{ $t('音楽') }}
+            p {{ eMusicID[scope.row.id] || '-' }}
+            audio(v-if="scope.row.id > 0 && dataManager.files.audios.music[`${scope.row.id}.wav`]" controls)
+              source(:src="`audios/music/${scope.row.id}.wav`" type="audio/mpeg")
     div(slot="footer")
       el-button(@click="questDialogVisible = false" type="primary") {{ $t('閉じる') }}
 
@@ -202,7 +209,7 @@ import LRU from 'lru-cache';
 import { IAdventure } from '@/utils/AdvManager';
 import MobileDetect from 'mobile-detect';
 import { mapFields } from 'vuex-map-fields';
-import { EOrderType } from '@/logic/Enums';
+import { EOrderType, eMusicID } from '@/logic/Enums';
 
 abstract class VueWithMapFields extends VueBase {
   public showColumnDF!: boolean;
@@ -236,6 +243,10 @@ abstract class VueWithMapFields extends VueBase {
 export default class extends VueWithMapFields {
   public get EOrderType() {
     return EOrderType;
+  }
+
+  public get eMusicID() {
+    return eMusicID;
   }
 
   public md = new MobileDetect(window.navigator.userAgent);

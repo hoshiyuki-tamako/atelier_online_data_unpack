@@ -13,6 +13,8 @@ export default class AtelierOnlineFileExport implements ISaveable {
 
   public models: PathTree = {};
 
+  public audio: PathTree = {};
+
   public constructor() {
     this.load();
   }
@@ -23,7 +25,7 @@ export default class AtelierOnlineFileExport implements ISaveable {
 
   //
   private load() {
-    ['export', 'img', 'models'].forEach((p) => {
+    ['export', 'img', 'models', 'audios'].forEach((p) => {
       this[p] = this.directoryTreeToLookup(dirTree(path.join(__dirname, '..', '..', 'public', p)).children);
     });
   }
