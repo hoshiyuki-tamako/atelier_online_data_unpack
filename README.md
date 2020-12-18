@@ -12,6 +12,10 @@ For developer see `./development.md`
 
 due to element-ui / element-theme-dark cannot be toggle easily, currently using conditional link element to load css when darkmode
 
+### Naming
+
+due to ad-blocker, some of the files has rename to fit the needs such as removing `adv` from wording
+
 ## Running The Script
 
 ### Development
@@ -60,6 +64,7 @@ npm run build
 
 #### Production Docker Deployment Requirement
 
+- ubuntu server >= 20.04
 - docker >= 3
 - docker-compose >= 3
 
@@ -81,7 +86,7 @@ docker-compose up --build -d
 
 1. export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./public/export/*`
 2. export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./public/export/adv/*`
-3. export TextAsset Name filter `SpawnList` to `./public/export/SpawnList/TextAsset/*`
+3. export type `TextAsset` Name filter `SpawnList` to `./public/export/SpawnList/TextAsset/*`
 4. export type `Texture2D` to `./source/Texture2D/*`
 5. export models fbx version 7.5 binary with folder to `./source/models/**/*`
 6. export models fbx version 7.5 ascii to `./source/modelsMeta/**/*`

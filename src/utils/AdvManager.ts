@@ -17,12 +17,20 @@ export interface ISelection extends IAdventure {
 }
 
 export interface IBackground extends IAdventure {
-  background: string;
+  id: number;
   text1: string;
   text2: string;
 }
 
 export interface IMusic extends IAdventure {
+  id: number;
+}
+
+export interface IPicture extends IAdventure {
+  id: number;
+}
+
+export interface IWindowItem extends IAdventure {
   id: number;
 }
 
@@ -55,43 +63,57 @@ export class AdvManager {
     const url = this.getAdvJsonUrl(adv);
     if (!this.#dialogCache.has(url)) {
       const data = await this.getAdv(adv);
-      const supportedOrders = [EOrderType.eCHARA_TALK, EOrderType.eSELECTION, EOrderType.eBG, EOrderType.eMUSIC];
-      this.#dialogCache.set(url, data.vOrderList
-        .filter((p) => supportedOrders.includes(p.eOrder))
-        .map((p) => {
-          switch(p.eOrder) {
-            case EOrderType.eCHARA_TALK:
-              return {
-                order: p.eOrder,
-                characterDf: +p.vsParam[0],
-                name: p.vsParam[1],
-                dialog: p.vsParam[2],
-                voice: p.vsParam[6],
-              } as IDialog;
-            case EOrderType.eSELECTION:
-              return {
-                order: p.eOrder,
-                options: p.vsParam,
-              } as ISelection;
-            case EOrderType.eBG:
-              return {
-                order: p.eOrder,
-                background: p.vsParam[0],
-                text1: p.vsParam[1],
-                text2: p.vsParam[2],
-              } as IBackground;
-            case EOrderType.eMUSIC:
-              return {
-                order: p.eOrder,
-                id: +p.vsParam[0],
-              } as IMusic;
-            default:
-              return {
-                order: p.eOrder,
-                ... p,
-              };
-          }
-        }));
+      const orders = data.vOrderList.map((p) => {
+        switch(p.eOrder) {
+          case EOrderType.eCHARA_TALK:
+            return {
+              order: p.eOrder,
+              characterDf: +p.vsParam[0],
+              name: p.vsParam[1],
+              dialog: p.vsParam[2],
+              voice: p.vsParam[6],
+            } as IDialog;
+          case EOrderType.eSELECTION:
+            return {
+              order: p.eOrder,
+              options: p.vsParam,
+            } as ISelection;
+          case EOrderType.eBG:
+            return {
+              order: p.eOrder,
+              id: +p.vsParam[0],
+              text1: p.vsParam[1],
+              text2: p.vsParam[2],
+            } as IBackground;
+          case EOrderType.eMUSIC:
+            if (+p.vsParam[0] <= 0) {
+              return null;
+            }
+            return {
+              order: p.eOrder,
+              id: +p.vsParam[0],
+            } as IMusic;
+          case EOrderType.ePICTURE:
+            if (!+p.vsParam[0]) {
+              return null;
+            }
+            return {
+              order: p.eOrder,
+              id: +p.vsParam[0],
+            } as IPicture;
+          case EOrderType.eWINDOW_ITEM:
+            if (!+p.vsParam[0]) {
+              return null;
+            }
+            return {
+              order: p.eOrder,
+              id: +p.vsParam[0],
+            } as IWindowItem;
+          default:
+            return null;
+        }
+      }).filter((p) => p);
+      this.#dialogCache.set(url, orders);
     }
     return this.#dialogCache.get(url);
   }

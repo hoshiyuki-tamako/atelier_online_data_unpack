@@ -1,34 +1,6 @@
 <template lang="pug">
 div.container
-  el-dialog#quest-dialog(v-loading="questDialogLoading" title="" :lock-scroll="false" :destroy-on-close="true" top="0" :visible.sync="questDialogVisible" width="80%" :fullscreen="!!(md.mobile() || md.tablet())")
-    el-divider(v-if="selectedQuest")
-      h3 {{ selectedQuest.NAME }}
-    el-table(:data="questDialogs" :show-header="false")
-      el-table-column(width="210px")
-        template(slot-scope="scope")
-          img.dialog-character-image(v-if="scope.row.characterDf" :src="`img/icon_chara/Texture2D/icon_chara_all_${scope.row.characterDf.toString().padStart(4, '0')}_00.png`" :alt="dataManager.characterById[scope.row.characterDf] ? dataManager.characterById[scope.row.characterDf].NAME : scope.row.characterDf")
-      el-table-column
-        template(slot-scope="scope")
-          div(v-if="scope.row.order === EOrderType.eCHARA_TALK")
-            h4 {{ replaceWithPlayerName(scope.row.name) }}
-            p {{ replaceWithPlayerName(scope.row.dialog) }}
-            audio(v-if="scope.row.voice && dataManager.files.audios.voice[`${scope.row.voice}.wav`]" controls)
-              source(:src="`audios/voice/${scope.row.voice}.wav`" type="audio/mpeg")
-          div(v-else-if="scope.row.order === EOrderType.eSELECTION")
-            h4 {{ $t('選択') }}
-            p(v-for="option of scope.row.options") {{ replaceWithPlayerName(option) }}
-          div(v-else-if="scope.row.order === EOrderType.eBG")
-            h4 {{ $t('背景') }}
-            p {{ replaceWithPlayerName(scope.row.text1 || '') }}
-            p {{ replaceWithPlayerName(scope.row.text2 || '') }}
-          div(v-else-if="scope.row.order === EOrderType.eMUSIC")
-            h4 {{ $t('音楽') }}
-            p {{ eMusicID[scope.row.id] || '-' }}
-            audio(v-if="scope.row.id > 0 && dataManager.files.audios.music[`${scope.row.id}.wav`]" controls)
-              source(:src="`audios/music/${scope.row.id}.wav`" type="audio/mpeg")
-    div(slot="footer")
-      el-button(@click="questDialogVisible = false" type="primary") {{ $t('閉じる') }}
-
+  AdventureRawDialog#quest-dialog(ref="advDialog")
   div.filters
     div.filter
       span {{ $t('カテゴリー') }}
@@ -195,7 +167,7 @@ div.container
           img.character-preview(v-if="scope.row.CHARA" :src="dataManager.characterById[scope.row.CHARA].icon" :alt="dataManager.characterById[scope.row.CHARA].NAME")
       el-table-column(v-if="showColumnDialog" prop="NPC_FD.length" :label="$t('ダイアログ')" width="120%" sortable="custom")
         template(slot-scope="scope")
-          el-button(v-if="scope.row.NPC_FD.some((p) => p.ADV)" @click="onOpenDialog(scope.row)" type="primary" size="small") {{ $t('ダイアログ') }}
+          el-button(v-if="scope.row.NPC_FD.some((p) => p.ADV)" @click="$refs.advDialog.openDialog(scope.row)" type="primary" size="small") {{ $t('ダイアログ') }}
     el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredQuests.length" layout="prev, pager, next" background="")
 </template>
 
@@ -206,10 +178,8 @@ import VueBase from '@/utils/VueBase';
 import { dataManager } from '@/utils/DataManager';
 import { MVList as QuestMVList } from '@/master/quest';
 import LRU from 'lru-cache';
-import { IAdventure } from '@/utils/AdvManager';
-import MobileDetect from 'mobile-detect';
 import { mapFields } from 'vuex-map-fields';
-import { EOrderType, eMusicID } from '@/logic/Enums';
+import AdventureRawDialog from '@/components/AdventureRawDialog.vue';
 
 abstract class VueWithMapFields extends VueBase {
   public showColumnDF!: boolean;
@@ -235,22 +205,13 @@ abstract class VueWithMapFields extends VueBase {
 
 @Component({
   components: {
+    AdventureRawDialog,
   },
   computed: {
     ...mapFields('questsFilter', ['showColumnDF', 'showColumnNAME', 'showColumnCATEG', 'showColumnCOST', 'showColumnENM', 'showColumnGET', 'showColumnDLV', 'showColumnARA', 'showColumnDialog', 'showColumnCharacter']),
   },
 })
 export default class extends VueWithMapFields {
-  public get EOrderType() {
-    return EOrderType;
-  }
-
-  public get eMusicID() {
-    return eMusicID;
-  }
-
-  public md = new MobileDetect(window.navigator.userAgent);
-
   public filter = {
     category: null,
     character: null,
@@ -271,15 +232,6 @@ export default class extends VueWithMapFields {
   public filterCache = new LRU<string, QuestMVList[]>(100);
 
   public currentRows = [] as QuestMVList[];
-
-  // dialog
-  public questDialogVisible = false;
-
-  public questDialogLoading = false;
-
-  public selectedQuest: QuestMVList | null = null;
-
-  public questDialogs: IAdventure[] = [];
 
   public get categoryFilter() {
     return Object.keys(dataManager.questsByCategory)
@@ -402,7 +354,10 @@ export default class extends VueWithMapFields {
   }
 
   public expandAll() {
-    this.currentRows.forEach((row) => (this.$refs.table as any).toggleRowExpansion(row, true));
+    type ElementUiTable = {
+      toggleRowExpansion: (row: QuestMVList, t: boolean) => void
+    } & Vue;
+    this.currentRows.forEach((row) => (this.$refs.table as ElementUiTable).toggleRowExpansion(row, true));
   }
 
   public getRowKey(row: QuestMVList) {
@@ -421,27 +376,6 @@ export default class extends VueWithMapFields {
 
   public resetPage() {
     this.page = 1;
-  }
-
-  // dialog
-  public async onOpenDialog(quest: QuestMVList) {
-    try {
-      this.selectedQuest = quest;
-      this.questDialogs = [];
-      this.questDialogVisible = true;
-      this.questDialogLoading = true;
-      this.questDialogs = await this.dataManager.advManager.getDialog(quest.NPC_FD.map((p) => p.ADV).filter((p) => p));
-    } catch (e) {
-      this.questDialogVisible = false;
-      this.$message.error(e.toString());
-      console.error(e);
-    } finally {
-      this.questDialogLoading = false;
-    }
-  }
-
-  public replaceWithPlayerName(text: string) {
-    return text.replace('[px]', `[${this.$t('プレーヤー')}${this.$t('名前')}]`);
   }
 }
 </script>
@@ -472,7 +406,4 @@ a
 
 .quest-reward-item-container img
   width: 60px
-
-.dialog-character-image
-  width: 180px
 </style>

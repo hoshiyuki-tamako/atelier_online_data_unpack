@@ -270,4 +270,7 @@ export default class extends VueWithMapFields {
 .menu__icon
   width: 100%
   transform: scale(2)
+
+.dark-mode .menu__item:hover
+  background-color: rgba(255, 255, 255, .1) !important
 </style>

@@ -30,7 +30,7 @@ export default class AudioExport extends ExportBase {
       return;
     }
 
-    const outFolder = path.join(rootFolder, 'audios', 'music');
+    const outFolder = path.join(rootFolder, 'audios', 'musics');
     await Promise.all(musics.map(async (p) => {
       const newFile = path.join(musicFolder, p);
       const out = path.join(outFolder, p);
@@ -54,7 +54,7 @@ export default class AudioExport extends ExportBase {
       return;
     }
 
-    const outFolder = path.join(rootFolder, 'audios', 'voice');
+    const outFolder = path.join(rootFolder, 'audios', 'voices');
     await Promise.all([
       this.generateCharacterVoices(voices, rootFolder),
       Promise.all(voices.map(async (p) => {

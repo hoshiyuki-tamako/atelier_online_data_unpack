@@ -22,6 +22,7 @@ export default class TextureExport extends ExportBase {
     await Promise.all([
       this.processGenericTexture2D(files, textureFolder, rootFolder),
       this.processFieldTitle(files, textureFolder, rootFolder),
+      this.processAdvTextures(files, textureFolder, rootFolder),
     ]);
   }
 
@@ -57,5 +58,42 @@ export default class TextureExport extends ExportBase {
       }
       await fs.copy(imagePath, outPath);
     }));
+  }
+
+  private async processAdvTextures(files: string[], textureFolder: string, rootFolder: string) {
+    const filteredFiles = files.filter((p) => !p.includes('#'));
+    const bgs = filteredFiles.filter((p) => p.match(/^ADV_BG_Texture/i));
+    const advs = filteredFiles.filter((p) => p.match(/^ADV_Still_Texture/i));
+    const advItems = filteredFiles.filter((p) => p.match(/^adv_item_texture/i));
+
+    const bgOutFolder = path.join(rootFolder, 'img', 'bg_texture');
+    const advOutFolder = path.join(rootFolder, 'img', 'still_texture');
+    const advItemOutFolder = path.join(rootFolder, 'img', 'item_texture');
+
+    const replaceAdvRegex = /^(ADV\_)/i;
+    await Promise.all(bgs.map(async (p) => {
+      const imagePath = path.join(textureFolder, p);
+      const outPath = path.join(bgOutFolder, p.replace(replaceAdvRegex, ''));
+      if (await this.isFileUpToDate(imagePath, outPath)) {
+        return;
+      }
+      await fs.copy(imagePath, outPath);
+    })
+    .concat(advs.map(async (p) => {
+      const imagePath = path.join(textureFolder, p);
+      const outPath = path.join(advOutFolder, p.replace(replaceAdvRegex, ''));
+      if (await this.isFileUpToDate(imagePath, outPath)) {
+        return;
+      }
+      await fs.copy(imagePath, outPath);
+    }))
+    .concat(advItems.map(async (p) => {
+      const imagePath = path.join(textureFolder, p);
+      const outPath = path.join(advItemOutFolder, p.replace(replaceAdvRegex, ''));
+      if (await this.isFileUpToDate(imagePath, outPath)) {
+        return;
+      }
+      await fs.copy(imagePath, outPath);
+    })));
   }
 }

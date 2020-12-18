@@ -39,6 +39,14 @@ most file follow naming convention from the source code
 - Town `./public/img/map_town/*`
 - Pickup `./public/img/icon_pickup/*`
 - Field titles `./public/img/field_title/*`
+- Background images `./public/img/bg_texture/*`
+- Adv images `./public/img/still_texture/*`
+- Adv item images `./public/img/item_texture/*`
+
+### Audios
+
+- Music `./public/audios/musics/*`
+- Voice `./public/audios/voices/*`
 
 ### Generated / Manual Input
 

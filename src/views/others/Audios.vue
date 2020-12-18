@@ -53,12 +53,12 @@ export default class extends VueBase {
   }
 
   public get musicList() {
-    return Object.values(this.dataManager.files.audios.music)
+    return Object.values(this.dataManager.files.audios.musics)
       .filter((p) => p !== '.keep')
       .sort(new Intl.Collator(undefined, { numeric: true }).compare)
       .map((p) => ({
         title: p.split('.')[0],
-        src: `audios/music/${p}`,
+        src: `audios/musics/${p}`,
         artist: ' ',
         pic: 'img/icon_chara/Texture2D/icon_chara_all_9999_00.png',
       }));
@@ -77,7 +77,7 @@ export default class extends VueBase {
     return this.dataManager.characterVoices[this.character]
       ?.map((title) => ({
         title,
-        src: `audios/voice/${title}.wav`,
+        src: `audios/voices/${title}.wav`,
         artist: ' ',
         pic: this.dataManager.characterById[this.character].icon,
       })) ?? [];
