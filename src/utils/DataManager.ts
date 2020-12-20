@@ -1,5 +1,7 @@
 import characterVoices from '@/../public/generated/characterVoices.json';
 import files from '@/../public/generated/files.json';
+import areaModel from '@/../public/generated/areaModel.json';
+import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
 import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
 import { lookup } from '@/logic/Lookup';
 import { AbnormalState, MVList as AbnormalStateMVList } from '@/master/abnormalState';
@@ -176,8 +178,8 @@ export class DataManager {
   // custom data
   public lookup = lookup;
   public files = files;
-  public areaModel: IAreaModel[];
-  public areaDungeonModel: IAreaModel[];
+  public areaModel: IAreaModel[] = areaModel;
+  public areaDungeonModel: IAreaModel[] = areaDungeonModel;
   public characterVoices = characterVoices;
 
   // processed custom data
@@ -229,10 +231,9 @@ export class DataManager {
       this.loadGeneric('treasure'),
       this.loadGeneric('chat'),
 
-      this.loadAreaModel(),
-
       this.spawnerDataManager.load(this.locale),
     ]);
+    this.loadAreaModel(),
     this.afterLoadCharacter();
     this.afterLoadSKill();
     this.afterLoadItem();
@@ -593,11 +594,13 @@ export class DataManager {
   }
 
   // other load
-  public async loadAreaModel(areaModel?: IAreaModel[], areaDungeonModel?: IAreaModel[]) {
-    await Promise.all([
-      this.loadGeneratedGeneric('areaModel', '', areaModel),
-      this.loadGeneratedGeneric('areaDungeonModel', '', areaDungeonModel),
-    ]);
+  public loadAreaModel(areaModel?: IAreaModel[], areaDungeonModel?: IAreaModel[]) {
+    if (areaModel) {
+      this.areaModel = areaModel;
+    }
+    if (areaDungeonModel) {
+      this.areaDungeonModel = areaDungeonModel;
+    }
     this.areaModelsById = Enumerable.from(this.areaModel)
       .groupBy((p) => p.iAreaID)
       .toObject((p) => p.key(), (p) => p.orderBy((i) => i.iLevel).toArray()) as { [iAreaId: string]: IAreaModel[] };

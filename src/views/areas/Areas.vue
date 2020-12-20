@@ -91,6 +91,13 @@ div.container
                   p
                     span {{ gateInfo.strName }}
                     span(v-if="gateInfo.bDungeon") ({{ $t('ダンジョンある') }})
+            div(v-if="areaDetail.kanbans")
+              el-divider {{ $t('看板') }}
+              div(v-for="(spawnerData, i) of areaDetail.kanbans")
+                pre {{ spawnerData.text }}
+                template(v-if="areaDetail.kanbans.length !== (i + 1)")
+                  br
+                  br
             div(v-if="dataManager.townInfosByAreaId[areaDetail.iAreaID]")
               el-divider {{ $t('町') }}
               div

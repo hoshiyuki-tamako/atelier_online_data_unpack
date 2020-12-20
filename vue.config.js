@@ -3,6 +3,7 @@ module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '/atelier_online_data_unpack/' : '/',
   pwa: {
     name: 'アトリエオンライン資料庫',
+    start_url: '.',
     manifestOptions: {
       icons: [
         {

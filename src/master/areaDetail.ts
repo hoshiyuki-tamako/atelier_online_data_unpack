@@ -50,6 +50,10 @@ export class List {
       }))
       .filter(({ enemies }) => enemies.length) || [];
   }
+
+  public get kanbans() {
+    return dataManager.spawnerDataManager.kanbansByAreaId[this.iAreaID];
+  }
 }
 
 export interface MGameObject {

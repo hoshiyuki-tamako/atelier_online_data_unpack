@@ -18,7 +18,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { List as DegreeList } from '@/master/degree';
 
 @Component({
@@ -27,7 +26,7 @@ import { List as DegreeList } from '@/master/degree';
 })
 export default class extends VueBase {
   public get typeFilters() {
-    return Object.entries(dataManager.lookup.EDegreeMissonType).map(([value, text]) => ({
+    return Object.entries(this.dataManager.lookup.EDegreeMissonType).map(([value, text]) => ({
       text: this.$t(text),
       value: +value,
     }));

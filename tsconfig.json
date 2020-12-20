@@ -20,13 +20,10 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env",
       "mocha",
       "chai",
       "webpack",
       "webpack-env",
-      "webpack",
-      "webpack-env"
     ],
     "paths": {
       "@/*": [

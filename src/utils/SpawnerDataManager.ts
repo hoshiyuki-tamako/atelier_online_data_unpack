@@ -4,9 +4,14 @@ import csv from 'csvtojson';
 import Enumerable from 'linq';
 
 export class SpawnerData {
+  // pos 0
   public DF = 0;
 
+  // pos 1
   public spawnerKind = eSpawnerKind.Ignore;
+
+  // pos 10
+  public text = '';
 }
 
 export interface IEnemyMap {
@@ -23,6 +28,9 @@ export class SpawnerDataManager {
 
   public enemyIdsInAreaByAreaId: { [id: string]: IEnemyMap[] } = {};
   public enemyIdsInDungeonByAreaId: { [id: string]: IEnemyMap[] } = {};
+
+  public spawnerDataByAreaIdLevelId: { [id: string]: { [id: string]: SpawnerData[] }} = {};
+  public kanbansByAreaId: { [id: string]: SpawnerData[] } = {};
 
   public async load(locale: string) {
     this.spawnLists.clear();
@@ -48,6 +56,7 @@ export class SpawnerDataManager {
           const that = new SpawnerData();
           that.DF = +row[0];
           that.spawnerKind = +row[1];
+          that.text = row[9]?.replaceAll(/\<br\\?>|\/\d(\/\d)?$/gi, '\r\n');
           return that;
         }));
       } catch (e) {
@@ -94,5 +103,33 @@ export class SpawnerDataManager {
         level,
         enemyIds: spawnList.map((p) => p.DF).sort((a, b) => a - b),
       } as IEnemyMap)).toArray()) as { [id: string]: IEnemyMap[] };
+
+    this.spawnerDataByAreaIdLevelId = Enumerable.from([...this.spawnLists.keys()])
+      .where((fileName) => !fileName.includes('Dun'))
+      .select((fileName) => ({
+        match: fileName.match(/^SpawnList\_(\d+)\_(\d+)/),
+        fileName,
+      }))
+      .where(({ match }) => !!match)
+      .select(({ fileName, match }) => ({
+        areaId: +match[1],
+        level: +match[2] || 0,
+        spawnList: this.spawnLists.get(fileName),
+      }))
+      .groupBy((p) => p.areaId)
+      .toObject(
+        (p) => p.key(),
+        (p) => p.groupBy((o) => o.level)
+          .toObject((o) => o.key(), (o) => o.selectMany((i) => i.spawnList).toArray()),
+      ) as { [id: string]: { [id: string]: SpawnerData[] }};
+
+    this.kanbansByAreaId = Enumerable.from(Object.entries(this.spawnerDataByAreaIdLevelId))
+      .select(([areaId, p]) => ({
+        areaId,
+        spawnLists: Object.values(p).flat().filter((o) => o.spawnerKind === eSpawnerKind.Kanban),
+      }))
+      .where((p) => !!p.spawnLists.length)
+      .groupBy(({ areaId }) => areaId)
+      .toObject((p) => p.key(), (p) => p.selectMany((o) => o.spawnLists).toArray()) as { [id: string]: SpawnerData[] };
   }
 }
