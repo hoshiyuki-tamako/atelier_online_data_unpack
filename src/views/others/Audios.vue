@@ -29,7 +29,7 @@ export default class extends VueBase {
   public character: number | null = null;
 
   public get characterFilter() {
-    return this.dataManager.charactersCanBattle
+    return this.dataManager.chara.m_vList
       .filter((p) => this.dataManager.characterVoices[p.DF])
       .map((p) => ({
         label: p.NAME,

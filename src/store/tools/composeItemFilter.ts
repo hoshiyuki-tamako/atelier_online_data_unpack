@@ -16,6 +16,8 @@ export default class extends VuexModuleBase {
 
   public materialOptions: MaterialOptions[] = [];
 
+  public allQuality = 1;
+
   public itemPicker = {
     category: null,
     keyword: '',
@@ -26,11 +28,12 @@ export default class extends VuexModuleBase {
     this.materialOptions = materialOptions;
   }
 
-  @MutationAction({ mutate: ['itemDf', 'materialOptions', 'itemPicker'] })
+  @MutationAction({ mutate: ['itemDf', 'materialOptions', 'allQuality', 'itemPicker'] })
   public async reset() {
     return {
       itemDf: null,
       materialOptions: [],
+      allQuality: 1,
       itemPicker: {
         category: null,
         keyword: '',

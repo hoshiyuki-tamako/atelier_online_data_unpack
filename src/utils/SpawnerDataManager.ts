@@ -56,7 +56,7 @@ export class SpawnerDataManager {
           const that = new SpawnerData();
           that.DF = +row[0];
           that.spawnerKind = +row[1];
-          that.text = row[9]?.replaceAll(/\<br\\?>|\/\d(\/\d)?$/gi, '\r\n');
+          that.text = row[9]?.replaceAll(/\<br\\?>|\/\d(\/\d)?$/gi, '\r\n') ?? '';
           return that;
         }));
       } catch (e) {

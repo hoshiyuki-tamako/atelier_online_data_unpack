@@ -16,6 +16,12 @@ div
   el-dialog(title="" :visible.sync="exportComposeItemUrlVisible")
     el-input(type="textarea" :value="href" autosize)
 
+  //- div.filters
+  //-   div.filter
+  //-     span {{ $t('品質') }}
+  //-     el-input-number(v-model="allQuality" size="small" :min="1" :max="100" :step="1" step-strictly)
+  //-     el-button(@click="onClickSetAllQuality" type="primary" size="small") {{ $t('まとめで設定') }}
+
   div.compose-container
     div.compose-material-container
       div.compose-material-top
@@ -102,6 +108,8 @@ import { mapFields } from 'vuex-map-fields';
 abstract class VueWithMapFields extends VueBase {
   public itemDf!: number;
 
+  public allQuality!: number;
+
   public itemPickerCategory!: number | null;
 
   public itemPickerKeyword!: string;
@@ -111,7 +119,7 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('composeItemFilter', ['itemDf']),
+    ...mapFields('composeItemFilter', ['itemDf', 'allQuality']),
     ...mapFields('composeItemFilter', {
       itemPickerCategory: 'itemPicker.category',
       itemPickerKeyword: 'itemPicker.keyword',
@@ -231,6 +239,13 @@ export default class extends VueWithMapFields {
     this.materialOptions = Array.from({ length: items.length }, () => Object.assign(new MaterialOptions(), { quality, addonQuality }));
     this.materials = items;
     this.itemPickerDialogVisible = false;
+  }
+
+  //
+  public onClickSetAllQuality() {
+    for (const materialOption of this.materialOptions) {
+      materialOption.quality = this.allQuality;
+    }
   }
 }
 </script>

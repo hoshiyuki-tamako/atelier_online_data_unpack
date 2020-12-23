@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import { escapeRegExp } from 'lodash';
-import { ncp } from 'ncp';
+import { ncp } from 'graceful-ncp';
 import path from 'path';
 import { promisify } from 'util';
 
