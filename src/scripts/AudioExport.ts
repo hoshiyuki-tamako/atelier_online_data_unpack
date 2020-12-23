@@ -45,12 +45,14 @@ export default class AudioExport extends ExportBase {
     const voiceFolder = path.join(sourceFolder, 'voice', 'AudioClip');
     if (!fs.pathExists(voiceFolder)) {
       console.log(`skipping voice process: required ${voiceFolder} and ${voiceFolder}`);
+      await this.generateEmptyCharacterVoices(rootFolder);
       return;
     }
 
     const voices = await fs.readdir(voiceFolder);
     if (!voices.length) {
       console.log(`empty voice folder: ${voiceFolder}`);
+      await this.generateEmptyCharacterVoices(rootFolder);
       return;
     }
 
@@ -92,5 +94,10 @@ export default class AudioExport extends ExportBase {
       characterVoices[characterDf].sort(new Intl.Collator(undefined, { numeric: true }).compare);
     }
     await fs.writeJSON(characterVoiceMapOut, characterVoices);
+  }
+
+  private async generateEmptyCharacterVoices(rootFolder: string) {
+    const characterVoiceMapOut = path.join(rootFolder, 'generated', 'characterVoices.json');
+    await fs.writeJSON(characterVoiceMapOut, {});
   }
 }

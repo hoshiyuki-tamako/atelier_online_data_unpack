@@ -12,7 +12,7 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
           h4 {{ replaceWithPlayerName(scope.row.name) }}
           p {{ replaceWithPlayerName(scope.row.dialog) }}
           audio(v-if="scope.row.voice && dataManager.files.audios.voices[`${scope.row.voice}.wav`]" controls)
-            source(:src="`audios/voice/${scope.row.voice}.wav`" type="audio/mpeg")
+            source(:src="`audios/voices/${scope.row.voice}.wav`" type="audio/mpeg")
         div(v-else-if="scope.row.order === EOrderType.eSELECTION")
           h4 {{ $t('選択') }}
           p(v-for="option of scope.row.options") {{ replaceWithPlayerName(option) }}
@@ -24,8 +24,9 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
         div(v-else-if="scope.row.order === EOrderType.eMUSIC")
           h4 {{ $t('音楽') }}
           p {{ eMusicID[scope.row.id] || '-' }}
-          audio(v-if="scope.row.id > 0 && dataManager.files.audios.musics[`${scope.row.id}.wav`]" controls)
-            source(:src="`audios/music/${scope.row.id}.wav`" type="audio/mpeg")
+          template(v-if="scope.row.id > 0" v-for="bgm of [dataManager.soundListBgmById[scope.row.id]].filter(p => p)")
+            audio(v-if="dataManager.files.audios.musics[bgm.fileName]" controls)
+              source(:src="bgm.file" type="audio/mpeg")
         div(v-else-if="scope.row.order === EOrderType.ePICTURE")
           img.dialog-image(:src="`img/still_texture/Still_Texture_${scope.row.id.toString().padStart(4, '0')}.png`" :alt="scope.row.id")
         div(v-else-if="scope.row.order === EOrderType.eWINDOW_ITEM")

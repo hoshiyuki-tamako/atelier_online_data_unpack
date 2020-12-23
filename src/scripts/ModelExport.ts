@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
-import { escapeRegExp } from 'lodash';
 import { ncp } from 'graceful-ncp';
+import { escapeRegExp } from 'lodash';
 import path from 'path';
 import { promisify } from 'util';
 
@@ -118,10 +118,12 @@ export default class ModelExport extends ExportBase {
     const deDuplicationAreas = [5, 6, 106] as number[];
     const hideAreaFilters = [] as IHideAreaFilter[];
 
+    const intlCompare = new Intl.Collator(undefined, { numeric: true }).compare;
+
     // start process
     const modelOutFolder = path.join(rootFolder, 'models', 'roots');
     const roots = modelFolders.filter((p) => p.includes('root'))
-      .sort(new Intl.Collator(undefined, { numeric: true }).compare)
+      .sort(intlCompare)
       .reverse();
     const areas = [] as IAreaModel[];
     const areaDungeons = [] as IAreaModel[];
@@ -148,6 +150,8 @@ export default class ModelExport extends ExportBase {
         areas.push(meta);
       }
     }));
+
+    areas.sort((a, b) => -intlCompare(a.root, b.root));
 
     // de-duplication
     const removeIndexes = [] as number[];

@@ -1,7 +1,8 @@
+import { Bgm } from './../master/soundList';
+import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
+import areaModel from '@/../public/generated/areaModel.json';
 import characterVoices from '@/../public/generated/characterVoices.json';
 import files from '@/../public/generated/files.json';
-import areaModel from '@/../public/generated/areaModel.json';
-import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
 import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
 import { lookup } from '@/logic/Lookup';
 import { AbnormalState, MVList as AbnormalStateMVList } from '@/master/abnormalState';
@@ -22,6 +23,7 @@ import { GateInfo, List as GateInfoList } from '@/master/gateInfo';
 import { Item, MVList as ItemMVList } from '@/master/item';
 import { MVList as QuestMVList, Quest } from '@/master/quest';
 import { List as SkillList, Skill } from '@/master/skill';
+import { SoundList } from '@/master/soundList';
 import { Tips } from '@/master/tips';
 import { List as TownInfoList, TownInfo } from '@/master/townInfo';
 import { Treasure } from '@/master/treasure';
@@ -84,6 +86,7 @@ export class DataManager {
   public fieldItem: FieldItem;
   public chat: Chat;
   public extraQuest: ExtraQuest;
+  public soundList: SoundList;
 
   // loaded data
   public itemById: { [df: string]: ItemMVList };
@@ -171,6 +174,8 @@ export class DataManager {
 
   public adventBattleById:{ [id: string]: RankingList };
 
+  public soundListBgmById: { [id: string]: Bgm }
+
   // other managers
   public spawnerDataManager = new SpawnerDataManager();
   public advManager = new AdvManager();
@@ -226,6 +231,7 @@ export class DataManager {
       this.loadFieldItem(),
       this.loadExtraQuest(),
       this.loadAdventBattle(),
+      this.loadSoundList(),
 
       this.loadGeneric('tips'),
       this.loadGeneric('treasure'),
@@ -591,6 +597,13 @@ export class DataManager {
   public async loadAdventBattle(adventBattle?: unknown) {
     await this.loadGeneric('adventbattle', 'adventBattle', adventBattle),
     this.adventBattleById = Enumerable.from(this.adventBattle.RankingList).toObject((p) => p.ID) as { [id: string]: RankingList };
+  }
+
+  public async loadSoundList(soundList?: unknown) {
+    this.soundList = plainToClass(SoundList, soundList || await this.loadJson('soundList'));
+    this.soundListBgmById = Enumerable.from(this.soundList.BGM)
+      .groupBy((p) => p.iID)
+      .toObject((p) => p.key(), (p) => p.firstOrDefault()) as { [id: string]: Bgm };
   }
 
   // other load

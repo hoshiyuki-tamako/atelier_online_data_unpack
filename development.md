@@ -1229,6 +1229,20 @@ for more info of each eOrder see other example at below this example
 }
 ```
 
+## SoundList
+
+soundList
+
+### Bgm
+
+```ts
+{
+  "iID":1, // enum eMusicID
+  "sFilePath":"M02_Academy", // asset file name
+  "bLocal":0
+}
+```
+
 ## Others
 
 - chara_group
@@ -1242,5 +1256,4 @@ for more info of each eOrder see other example at below this example
 - shop
 - activeskilldirection
 - skilldirection
-- soundList
 - mapFacility

@@ -90,7 +90,7 @@ docker-compose up --build -d
 4. export type `Texture2D` to `./source/Texture2D/*`
 5. export models fbx version 7.5 binary with folder to `./source/models/**/*`
 6. export models fbx version 7.5 ascii to `./source/modelsMeta/**/*`
-7. export type `AudioClip` filter by `adv` to `./source/voice/AudioClip/*`
+7. export type `AudioClip` filter by `vo` to `./source/voice/AudioClip/*`
 8. export type `AudioClip` filter by `music` to `./source/music/AudioClip/*`
 9. (optional) update other images/models/Enums/lookup if any
 10. delete `./public/models/roots/**/*` `./public/models/dungeons/**/*` `./public/models/fieldDungeons/**/*` `./public/models/gimmicks/**/*` `./public/models/throwables/**/*`
