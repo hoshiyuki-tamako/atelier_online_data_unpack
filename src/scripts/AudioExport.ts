@@ -45,14 +45,14 @@ export default class AudioExport extends ExportBase {
     const voiceFolder = path.join(sourceFolder, 'voice', 'AudioClip');
     if (!fs.pathExists(voiceFolder)) {
       console.log(`skipping voice process: required ${voiceFolder} and ${voiceFolder}`);
-      await this.generateEmptyCharacterVoices(rootFolder);
+      await this.writeCharacterVoices(rootFolder);
       return;
     }
 
     const voices = await fs.readdir(voiceFolder);
     if (!voices.length) {
       console.log(`empty voice folder: ${voiceFolder}`);
-      await this.generateEmptyCharacterVoices(rootFolder);
+      await this.writeCharacterVoices(rootFolder);
       return;
     }
 
@@ -71,7 +71,6 @@ export default class AudioExport extends ExportBase {
   }
 
   private async generateCharacterVoices(voices: string[], rootFolder: string) {
-    const characterVoiceMapOut = path.join(rootFolder, 'generated', 'characterVoices.json');
     const advFolder = path.join(rootFolder, 'export', 'adv');
     const advFiles = await fs.readdir(advFolder);
     const characterMaps = await Promise.all(advFiles.map(async (advFile) => {
@@ -89,15 +88,15 @@ export default class AudioExport extends ExportBase {
           (p) => p.select((p) => p.voice).toArray(),
         ) as CharacterVoiceMap;
     }));
-    const characterVoices = deepmerge.all(characterMaps);
+    const characterVoices = deepmerge.all(characterMaps) as CharacterVoiceMap;
     for (const characterDf of Object.keys(characterVoices)) {
       characterVoices[characterDf].sort(new Intl.Collator(undefined, { numeric: true }).compare);
     }
-    await fs.writeJSON(characterVoiceMapOut, characterVoices);
+    await this.writeCharacterVoices(rootFolder, characterVoices);
   }
 
-  private async generateEmptyCharacterVoices(rootFolder: string) {
+  private async writeCharacterVoices(rootFolder: string, characterVoices: CharacterVoiceMap = {}) {
     const characterVoiceMapOut = path.join(rootFolder, 'generated', 'characterVoices.json');
-    await fs.writeJSON(characterVoiceMapOut, {});
+    await fs.writeJSON(characterVoiceMapOut, characterVoices);
   }
 }

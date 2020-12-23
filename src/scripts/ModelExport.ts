@@ -152,6 +152,7 @@ export default class ModelExport extends ExportBase {
     }));
 
     areas.sort((a, b) => -intlCompare(a.root, b.root));
+    areaDungeons.sort((a, b) => -intlCompare(a.root, b.root));
 
     // de-duplication
     const removeIndexes = [] as number[];
