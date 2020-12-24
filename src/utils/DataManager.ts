@@ -239,6 +239,10 @@ export class DataManager {
 
       this.spawnerDataManager.load(this.locale),
     ]);
+    this.afterLoad();
+  }
+
+  public afterLoad() {
     this.loadAreaModel(),
     this.afterLoadCharacter();
     this.afterLoadSKill();
