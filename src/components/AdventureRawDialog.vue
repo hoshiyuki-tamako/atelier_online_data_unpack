@@ -103,7 +103,7 @@ export default class extends VueBase {
   }
 
   public replaceWithPlayerName(text: string) {
-    return text.replace('[px]', `[${this.$t('プレーヤー')}${this.$t('名前')}]`);
+    return text.replaceAll('[px]', `[${this.$t('プレーヤー')}${this.$t('名前')}]`);
   }
 }
 </script>
