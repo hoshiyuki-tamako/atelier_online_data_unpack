@@ -91,7 +91,7 @@ export default class ModelExport extends ExportBase {
     await Promise.all(itemFolders.map(async (p) => {
       const sourceModelFolder = path.join(modelFolder, p);
       const outModelFolder = path.join(outFolder, p);
-      if (await fs.pathExists(outModelFolder)) {
+      if (await this.isPathUpToDate(sourceModelFolder, outModelFolder)) {
         return;
       }
       await this.ncp(sourceModelFolder, outModelFolder);
@@ -105,7 +105,7 @@ export default class ModelExport extends ExportBase {
     await Promise.all(enemiesFolders.map(async (p) => {
       const sourceModelFolder = path.join(modelFolder, p);
       const outModelFolder = path.join(outFolder, p);
-      if (await fs.pathExists(outModelFolder)) {
+      if (await this.isPathUpToDate(sourceModelFolder, outModelFolder)) {
         return;
       }
       await this.ncp(sourceModelFolder, outModelFolder);
@@ -175,7 +175,7 @@ export default class ModelExport extends ExportBase {
       Promise.all(filteredAreas.concat(areaDungeons).map(async ({ root }) => {
         const sourceModelFolder = path.join(modelFolder, root);
         const outFolder = path.join(modelOutFolder, root);
-        if (await fs.pathExists(outFolder)) {
+        if (await this.isPathUpToDate(sourceModelFolder, outFolder)) {
           return;
         }
         await this.ncp(sourceModelFolder, outFolder);
@@ -216,11 +216,11 @@ export default class ModelExport extends ExportBase {
       .reverse();
     await Promise.all([
       Object.values(this.getLatestFromDifferences(folders)).map(async (folder) => {
+        const sourceModelFolder = path.join(modelFolder, folder);
         const outFolder = path.join(modelOutFolder, folder);
-        if (await fs.pathExists(outFolder)) {
+        if (await this.isPathUpToDate(sourceModelFolder, outFolder)) {
           return;
         }
-        const sourceModelFolder = path.join(modelFolder, folder);
         await this.ncp(sourceModelFolder, outFolder);
       }),
     ]);

@@ -34,7 +34,7 @@ export default class AudioExport extends ExportBase {
     await Promise.all(musics.map(async (p) => {
       const newFile = path.join(musicFolder, p);
       const out = path.join(outFolder, p);
-      if (await this.isFileUpToDate(newFile, out)) {
+      if (await this.isPathUpToDate(newFile, out)) {
         return;
       }
       await fs.copy(newFile, out);
@@ -62,7 +62,7 @@ export default class AudioExport extends ExportBase {
       Promise.all(voices.map(async (p) => {
         const newFile = path.join(voiceFolder, p);
         const out = path.join(outFolder, p);
-        if (await this.isFileUpToDate(newFile, out)) {
+        if (await this.isPathUpToDate(newFile, out)) {
           return;
         }
         await fs.copy(newFile, out);

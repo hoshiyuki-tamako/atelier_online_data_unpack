@@ -39,7 +39,7 @@ export default class TextureExport extends ExportBase {
     await Promise.all(imagePaths.map(async (p) => {
       const imagePath = path.join(textureFolder, p);
       const outPath = path.join(outFolder, p);
-      if (await this.isFileUpToDate(imagePath, outPath)) {
+      if (await this.isPathUpToDate(imagePath, outPath)) {
         return;
       }
       await fs.copy(imagePath, outPath);
@@ -53,7 +53,7 @@ export default class TextureExport extends ExportBase {
     await Promise.all(imagePaths.map(async (p) => {
       const imagePath = path.join(textureFolder, p);
       const outPath = path.join(outFolder, p);
-      if (await this.isFileUpToDate(imagePath, outPath)) {
+      if (await this.isPathUpToDate(imagePath, outPath)) {
         return;
       }
       await fs.copy(imagePath, outPath);
@@ -74,7 +74,7 @@ export default class TextureExport extends ExportBase {
     await Promise.all(bgs.map(async (p) => {
       const imagePath = path.join(textureFolder, p);
       const outPath = path.join(bgOutFolder, p.replace(replaceAdvRegex, ''));
-      if (await this.isFileUpToDate(imagePath, outPath)) {
+      if (await this.isPathUpToDate(imagePath, outPath)) {
         return;
       }
       await fs.copy(imagePath, outPath);
@@ -82,7 +82,7 @@ export default class TextureExport extends ExportBase {
     .concat(advs.map(async (p) => {
       const imagePath = path.join(textureFolder, p);
       const outPath = path.join(advOutFolder, p.replace(replaceAdvRegex, ''));
-      if (await this.isFileUpToDate(imagePath, outPath)) {
+      if (await this.isPathUpToDate(imagePath, outPath)) {
         return;
       }
       await fs.copy(imagePath, outPath);
@@ -90,7 +90,7 @@ export default class TextureExport extends ExportBase {
     .concat(advItems.map(async (p) => {
       const imagePath = path.join(textureFolder, p);
       const outPath = path.join(advItemOutFolder, p.replace(replaceAdvRegex, ''));
-      if (await this.isFileUpToDate(imagePath, outPath)) {
+      if (await this.isPathUpToDate(imagePath, outPath)) {
         return;
       }
       await fs.copy(imagePath, outPath);
