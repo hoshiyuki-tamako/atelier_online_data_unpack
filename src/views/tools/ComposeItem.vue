@@ -99,7 +99,6 @@ div
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { clamp } from 'lodash';
 import { MVList as ItemMVList } from '@/master/item';
 import { MaterialOptions } from '@/store/tools/composeItemFilter';
@@ -152,27 +151,27 @@ export default class extends VueWithMapFields {
   public exportComposeItemUrlVisible = false;
 
   public get compose() {
-    const compose = dataManager.itemById[this.itemDf];
+    const compose = this.dataManager.itemById[this.itemDf];
     if (!compose) {
-      this.itemDf = dataManager.itemsHasRecipe[0].DF;
-      return dataManager.itemById[this.itemDf];
+      this.itemDf = this.dataManager.itemsHasRecipe[0].DF;
+      return this.dataManager.itemById[this.itemDf];
     }
     return compose;
   }
 
   public set compose(value: ItemMVList) {
-    this.itemDf = value?.DF || dataManager.itemsHasRecipe[0].DF;
+    this.itemDf = value?.DF || this.dataManager.itemsHasRecipe[0].DF;
   }
 
   public get itemCategories() {
-    return dataManager.itemsCategoriesHasRecipe.map((value) => ({
-      label: this.$t(dataManager.lookup.itemCategory[value]),
+    return this.dataManager.itemsCategoriesHasRecipe.map((value) => ({
+      label: this.$t(this.dataManager.lookup.itemCategory[value]),
       value: +value,
     }));
   }
 
   public get filteredItems() {
-    return dataManager.itemsHasRecipe.filter((p) => (
+    return this.dataManager.itemsHasRecipe.filter((p) => (
       (!this.itemPickerKeyword || p.DF === +this.itemPickerKeyword || p.NAME.toLocaleLowerCase().includes(this.itemPickerKeyword.toLocaleLowerCase()))
       && (!this.itemPickerCategory || p.CATEG === this.itemPickerCategory)
     ));
@@ -191,9 +190,9 @@ export default class extends VueWithMapFields {
   public beforeMount() {
     try {
       if (this.$route.query.df) {
-        const item = dataManager.itemById[this.$route.query.df as string];
+        const item = this.dataManager.itemById[this.$route.query.df as string];
         if (item) {
-          if (dataManager.itemsHasRecipe.some((p) => p.DF === item.DF)) {
+          if (this.dataManager.itemsHasRecipe.some((p) => p.DF === item.DF)) {
             this.onPickItem(item, +this.$route.query.quality);
             if (this.$route.query.materialOptions) {
               const materialOptions = JSON.parse(atob(this.$route.query.materialOptions as string));
@@ -226,7 +225,7 @@ export default class extends VueWithMapFields {
       console.error(e);
     }
 
-    this.onPickItem(dataManager.itemsHasRecipe[0]);
+    this.onPickItem(this.dataManager.itemsHasRecipe[0]);
   }
 
   // dialog
@@ -235,7 +234,7 @@ export default class extends VueWithMapFields {
     const addonQuality = clamp(_addonQuality || 0, 0, 15);
 
     this.compose = item;
-    const items = this.compose.RSP.map((rsp) => new Array(rsp.NC).fill(dataManager.itemById[rsp.DF])).flat();
+    const items = this.compose.RSP.map((rsp) => new Array(rsp.NC).fill(this.dataManager.itemById[rsp.DF])).flat();
     this.materialOptions = Array.from({ length: items.length }, () => Object.assign(new MaterialOptions(), { quality, addonQuality }));
     this.materials = items;
     this.itemPickerDialogVisible = false;

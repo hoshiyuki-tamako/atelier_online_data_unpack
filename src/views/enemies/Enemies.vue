@@ -39,7 +39,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { mapFields } from 'vuex-map-fields';
 
 abstract class VueWithMapFields extends VueBase {
@@ -67,7 +66,7 @@ abstract class VueWithMapFields extends VueBase {
 })
 export default class extends VueWithMapFields {
   public get enemyCategoryFilter() {
-    return dataManager.enemy.KindList
+    return this.dataManager.enemy.KindList
       .filter((p) => p.iKind)
       .map((p) => ({
         label: p.strName,
@@ -133,7 +132,7 @@ export default class extends VueWithMapFields {
   }
 
   public get enemies() {
-    return !this.eKind ? dataManager.enemiesOrderByCategory : (dataManager.enemiesByEKind[this.eKind] || []);
+    return !this.eKind ? this.dataManager.enemiesOrderByCategory : (this.dataManager.enemiesByEKind[this.eKind] || []);
   }
 
   public get filteredEnemies() {

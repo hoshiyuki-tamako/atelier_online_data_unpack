@@ -175,7 +175,6 @@ div.container
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { MVList as QuestMVList } from '@/master/quest';
 import LRU from 'lru-cache';
 import { mapFields } from 'vuex-map-fields';
@@ -234,16 +233,16 @@ export default class extends VueWithMapFields {
   public currentRows = [] as QuestMVList[];
 
   public get categoryFilter() {
-    return Object.keys(dataManager.questsByCategory)
+    return Object.keys(this.dataManager.questsByCategory)
       .filter((p) => p)
       .map((value) => ({
-        label: this.$t(dataManager.lookup.EQuestCategory[value]),
+        label: this.$t(this.dataManager.lookup.EQuestCategory[value]),
         value,
       }));
   }
 
   public get characterFilter() {
-    return dataManager.charactersCanBattle.map((p) => ({
+    return this.dataManager.charactersCanBattle.map((p) => ({
       label: p.NAME,
       value: p.DF,
     }));
@@ -297,11 +296,11 @@ export default class extends VueWithMapFields {
   public get filteredQuests() {
     const key = JSON.stringify(this.filter);
     if (!this.filterCache.has(key)) {
-      const quests = this.filter.category ? dataManager.questsByCategory[this.filter.category] : [...dataManager.quest.m_vList].reverse();
+      const quests = this.filter.category ? this.dataManager.questsByCategory[this.filter.category] : [...this.dataManager.quest.m_vList].reverse();
       const filteredQuests = quests.filter((p) => (
         (!this.filter.character || p.CHARA === this.filter.character)
         && (!this.filter.name || p.DF === +this.filter.name || p.NAME.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
-        && (!this.filter.extraQuest || dataManager.extraQuestsByQuest[p.DF])
+        && (!this.filter.extraQuest || this.dataManager.extraQuestsByQuest[p.DF])
         && (!this.filter.has.includes(1) || p.COST.WTH.CNT)
         && (!this.filter.has.includes(2) || p.ENM.length)
         && (!this.filter.has.includes(3) || p.GET.length)

@@ -18,7 +18,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { List as SkillList } from '@/master/skill';
 
 @Component({
@@ -30,14 +29,14 @@ export default class extends VueBase {
 
   public get filteredSills() {
     if (this.equipmentUseful) {
-      return dataManager.skillAddonsEquipmentUseful;
+      return this.dataManager.skillAddonsEquipmentUseful;
     }
 
-    return dataManager.skillAddons;
+    return this.dataManager.skillAddons;
   }
 
   public get typeFilters() {
-    return dataManager.skillAddonNames.map((value) => ({
+    return this.dataManager.skillAddonNames.map((value) => ({
       text: value,
       value,
     }));

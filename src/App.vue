@@ -14,7 +14,6 @@ el-container.containter-main(v-loading="pageLoading")
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import sleep from 'sleep-promise';
 import ms from 'ms';
 import { mapFields } from 'vuex-map-fields';
@@ -164,7 +163,7 @@ export default class extends VueWithMapFields {
       try {
         this.$i18n.locale = new URLSearchParams(window.location.search).get('locale') || 'ja-JP';
         document.title = this.$t(document.title).toString();
-        await dataManager.load(this.$i18n.locale, this.$store.state.home.showHiddenContent);
+        await this.dataManager.load(this.$i18n.locale, this.$store.state.home.showHiddenContent);
         this.pageLoading = false;
         retry = 0;
       } catch (e) {

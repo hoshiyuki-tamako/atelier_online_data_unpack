@@ -17,7 +17,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { ModelFbx } from 'vue-3d-model';
 
 @Component({
@@ -37,7 +36,7 @@ export default class extends VueBase {
   }
 
   public get models() {
-    const itemModels = Object.keys(dataManager.files.models.items);
+    const itemModels = Object.keys(this.dataManager.files.models.items);
     return this.unusedWeaponCategory
       .map((prefix) => itemModels.filter((p: string) => p.includes(prefix)))
       .flat()
@@ -45,12 +44,12 @@ export default class extends VueBase {
   }
 
   public get itemIcons() {
-    return dataManager.item.m_vList.map(({ DF }) => `icon_item_s_${DF}.png`);
+    return this.dataManager.item.m_vList.map(({ DF }) => `icon_item_s_${DF}.png`);
   }
 
   public get icons() {
     const icons = this.itemIcons;
-    return Object.values(dataManager.files.img.icon_item_s.Texture2D)
+    return Object.values(this.dataManager.files.img.icon_item_s.Texture2D)
       .filter((icon: string) => !icons.includes(icon))
       .map((icon: string) => ({
         id: +icon.split('_')[3].split('.')[0],

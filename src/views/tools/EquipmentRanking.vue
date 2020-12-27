@@ -73,7 +73,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import Enumerable from 'linq';
 import { sum } from 'lodash';
 import { Formula } from '@/logic/Formula';
@@ -139,23 +138,23 @@ export default class extends VueWithMapFields {
   public order = null;
 
   public get enableWeaponKindFilter() {
-    return !this.category || dataManager.itemsWeaponKindCategories.includes(this.category);
+    return !this.category || this.dataManager.itemsWeaponKindCategories.includes(this.category);
   }
 
   public get itemCategoryOptions() {
-    return Enumerable.from(dataManager.item.m_vList)
+    return Enumerable.from(this.dataManager.item.m_vList)
       .where((p) => !!p.EQU_BRD)
       .groupBy((p) => p.CATEG)
       .orderBy((p) => p.key())
       .select((p) => ({
-        label: this.$t(dataManager.lookup.itemCategory[p.key()]),
+        label: this.$t(this.dataManager.lookup.itemCategory[p.key()]),
         value: p.key(),
       }));
   }
 
   public get weaponKindOptions() {
-    return Object.keys(dataManager.itemsByWeaponKind).map((value) => ({
-      label: this.$t(dataManager.lookup.weaponKind[value]),
+    return Object.keys(this.dataManager.itemsByWeaponKind).map((value) => ({
+      label: this.$t(this.dataManager.lookup.weaponKind[value]),
       value: +value,
     })).filter((p) => p.value);
   }
@@ -185,14 +184,14 @@ export default class extends VueWithMapFields {
     }
 
     if (this.weaponKind) {
-      return dataManager.itemsByWeaponKind[this.weaponKind];
+      return this.dataManager.itemsByWeaponKind[this.weaponKind];
     }
 
     if (this.category) {
-      return dataManager.itemsByCategory[this.category];
+      return this.dataManager.itemsByCategory[this.category];
     }
 
-    return dataManager.itemsEquipments;
+    return this.dataManager.itemsEquipments;
   }
 
   private get filteredItems() {
@@ -254,7 +253,7 @@ export default class extends VueWithMapFields {
 
   public beforeMount() {
     if (!this.category) {
-      this.category = dataManager.itemsEquipments[0].CATEG;
+      this.category = this.dataManager.itemsEquipments[0].CATEG;
     }
   }
 

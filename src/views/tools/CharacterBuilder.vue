@@ -1012,20 +1012,20 @@ export default class extends VueBase {
     const itemStates = ['SATK', 'SDEF', 'MATK', 'MDEF', 'SPD', 'QTH', 'DDG'];
     if (this.itemPickerShowStateType === 1) {
       return itemStates.map((value) => ({
-        label: `${this.$t(dataManager.lookup.state[value])}(${this.$t('サブ装備')})`,
+        label: `${this.$t(this.dataManager.lookup.state[value])}(${this.$t('サブ装備')})`,
         value: `${value}_base`,
       }))
-        .concat(Object.entries(dataManager.lookup.element).map(([value, label]) => ({
+        .concat(Object.entries(this.dataManager.lookup.element).map(([value, label]) => ({
           label: `${label}(${this.$t('サブ装備')})`,
           value: `${value}_base`,
         })));
     }
 
     return itemStates.map((value) => ({
-      label: this.$t(dataManager.lookup.state[value]),
+      label: this.$t(this.dataManager.lookup.state[value]),
       value,
     }))
-      .concat(Object.entries(dataManager.lookup.element).map(([value, label]) => ({
+      .concat(Object.entries(this.dataManager.lookup.element).map(([value, label]) => ({
         label,
         value,
       })));
@@ -1129,7 +1129,7 @@ export default class extends VueBase {
 
   // item picker
   public get itemPickerItems() {
-    return this.itemPickerFilterCategory ? dataManager.itemsByCategory[this.itemPickerFilterCategory] : dataManager.itemsEquipments;
+    return this.itemPickerFilterCategory ? this.dataManager.itemsByCategory[this.itemPickerFilterCategory] : this.dataManager.itemsEquipments;
   }
 
   public get filteredItemPickerItems() {
@@ -1145,26 +1145,26 @@ export default class extends VueBase {
         && ([null, '', -1].includes(this.itemPickerFilterSkillElement) || p.getAttackSkill()?.element === this.itemPickerFilterSkillElement)
       ));
 
-      if (this.itemPickerSort in dataManager.lookup.state) {
+      if (this.itemPickerSort in this.dataManager.lookup.state) {
         items = Enumerable.from(items)
           .orderByDescending((p) => p.getState(this.itemPickerSort).total)
           .thenByDescending((p) => p.getStates().reduce((sum, { total }) => sum + total, 0))
           .thenByDescending((p) => p.getElements().reduce((sum, { total }) => sum + total, 0))
           .toArray();
-      } else if (this.itemPickerSort in dataManager.lookup.element) {
+      } else if (this.itemPickerSort in this.dataManager.lookup.element) {
         items = Enumerable.from(items)
           .orderByDescending((p) => p.getElement(this.itemPickerSort).total)
           .thenByDescending((p) => p.getStates().reduce((sum, { total }) => sum + total, 0))
           .thenByDescending((p) => p.getElements().reduce((sum, { total }) => sum + total, 0))
           .toArray();
-      } else if (this.itemPickerSort.replace('_base', '') in dataManager.lookup.state) {
+      } else if (this.itemPickerSort.replace('_base', '') in this.dataManager.lookup.state) {
         const state = this.itemPickerSort.replace('_base', '');
         items = Enumerable.from(items)
           .orderByDescending((p) => p.getSupportState(state).value)
           .thenByDescending((p) => p.getSupportStates().reduce((sum, { value }) => sum + value, 0))
           .thenByDescending((p) => p.getSupportElements().reduce((sum, { value }) => sum + value, 0))
           .toArray();
-      } else if (this.itemPickerSort.replace('_base', '') in dataManager.lookup.element) {
+      } else if (this.itemPickerSort.replace('_base', '') in this.dataManager.lookup.element) {
         const element = this.itemPickerSort.replace('_base', '');
         items = Enumerable.from(items)
           .orderByDescending((p) => Formula.getSupportElement(p.ELM[element]))
@@ -1252,7 +1252,7 @@ export default class extends VueBase {
 
   public onConfirmSetAllMainItemSkill() {
     for (const modifier of Object.values(this.player.equipmentModifiers)) {
-      modifier.skill = dataManager.skillById[this.mainItemAllSkillId];
+      modifier.skill = this.dataManager.skillById[this.mainItemAllSkillId];
     }
     this.successNotification();
     this.$forceUpdate();
@@ -1290,7 +1290,7 @@ export default class extends VueBase {
     }
     this.itemPickerCallback = (item) => {
       if (item) {
-        if (dataManager.lookup.twoHandledWeaponKind.includes(item.WPN_KIND)) {
+        if (this.dataManager.lookup.twoHandledWeaponKind.includes(item.WPN_KIND)) {
           this.player.equipment.shield = null;
         }
         this.player.equipment.weapon ||= new EquipmentItem(item);
@@ -1303,7 +1303,7 @@ export default class extends VueBase {
   }
 
   public onPickShield() {
-    if (dataManager.lookup.twoHandledWeaponKind.includes(this.player.equipment.weapon?.item.WPN_KIND)) {
+    if (this.dataManager.lookup.twoHandledWeaponKind.includes(this.player.equipment.weapon?.item.WPN_KIND)) {
       return;
     }
     this.resetItemPickerFilter().setDefaultItemPickerFilter();
@@ -1379,7 +1379,7 @@ export default class extends VueBase {
   }
 
   public get shieldImage() {
-    if (dataManager.lookup.twoHandledWeaponKind.includes(this.player.equipment.weapon?.item.WPN_KIND)) {
+    if (this.dataManager.lookup.twoHandledWeaponKind.includes(this.player.equipment.weapon?.item.WPN_KIND)) {
       return 'img/icon/icon_pick_shield_disabled.png';
     }
     return this.player.equipment.shield?.item.icon || 'img/icon/icon_pick_shield.png';

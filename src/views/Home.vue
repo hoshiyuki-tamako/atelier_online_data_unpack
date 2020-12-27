@@ -61,7 +61,6 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import { dataManager } from '@/utils/DataManager';
 import Enumerable from 'linq';
 import VueBase from '@/utils/VueBase';
 import { mapFields } from 'vuex-map-fields';
@@ -182,11 +181,11 @@ export default class extends VueWithMapFields {
           name: 'ToolsEquipmentRanking',
         },
       },
-    ].concat(Enumerable.from(dataManager.itemsEquipments)
+    ].concat(Enumerable.from(this.dataManager.itemsEquipments)
       .groupBy((p) => p.CATEG)
       .orderBy((p) => p.key())
       .select((p) => ({
-        label: this.$t(dataManager.lookup.itemCategory[p.key()]),
+        label: this.$t(this.dataManager.lookup.itemCategory[p.key()]),
         img: {
           src: p.first().icon,
         },
@@ -201,12 +200,12 @@ export default class extends VueWithMapFields {
   }
 
   public get pageItems() {
-    const items = Enumerable.from(dataManager.item.m_vList)
+    const items = Enumerable.from(this.dataManager.item.m_vList)
       .where((p) => !p.EQU_BRD)
       .groupBy((p) => p.CATEG)
       .orderBy((p) => p.key())
       .select((p) => ({
-        label: this.$t(dataManager.lookup.itemCategory[p.key()]),
+        label: this.$t(this.dataManager.lookup.itemCategory[p.key()]),
         img: {
           src: p.first().icon,
         },

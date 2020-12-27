@@ -192,7 +192,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { MVList as CharacterMVList } from '@/master/chara';
 import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
 
@@ -209,24 +208,24 @@ export default class extends VueBase {
     this.characterModifier.level = +this.$route.query.level || CharacterMVList.maxLevel;
     this.characterModifier.foodLevel = +this.$route.query.foodLevel || CharacterMVList.maxLevel;
 
-    this.character = dataManager.characterById[this.$route.query.df as string];
+    this.character = this.dataManager.characterById[this.$route.query.df as string];
     if (!this.character) {
       this.$router.push({ name: 'Characters' });
     }
   }
 
   public get images() {
-    return Object.values(dataManager.files.img.icon_chara.Texture2D)
+    return Object.values(this.dataManager.files.img.icon_chara.Texture2D)
       .filter((p: string) => p.startsWith(`icon_chara_all_${this.character.DF.toString().padStart(4, '0')}`))
       .map((p) => `img/icon_chara/Texture2D/${p}`);
   }
 
   public get weapons() {
-    return this.character.WEAPON.map((p) => this.$t(dataManager.lookup.ESubCategory[p.GEN])).join(', ');
+    return this.character.WEAPON.map((p) => this.$t(this.dataManager.lookup.ESubCategory[p.GEN])).join(', ');
   }
 
   public get onlyItems() {
-    return dataManager.itemsByGroupDf[this.character.GROUP_DF] || [];
+    return this.dataManager.itemsByGroupDf[this.character.GROUP_DF] || [];
   }
 }
 </script>

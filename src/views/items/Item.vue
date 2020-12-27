@@ -224,7 +224,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { MVList as ItemMVList } from '@/master/item';
 import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 import { clamp } from 'lodash';
@@ -289,7 +288,7 @@ export default class extends VueBase {
   public itemModifier = new ItemModifier();
 
   public beforeMount() {
-    this.item = dataManager.itemById[this.$route.query.df as string];
+    this.item = this.dataManager.itemById[this.$route.query.df as string];
     if (!this.item) {
       this.$router.push({ name: 'Items' });
     }

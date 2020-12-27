@@ -138,7 +138,6 @@ div.container
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { List as SkillList } from '@/master/skill';
 import LRU from 'lru-cache';
 import { mapFields } from 'vuex-map-fields';
@@ -206,28 +205,28 @@ export default class extends VueWithMapFields {
   }
 
   public get attributeFilter() {
-    return Object.entries(dataManager.lookup.EBattleAttribute).map(([value, label]) => ({
+    return Object.entries(this.dataManager.lookup.EBattleAttribute).map(([value, label]) => ({
       label: this.$t(label),
       value: +value,
     }));
   }
 
   public get elementFilter() {
-    return Object.entries(dataManager.lookup.EBattleElementKind).map(([value, label]) => ({
+    return Object.entries(this.dataManager.lookup.EBattleElementKind).map(([value, label]) => ({
       label: this.$t(label),
       value: +value,
     }));
   }
 
   public get targetTeamFilter() {
-    return Object.entries(dataManager.lookup.targetTeam).map(([value, label]) => ({
+    return Object.entries(this.dataManager.lookup.targetTeam).map(([value, label]) => ({
       label: this.$t(label),
       value: +value,
     }));
   }
 
   public get targetScopeFilter() {
-    return Object.entries(dataManager.lookup.eFieldItemRange).map(([value, label]) => ({
+    return Object.entries(this.dataManager.lookup.eFieldItemRange).map(([value, label]) => ({
       label: this.$t(label),
       value: +value,
     }));
@@ -311,9 +310,9 @@ export default class extends VueWithMapFields {
   public get skills() {
     switch (this.filter.skillKind) {
       case SkillKind.normal:
-        return dataManager.skills;
+        return this.dataManager.skills;
       case SkillKind.blazeArt:
-        return dataManager.skillBlazeArts;
+        return this.dataManager.skillBlazeArts;
       case SkillKind.effect:
         return this.dataManager.skillEffects;
       case SkillKind.none:
@@ -337,9 +336,9 @@ export default class extends VueWithMapFields {
         && (!this.filter.detail || p.detail.toLocaleLowerCase().includes(this.filter.detail.toLocaleLowerCase()))
         && (!this.filter.has.includes(1) || p.stateOwn.length)
         && (!this.filter.has.includes(2) || p.state.length)
-        && (!this.filter.has.includes(3) || dataManager.itemsBySkill[p.id])
-        && (!this.filter.has.includes(4) || dataManager.enemiesBySkill[p.id])
-        && (!this.filter.has.includes(5) || dataManager.charactersBySkill[p.id])
+        && (!this.filter.has.includes(3) || this.dataManager.itemsBySkill[p.id])
+        && (!this.filter.has.includes(4) || this.dataManager.enemiesBySkill[p.id])
+        && (!this.filter.has.includes(5) || this.dataManager.charactersBySkill[p.id])
       ));
       const findObject = (skill: SkillList) => this.filter.sort.split('.').reduce((o, i) => o[i], skill);
       if (this.filter.order) {

@@ -62,7 +62,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { sum } from 'lodash';
 import { mapFields } from 'vuex-map-fields';
 
@@ -138,7 +137,7 @@ export default class extends VueWithMapFields {
   }
 
   public get filteredData() {
-    return dataManager.charactersCanBattle
+    return this.dataManager.charactersCanBattle
       .filter((p) => (
         (!this.gender || p.GEN === this.gender)
         && ([null, '', -1].includes(this.weaponType) || p.WEAPON.some((o) => o.GEN === this.weaponType))

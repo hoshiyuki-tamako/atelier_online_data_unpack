@@ -53,7 +53,6 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/utils/VueBase';
-import { dataManager } from '@/utils/DataManager';
 import { MVList as EnemyMVList } from '@/master/enemy';
 import { EnemyModifier } from '@/logic/modifiers/EnemyModifier';
 import { ModelFbx } from 'vue-3d-model';
@@ -98,7 +97,7 @@ export default class extends VueBase {
   public beforeMount() {
     this.enemyModifier.level = +this.$route.query.level || EnemyMVList.defaultLevel;
 
-    this.enemy = dataManager.enemyById[this.$route.query.df as string];
+    this.enemy = this.dataManager.enemyById[this.$route.query.df as string];
     if (!this.enemy) {
       this.$router.push({ name: 'Enemies' });
     }
