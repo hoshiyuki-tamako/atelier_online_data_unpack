@@ -2,6 +2,15 @@
 div.container
   div.filters
     div.filter
+      span {{ $t('性別') }}
+      el-select(v-model="gender" clearable filterable)
+        el-option(v-for="item in genderOptions" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('武器種類') }}
+      el-select(v-model="weaponType" clearable filterable)
+        el-option(v-for="item in weaponTypeOptions" :key="item.value" :label="item.label" :value="item.value")
+  div.filters
+    div.filter
       span {{ $t('食事') }}LV
       el-input-number(v-model="foodLevel" size="mini" :min="1" :max="level" :step="1" step-strictly)
     div.filter
@@ -29,9 +38,9 @@ div.container
   el-table(:data="filteredData")
     el-table-column(prop="NAME" :label="$t('名前')")
       template(slot-scope="scope")
+        span {{ scope.row.NAME }}
         router-link(:to="{ name: 'CharactersCharacter', query: { df: scope.row.DF } }" target="_blank")
           img.icon-small(:src="scope.row.icon" :alt="scope.row.NAME")
-        span {{ scope.row.NAME }}
     el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" width="100%" sortable)
     el-table-column(v-if="showColumnHP" prop="HP" :label="$t('HP')" width="100%" sortable)
     el-table-column(v-if="showColumnSATK" prop="SATK" :label="$t('物理攻撃')" width="100%" sortable)
@@ -58,6 +67,10 @@ import { sum } from 'lodash';
 import { mapFields } from 'vuex-map-fields';
 
 abstract class VueWithMapFields extends VueBase {
+  public gender!: number | null;
+
+  public weaponType!: number | null;
+
   public foodLevel!: number;
 
   public level!: number;
@@ -99,32 +112,58 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('characterRankingFilter', ['foodLevel', 'level', 'showColumnTotalState', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
+    ...mapFields('characterRankingFilter', ['gender', 'weaponType', 'foodLevel', 'level', 'showColumnTotalState', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
   },
 })
 export default class extends VueWithMapFields {
+  public get genderOptions() {
+    return [
+      {
+        label: '♂',
+        value: 1,
+      },
+      {
+        label: '♀',
+        value: 2,
+      },
+    ];
+  }
+
+  public get weaponTypeOptions() {
+    return Object.entries(this.dataManager.lookup.ESubCategory)
+      .map(([value, label]) => ({
+        label: this.$t(label),
+        value: +value,
+      }));
+  }
+
   public get filteredData() {
-    return dataManager.charactersCanBattle.map((p) => ({
-      icon: p.icon,
-      DF: p.DF,
-      NAME: p.NAME,
-      totalState: sum(p.getStates(this.level, this.foodLevel).map((i) => i.total)),
-      HP: p.getState('HP', this.level, this.foodLevel).total,
-      SATK: p.getState('SATK', this.level, this.foodLevel).total,
-      SDEF: p.getState('SDEF', this.level, this.foodLevel).total,
-      MATK: p.getState('MATK', this.level, this.foodLevel).total,
-      MDEF: p.getState('MDEF', this.level, this.foodLevel).total,
-      SPD: p.getState('SPD', this.level, this.foodLevel).total,
-      QTH: p.getState('QTH', this.level, this.foodLevel).total,
-      DDG: p.getState('DDG', this.level, this.foodLevel).total,
-      totalElement: sum(p.getElements(this.level).map((i) => i.total)),
-      FIRE: p.getElement('FIRE', this.level).total,
-      WATER: p.getElement('WATER', this.level).total,
-      EARTH: p.getElement('EARTH', this.level).total,
-      WIND: p.getElement('WIND', this.level).total,
-      LIGHT: p.getElement('LIGHT', this.level).total,
-      DARK: p.getElement('DARK', this.level).total,
-    }));
+    return dataManager.charactersCanBattle
+      .filter((p) => (
+        (!this.gender || p.GEN === this.gender)
+        && ([null, '', -1].includes(this.weaponType) || p.WEAPON.some((o) => o.GEN === this.weaponType))
+      ))
+      .map((p) => ({
+        icon: p.icon,
+        DF: p.DF,
+        NAME: p.NAME,
+        totalState: sum(p.getStates(this.level, this.foodLevel).map((i) => i.total)),
+        HP: p.getState('HP', this.level, this.foodLevel).total,
+        SATK: p.getState('SATK', this.level, this.foodLevel).total,
+        SDEF: p.getState('SDEF', this.level, this.foodLevel).total,
+        MATK: p.getState('MATK', this.level, this.foodLevel).total,
+        MDEF: p.getState('MDEF', this.level, this.foodLevel).total,
+        SPD: p.getState('SPD', this.level, this.foodLevel).total,
+        QTH: p.getState('QTH', this.level, this.foodLevel).total,
+        DDG: p.getState('DDG', this.level, this.foodLevel).total,
+        totalElement: sum(p.getElements(this.level).map((i) => i.total)),
+        FIRE: p.getElement('FIRE', this.level).total,
+        WATER: p.getElement('WATER', this.level).total,
+        EARTH: p.getElement('EARTH', this.level).total,
+        WIND: p.getElement('WIND', this.level).total,
+        LIGHT: p.getElement('LIGHT', this.level).total,
+        DARK: p.getElement('DARK', this.level).total,
+      }));
   }
 }
 </script>

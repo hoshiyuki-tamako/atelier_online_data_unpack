@@ -2,8 +2,17 @@
 div.container
   div.filters
     div.filter
-      el-select(v-model="eKind" clearable filterable)
+      el-select(v-model="eKind" :placeholder="$t('種類')" clearable filterable)
         el-option(v-for="item of enemyCategoryFilter" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('大きさ') }}
+      el-select(v-model="enemySize" clearable filterable)
+        el-option(v-for="item in enemySizeOptions" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('出現エリア') }}
+      el-select(v-model="appearArea" clearable filterable)
+        el-option(v-for="item in appearAreaOptions" :key="item.value" :label="item.label" :value="item.value")
+  div.filters
     div.filter
       span LV
       el-input-number(v-model="level" size="mini" :min="1" :step="1" step-strictly)
@@ -30,9 +39,9 @@ div.container
   el-table(:data="filteredData")
     el-table-column(prop="NAME" :label="$t('名前')")
       template(slot-scope="scope")
+        span {{ scope.row.strName }}
         router-link(:to="{ name: 'EnemiesEnemy', query: { df: scope.row.DF } }" target="_blank")
           img.icon-small(:src="scope.row.icon" :alt="scope.row.strName")
-        span {{ scope.row.strName }}
     el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" width="100%" sortable)
     el-table-column(v-if="showColumnEXP" prop="EXP" :label="$t('EXP')" width="100%" sortable)
     el-table-column(v-if="showColumnHP" prop="HP" :label="$t('HP')" width="100%" sortable)
@@ -61,6 +70,10 @@ import { mapFields } from 'vuex-map-fields';
 
 abstract class VueWithMapFields extends VueBase {
   public eKind!: number | null;
+
+  public enemySize!: number | null;
+
+  public appearArea!: number | null;
 
   public level!: number;
 
@@ -103,7 +116,7 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('enemyRankingFilter', ['eKind', 'level', 'showColumnTotalState', 'showColumnEXP', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
+    ...mapFields('enemyRankingFilter', ['eKind', 'enemySize', 'appearArea', 'level', 'showColumnTotalState', 'showColumnEXP', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
   },
 })
 export default class extends VueWithMapFields {
@@ -116,33 +129,52 @@ export default class extends VueWithMapFields {
       }));
   }
 
+  public get enemySizeOptions() {
+    return Object.entries(this.dataManager.lookup.eEnemySize)
+      .map(([value, label]) => ({
+        label: this.$t(label),
+        value: +value,
+      }));
+  }
+
+  public get appearAreaOptions() {
+    return this.dataManager.areaInfo.List.map((p) => ({
+      label: this.dataManager.fieldNameById[p.iAreaNameId]?.strAreaName || p.iAreaId,
+      value: p.iAreaId,
+    }));
+  }
+
   public get enemies() {
     return this.eKind ? (dataManager.enemiesByEKind[this.eKind] || []) : dataManager.enemiesHasValidSpec;
   }
 
   public get filteredData() {
-    return this.enemies.map((p) => ({
-      DF: p.DF,
-      strName: p.strName,
-      icon: p.icon,
-      totalState: sum(p.getStates(this.level).map((i) => i.total)),
-      EXP: p.getState('EXP', this.level).total,
-      HP: p.getState('HP', this.level).total,
-      SATK: p.getState('SATK', this.level).total,
-      SDEF: p.getState('SDEF', this.level).total,
-      MATK: p.getState('MATK', this.level).total,
-      MDEF: p.getState('MDEF', this.level).total,
-      SPD: p.getState('SPD', this.level).total,
-      QTH: p.getState('QTH', this.level).total,
-      DDG: p.getState('DDG', this.level).total,
-      totalElement: sum(p.getElements().map((i) => i.total)),
-      FIRE: p.getElement('FIRE').total,
-      WATER: p.getElement('WATER').total,
-      EARTH: p.getElement('EARTH').total,
-      WIND: p.getElement('WIND').total,
-      LIGHT: p.getElement('LIGHT').total,
-      DARK: p.getElement('DARK').total,
-    }));
+    return this.enemies
+      .filter((p) => (
+        ([null, '', -1].includes(this.enemySize) || p.eSize === this.enemySize)
+        && (!this.appearArea || p.appearAreas.some((i) => i.iAreaId === this.appearArea))
+      )).map((p) => ({
+        DF: p.DF,
+        strName: p.strName,
+        icon: p.icon,
+        totalState: sum(p.getStates(this.level).map((i) => i.total)),
+        EXP: p.getState('EXP', this.level).total,
+        HP: p.getState('HP', this.level).total,
+        SATK: p.getState('SATK', this.level).total,
+        SDEF: p.getState('SDEF', this.level).total,
+        MATK: p.getState('MATK', this.level).total,
+        MDEF: p.getState('MDEF', this.level).total,
+        SPD: p.getState('SPD', this.level).total,
+        QTH: p.getState('QTH', this.level).total,
+        DDG: p.getState('DDG', this.level).total,
+        totalElement: sum(p.getElements().map((i) => i.total)),
+        FIRE: p.getElement('FIRE').total,
+        WATER: p.getElement('WATER').total,
+        EARTH: p.getElement('EARTH').total,
+        WIND: p.getElement('WIND').total,
+        LIGHT: p.getElement('LIGHT').total,
+        DARK: p.getElement('DARK').total,
+      }));
   }
 }
 </script>

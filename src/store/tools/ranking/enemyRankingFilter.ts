@@ -8,6 +8,10 @@ import { Module, MutationAction } from 'vuex-module-decorators';
 export default class extends VuexModuleBase {
   public eKind: number | null = null;
 
+  public enemySize: number | null = null;
+
+  public appearArea: number | null = null;
+
   public level = EnemyMVList.defaultLevel;
 
   public showColumnTotalState = true;
@@ -44,10 +48,12 @@ export default class extends VuexModuleBase {
 
   public showColumnDARK = true;
 
-  @MutationAction({ mutate: ['eKind', 'level', 'showColumnTotalState', 'showColumnEXP', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK'] })
+  @MutationAction({ mutate: ['eKind', 'enemySize', 'appearArea', 'level', 'showColumnTotalState', 'showColumnEXP', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK'] })
   public async reset() {
     return {
       eKind: null,
+      enemySize: null,
+      appearArea: null,
       level: EnemyMVList.defaultLevel,
       showColumnTotalState: true,
       showColumnEXP: true,
