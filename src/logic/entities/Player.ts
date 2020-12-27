@@ -96,6 +96,12 @@ export class Player {
     return this.abnormalStates.map((p) => p.effectlist).flat().map((p) => dataManager.abnormalStateEffectById[p]);
   }
 
+  public zoneId: number | null = null;
+
+  public get zone() {
+    return dataManager.zoneById[this.zoneId];
+  }
+
   // state
   public totalCharacterState(state: string) {
     return this.character?.getState(state, this.characterModifier.level, this.characterModifier.foodLevel).total || 0;
@@ -265,6 +271,19 @@ export class Player {
           translatedLabel: abnormalStateEffect.name,
           value: 1 + abnormalStateEffect.value,
         });
+      }
+    }
+
+    // zone
+    if (this.zone) {
+      for (const zoneEffectId of this.zone.effectlist) {
+        const zoneEffect = dataManager.zoneEffectById[zoneEffectId];
+        if (zoneEffect && zoneEffect.element === element) {
+          multipliers.push({
+            translatedLabel: zoneEffect.name,
+            value: 1 + zoneEffect.value,
+          });
+        }
       }
     }
 

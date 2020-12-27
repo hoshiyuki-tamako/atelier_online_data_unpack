@@ -1,4 +1,3 @@
-import { Bgm } from './../master/soundList';
 import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
 import areaModel from '@/../public/generated/areaModel.json';
 import characterVoices from '@/../public/generated/characterVoices.json';
@@ -28,7 +27,7 @@ import { Tips } from '@/master/tips';
 import { List as TownInfoList, TownInfo } from '@/master/townInfo';
 import { Treasure } from '@/master/treasure';
 import { MVList as WealthMvList, Wealth } from '@/master/wealth';
-import { Zone } from '@/master/zone';
+import { List as ZoneList, Zone } from '@/master/zone';
 import { List as ZoneEffectList, ZoneEffect } from '@/master/zoneEffect';
 import { IAreaModel } from '@/scripts/ModelExport';
 import { AdvManager } from '@/utils/AdvManager';
@@ -36,6 +35,7 @@ import { SpawnerDataManager } from '@/utils/SpawnerDataManager';
 import { plainToClass } from 'class-transformer';
 import Enumerable from 'linq';
 
+import { Bgm } from './../master/soundList';
 import { IBattleArea } from './../scripts/ModelExport';
 
 export class DataManager {
@@ -139,6 +139,7 @@ export class DataManager {
   public characterNpcs: CharacterMVList[];
 
   public zoneNames: string[];
+  public zoneById: { [id: string]: ZoneList };
   public zoneEffectById: { [id: string]: ZoneEffectList };
 
   public wealthOrderBySort: WealthMvList[];
@@ -278,7 +279,7 @@ export class DataManager {
       .toArray();
     // lookup
     this.itemById = Enumerable.from(this.itemsOrderByCategory)
-      .toObject((p) => p.DF, (p) => p) as { [df: string]: ItemMVList };
+      .toObject((p) => p.DF) as { [df: string]: ItemMVList };
     this.itemsByCategory = Enumerable.from(this.itemsOrderByCategory)
       .groupBy((p) => p.CATEG)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [c: string]: ItemMVList[] };
@@ -340,7 +341,7 @@ export class DataManager {
     }
 
     this.characterById = Enumerable.from(this.chara.m_vList)
-      .toObject((p) => p.DF, (p) => p) as { [df: string]: CharacterMVList };
+      .toObject((p) => p.DF) as { [df: string]: CharacterMVList };
     this.charactersCanBattle = this.chara.m_vList.filter((p) => p.EXC);
     this.characterNpcs = this.chara.m_vList.filter((p) => !p.EXC);
     this.charactersByGroupDf = Enumerable.from(this.chara.m_vList)
@@ -384,7 +385,7 @@ export class DataManager {
       && !p.name.includes('】')
     ));
     // lookup
-    this.skillById = Enumerable.from(this.skill.m_vList).toObject((p) => p.id, (p) => p) as { [id: string]: SkillList };
+    this.skillById = Enumerable.from(this.skill.m_vList).toObject((p) => p.id) as { [id: string]: SkillList };
   }
 
   public afterLoadSKill() {
@@ -399,7 +400,7 @@ export class DataManager {
   public async loadAbnormalState(abnormalState?: unknown) {
     await this.loadGeneric('abnormalstate', 'abnormalState', abnormalState);
     this.abnormalStateById = Enumerable.from(this.abnormalState.m_vList)
-      .toObject((p) => p.id, (p) => p) as { [id: string]: AbnormalStateMVList };
+      .toObject((p) => p.id) as { [id: string]: AbnormalStateMVList };
     this.abnormalStateTypes = Enumerable.from(this.abnormalState.m_vList)
       .groupBy((p) => p.name.split('(')[0])
       .select((p) => p.key())
@@ -408,7 +409,7 @@ export class DataManager {
 
   public async loadAbnormalStateEffect(abnormalStateEffect?: unknown) {
     await this.loadGeneric('abnormalstateeffect', 'abnormalStateEffect', abnormalStateEffect);
-    this.abnormalStateEffectById = Enumerable.from(this.abnormalStateEffect.m_vList).toObject((p) => p.id, (p) => p) as { [id: string]: AbnormalStateEffectMVList };
+    this.abnormalStateEffectById = Enumerable.from(this.abnormalStateEffect.m_vList).toObject((p) => p.id) as { [id: string]: AbnormalStateEffectMVList };
     this.abnormalStateEffectsByTarget = Enumerable.from(this.abnormalStateEffect.m_vList)
       .groupBy((p) => p.trarget)
       .toObject((p) => p.key(), (p) => p.orderBy((p) => p.id).toArray()) as { [target: string]: AbnormalStateEffectMVList[] };
@@ -423,12 +424,14 @@ export class DataManager {
       .groupBy((p) => p.name.split(' ')[0])
       .select((p) => p.key())
       .toArray();
+    this.zoneById = Enumerable.from(this.zone.List)
+      .toObject((p) => p.id) as { [id: string]: ZoneList };
   }
 
   public async loadZoneEffect(zoneEffect?: unknown) {
     await this.loadGeneric('zoneeffect', 'zoneEffect', zoneEffect);
     this.zoneEffectById = Enumerable.from(this.zoneEffect.List)
-      .toObject((p) => p.id, (p) => p) as { [id: string]: ZoneEffectList };
+      .toObject((p) => p.id) as { [id: string]: ZoneEffectList };
   }
 
   public async loadEnemy(enemy?: unknown) {
@@ -442,7 +445,7 @@ export class DataManager {
       .toArray();
     // lookup
     this.enemyById = Enumerable.from(this.enemiesHasValidSpec)
-      .toObject((p) => p.DF, (p) => p) as { [df: string]: EnemyMVList };
+      .toObject((p) => p.DF) as { [df: string]: EnemyMVList };
     this.enemiesBySkill = Enumerable.from(this.enemiesHasValidSpec)
       .selectMany((enemy) => enemy.sParam.SKILL.map((skill) => ({
         enemy,
@@ -490,12 +493,12 @@ export class DataManager {
       .orderBy((p) => p.SORT)
       .toArray();
     // lookup
-    this.wealthById = Enumerable.from(this.wealth.m_vList).toObject((p) => p.DF, (p) => p) as { [df: string]: WealthMvList };
+    this.wealthById = Enumerable.from(this.wealth.m_vList).toObject((p) => p.DF) as { [df: string]: WealthMvList };
   }
 
   public async loadDegree(degree?: Degree) {
     this.degree = plainToClass(Degree, degree || await this.loadJson('degree'));
-    this.degreeById = Enumerable.from(this.degree.List).toObject((p) => p.DF, (p) => p) as { [df: string]: DegreeList };
+    this.degreeById = Enumerable.from(this.degree.List).toObject((p) => p.DF) as { [df: string]: DegreeList };
     this.degreeByIdStep = Enumerable.from(this.degree.List)
       .groupBy((p) => p.DF)
       .toObject(
@@ -508,14 +511,14 @@ export class DataManager {
     this.blazeArt = plainToClass(BlazeArt, blazeArt || await this.loadJson('blaze_arts'));
     // lookup
     this.blazeArtById = Enumerable.from(this.blazeArt.m_vList)
-      .toObject((p) => p.DF, (p) => p) as { [df: string]: BlazeArtMvList };
+      .toObject((p) => p.DF) as { [df: string]: BlazeArtMvList };
   }
 
   public async loadQuest(quest?: unknown) {
     await this.loadGeneric('quest', '', quest);
     // lookup
     this.questById = Enumerable.from(this.quest.m_vList)
-      .toObject((p) => p.DF, (p) => p) as { [df: string]: QuestMVList };
+      .toObject((p) => p.DF) as { [df: string]: QuestMVList };
     this.questsByCategory = Enumerable.from(this.quest.m_vList)
       .groupBy((p) => p.CATEG)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [CATEG: string]: QuestMVList[] };

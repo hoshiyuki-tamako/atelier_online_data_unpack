@@ -89,6 +89,16 @@ div.container
                 br
                 h4 {{ $t('追加状態') }}
                 p(v-for="[state, abnormalState] of props.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
+              div(v-if="props.row.effect === EBattleEffectKind.eZONE_CHANGE" v-for="zone of [dataManager.zoneById[props.row.effectValue]].filter((p) => p)")
+                br
+                h4
+                  router-link(:to="{ name: 'InfoZone', query: { id: zone.id } }" target="_blank") {{ zone.name }}
+                p(v-for="zoneEffectId of zone.effectlist") {{ dataManager.zoneEffectById[zoneEffectId].name }} ({{ dataManager.zoneEffectById[zoneEffectId].value }})
+              div(v-if="props.row.effect === EBattleEffectKind.eSTART_SKILL && dataManager.skillById[props.row.effectValue]")
+                br
+                h4 {{ $t('スキル') }}
+                p(v-for="skill of [dataManager.skillById[props.row.effectValue]]")
+                  router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
 
             div.item-container-right
               div(v-if="dataManager.itemsBySkill[props.row.id]")

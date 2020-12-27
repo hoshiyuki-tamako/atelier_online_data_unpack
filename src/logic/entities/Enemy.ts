@@ -2,6 +2,7 @@ import { EAbnormalStateTarget, EBattleAttribute, EBattleEffectKind, EBattleEffec
 import { MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
 import { MVList as EnemyMVList } from '@/master/enemy';
 import { List as SkillList } from '@/master/skill';
+import { List as ZoneList } from '@/master/zone';
 import { dataManager } from '@/utils/DataManager';
 import { clamp } from 'lodash';
 
@@ -68,7 +69,7 @@ export class Enemy {
     };
   }
 
-  public receiveDamage(multipliers: multiplier[] = [], playerLevel = 0, element = EElement.eNONE, attribute = EBattleAttribute.eNONE, skills: SkillList[] = [], abnormalStateEffects: AbnormalStateEffectMVList[] = []) {
+  public receiveDamage(multipliers: multiplier[] = [], playerLevel = 0, element = EElement.eNONE, attribute = EBattleAttribute.eNONE, skills: SkillList[] = [], abnormalStateEffects: AbnormalStateEffectMVList[] = [], zone: ZoneList = null) {
     const result = new EnemyReceiveDamage();
 
     const oneDamageSkills = this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eONE_DAMAGE);
@@ -176,6 +177,19 @@ eRECOVER,
           translatedLabel: abnormalStateEffect.name,
           value: 1 + abnormalStateEffect.value,
         });
+      }
+    }
+
+    // zone
+    if (zone) {
+      for (const zoneEffectId of zone.effectlist) {
+        const zoneEffect = dataManager.zoneEffectById[zoneEffectId];
+        if (zoneEffect && zoneEffect.element === element) {
+          multipliers.push({
+            translatedLabel: zoneEffect.name,
+            value: 1 + zoneEffect.value,
+          });
+        }
       }
     }
 

@@ -16,10 +16,13 @@ Info for developer
 
 most file follow naming convention from the source code
 
-### Assets
+### MonoBehaviour
 
 - master `./public/export/*`
 - adv `./public/export/adv/*`
+
+### Text Assets
+
 - SpawnList `./public/export/SpawnList/TextAsset/*`
 
 ### Models

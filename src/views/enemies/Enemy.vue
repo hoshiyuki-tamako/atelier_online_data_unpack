@@ -47,40 +47,7 @@ div.container
         el-divider {{ $t('クェスト') }}
         p(v-for="quest of dataManager.questsByEnemy[enemy.DF]")
           router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
-
-      div(v-if="enemy.sParam.SKILL.length")
-        el-divider {{ $t('スキル') }}
-        div(v-for="(skill, i) of enemy.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)")
-          table.skill-table
-            tr
-              th {{ $t('名前') }}
-              td
-                router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
-            tr
-              th {{ $t('詳細') }}
-              td {{ skill.detail }}
-            tr
-              th {{ $t('数値') }}
-              td {{ skill.effectValue }}, {{ skill.effectValue2 }}
-            template(v-if="skill.type === 1")
-              tr
-                th {{ $t('攻撃タイプ') }}
-                td {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
-              tr
-                th {{ $t('属性') }}
-                td {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
-              tr
-                th {{ $t('對象') }}
-                td {{ $t(dataManager.lookup.targetTeam[skill.attackSkill.targetTeam]) }}{{ $t(dataManager.lookup.eFieldItemRange[skill.attackSkill.targetScope]) }}
-              tr(v-if="skill.attackSkill.stateOwn.length")
-                th {{ $t('追加状態 (自)') }}
-                td
-                  p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
-              tr(v-if="skill.attackSkill.state.length")
-                th {{ $t('追加状態') }}
-                td
-                  p(v-for="[state, abnormalState] of skill.attackSkill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
-          p(v-if="enemy.sParam.SKILL.length !== (i + 1)") {{ '>' }}
+      SkillTextInfo(v-if="enemy.sParam.SKILL.length" :skills="enemy.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)")
 </template>
 
 <script lang="ts">
@@ -90,10 +57,12 @@ import { dataManager } from '@/utils/DataManager';
 import { MVList as EnemyMVList } from '@/master/enemy';
 import { EnemyModifier } from '@/logic/modifiers/EnemyModifier';
 import { ModelFbx } from 'vue-3d-model';
+import SkillTextInfo from '@/components/SkillTextInfo.vue';
 
 @Component({
   components: {
     'model-fbx': ModelFbx,
+    SkillTextInfo,
   },
 })
 export default class extends VueBase {

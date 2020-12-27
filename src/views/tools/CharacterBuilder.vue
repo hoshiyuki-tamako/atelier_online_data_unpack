@@ -455,6 +455,9 @@ div.top-container
       div
         el-select(v-model="player.abnormalStateIds" :placeholder="$t('異常状態')" multiple filterable clearable)
           el-option(v-for="abnormalState of abnormalStates" :key="abnormalState.id" :label="abnormalState.name" :value="abnormalState.id")
+      div
+        el-select(v-model="player.zoneId" :placeholder="$t('ゾーン')" filterable clearable)
+          el-option(v-for="zone of dataManager.zone.List" :key="zone.id" :label="zone.name" :value="zone.id")
       table
         tr
           th
@@ -756,7 +759,7 @@ div.top-container
       div(v-if="enemy.enemy")
         table
           tr(v-if="player.equipment.weapon || player.character")
-            template(v-for="receiveDamage of [enemy.receiveDamage(player.attack().multipliers, player.character ? player.characterModifier.level : 0, player.element, player.attribute, player.skills, player.abnormalStateEffects)]")
+            template(v-for="receiveDamage of [enemy.receiveDamage(player.attack().multipliers, player.character ? player.characterModifier.level : 0, player.element, player.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
               th
                 v-popover(placement="left-end" trigger="hover")
                   span {{ $t(dataManager.lookup.EBattleAttribute[player.attribute]) }}
@@ -783,7 +786,7 @@ div.top-container
           tr(v-if="player.character")
             template(v-for="skill of [player.character.getBlazeArt(player.characterModifier.level, player.characterModifier.blazeArtLevel)].filter((p) => p)")
               template(v-for="playerAttack of [player.attack(skill, skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="player.character.faceIcon" :alt="skill.name")
@@ -812,7 +815,7 @@ div.top-container
           tr(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).attribute")
             template(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
               template(v-for="playerAttack of [player.attack(skill, skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
@@ -841,7 +844,7 @@ div.top-container
           tr(v-if="player.equipment.shield && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality) && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality).attribute")
             template(v-for="skill of [player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)]")
               template(v-for="playerAttack of [player.attack(skill, skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")

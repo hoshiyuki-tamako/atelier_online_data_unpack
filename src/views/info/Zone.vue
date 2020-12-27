@@ -2,7 +2,19 @@
 div.container
   div.filters
     div.filter
-      el-checkbox-group(v-model="filter.has" @change="resetPage" size="small")
+      span {{ $t('名前') }}/ID
+      el-input(v-model="name" clearable)
+    div.filter
+      span {{ $t('属性') + $t('ダメージ') }}+
+      el-select(v-model="addElement" clearable filterable)
+        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+    div.filter
+      span {{ $t('属性') + $t('ダメージ') }}-
+      el-select(v-model="negativeElement" clearable filterable)
+        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+  div.filters
+    div.filter
+      el-checkbox-group(v-model="has" size="small")
         el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
   div.content
     el-table(:data="filterdZones")
@@ -10,7 +22,7 @@ div.container
       el-table-column(prop="name" :label="$t('名前')" :filters="typeFilters" :filter-method="typeFilderHandler" sortable)
       el-table-column(prop="effectlist.length" :label="$t('効果')" sortable)
         template(slot-scope="scope")
-          p(v-for="id of scope.row.effectlist") {{ dataManager.zoneEffectById[id].name }}, {{ dataManager.zoneEffectById[id].value }}
+          p(v-for="id of scope.row.effectlist") {{ dataManager.zoneEffectById[id].name }} ({{ dataManager.zoneEffectById[id].value }})
       el-table-column(:label="`${$t('アイテム')} / ${$t('敵')}`")
         template(slot-scope="scope")
           div
@@ -37,6 +49,14 @@ import { List as ZoneList } from '@/master/zone';
   },
 })
 export default class extends VueBase {
+  public has = [] as number[];
+
+  public name = '';
+
+  public addElement: number | null = null;
+
+  public negativeElement: number | null = null;
+
   public get hasFilter() {
     return [
       {
@@ -50,14 +70,13 @@ export default class extends VueBase {
     ];
   }
 
-  public filter = {
-    has: [],
-  };
-
   public get filterdZones() {
     return dataManager.zone.List.filter((p) => (
-      (!this.filter.has.includes(1) || dataManager.itemsByZone[p.id])
-      && (!this.filter.has.includes(2) || dataManager.enemiesByZone[p.id])
+      (!this.name || p.id === +this.name || p.name.toLocaleLowerCase().includes(this.name))
+      && ([null, '', -1].includes(this.addElement) || p.effectlist.some((i) => this.dataManager.zoneEffectById[i]?.element === this.addElement && this.dataManager.zoneEffectById[i].value > 0))
+      && ([null, '', -1].includes(this.negativeElement) || p.effectlist.some((i) => this.dataManager.zoneEffectById[i]?.element === this.negativeElement && this.dataManager.zoneEffectById[i].value < 0))
+      && (!this.has.includes(1) || dataManager.itemsByZone[p.id])
+      && (!this.has.includes(2) || dataManager.enemiesByZone[p.id])
     ));
   }
 
@@ -70,6 +89,12 @@ export default class extends VueBase {
 
   public typeFilderHandler(value: string, row: ZoneList) {
     return row.name.includes(value);
+  }
+
+  public created() {
+    if (this.$route.query.id) {
+      this.name = this.$route.query.id as string;
+    }
   }
 }
 </script>
