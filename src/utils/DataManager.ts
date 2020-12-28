@@ -168,6 +168,8 @@ export class DataManager {
 
   public degreeById: { [df: string]: DegreeList };
   public degreeByIdStep: { [df: string]: { [step: string]: DegreeList } };
+  public degreeSteps: number[];
+  public degreeRarities: number[];
 
   public fieldItemById: { [id: string]: FieldItemList };
 
@@ -505,6 +507,16 @@ export class DataManager {
         (p) => p.key(),
         (p) => p.groupBy((o) => o.STP).toObject((o) => o.key(), (o) => o.firstOrDefault())
       ) as { [df: string]: { [step: string]: DegreeList } };
+    this.degreeSteps = Enumerable.from(this.degree.List)
+      .groupBy((p) => p.STP)
+      .select((p) => p.key())
+      .orderBy((p) => p)
+      .toArray();
+    this.degreeRarities = Enumerable.from(this.degree.List)
+      .groupBy((p) => p.RTY)
+      .select((p) => p.key())
+      .orderBy((p) => p)
+      .toArray();
   }
 
   public async loadBlazeArt(blazeArt?: unknown) {
