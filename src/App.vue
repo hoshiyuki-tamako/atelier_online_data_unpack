@@ -237,6 +237,16 @@ export default class extends VueWithMapFields {
 
 .dark-mode a
   color: #409EFF
+
+@media (prefers-color-scheme: dark)
+  body
+    background: #222933
+  body.light-mode
+    background: initial
+  .menu
+    background: #222933
+  .light-mode .menu
+    background: initial
 </style>
 
 <style lang="sass" scoped>
