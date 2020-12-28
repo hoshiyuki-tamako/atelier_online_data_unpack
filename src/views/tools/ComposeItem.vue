@@ -98,7 +98,7 @@ div
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { clamp } from 'lodash';
 import { MVList as ItemMVList } from '@/master/item';
 import { MaterialOptions } from '@/store/tools/composeItemFilter';

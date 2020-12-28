@@ -137,7 +137,7 @@ div.container
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { List as SkillList } from '@/master/skill';
 import LRU from 'lru-cache';
 import { mapFields } from 'vuex-map-fields';

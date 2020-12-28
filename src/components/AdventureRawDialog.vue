@@ -38,7 +38,7 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { MVList as QuestMVList } from '@/master/quest';
 import { IAdventure } from '@/utils/AdvManager';
 import MobileDetect from 'mobile-detect';

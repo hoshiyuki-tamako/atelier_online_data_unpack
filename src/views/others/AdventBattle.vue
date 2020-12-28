@@ -39,7 +39,7 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import Enumerable from 'linq';
 import { clamp } from 'lodash';
 import { EBattleScoreKind } from '@/logic/Enums';

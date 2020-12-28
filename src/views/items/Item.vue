@@ -223,7 +223,7 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { MVList as ItemMVList } from '@/master/item';
 import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 import { clamp } from 'lodash';

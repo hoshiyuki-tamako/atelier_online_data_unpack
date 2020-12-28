@@ -191,7 +191,7 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { MVList as CharacterMVList } from '@/master/chara';
 import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
 

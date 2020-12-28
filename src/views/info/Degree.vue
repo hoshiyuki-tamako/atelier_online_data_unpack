@@ -17,7 +17,7 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { List as DegreeList } from '@/master/degree';
 
 @Component({

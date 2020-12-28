@@ -28,7 +28,7 @@ div.item-enhance-quality
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { mapFields } from 'vuex-map-fields';
 import { ECategory } from '@/logic/Enums';
 import { MVList as ItemMVList } from '@/master/item';

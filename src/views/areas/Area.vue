@@ -6,7 +6,7 @@ div.three(ref="three")
 /* eslint no-param-reassign: "off" */
 
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import {
   Scene,
   AmbientLight,
@@ -133,23 +133,23 @@ export default class extends VueBase {
         'Collision', 'EnvSound', 'Spawner', 'System',
         'light',
         'bgmap', 'radar',
-      ].map((p) => p.toLocaleLowerCase());
+      ];
 
       // they reuse iAreaId === 5 map for the sea effect in some area, required to hide MapArea 5
       if ([6, 106].includes(this.area?.iAreaID)) {
-        filters.push('MapArea_05_001'.toLocaleLowerCase());
+        filters.push('MapArea_05_001');
       }
 
       // battle areas filter
-      filters.push('skillbg'.toLocaleLowerCase());
+      filters.push('skillbg');
 
       // for some reason they put battle_01_001 in iAreaID === 10 map
       if (this.area?.iAreaID === 10) {
-        filters.push('battle_01_001'.toLocaleLowerCase());
+        filters.push('battle_01_001');
       }
 
       if (this.dungeon || this.fieldDungeon) {
-        filters.push('door'.toLocaleLowerCase());
+        filters.push('door');
       }
 
       // if raw ignore all filters
@@ -158,7 +158,7 @@ export default class extends VueBase {
       }
 
       object.traverse((child: Group & Object3D & Mesh) => {
-        if (filters.some((p) => child.name.toLocaleLowerCase().includes(p))) {
+        if (filters.some((p) => child.name.toLocaleLowerCase().includes(p.toLocaleLowerCase()))) {
           if (!this.isProduction) {
             console.log(`filtered: ${child.name}`);
           }

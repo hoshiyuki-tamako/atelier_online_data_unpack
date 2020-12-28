@@ -13,7 +13,7 @@ el-container.containter-main(v-loading="pageLoading")
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import sleep from 'sleep-promise';
 import ms from 'ms';
 import { mapFields } from 'vuex-map-fields';

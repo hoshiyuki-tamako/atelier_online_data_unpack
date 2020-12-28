@@ -49,7 +49,7 @@ div(v-if="skills && skills.length")
 
 <script lang="ts">
 import { Component, Prop } from 'vue-property-decorator';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { List } from '@/master/skill';
 import { EBattleEffectKind } from '@/logic/Enums';
 

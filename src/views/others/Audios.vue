@@ -13,7 +13,7 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import Aplayer from 'vue-aplayer';
 
 Aplayer.disableVersionBadge = true;

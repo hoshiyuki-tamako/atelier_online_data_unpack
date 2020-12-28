@@ -40,7 +40,7 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { List as ZoneList } from '@/master/zone';
 
 @Component({
@@ -71,7 +71,7 @@ export default class extends VueBase {
 
   public get filterdZones() {
     return this.dataManager.zone.List.filter((p) => (
-      (!this.name || p.id === +this.name || p.name.toLocaleLowerCase().includes(this.name))
+      (!this.name || p.id === +this.name || p.name.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()))
       && ([null, '', -1].includes(this.addElement) || p.effectlist.some((i) => this.dataManager.zoneEffectById[i]?.element === this.addElement && this.dataManager.zoneEffectById[i].value > 0))
       && ([null, '', -1].includes(this.negativeElement) || p.effectlist.some((i) => this.dataManager.zoneEffectById[i]?.element === this.negativeElement && this.dataManager.zoneEffectById[i].value < 0))
       && (!this.has.includes(1) || this.dataManager.itemsByZone[p.id])

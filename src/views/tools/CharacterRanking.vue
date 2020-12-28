@@ -61,7 +61,7 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { sum } from 'lodash';
 import { mapFields } from 'vuex-map-fields';
 

@@ -72,7 +72,7 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import Enumerable from 'linq';
 import { sum } from 'lodash';
 import { Formula } from '@/logic/Formula';

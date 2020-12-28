@@ -62,7 +62,7 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import Enumerable from 'linq';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import { mapFields } from 'vuex-map-fields';
 import { CharacterType } from '@/store/characters/charactersFilter';
 import { SkillKind } from './skills/Skills.vue';

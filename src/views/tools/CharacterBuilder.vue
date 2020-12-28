@@ -914,7 +914,7 @@ div.top-container
 import 'vue-select/dist/vue-select.css';
 
 import Component from 'vue-class-component';
-import VueBase from '@/utils/VueBase';
+import VueBase from '@/components/VueBase';
 import vSelect from 'vue-select';
 import { dataManager } from '@/utils/DataManager';
 import { MVList as ItemMVList } from '@/master/item';
