@@ -92,7 +92,7 @@ export default class extends VueBase {
 
   public created() {
     if (this.$route.query.id) {
-      this.name = this.$route.query.id as string;
+      this.name = this.$route.query.id.toString();
     }
   }
 }
