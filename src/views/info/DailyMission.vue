@@ -60,6 +60,12 @@ export default class extends VueBase {
     });
     return weekFormat.format(this.now) === weekName;
   }
+
+  public mounted() {
+    document.getElementsByClassName('today')[0].scrollIntoView({
+      block: 'center',
+    });
+  }
 }
 </script>
 
