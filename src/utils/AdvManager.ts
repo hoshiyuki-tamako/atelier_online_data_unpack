@@ -1,3 +1,4 @@
+import { DataManager } from './DataManager';
 import { EOrderType } from '@/logic/Enums';
 import { Adv } from '@/master/adv';
 
@@ -35,7 +36,7 @@ export interface IWindowItem extends IAdventure {
 }
 
 export class AdvManager {
-  public locale = 'ja-JP';
+  public locale = DataManager.defaultLocale;
 
   #advCache = new Map<string, Adv>();
   #dialogCache = new Map<string, IAdventure[]>();

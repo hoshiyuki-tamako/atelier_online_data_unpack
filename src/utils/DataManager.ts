@@ -2,7 +2,7 @@ import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
 import areaModel from '@/../public/generated/areaModel.json';
 import characterVoices from '@/../public/generated/characterVoices.json';
 import files from '@/../public/generated/files.json';
-import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger } from '@/logic/Enums';
+import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger, EDegreeMissonType } from '@/logic/Enums';
 import { lookup } from '@/logic/Lookup';
 import { AbnormalState, MVList as AbnormalStateMVList } from '@/master/abnormalState';
 import { AbnormalStateEffect, MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
@@ -39,9 +39,24 @@ import { Bgm } from './../master/soundList';
 import { IBattleArea } from './../scripts/ModelExport';
 
 export class DataManager {
+  public static supportedLocales = ['ja-JP', 'zh-TW'];
+
+  public static get defaultLocale() {
+    return this.supportedLocales[0];
+  }
+  
   // settings
   public showHiddenContent = false;
-  public locale = 'ja-JP';
+
+  #locale = DataManager.defaultLocale;
+  public get locale() {
+    return this.#locale;
+  }
+  public set locale(value: string | null) {
+    this.#locale = DataManager.supportedLocales.find((p) => p.toLocaleLowerCase() === value?.toLocaleLowerCase()) || DataManager.defaultLocale;
+    this.advManager.setLocale(this.locale);
+  }
+
   public exportFolder = './export/';
   public generatedFolder = './generated/';
   public get exportFolderUrl() {
@@ -166,6 +181,8 @@ export class DataManager {
 
   public wealthById: { [df: string]: WealthMvList };
 
+  public degrees: DegreeList[];
+  public degreeDailyMissions: DegreeList[];
   public degreeById: { [df: string]: DegreeList };
   public degreeByIdStep: { [df: string]: { [step: string]: DegreeList } };
   public degreeSteps: number[];
@@ -202,12 +219,9 @@ export class DataManager {
 
   public townIcons = [] as string[];
 
-
   //
-  public async load(locale: string, showHiddenContent = false) {
+  public async load(showHiddenContent = false) {
     this.showHiddenContent = showHiddenContent;
-    this.locale = locale;
-    this.advManager.setLocale(this.locale);
     await this.loadData();
   }
 
@@ -500,12 +514,14 @@ export class DataManager {
 
   public async loadDegree(degree?: Degree) {
     this.degree = plainToClass(Degree, degree || await this.loadJson('degree'));
+    this.degrees = this.degree.List.filter((p) => p.TYP !== EDegreeMissonType.eNONE);
+    this.degreeDailyMissions = this.degree.List.filter((p) => p.TYP === EDegreeMissonType.eNONE);
     this.degreeById = Enumerable.from(this.degree.List).toObject((p) => p.DF) as { [df: string]: DegreeList };
     this.degreeByIdStep = Enumerable.from(this.degree.List)
       .groupBy((p) => p.DF)
       .toObject(
         (p) => p.key(),
-        (p) => p.groupBy((o) => o.STP).toObject((o) => o.key(), (o) => o.firstOrDefault())
+        (p) => p.groupBy((o) => o.STP).toObject((o) => o.key(), (o) => o.firstOrDefault()),
       ) as { [df: string]: { [step: string]: DegreeList } };
     this.degreeSteps = Enumerable.from(this.degree.List)
       .groupBy((p) => p.STP)

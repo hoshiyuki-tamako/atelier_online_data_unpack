@@ -447,6 +447,16 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        label: this.$t('課題'),
+        img: {
+          src: 'img/icon/icon_mission.png',
+          class: 'icon-daily-mission',
+        },
+        to: {
+          name: 'InfoDailyMission',
+        },
+      },
+      {
         label: this.$t('ゾーン'),
         img: {
           src: 'img/icon_item_s/Texture2D/icon_item_s_10500014.png',
@@ -667,7 +677,6 @@ export default class extends VueWithMapFields {
   display: flex
   flex-direction: column
   align-items: center
-  // margin: 32px
 
 .categories__title-container
   border-radius: 12px
@@ -679,7 +688,6 @@ export default class extends VueWithMapFields {
   flex-wrap: wrap
   justify-content: center
   align-items: center
-  // margin: 8px
 
 .category__container
   margin: 12px
@@ -697,6 +705,9 @@ export default class extends VueWithMapFields {
   width: 100px
 .compose-item__image
   margin-top: 18px
+
+.icon-daily-mission
+  width: 80px
 
 .strategy-guides, .other-links
   margin: 12px

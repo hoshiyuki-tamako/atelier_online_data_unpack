@@ -242,6 +242,14 @@ const infoRoutes: Array<RouteConfig> = [
     },
   },
   {
+    path: '/info/dailyMission',
+    name: 'InfoDailyMission',
+    component: () => import(/* webpackChunkName: "InfoDailyMission" */ '@/views/info/DailyMission.vue'),
+    meta: {
+      title: '課題',
+    },
+  },
+  {
     path: '/info/quest',
     name: 'InfoQuest',
     component: () => import(/* webpackChunkName: "InfoQuest" */ '@/views/info/Quest.vue'),

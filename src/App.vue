@@ -161,9 +161,10 @@ export default class extends VueWithMapFields {
     let retry = 10;
     while (retry-- > 0) {
       try {
-        this.$i18n.locale = new URLSearchParams(window.location.search).get('locale') || 'ja-JP';
+        this.dataManager.locale = new URLSearchParams(window.location.search).get('locale');
+        this.$i18n.locale = this.dataManager.locale;
         document.title = this.$t(document.title).toString();
-        await this.dataManager.load(this.$i18n.locale, this.$store.state.home.showHiddenContent);
+        await this.dataManager.load(this.$store.state.home.showHiddenContent);
         this.pageLoading = false;
         retry = 0;
       } catch (e) {
