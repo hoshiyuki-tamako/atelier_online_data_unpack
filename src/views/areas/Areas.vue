@@ -117,16 +117,23 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import VueBase from '@/components/VueBase';
-import ms from 'ms';
 
 @Component({
   components: {
   },
 })
 export default class extends VueBase {
-  public mounted() {
+  public async mounted() {
     if (this.$route.query.df) {
-      setTimeout(() => this.$scrollTo(`#DF-${this.$route.query.df}`, -1), ms('1s'));
+      await Promise.all(
+        Array.from(document.images)
+          .filter((img) => !img.complete)
+          .map((img) => new Promise((resolve) => {
+            img.addEventListener('load', resolve);
+            img.addEventListener('error', resolve);
+          })),
+      );
+      this.$scrollTo(`#DF-${this.$route.query.df}`, -1);
     }
   }
 }
