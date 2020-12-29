@@ -183,42 +183,9 @@ div.container
             router-link(:to="{ name: 'ItemsItem', query: { df: otherItem.DF } }")
               el-tooltip(:content="otherItem.NAME" placement="top")
                 img.icon-small(:src="otherItem.icon" :alt="otherItem.DF")
-
-      div(v-if="item.SPC.length")
-        div(v-for="[spc, skills] of item.SPC.map((spc) => [spc, spc.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)]).filter((p) => p[1].length)")
-          el-divider {{ $t('スキル') }} ({{ $t('品質') }} {{ spc.THR }})
-          table(v-for="(skill, i) of skills")
-            tr
-              th {{ $t('名前') }}
-              td
-                router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
-            tr
-              th {{ $t('詳細') }}
-              td {{ skill.detail }}
-            tr
-              th {{ $t('数値') }}
-              td {{ skill.effectValue }}, {{ skill.effectValue2 }}
-            template(v-if="skill.type === 1")
-              tr
-                th {{ $t('攻撃タイプ') }}
-                td {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
-              tr
-                th {{ $t('属性') }}
-                td {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
-              tr
-                th {{ $t('對象') }}
-                td {{ $t(dataManager.lookup.targetTeam[skill.attackSkill.targetTeam]) }}{{ $t(dataManager.lookup.eFieldItemRange[skill.attackSkill.targetScope]) }}
-              tr(v-if="skill.attackSkill.stateOwn.length")
-                th {{ $t('追加状態 (自)') }}
-                td
-                  p(v-for="[state, abnormalState] of skill.attackSkill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
-              tr(v-if="skill.attackSkill.state.length")
-                th {{ $t('追加状態') }}
-                td
-                  p(v-for="[state, abnormalState] of skill.attackSkill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
-            p(v-if="skills.length !== (i + 1)") {{ '>' }}
-  hr
-
+      template(v-if="item.SPC.length" v-for="[spc, skills] of item.SPC.map((spc) => [spc, spc.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)]).filter((p) => p[1].length)")
+        SkillTextInfo(:skills="skills")
+          template(slot="title") {{ $t('スキル') }} ({{ $t('品質') }} {{ spc.THR }})
 </template>
 
 <script lang="ts">
@@ -229,10 +196,12 @@ import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 import { clamp } from 'lodash';
 import { ModelFbx } from 'vue-3d-model';
 import { EWeaponKind, ECategory } from '@/logic/Enums';
+import SkillTextInfo from '@/components/SkillTextInfo.vue';
 
 @Component({
   components: {
     'model-fbx': ModelFbx,
+    SkillTextInfo,
   },
 })
 export default class extends VueBase {

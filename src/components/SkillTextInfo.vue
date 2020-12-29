@@ -1,6 +1,7 @@
 <template lang="pug">
 div(v-if="skills && skills.length")
-  el-divider {{ $t('スキル') }}
+  el-divider(v-if="showTitle")
+    slot(name="title") {{ $t('スキル') }}
   div(v-for="(skill, i) of skills")
     table.skill-table
       tr
@@ -43,7 +44,11 @@ div(v-if="skills && skills.length")
         td
           p(v-for="skill of [dataManager.skillById[skill.effectValue]]")
             router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
-
+      tr(v-if="skill.combSkillList.length")
+        th {{ $t('含まれるスキル') }}
+        td
+          p(v-for="skill of skill.combSkillList")
+            router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
     p(v-if="skills.length !== (i + 1)") {{ '>' }}
 </template>
 
@@ -62,8 +67,11 @@ export default class extends VueBase {
     return EBattleEffectKind;
   }
 
-  @Prop({ type: Array, default: [] })
+  @Prop({ type: Array, default: () => [] })
   public skills!: List[];
+
+  @Prop({ type: Boolean, default: true })
+  public showTitle!: boolean;
 }
 </script>
 

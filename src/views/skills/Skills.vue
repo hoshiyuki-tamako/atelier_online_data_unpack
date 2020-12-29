@@ -79,7 +79,7 @@ div.container
               div(v-if="props.row.combSkillList.length")
                 br
                 h4 {{ $t('含まれるスキル') }}
-                p(v-for="(skill, i) of props.row.combSkillList")
+                p(v-for="skill of props.row.combSkillList")
                   router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
               div(v-if="props.row.stateOwn.length")
                 br

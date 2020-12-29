@@ -63,37 +63,8 @@ div
         img.compose-result-image(@click="itemPickerDialogVisible = true" :src="compose.icon" :alt="compose.NAME")
       div.compose-result-export
         el-button(@click="exportComposeItemUrlVisible = true" type="primary" circle) URL
-      div.compose-result-skill(v-for="(skill, i) in compose.getSkills(composeQuality)")
-        table
-          tr
-            th {{ $t('名前') }}
-            td
-              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
-          tr
-            th {{ $t('詳細') }}
-            td {{ skill.detail }}
-          tr
-            th {{ $t('数値') }}
-            td {{ skill.effectValue }}, {{ skill.effectValue2 }}
-          template(v-if="skill.type === 1")
-            tr
-              th {{ $t('攻撃タイプ') }}
-              td {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
-            tr
-              th {{ $t('属性') }}
-              td {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
-            tr
-              th {{ $t('對象') }}
-              td {{ $t(dataManager.lookup.targetTeam[skill.attackSkill.targetTeam]) }}{{ $t(dataManager.lookup.eFieldItemRange[skill.attackSkill.targetScope]) }}
-            tr(v-if="skill.attackSkill.stateOwn.length")
-              th {{ $t('追加状態 (自)') }}
-              td
-                p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
-            tr(v-if="skill.attackSkill.state.length")
-              th {{ $t('追加状態') }}
-              td
-                p(v-for="[state, abnormalState] of skill.attackSkill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
-        p(v-if="compose.getSkills(composeQuality).length !== (i + 1)") {{ '>' }}
+
+      SkillTextInfo(:skills="compose.getSkills(composeQuality)" :showTitle="false")
 </template>
 
 <script lang="ts">
@@ -103,6 +74,7 @@ import { clamp } from 'lodash';
 import { MVList as ItemMVList } from '@/master/item';
 import { MaterialOptions } from '@/store/tools/composeItemFilter';
 import { mapFields } from 'vuex-map-fields';
+import SkillTextInfo from '@/components/SkillTextInfo.vue';
 
 abstract class VueWithMapFields extends VueBase {
   public itemDf!: number;
@@ -116,6 +88,7 @@ abstract class VueWithMapFields extends VueBase {
 
 @Component({
   components: {
+    SkillTextInfo,
   },
   computed: {
     ...mapFields('composeItemFilter', ['itemDf', 'allQuality']),
@@ -339,9 +312,4 @@ a
 
 .compose-result-export
   text-align: center
-
-.compose-result-skill tr th
-  white-space: nowrap
-  text-align: left
-  padding: 4px
 </style>
