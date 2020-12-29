@@ -666,8 +666,8 @@ export default class extends VueWithMapFields {
 <style lang="sass" scoped>
 .title__container
   margin: 12px
-  h2
-    color: rgb(153, 122, 79)
+.light-mode .title__container h2
+  color: rgb(153, 122, 79)
 
 .version-link__container
   > span
@@ -709,7 +709,7 @@ export default class extends VueWithMapFields {
 .icon-daily-mission
   width: 80px
 
-.strategy-guides, .other-links
+.light-mode .strategy-guides, .light-mode .other-links
   margin: 12px
   h3
     color: rgb(153, 122, 79)

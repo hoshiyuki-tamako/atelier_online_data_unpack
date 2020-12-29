@@ -299,7 +299,7 @@ div.top-container
         div.main-equipment-container
           div.filters
             el-button(@click="mainItemEditorVisible = true" type="success" icon="el-icon-edit" circle)
-            span {{ $t('まとめで設定') }}
+            span.button__label-text {{ $t('まとめで設定') }}
           div.main-equipments
             div.left-equipment
               template(v-for="slot of ['weapon', 'shield', 'helmet', 'armor']")
@@ -419,7 +419,7 @@ div.top-container
           div.sub-equipment-menu
             div.filters
               el-button(@click="openSupportItemEditDialog" type="success" icon="el-icon-edit" circle)
-              span {{ $t('サブ装備') }} x {{ player.supports.length }}
+              span.button__label-text {{ $t('サブ装備') }} x {{ player.supports.length }}
 
           div.sub-equipment-items
             div(v-for="(support, i) of player.supports")
@@ -1697,6 +1697,9 @@ a
       text-align: center
     img
       width: 120px
+
+.button__label-text
+    margin-left: 4px
 
 /* support equipment
 .sub-equipment, .result

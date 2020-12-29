@@ -69,7 +69,7 @@ export default class extends VueBase {
   grid-template-rows: auto auto auto auto auto auto
   grid-auto-flow: column
   grid-gap: 3px 3px
-  max-width: 1000px
+  max-width: 0
 
 .calendar-header
   height: auto !important
