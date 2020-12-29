@@ -36,19 +36,19 @@ div(v-if="skills && skills.length")
           p(v-for="[state, abnormalState] of skill.attackSkill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
       tr(v-if="skill.effect === EBattleEffectKind.eZONE_CHANGE" v-for="zone of [dataManager.zoneById[skill.effectValue]].filter((p) => p)")
         th
-          router-link(:to="{ name: 'InfoZone', query: { id: zone.id } }" target="_blank") {{ zone.name }}
+          router-link(:to="{ name: 'InfoZone', query: { id: zone.id } }") {{ zone.name }}
         td
           p(v-for="zoneEffectId of zone.effectlist") {{ dataManager.zoneEffectById[zoneEffectId].name }} ({{ dataManager.zoneEffectById[zoneEffectId].value }})
       tr(v-if="skill.effect === EBattleEffectKind.eSTART_SKILL && dataManager.skillById[skill.effectValue]")
         th {{ $t('スキル') }}
         td
           p(v-for="skill of [dataManager.skillById[skill.effectValue]]")
-            router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+            router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
       tr(v-if="skill.combSkillList.length")
         th {{ $t('含まれるスキル') }}
         td
           p(v-for="skill of skill.combSkillList")
-            router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+            router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
     p(v-if="skills.length !== (i + 1)") {{ '>' }}
 </template>
 
