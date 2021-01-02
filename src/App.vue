@@ -168,8 +168,8 @@ export default class extends VueWithMapFields {
         this.pageLoading = false;
         retry = 0;
       } catch (e) {
-        this.$message.error(e.toString());
         console.error(e);
+        this.$message.error(e.toString());
         await sleep(ms('3s'));
       }
     }
@@ -201,6 +201,7 @@ export default class extends VueWithMapFields {
       document.body.classList.add('light-mode');
     }
   }
+
 }
 </script>
 

@@ -6,7 +6,9 @@
 
 All exported files `images` `models` `audios` are NOT license in MIT
 
-For developer see `./development.md`
+For game related data developer see `./development.md`
+
+For game server API see `./api.md`
 
 ### Darkmode
 
@@ -93,5 +95,6 @@ docker-compose up --build -d
 7. export type `AudioClip` filter by `vo` to `./source/voice/AudioClip/*`
 8. export type `AudioClip` filter by `music` to `./source/music/AudioClip/*`
 9. (optional) update other images/models/Enums/lookup if any
-10. delete `./public/models/roots/**/*` `./public/models/dungeons/**/*` `./public/models/fieldDungeons/**/*` `./public/models/gimmicks/**/*` `./public/models/throwables/**/*`
-11. run command at root directory of this project `npm run process`
+10. (optional) extract API result with url path as folder to `./source/aoserver/**/*`
+11. delete `./public/models/roots/**/*` `./public/models/dungeons/**/*` `./public/models/fieldDungeons/**/*` `./public/models/gimmicks/**/*` `./public/models/throwables/**/*`
+12. run command at root directory of this project `npm run process`

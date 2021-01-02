@@ -643,7 +643,7 @@ quest
     {
       "DF": 50010001, // relationship to item.id
       "QTY": 50, // quality
-      "TRT": 0,
+      "TRT": 0, // relationship skill.id (強化効果)
       "CNT": 1, // amount
       "EX_DF0": 0,
       "EX_QTY0": 0,

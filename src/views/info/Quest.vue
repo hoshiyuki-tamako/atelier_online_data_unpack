@@ -120,7 +120,9 @@ div.container
                   div(v-for="[rwd, item] of quest.RWD_ITEM.map((rwd) => [rwd, dataManager.itemById[rwd.DF]]).filter((p) => p[1])")
                     el-tooltip(:content="item.NAME" placement="left")
                       router-link.quest-reward-item-container(:to="{ name: 'ItemsItem', query: { df: item.DF, quality: rwd.QTY } }" target="_blank")
-                        p {{ $t('品質') }}{{ rwd.QTY }}
+                        p.reward-title
+                          span {{ $t('品質') }}{{ rwd.QTY }}
+                          span(v-if="rwd.TRT") {{ dataManager.skillById[rwd.TRT].name.replace(/\s+/gm, '') }}
                         img(:src="item.icon" :alt="item.NAME")
                         p x {{ rwd.CNT }}
                   div(v-for="[rwd, wealth] of quest.RWD_WTH.map((rwd) => [rwd, dataManager.wealthById[rwd.DF]])")
@@ -402,6 +404,9 @@ a
 .quest-reward-item-container
   display: flex
   align-items: center
+  .reward-title
+    display: flex
+    flex-direction: column
 
 .quest-reward-item-container img
   width: 60px
