@@ -265,6 +265,14 @@ const infoRoutes: Array<RouteConfig> = [
       title: 'ダイアログ',
     },
   },
+  {
+    path: '/info/hunt',
+    name: 'InfoHunt',
+    component: () => import(/* webpackChunkName: "InfoHunt" */ '@/views/info/Hunt.vue'),
+    meta: {
+      title: 'トレジャー',
+    },
+  },
 ];
 
 const othersRoutes: Array<RouteConfig> = [

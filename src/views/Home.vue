@@ -457,6 +457,15 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        label: this.$t('トレジャー'),
+        img: {
+          src: 'img/icon/icon_hunt.png',
+        },
+        to: {
+          name: 'InfoHunt',
+        },
+      },
+      {
         label: this.$t('ゾーン'),
         img: {
           src: 'img/icon_item_s/Texture2D/icon_item_s_10500014.png',

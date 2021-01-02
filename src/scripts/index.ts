@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
+import ApiExport from './ApiExport';
 
 import AtelierOnlineExportProcessor from './AtelierOnlineExportProcessor';
 import AtelierOnlineFileExport from './AtelierOnlineFileExport';
@@ -12,18 +13,23 @@ class Main {
   public static async main() {
     const sourceFolder = path.join(__dirname, '..', '..', 'source');
     const rootFolder = path.join(__dirname, '..', '..', 'public');
-    const hasSourceFolder = await fs.pathExists(sourceFolder);
-    if (!hasSourceFolder) {
+    const promises = [
+      new StaticGenerate().save(rootFolder),
+      new AtelierOnlineExportProcessor().process(path.join(__dirname, '..', '..', 'public', 'export')),
+    ];
+
+    if (await fs.pathExists(sourceFolder)) {
+      promises.push(
+        new TextureExport().process(sourceFolder, rootFolder),
+        new ModelExport().process(sourceFolder, rootFolder),
+        new AudioExport().process(sourceFolder, rootFolder),
+        new ApiExport().process(sourceFolder, rootFolder),
+      );
+    } else {
       console.log(`source folder not found, skipping process source assets: ${sourceFolder}`);
     }
 
-    await Promise.all([
-      hasSourceFolder ? new TextureExport().process(sourceFolder, rootFolder) : null,
-      hasSourceFolder ? new ModelExport().process(sourceFolder, rootFolder) : null,
-      hasSourceFolder ? new AudioExport().process(sourceFolder, rootFolder) : null,
-      new StaticGenerate().save(rootFolder),
-      new AtelierOnlineExportProcessor().process(path.join(__dirname, '..', '..', 'public', 'export')),
-    ]);
+    await Promise.all(promises);
     await new AtelierOnlineFileExport().save(rootFolder);
   }
 }
