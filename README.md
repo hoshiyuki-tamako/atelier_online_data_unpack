@@ -83,8 +83,9 @@ docker-compose up --build -d
 ## Content Update Steps
 
 - Download latest `APK` and `assets`
-- using `AssetStudio` >= 0.15 load folders that include both un-zipped APK, and assets
-- (optional) use Il2CppDumper to dump DLL for Enums/others
+- use `AssetStudio` >= 0.15 load folders that include both un-zipped APK, and assets
+- (optional) use `Il2CppDumper` to dump DLL for Enums/others
+- (optional) extract api response if any updated
 
 1. export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./public/export/*`
 2. export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./public/export/adv/*`
@@ -94,7 +95,9 @@ docker-compose up --build -d
 6. export models fbx version 7.5 ascii to `./source/modelsMeta/**/*`
 7. export type `AudioClip` filter by `vo` to `./source/voice/AudioClip/*`
 8. export type `AudioClip` filter by `music` to `./source/music/AudioClip/*`
-9. (optional) update other images/models/Enums/lookup if any
-10. (optional) extract API result with url path as folder to `./source/aoserver/**/*`
-11. delete `./public/models/roots/**/*` `./public/models/dungeons/**/*` `./public/models/fieldDungeons/**/*` `./public/models/gimmicks/**/*` `./public/models/throwables/**/*`
-12. run command at root directory of this project `npm run process`
+9. (optional) extract `Enum` from ILSpy if any to `./src/logic/Enums.ts`
+10. (optional) update `./src/logic/Lookup.ts` if any updates on `Enum`
+11. (optional) extract API result with url path as folder to `./source/aoserver/**/*`
+12. (optional) update other images/models if any
+13. delete `./public/models/roots/**/*` `./public/models/dungeons/**/*` `./public/models/fieldDungeons/**/*` `./public/models/gimmicks/**/*` `./public/models/throwables/**/*`
+14. run command at root directory of this project `npm run process`
