@@ -48,7 +48,9 @@ div.container(v-loading="loading")
           el-tooltip(:content="dataManager.wealthById[wth.DF].NAME" placement="left")
             span.wealth-container
               img(:src="dataManager.wealthById[wth.DF].icon" :alt="dataManager.wealthById[wth.DF].NAME")
-              span 1{{ $t('個') }} / {{ humanizeDuration(wth.CNT) }} ( {{ row.TM / wth.CNT }}{{ $t('個') }} / {{ humanizeDuration(row.TM) }} )
+              span
+                span 1{{ $t('個') }}/{{ humanizeDuration(wth.CNT) }}
+                span(v-if="row.TM > wth.CNT") {{ ' ' }}({{ (row.TM / wth.CNT).toFixed() }}{{ $t('個') }}/{{ humanizeDuration(row.TM) }})
 </template>
 
 <script lang="ts">
