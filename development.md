@@ -56,6 +56,10 @@ most file follow naming convention from the source code
 - Lookup `./public/generated/lookup.json` `./src/logic/Lookup.ts`
 - Enum `./public/generated/enum.json` `./src/logic/Enum.ts`
 
+### API
+
+see `./api.md` for more info
+
 ## Item
 
 item
