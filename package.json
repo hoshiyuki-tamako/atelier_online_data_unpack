@@ -17,7 +17,10 @@
   },
   "dependencies": {
     "class-transformer": "^0.3.1",
-    "core-js": "^3.8.1",
+    "class-transformer-for-array": "^1.0.8",
+    "class-transformer-validator": "^0.9.1",
+    "class-validator": "^0.12.2",
+    "core-js": "^3.8.2",
     "csvtojson": "^2.0.10",
     "deepmerge": "^4.2.2",
     "element-theme-dark": "^1.0.3",

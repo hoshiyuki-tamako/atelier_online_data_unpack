@@ -1,195 +1,150 @@
+import { Type } from 'class-transformer';
+import { ArrayMember } from 'class-transformer-for-array';
+
 import { eConditionType } from '../logic/Enums';
 
 export class FormationInfo {
-  public static fromMessagePack(msg: unknown[] | null) {
-    if (msg == null) {
-      return null;
-    }
-
-    const o = new FormationInfo();
-    o.NO = +msg[0];
-    o.DF = +msg[1];
-    o.IA = +msg[2];
-    return o;
-  }
+  @ArrayMember(0)
   public NO = 0;
+
+  @ArrayMember(1)
   public DF = 0;
+
+  @ArrayMember(2)
   public IA = 0;
 }
 
-export class HuntRate
-{
-  public static fromMessagePack(msg: unknown[] | null) {
-    if (msg == null) {
-      return null;
-    }
-
-    const o = new HuntRate();
-    o.SCS = +msg[0];
-    o.RATE = +msg[1];
-    return o;
-  }
-
+export class HuntRate {
+  @ArrayMember(0)
   public SCS = 0;
+
+  @ArrayMember(1)
   public RATE = 0;
 }
 
 export class HuntForm {
-  public static fromMessagePack(msg: unknown[] | null) {
-    if (msg == null) {
-      return null;
-    }
-
-    const o = new HuntForm();
-    o.FID = +msg[0];
-    o.FRM = (msg[1] as unknown[][]).map(FormationInfo.fromMessagePack);
-    return o;
-  }
-
+  @ArrayMember(0)
   public FID = 0;
-  public FRM = [] as FormationInfo[];
+
+  @ArrayMember(1, { isArray: true })
+  @Type(() => FormationInfo)
+  public FRM: FormationInfo[] = [];
 }
 
 export class JoinCondition {
-  public static fromMessagePack(msg: unknown[] | null) {
-    if (msg == null) {
-      return null;
-    }
-
-    const o = new JoinCondition();
-    o.CNDID = +msg[0];
-    o.ESS = +msg[1];
-    o.RATEBNS = +msg[2];
-    o.TYPE = +msg[3];
-    o.VALS = msg[4] as number[];
-    o.ACVBNS = +msg[5];
-    return o;
-  }
-
+  @ArrayMember(0)
   public CNDID = 0;
+  @ArrayMember(1)
   public ESS = 0;
+  @ArrayMember(2)
   public RATEBNS = 0;
+  @ArrayMember(3)
   public TYPE = eConditionType.None;
-  public VALS = [] as number[];
+  @ArrayMember(4)
+  public VALS: number[] = [];
+  @ArrayMember(5)
   public ACVBNS = 0;
 }
 
 export class PresentItemInfo {
-  public static fromMessagePack(msg: unknown[] | null) {
-    if (msg == null) {
-      return null;
-    }
-
-    const o = new PresentItemInfo();
-    o.DF = +msg[0];
-    o.CNT = +msg[1];
-    o.QTY = +msg[2];
-    o.TRT = +msg[3];
-    return o;
-  }
-
+  @ArrayMember(0)
   public DF = 0;
+  @ArrayMember(1)
   public CNT = 0;
+  @ArrayMember(2)
   public QTY = 0;
+  @ArrayMember(3)
   public TRT = 0;
 }
 
 export class HuntReward {
-  public static fromMessagePack(msg: unknown[] | null) {
-    if (msg == null) {
-      return null;
-    }
+  @ArrayMember(0, { isArray: true })
+  @Type(() => PresentItemInfo)
+  public TRS: PresentItemInfo[] = [];
 
-    const o = new HuntReward();
-    o.TRS = (msg[0] as unknown[][]).map(PresentItemInfo.fromMessagePack);
-    o.ITM = (msg[1] as unknown[][]).map(PresentItemInfo.fromMessagePack);
-    o.EXP = +msg[2];
-    o.WTH = (msg[3] as unknown[][]).map(DfCntInfo.fromMessagePack);
-    return o;
-  }
+  @ArrayMember(1, { isArray: true })
+  @Type(() => PresentItemInfo)
+  public ITM: PresentItemInfo[] = [];
 
-  public TRS = [] as PresentItemInfo[];
-  public ITM = [] as PresentItemInfo[];
+  @ArrayMember(2)
   public EXP = 0;
-  public WTH = [] as DfCntInfo[];
+
+  @ArrayMember(3, { isArray: true })
+  @Type(() => DfCntInfo)
+  public WTH: DfCntInfo[] = [];
 }
 
 
 export class EventInfo {
-  public static fromMessagePack(msg: unknown[] | null) {
-    if (msg == null) {
-      return null;
-    }
-
-    const o = new EventInfo();
-    o.SALE = +msg[0];
-    o.EVE = +msg[1];
-    return o;
-  }
-
+  @ArrayMember(0)
   public SALE = 0;
+  @ArrayMember(1)
   public EVE = 0;
 }
 
 export class DfCntInfo {
-  public static fromMessagePack(msg: unknown[] | null) {
-    if (msg == null) {
-      return null;
-    }
-
-    const o = new DfCntInfo();
-    o.DF = +msg[0];
-    o.CNT = +msg[1];
-    return o;
-  }
-
+  @ArrayMember(0)
   public DF = 0;
-
+  @ArrayMember(1)
   public CNT = 0;
 }
 
 export class HuntInfo {
-  public static fromMessagePack(msg: unknown[] | null) {
-    if (msg == null) {
-      return null;
-    }
-
-    const o = new HuntInfo();
-    o.AREADF = +msg[0];
-    o.HUNTID = +msg[1];
-    o.DTY = +msg[2];
-    o.NAME = msg[3] as string;
-    o.ICON = msg[4] as string;
-    o.TM = +msg[5];
-    o.DEPWTH = DfCntInfo.fromMessagePack(msg[6] as unknown[]);
-    o.INSWTH = (msg[7] as unknown[][]).map(DfCntInfo.fromMessagePack);
-    o.DESC = msg[8] as string | null;
-    o.MRK = EventInfo.fromMessagePack(msg[9] as unknown[]);
-    o.JCND = (msg[10] as unknown[][]).map(JoinCondition.fromMessagePack);
-    o.RWD = HuntReward.fromMessagePack(msg[11] as unknown[]);
-    o.STS = +msg[12];
-    o.LEFTTM = +msg[13];
-    o.CMPDT = msg[14] as string | null;
-    o.HFM = HuntForm.fromMessagePack(msg[15] as unknown[]);
-    o.HRT = (msg[16] as unknown[][]).map(HuntRate.fromMessagePack);
-    return o;
-  }
-
+  @ArrayMember(0)
   public AREADF = 0;
+
+  @ArrayMember(1)
   public HUNTID = 0;
+
+  @ArrayMember(2)
   public DTY = 0;
+
+  @ArrayMember(3)
   public NAME = '';
+
+  @ArrayMember(4)
   public ICON = '';
+
+  @ArrayMember(5)
   public TM = 0; // time in second
+
+  @ArrayMember(6)
+  @Type(() => DfCntInfo)
   public DEPWTH: DfCntInfo | null = null;
-  public INSWTH = [] as DfCntInfo[];
+
+  @ArrayMember(7, { isArray: true })
+  @Type(() => DfCntInfo)
+  public INSWTH: DfCntInfo[] = [];
+
+  @ArrayMember(8)
   public DESC: string | null = null;
+
+  @ArrayMember(9)
+  @Type(() => EventInfo)
   public MRK: EventInfo | null = null;
-  public JCND = [] as JoinCondition[];
+
+  @ArrayMember(10, { isArray: true })
+  @Type(() => JoinCondition)
+  public JCND: JoinCondition[] = [];
+
+  @ArrayMember(11)
+  @Type(() => HuntReward)
   public RWD: HuntReward | null = null;
+
+  @ArrayMember(12)
   public STS = 0;
+
+  @ArrayMember(13)
   public LEFTTM = 0;
+
+  @ArrayMember(14)
   public CMPDT: string | null = null;
+
+  @ArrayMember(15)
+  @Type(() => HuntForm)
   public HFM: HuntForm | null = null;
-  public HRT = [] as HuntRate[];
+
+  @ArrayMember(16, { isArray: true })
+  @Type(() => HuntRate)
+  public HRT: HuntRate[] = [];
 }

@@ -1,4 +1,5 @@
 import { HuntInfo } from '@/models/HuntInfo';
+import { plainArrayToClasses } from 'class-transformer-for-array';
 import msgpack from 'msgpack-lite';
 import Vue from 'vue';
 
@@ -10,8 +11,7 @@ export class ApiManager {
   public async comHuntSummary() {
     return this.errorHandling(async () => {
       const data = await this.call('aoserver/nat/api/com/hunt/Summary').then((p) => p.arrayBuffer());
-      const raw = msgpack.decode(new Uint8Array(data))[16][0] as unknown[];
-      return raw.map(HuntInfo.fromMessagePack);
+      return plainArrayToClasses(HuntInfo, msgpack.decode(new Uint8Array(data))[16][0]);
     });
   }
 
