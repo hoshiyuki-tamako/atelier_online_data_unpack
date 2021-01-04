@@ -32,6 +32,7 @@ div.container
       template(v-if="item.RSP.length")
         p {{ $t('レシピ種類') }}: {{ item.RCP_TYPE === 1 ? $t('レジェンドレシピ') : $t('一般レシピ') }}
         p {{ $t('おすすめ錬金 LV') }} {{ item.ALT ? item.ALT.LV : '-' }}
+      p(v-if="item.ALT.EXP") {{ $t('調合') }}{{ $t('経験値') }}: {{ item.ALT.EXP }}
       p
         el-tooltip(:content="dataManager.wealthById[2].NAME" placement="right")
           span.wealth-container
