@@ -117,7 +117,7 @@ div.container
           div(v-for="[lv, blazeArt] of dataManager.blazeArtById[ba.DF].LV.entries()")
             template(v-for="[skill, baLevel] of [[dataManager.skillById[blazeArt.SKILL_DF], lv + 1]]")
               SkillTextInfo(:skills="[skill]")
-                template(slot="title") {{ ba.LV }} / BA LV {{ baLevel }} / EXP {{ dataManager.blazeArtById[ba.DF].levelExperience(baLevel) }}
+                template(slot="title") LV {{ ba.LV }} / BA LV {{ baLevel }} / EXP {{ dataManager.blazeArtById[ba.DF].levelExperience(baLevel) }}
 
       div(v-if="character.FDM.length")
         el-divider {{ $t('食事') }}
