@@ -1,11 +1,11 @@
-import { EBattleEffectKind } from '@/logic/Enums';
+import { EBattleEffectKind, eRaceKind } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
-import { Type } from 'class-transformer';
 import { List as SkillList } from '@/master/skill';
-
+import { Type } from 'class-transformer';
 import Enumerable from 'linq';
 
 import { dataManager } from './../utils/DataManager';
+
 // custom types
 export interface IElementResult {
   element: string;
@@ -161,23 +161,41 @@ export class MVList {
   #elementCache = new Map<string, IElementResult>();
   #stateCache = new Map<string, IStateResult>();
 
+  public get iconFile() {
+    return `icon_chara_all_${this.DF.toString().padStart(4, '0')}_00.png`;
+  }
+
+  public get hasIcon() {
+    return !!dataManager.files.img.icon_chara.Texture2D[this.iconFile];
+  }
+
   public get icon() {
-    const filename = `icon_chara_all_${this.DF.toString().padStart(4, '0')}_00.png`;
-    if (!dataManager.files.img.icon_chara.Texture2D[filename]) {
+    if (!this.hasIcon) {
       return 'data:,';
     }
-    return `img/icon_chara/Texture2D/${filename}`;
+    return `img/icon_chara/Texture2D/${this.iconFile}`;
+  }
+
+  public get faceIconFile() {
+    return `icon_chara_face_${this.DF.toString().padStart(4, '0')}.png`;
+  }
+
+  public get hasFaceIcon() {
+    return !!dataManager.files.img.icon_chara.Texture2D[this.faceIconFile];
   }
 
   public get faceIcon() {
-    return `img/icon_chara/Texture2D/icon_chara_face_${this.DF.toString().padStart(4, '0')}.png`;
+    if (!this.hasFaceIcon) {
+      return 'data:,';
+    }
+    return `img/icon_chara/Texture2D/${this.faceIconFile}`;
   }
 
   public get genderTextIcon() {
     switch (this.GEN) {
-      case 1:
+      case eRaceKind.Human_Male:
         return '♂';
-      case 2:
+      case eRaceKind.Human_Female:
         return '♀';
       default:
         return '♂ ♀';

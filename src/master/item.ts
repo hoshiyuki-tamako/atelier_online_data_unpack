@@ -1,4 +1,4 @@
-import { EBattleEffectKind, ECategory, ESubCategory, EWeaponKind } from '@/logic/Enums';
+import { EBattleEffectKind, ECategory, eRaceKind, ESubCategory, EWeaponKind } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
 import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
@@ -153,19 +153,23 @@ export class MVList {
   }
 
   public get genderTextIcon() {
-    if (!this.EQU_GND.length || this.EQU_GND.some(p => !p.GEN)) {
-      return ' ♂ ♀';
-    } else if (this.EQU_GND.some((p) => p.ENB && p.GEN === 1)) {
+    if (
+      !this.EQU_GND.length
+      || this.EQU_GND.some((p) => !p.GEN)
+      || (this.EQU_GND.some((p) => p.ENB && p.GEN === eRaceKind.Human_Male) && this.EQU_GND.some((p) => p.ENB && p.GEN === eRaceKind.Human_Female))
+    ) {
+      return '♂ ♀';
+    } else if (this.EQU_GND.some((p) => p.ENB && p.GEN === eRaceKind.Human_Male)) {
       return '♂';
-    } else if (this.EQU_GND.some((p) => p.ENB && p.GEN === 2)) {
+    } else if (this.EQU_GND.some((p) => p.ENB && p.GEN === eRaceKind.Human_Female)) {
       return '♀';
     } else {
       return '';
     }
   }
 
-  public canGenderUseEquipment(gender: number) {
-    return this.EQU_GND.some((p) => !p.GEN) || this.EQU_GND.some((p) => p.ENB && p.GEN === gender)
+  public canGenderUseEquipment(gender: eRaceKind) {
+    return !this.EQU_GND.length || this.EQU_GND.some((p) => !p.GEN) || this.EQU_GND.some((p) => p.ENB && p.GEN === gender)
   }
 
   // skills

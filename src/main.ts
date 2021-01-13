@@ -21,7 +21,7 @@ Vue.use(ElementUi, {
   i18n: (key: string, value: string) => i18n.t(key, value),
 });
 
-Vue.use(VueMeta)
+Vue.use(VueMeta);
 Vue.use(VueScrollTo);
 Vue.use(VTooltip);
 

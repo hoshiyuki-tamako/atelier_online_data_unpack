@@ -7,7 +7,11 @@ import { EOrderType } from '../logic/Enums';
 import { Adv } from '../master/adv';
 import { ExportBase } from './ExportBase';
 
-export type CharacterVoiceMap = { [characterDf: string]: string[] };
+export type CharacterVoice = {
+  voice: string;
+  characterName: string;
+};
+export type CharacterVoiceMap = { [characterDf: string]: CharacterVoice[] };
 
 export default class AudioExport extends ExportBase {
   public async process(sourceFolder: string, rootFolder: string) {
@@ -31,7 +35,7 @@ export default class AudioExport extends ExportBase {
     }
 
     const outFolder = path.join(rootFolder, 'audios', 'musics');
-    await Promise.all(musics.map(async (p) => {
+    await Promise.all(musics.filter((p) => !p.includes('#')).map(async (p) => {
       const newFile = path.join(musicFolder, p);
       const out = path.join(outFolder, p);
       if (await this.isPathUpToDate(newFile, out)) {
@@ -55,11 +59,12 @@ export default class AudioExport extends ExportBase {
       await this.writeCharacterVoices(rootFolder);
       return;
     }
+    const filteredVoices = voices.filter((p) => !p.includes('#'));
 
     const outFolder = path.join(rootFolder, 'audios', 'voices');
     await Promise.all([
-      this.generateCharacterVoices(voices, rootFolder),
-      Promise.all(voices.map(async (p) => {
+      this.generateCharacterVoices(filteredVoices, rootFolder),
+      Promise.all(filteredVoices.map(async (p) => {
         const newFile = path.join(voiceFolder, p);
         const out = path.join(outFolder, p);
         if (await this.isPathUpToDate(newFile, out)) {
@@ -79,18 +84,22 @@ export default class AudioExport extends ExportBase {
         .select((p) => ({
           order: p.eOrder,
           characterDf: p.vsParam[0],
+          characterName: p.vsParam[1],
           voice: p.vsParam[6],
         }))
-        .where((p) => p.order === EOrderType.eCHARA_TALK && !!p.voice && voices.includes(`${p.voice}.wav`))
+        .where((p) => p.order === EOrderType.eCHARA_TALK && p.voice && voices.includes(`${p.voice}.wav`))
         .groupBy((p) => p.characterDf)
         .toObject(
           (p) => p.key(),
-          (p) => p.select((p) => p.voice).toArray(),
+          (p) => p.select((p) => ({
+            voice: p.voice,
+            characterName: p.characterName,
+          })).toArray(),
         ) as CharacterVoiceMap;
     }));
     const characterVoices = deepmerge.all(characterMaps) as CharacterVoiceMap;
     for (const characterDf of Object.keys(characterVoices)) {
-      characterVoices[characterDf].sort(new Intl.Collator(undefined, { numeric: true }).compare);
+      characterVoices[characterDf].sort((a, b) => new Intl.Collator(undefined, { numeric: true }).compare(a.voice, b.voice));
     }
     await this.writeCharacterVoices(rootFolder, characterVoices);
   }

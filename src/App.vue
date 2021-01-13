@@ -33,7 +33,7 @@ abstract class VueWithMapFields extends VueBase {
       meta: [
         {
           name: 'description',
-          content: 'アトリエオンライン 資料庫 攻略 鍊金工房Online',
+          content: this.$t('アトリエオンライン 資料庫 攻略'),
         },
       ],
     };

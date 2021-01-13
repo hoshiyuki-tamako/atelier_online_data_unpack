@@ -6,9 +6,9 @@
 
 All exported files `images` `models` `audios` are NOT license in MIT
 
-For game related data developer see `./development.md`
+For game related data developer see `./docs/development.md`
 
-For game server API see `./api.md`
+For game server API see `./docs/api.md`
 
 ### Darkmode
 
@@ -93,8 +93,8 @@ docker-compose up --build -d
 4. export type `Texture2D` to `./source/Texture2D/*`
 5. export models fbx version 7.5 binary with folder to `./source/models/**/*`
 6. export models fbx version 7.5 ascii to `./source/modelsMeta/**/*`
-7. export type `AudioClip` filter by `vo` to `./source/voice/AudioClip/*`
-8. export type `AudioClip` filter by `music` to `./source/music/AudioClip/*`
+7. (optional) export type `AudioClip` filter by `vo` to `./source/voice/AudioClip/*`
+8. (optional) export type `AudioClip` filter by `music` to `./source/music/AudioClip/*`
 9. (optional) extract `Enum` from ILSpy if any to `./src/logic/Enums.ts`
 10. (optional) update `./src/logic/Lookup.ts` if any updates on `Enum`
 11. (optional) extract API result with url path as folder to `./source/aoserver/**/*`
