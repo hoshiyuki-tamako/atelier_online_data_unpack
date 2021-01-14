@@ -120,6 +120,6 @@ export class AdvManager {
   }
 
   private getAdvJsonUrl(adv: string) {
-    return `export/${this.locale === 'zh-TW' ? 'tw/' : ''}adv/${adv}.json`;
+    return `export/${this.locale === 'ja-JP' ? '' : 'tw/'}adv/${adv}.json`;
   }
 }

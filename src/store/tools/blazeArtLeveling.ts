@@ -5,6 +5,10 @@ import { Module, Mutation, MutationAction } from 'vuex-module-decorators';
   namespaced: true,
 })
 export default class extends VuexModuleBase {
+  public level = 1;
+
+  public untilExp = 0;
+
   public experienceItemDfs: number[] = [];
 
   public characterDf: number | null = null;
@@ -14,9 +18,11 @@ export default class extends VuexModuleBase {
     this.experienceItemDfs = experienceItemDfs;
   }
 
-  @MutationAction({ mutate: ['experienceItemDfs', 'characterDf'] })
+  @MutationAction({ mutate: ['level', 'untilExp', 'experienceItemDfs', 'characterDf'] })
   public async reset() {
     return {
+      level: 1,
+      untilExp: 0,
       experienceItemDfs: [],
       characterDf: 0,
     };

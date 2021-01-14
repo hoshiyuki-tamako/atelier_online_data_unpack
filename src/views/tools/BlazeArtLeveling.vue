@@ -2,8 +2,6 @@
 div.item-enhance-quality
   div.left
     div.experience-items
-      div.experience-item(@click="onClickRemoveAllItems")
-        img.icon-small(src="img/icon_item_s/Texture2D/icon_item_s_10790001.png" :alt="$t('削除する')")
       div.experience-item(v-for="item of blazeArtExpItems" @click="onClickAddItem(item)")
         el-tooltip(:content="`${item.SPC[0].SKILL[0].VAL} ${$t('経験値')}`" placement="top")
           img.icon-small(:src="item.icon" :alt="item.NAME")
@@ -17,9 +15,15 @@ div.item-enhance-quality
     div.character
       img.icon-large(:src="character.icon" :alt="character.NAME")
     div.blaze-art
-      p(v-for="{ level, totalExp, untilNextLevel } of [expInfo]") LV {{ level }} / {{ $t('経験値') }} {{ totalExp }} / {{ $t('あと') }} {{ untilNextLevel }}
+      div
+        span {{ $t('LV') }}
+        el-input-number(v-model="level" size="mini" :min="1" :max="character.maxBlazeArtLevel" :step="1" step-strictly)
+        span {{ $t('あと') }}
+        el-input-number(v-model="untilExp" size="mini" :min="0" :max="maxExp" :step="1" step-strictly)
       br
-      p(v-for="(lv, i) of blazeArt.LV") LV {{ i + 1 }} {{ $t('経験値') }} {{ blazeArt.levelExperience(i + 1) }}
+      p(v-for="{ level, totalExp, untilNextLevel, overExp } of [expInfo]") {{ $t('LV') }} {{ level }} / {{ $t('経験値') }} {{ totalExp }} / {{ $t('あと') }} {{ untilNextLevel }} / {{ $t('無駄になった経験値') }} {{ overExp }}
+      br
+      p(v-for="(lv, i) of blazeArt.LV") {{ $t('LV') }} {{ i + 1 }} {{ $t('経験値') }} {{ blazeArt.levelExperience(i + 1) }}
       br
       p.total-item(v-for="{ item, count } of totalItems")
         img.icon-small(:src="item.icon" :alt="item.NAME")
@@ -35,6 +39,10 @@ import { MVList as ItemMVList } from '@/master/item';
 import Enumerable from 'linq';
 
 abstract class VueWithMapFields extends VueBase {
+  public level!: number;
+
+  public untilExp!: number;
+
   public characterDf!: number | null;
 }
 
@@ -42,10 +50,19 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('blazeArtLeveling', ['characterDf']),
+    ...mapFields('blazeArtLeveling', ['level', 'untilExp', 'characterDf']),
   },
 })
 export default class extends VueWithMapFields {
+  public get maxExp() {
+    return this.blazeArt.LV[this.level - 1].EXP_PT;
+  }
+
+  public get currentExp() {
+    return [...Array(this.level)].reduce((sum, _, i) => sum + this.blazeArt.levelExperience(1 + i), this.untilExp ? this.blazeArt.levelExperience(this.level + 1) - this.untilExp : this.untilExp);
+  }
+
+  //
   public get blazeArtExpItems() {
     return this.dataManager.itemsByCategory[ECategory.eGROW_BLAZE_ARTS];
   }
@@ -82,7 +99,7 @@ export default class extends VueWithMapFields {
   }
 
   //
-  public get totalExp() {
+  public get totalItemExp() {
     return this.items.map((p) => p.SPC)
       .flat()
       .map((p) => p.SKILL)
@@ -91,22 +108,24 @@ export default class extends VueWithMapFields {
   }
 
   public get expInfo() {
-    let exp = this.totalExp;
+    let exp = this.currentExp + this.totalItemExp;
     for (const [i, { EXP_PT }] of this.blazeArt.LV.entries()) {
       exp -= EXP_PT;
       if (exp < 0) {
         return {
           level: i + 1,
-          totalExp: this.totalExp,
+          totalExp: this.totalItemExp,
           untilNextLevel: Math.abs(exp),
+          overExp: 0,
         };
       }
     }
 
     return {
       level: this.blazeArt.LV.length,
-      totalExp: this.blazeArt.LV.reduce((sum, p) => sum + p.EXP_PT, 0),
+      totalExp: this.totalItemExp || this.blazeArt.LV.reduce((sum, p) => sum + p.EXP_PT, 0),
       untilNextLevel: 0,
+      overExp: this.blazeArt.LV.reduce((sum, p) => sum + p.EXP_PT, 0) - (this.currentExp + this.totalItemExp),
     };
   }
 
@@ -117,10 +136,6 @@ export default class extends VueWithMapFields {
 
   public onClickRemoveItem(i: number) {
     this.experienceItemDfs.splice(i, 1);
-  }
-
-  public onClickRemoveAllItems() {
-    this.experienceItemDfs = [];
   }
 }
 </script>

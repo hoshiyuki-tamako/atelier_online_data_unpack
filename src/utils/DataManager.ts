@@ -39,12 +39,12 @@ import { Bgm } from './../master/soundList';
 import { IBattleArea } from './../scripts/ModelExport';
 
 export class DataManager {
-  public static supportedLocales = ['ja-JP', 'zh-TW'];
+  public static supportedLocales = ['ja-JP', 'zh-TW', 'zh-HK', 'zh-CN'];
 
   public static get defaultLocale() {
     return this.supportedLocales[0];
   }
-  
+
   // settings
   public showHiddenContent = false;
 
@@ -57,11 +57,22 @@ export class DataManager {
     this.advManager.setLocale(this.locale);
   }
 
+  public get dataFolder() {
+    switch (this.locale) {
+      case 'zh-TW':
+      case 'zh-HK':
+      case 'zh-CN':
+        return 'tw/';
+      case 'ja-JP':
+      default:
+        return '';
+    }
+  }
+
   public exportFolder = './export/';
   public generatedFolder = './generated/';
   public get exportFolderUrl() {
-    const locale = this.locale === 'zh-TW' ? 'tw/' : '';
-    return `${this.exportFolder}${locale}`;
+    return `${this.exportFolder}${this.dataFolder}`;
   }
   public getExportJsonUrl(file: string) {
     return `${this.exportFolderUrl}${file}`;

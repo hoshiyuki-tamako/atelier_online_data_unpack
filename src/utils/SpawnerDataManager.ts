@@ -37,12 +37,12 @@ export class SpawnerDataManager {
 
     this.locale = locale;
 
-    const spawnFiles = this.locale === 'zh-TW'
-      ? files.export.tw.SpawnList.TextAsset
-      : files.export.SpawnList.TextAsset;
-    const spawnListFolders = this.locale === 'zh-TW'
-      ? 'export/tw/SpawnList/TextAsset'
-      : 'export/SpawnList/TextAsset';
+    const spawnFiles = this.locale === 'ja-JP'
+      ? files.export.SpawnList.TextAsset
+      : files.export.tw.SpawnList.TextAsset
+    const spawnListFolders = this.locale === 'ja-JP'
+      ? 'export/SpawnList/TextAsset'
+      : 'export/tw/SpawnList/TextAsset';
 
     await Promise.all(Object.values(spawnFiles).map(async (csvFileName: string) => {
       try {

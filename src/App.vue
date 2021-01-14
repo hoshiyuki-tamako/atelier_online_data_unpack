@@ -17,6 +17,7 @@ import VueBase from '@/components/VueBase';
 import sleep from 'sleep-promise';
 import ms from 'ms';
 import { mapFields } from 'vuex-map-fields';
+import { sify } from 'chinese-conv';
 
 abstract class VueWithMapFields extends VueBase {
   public darkMode!: boolean | null;
@@ -158,12 +159,13 @@ export default class extends VueWithMapFields {
   public pageLoading = true;
 
   public async beforeCreate() {
+    this.dataManager.locale = new URLSearchParams(window.location.search).get('locale');
+    this.$i18n.locale = this.dataManager.locale;
+    document.title = this.$t(document.title).toString();
+
     let retry = 10;
     while (retry-- > 0) {
       try {
-        this.dataManager.locale = new URLSearchParams(window.location.search).get('locale');
-        this.$i18n.locale = this.dataManager.locale;
-        document.title = this.$t(document.title).toString();
         await this.dataManager.load(this.$store.state.home.showHiddenContent);
         this.pageLoading = false;
         retry = 0;
@@ -189,7 +191,34 @@ export default class extends VueWithMapFields {
     });
   }
 
-  public loadDarkMode() {
+  public async updated() {
+    if (this.$i18n.locale === 'zh-CN') {
+      const sNode = (nodes: NodeList | HTMLElement[]) => {
+        for (const node of nodes) {
+          if (node.nodeType === node.TEXT_NODE && node.nodeValue) {
+            node.nodeValue = sify(node.nodeValue);
+          }
+          if (node.nodeType === node.ATTRIBUTE_NODE && (node as HTMLElement).attributes) {
+            for (const attribute of (node as HTMLElement).attributes) {
+              if (!['id', 'style', 'class', 'src'].includes(attribute.name) && attribute.value) {
+                const newValue = sify(attribute.value);
+                if (attribute.value !== newValue) {
+                  attribute.value = newValue;
+                }
+              }
+            }
+          }
+          if (node.childNodes) {
+            sNode(node.childNodes);
+          }
+        }
+      };
+
+      await this.$nextTick(() => sNode([...document.getElementsByTagName('*')] as HTMLElement[]));
+    }
+  }
+
+  private loadDarkMode() {
     this.darkMode ??= window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (this.darkMode) {
       document.body.classList.add('dark-mode');
@@ -201,7 +230,6 @@ export default class extends VueWithMapFields {
       document.body.classList.add('light-mode');
     }
   }
-
 }
 </script>
 

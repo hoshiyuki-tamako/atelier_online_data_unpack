@@ -116,7 +116,7 @@ div.container
                       p.popover-base__detail(v-if="skill.detail") {{ skill.detail }}
                       br
                       p {{ $t('数値') }}: {{ skill.effectValue }}, {{ skill.effectValue2 }}
-                      p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}j
+                      p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
                       p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
 
       div(v-if="item.GROUP_DF && dataManager.charactersByGroupDf[item.GROUP_DF]")

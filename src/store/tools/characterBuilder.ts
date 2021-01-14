@@ -12,6 +12,8 @@ export default class extends VuexModule {
     return (locale: string) => {
       switch (locale) {
         case 'zh-TW':
+        case 'zh-HK':
+        case 'zh-CN':
           return this.importStringZhTw;
         default:
           return this.importStringJaJp;
@@ -23,6 +25,8 @@ export default class extends VuexModule {
   public save({ locale, importString }) {
     switch (locale) {
       case 'zh-TW':
+      case 'zh-HK':
+      case 'zh-CN':
         this.importStringZhTw = importString;
         break;
       default:
@@ -34,6 +38,8 @@ export default class extends VuexModule {
   public clear({ locale }) {
     switch (locale) {
       case 'zh-TW':
+      case 'zh-HK':
+      case 'zh-CN':
         this.importStringZhTw = '';
         break;
       default:

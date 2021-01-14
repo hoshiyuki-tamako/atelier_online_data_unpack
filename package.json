@@ -17,10 +17,11 @@
     "process": "./node_modules/.bin/ts-node ./src/scripts"
   },
   "dependencies": {
-    "class-transformer": "^0.3.1",
-    "class-transformer-for-array": "^1.0.11",
+    "chinese-conv": "^1.0.1",
+    "class-transformer": "^0.2.3",
+    "class-transformer-for-array": "^1.0.13",
     "class-transformer-validator": "^0.9.1",
-    "class-validator": "^0.13.0",
+    "class-validator": "^0.13.1",
     "core-js": "^3.8.2",
     "csvtojson": "^2.0.10",
     "deepmerge": "^4.2.2",

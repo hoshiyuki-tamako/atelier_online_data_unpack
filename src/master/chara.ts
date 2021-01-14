@@ -246,6 +246,10 @@ export class MVList {
     return dataManager.skillById[blazeArt?.SKILL_DF];
   }
 
+  public get maxBlazeArtLevel() {
+    return dataManager.blazeArtById[this.BA[0]?.DF]?.LV.length || 0;
+  }
+
   //
   public getElement(element: string, level = MVList.maxLevel) {
     const key = JSON.stringify({ element, level });
