@@ -15,10 +15,11 @@ div.container
           span(v-if="$i18n.locale !== 'zh-TW'")
             el-link(type="success" :underline="false" :href="changeLocaleHref('zh-TW')") (繁體中文)
           span(v-else) (繁體中文)
-        span &nbsp;
-        span(v-if="$i18n.locale !== 'zh-CN'")
-          el-link(type="success" :underline="false" :href="changeLocaleHref('zh-CN')") (简体)
-        span(v-else) (简体)
+        template(v-if="!isProduction")
+          span &nbsp;
+            span(v-if="$i18n.locale !== 'zh-CN'")
+              el-link(type="success" :underline="false" :href="changeLocaleHref('zh-CN')") (简体)
+            span(v-else) (简体)
     p
       span Twitter
       el-link(href="https://twitter.com/hoshiyuki_git" target="_blank" rel="noopener" type="primary") @hoshiyuki_git
