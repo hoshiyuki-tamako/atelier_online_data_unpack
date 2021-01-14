@@ -18,6 +18,7 @@ import sleep from 'sleep-promise';
 import ms from 'ms';
 import { mapFields } from 'vuex-map-fields';
 import { sify } from 'chinese-conv';
+import { TranslationQueue } from '@/utils/TranslationQueue';
 
 abstract class VueWithMapFields extends VueBase {
   public darkMode!: boolean | null;
@@ -163,6 +164,10 @@ export default class extends VueWithMapFields {
     this.$i18n.locale = this.dataManager.locale;
     document.title = this.$t(document.title).toString();
 
+    if (this.$i18n.locale === 'zh-CN') {
+      TranslationQueue.start(sify);
+    }
+
     let retry = 10;
     while (retry-- > 0) {
       try {
@@ -189,33 +194,6 @@ export default class extends VueWithMapFields {
     this.$router.afterEach(() => {
       this.loading = false;
     });
-  }
-
-  public async updated() {
-    if (this.$i18n.locale === 'zh-CN') {
-      const sNode = (nodes: NodeList | HTMLElement[]) => {
-        for (const node of nodes) {
-          if (node.nodeType === node.TEXT_NODE && node.nodeValue) {
-            node.nodeValue = sify(node.nodeValue);
-          }
-          if (node.nodeType === node.ATTRIBUTE_NODE && (node as HTMLElement).attributes) {
-            for (const attribute of (node as HTMLElement).attributes) {
-              if (!['id', 'style', 'class', 'src'].includes(attribute.name) && attribute.value) {
-                const newValue = sify(attribute.value);
-                if (attribute.value !== newValue) {
-                  attribute.value = newValue;
-                }
-              }
-            }
-          }
-          if (node.childNodes) {
-            sNode(node.childNodes);
-          }
-        }
-      };
-
-      await this.$nextTick(() => sNode([...document.getElementsByTagName('*')] as HTMLElement[]));
-    }
   }
 
   private loadDarkMode() {
