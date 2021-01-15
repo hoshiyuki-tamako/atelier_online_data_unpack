@@ -33,6 +33,10 @@ div.container
       span {{ $t('エフェクトターゲット') }}
       el-select(v-model="filter.effectTarget" @change="resetPage" clearable filterable)
         el-option(v-for="item of effectTargetFilter" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('異常状態') }}
+      el-select(v-model="filter.abnormalState" @change="resetPage" clearable filterable)
+        el-option(v-for="item of dataManager.abnormalState.m_vList" :key="item.value" :label="item.name" :value="item.id")
   div.filters
     div.filter
       span {{ $t('名前') }}/ID
@@ -295,6 +299,7 @@ export default class extends VueWithMapFields {
     effectTarget: null,
     name: '',
     detail: '',
+    abnormalState: null,
     has: [],
 
     sort: '',
@@ -334,6 +339,7 @@ export default class extends VueWithMapFields {
         && ([null, '', -1].includes(this.filter.effectTarget) || p.effectTarget === this.filter.effectTarget)
         && (!this.filter.name || p.id === +this.filter.name || p.name.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
         && (!this.filter.detail || p.detail.toLocaleLowerCase().includes(this.filter.detail.toLocaleLowerCase()))
+        && (!this.filter.abnormalState || p.stateOwn.some(({ id }) => id === this.filter.abnormalState) || p.state.some(({ id }) => id === this.filter.abnormalState))
         && (!this.filter.has.includes(1) || p.stateOwn.length)
         && (!this.filter.has.includes(2) || p.state.length)
         && (!this.filter.has.includes(3) || this.dataManager.itemsBySkill[p.id])
