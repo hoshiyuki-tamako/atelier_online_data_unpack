@@ -6,10 +6,10 @@ div.container
       span {{ $t('カテゴリー') }}
       el-select(v-model="filter.category" @change="resetPage" clearable filterable)
         el-option(v-for="item of categoryFilter" :key="item.value" :label="item.label" :value="item.value")
-    div.filter
-      span {{ $t('キャラクター') }}
-      el-select(v-model="filter.character" @change="resetPage" clearable filterable)
-        el-option(v-for="item of characterFilter" :key="item.value" :label="item.label" :value="item.value")
+    CharacterSelector(v-model="filter.character" :characters="dataManager.questCharacters" @change="resetPage")
+    WealthSelector(v-model="filter.costWealth" :wealths="dataManager.questCostWealths" :title="$t('消費') + $t('財貨')" @change="resetPage")
+    WealthSelector(v-model="filter.rewardWealth" :wealths="dataManager.questRewardWealths" :title="$t('報酬') + $t('財貨')" @change="resetPage")
+    DegreeSelector(v-model="filter.requireDegree" :degrees="dataManager.questRequireDegrees" :title="$t('必要称号')" @change="resetPage")
   div.filters
     div.filter
       span {{ $t('名前') }}/DF
@@ -181,6 +181,9 @@ import { MVList as QuestMVList } from '@/master/quest';
 import LRU from 'lru-cache';
 import { mapFields } from 'vuex-map-fields';
 import AdventureRawDialog from '@/components/AdventureRawDialog.vue';
+import CharacterSelector from '@/components/inputs/CharacterSelector.vue';
+import WealthSelector from '@/components/inputs/WealthSelector.vue';
+import DegreeSelector from '@/components/inputs/DegreeSelector.vue';
 
 abstract class VueWithMapFields extends VueBase {
   public showColumnDF!: boolean;
@@ -207,6 +210,9 @@ abstract class VueWithMapFields extends VueBase {
 @Component({
   components: {
     AdventureRawDialog,
+    CharacterSelector,
+    WealthSelector,
+    DegreeSelector,
   },
   computed: {
     ...mapFields('questsFilter', ['showColumnDF', 'showColumnNAME', 'showColumnCATEG', 'showColumnCOST', 'showColumnENM', 'showColumnGET', 'showColumnDLV', 'showColumnARA', 'showColumnDialog', 'showColumnCharacter']),
@@ -216,6 +222,9 @@ export default class extends VueWithMapFields {
   public filter = {
     category: null,
     character: null,
+    costWealth: null,
+    rewardWealth: null,
+    requireDegree: null,
     has: [],
     name: '',
     extraQuest: false,
@@ -241,13 +250,6 @@ export default class extends VueWithMapFields {
         label: this.$t(this.dataManager.lookup.EQuestCategory[value]),
         value,
       }));
-  }
-
-  public get characterFilter() {
-    return this.dataManager.charactersCanBattle.map((p) => ({
-      label: p.NAME,
-      value: p.DF,
-    }));
   }
 
   public get hasFilter() {
@@ -301,6 +303,9 @@ export default class extends VueWithMapFields {
       const quests = this.filter.category ? this.dataManager.questsByCategory[this.filter.category] : [...this.dataManager.quest.m_vList].reverse();
       const filteredQuests = quests.filter((p) => (
         (!this.filter.character || p.CHARA === this.filter.character)
+        && (!this.filter.costWealth || p.COST.WTH.DF === this.filter.costWealth)
+        && (!this.filter.rewardWealth || p.RWD_WTH.some((i) => i.DF === this.filter.rewardWealth))
+        && (!this.filter.requireDegree || p.UNLOCK.some((i) => i.DF === this.filter.requireDegree))
         && (!this.filter.name || p.DF === +this.filter.name || p.NAME.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
         && (!this.filter.extraQuest || this.dataManager.extraQuestsByQuest[p.DF])
         && (!this.filter.has.includes(1) || p.COST.WTH.CNT)

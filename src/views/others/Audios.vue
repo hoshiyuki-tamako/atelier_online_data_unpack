@@ -5,13 +5,7 @@ div.container
       aplayer(v-if="musicList.length" :music="musicAplayerOption.music" :list="musicAplayerOption.list" :theme="musicAplayerOption.theme")
     el-tab-pane(:label="$t('キャラクター')" name="character")
       div.filter
-        div.filter
-          el-select(v-model="character" :placeholder="$t('キャラクター')" filterable)
-            el-option(v-for="item of characterFilter" :key="item.value" :label="item.character.NAME" :value="item.value")
-              template(v-if="item.character")
-                img.character-icon(v-if="item.character.hasFaceIcon" :src="item.character.faceIcon" :alt="item.character.NAME")
-                img.character-icon(v-else-if="item.character.hasIcon" :src="item.character.icon" :alt="item.character.NAME")
-              span.character-name {{ item.character.NAME }}
+        CharacterSelector(v-model="character" :characters="characters" :showTitle="false" :clearable="false")
       aplayer(v-if="characterList.length" :key="character" :music="characterAplayerOption.music" :list="characterAplayerOption.list" :theme="characterAplayerOption.theme")
     el-tab-pane(:label="$t('他')" name="other")
       aplayer(v-if="otherList.length" :music="otherAplayerOption.music" :list="otherAplayerOption.list" :theme="otherAplayerOption.theme")
@@ -24,12 +18,14 @@ import Aplayer from 'vue-aplayer';
 import { MVList as CharacterMVList } from '@/master/chara';
 import Enumerable from 'linq';
 import { CharacterVoice, CharacterVoiceMap } from '@/scripts/AudioExport';
+import CharacterSelector from '@/components/inputs/CharacterSelector.vue';
 
 Aplayer.disableVersionBadge = true;
 
 @Component({
   components: {
     Aplayer,
+    CharacterSelector,
   },
 })
 export default class extends VueBase {
@@ -37,12 +33,8 @@ export default class extends VueBase {
 
   public character: number | null | string = null;
 
-  public get characterFilter() {
-    return Object.entries(this.dataManager.characterVoices as CharacterVoiceMap)
-      .map(([df, voices]) => ({
-        character: this.getCharacter(+df, this.getMostName(voices)),
-        value: df,
-      }));
+  public get characters() {
+    return Object.entries(this.dataManager.characterVoices as CharacterVoiceMap).map(([df, voices]) => this.getCharacter(+df, this.getMostName(voices)));
   }
 
   public get defaultAplayerOption() {
@@ -114,7 +106,7 @@ export default class extends VueBase {
 
   //
   public created() {
-    this.character ??= this.characterFilter[0]?.value;
+    this.character ??= this.characters[0]?.DF;
   }
 
   public onTabClick() {
@@ -151,10 +143,4 @@ export default class extends VueBase {
 .dark-mode .aplayer-list ol li.aplayer-list-light, .dark-mode .aplayer-list ol li:hover
   background: #313846
   color: #00adff
-
-.character-icon
-  float: left
-  width: 32px
-.character-name
-  float: right
 </style>

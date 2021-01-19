@@ -176,6 +176,10 @@ export class DataManager {
   public questsByDeliverItem: { [df: string]: QuestMVList[] }
   public questsByRewardItem: { [df: string]: QuestMVList[] };
   public questsByEnemy: { [df: string]: QuestMVList[] };
+  public questCostWealths: WealthMvList[];
+  public questRewardWealths: WealthMvList[];
+  public questCharacters: CharacterMVList[];
+  public questRequireDegrees: DegreeList[];
 
   public fieldNameById: { [id: string]: FieldNameList };
 
@@ -276,6 +280,7 @@ export class DataManager {
     this.afterLoadSKill();
     this.afterLoadItem();
     this.afterLoadEnemy();
+    this.afterLoadQuest();
     this.processFiles();
     this.processAdvs();
   }
@@ -527,7 +532,9 @@ export class DataManager {
     this.degree = plainToClass(Degree, degree || await this.loadJson('degree'));
     this.degrees = this.degree.List.filter((p) => p.TYP !== EDegreeMissonType.eNONE);
     this.degreeDailyMissions = this.degree.List.filter((p) => p.TYP === EDegreeMissonType.eNONE);
-    this.degreeById = Enumerable.from(this.degree.List).toObject((p) => p.DF) as { [df: string]: DegreeList };
+    this.degreeById = Enumerable.from(this.degree.List)
+      .where((p) => p.TYP !== EDegreeMissonType.eNONE)
+      .toObject((p) => p.DF) as { [df: string]: DegreeList };
     this.degreeByIdStep = Enumerable.from(this.degree.List)
       .groupBy((p) => p.DF)
       .toObject(
@@ -589,6 +596,35 @@ export class DataManager {
       })))
       .groupBy((p) => p.enm.DF)
       .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
+  }
+
+  public afterLoadQuest() {
+    this.questCostWealths = Enumerable.from(this.quest.m_vList)
+      .groupBy((p) => p.COST.WTH.DF)
+      .select((p) => this.wealthById[p.key()])
+      .where((p) => !!p)
+      .orderBy((p) => p.DF)
+      .toArray();
+    this.questRewardWealths = Enumerable.from(this.quest.m_vList)
+      .selectMany((p) => p.RWD_WTH)
+      .groupBy((p) => p.DF)
+      .select((p) => this.wealthById[p.key()])
+      .where((p) => !!p)
+      .orderBy((p) => p.DF)
+      .toArray();
+    this.questCharacters = Enumerable.from(this.quest.m_vList)
+      .groupBy((p) => p.CHARA)
+      .select((p) => this.characterById[p.key()])
+      .where((p) => !!p)
+      .orderBy((p) => p.DF)
+      .toArray();
+    this.questRequireDegrees = Enumerable.from(this.quest.m_vList)
+      .selectMany((p) => p.UNLOCK)
+      .groupBy((p) => p.DF)
+      .select((p) => this.degreeById[p.key()])
+      .where((p) => !!p)
+      .orderBy((p) => p.DF)
+      .toArray();
   }
 
   public async loadFieldName(fieldName?: unknown) {

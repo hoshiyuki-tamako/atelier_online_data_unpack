@@ -26,15 +26,9 @@ div.container
     br
     div.filters
       div.filter
-        el-switch(v-model="showSideBar" active-color="#13ce66" :active-text="$t('サイドバー')")
-      div.filter
-        el-switch(v-model="showBackTopButton" :active-text="$t('トップに移動ボタン')")
-      div.filter
-        el-switch(:value="darkMode" @change="onDarkMode" active-color="#13ce66" :active-text="$t('ダークモード')")
+        el-button(@click="settingDialogVisible = true") {{ $t('設定') }}
       div.filter
         el-switch(:value="showHiddenContent" @change="onShowHiddenContent" active-color="#f56c6c" :active-text="$t('ネタバレ')")
-      div.filter
-        el-button(@click="onResetSetting" type="danger" icon="el-icon-refresh-left" size="small" :aria-label="$t('セッティングリセット')" round)
   el-divider
   div
     div.categories__container(v-for="allPage of allPages")
@@ -73,20 +67,18 @@ import { CharacterType } from '@/store/characters/charactersFilter';
 import { SkillKind } from './skills/Skills.vue';
 
 abstract class VueWithMapFields extends VueBase {
-  public showSideBar!: boolean;
-
-  public showBackTopButton!: boolean;
+  public settingDialogVisible!: boolean;
 
   public showHiddenContent!: boolean;
 
-  public darkMode!: boolean | null;
+  public darkMode!: boolean;
 }
 
 @Component({
   components: {
   },
   computed: {
-    ...mapFields('home', ['showSideBar', 'showBackTopButton', 'showHiddenContent', 'darkMode']),
+    ...mapFields('home', ['settingDialogVisible', 'showHiddenContent', 'darkMode']),
   },
 })
 export default class extends VueWithMapFields {
@@ -178,7 +170,7 @@ export default class extends VueWithMapFields {
   public get pageWeapons() {
     return [
       {
-        label: this.$t('ランキング'),
+        label: this.$t('装備ランキング'),
         img: {
           src: 'img/other/Texture2D/item_texture_0025.png',
         },
@@ -232,8 +224,7 @@ export default class extends VueWithMapFields {
         to: {
           name: 'ItemsUnusedItems',
         },
-      });
-      items.push({
+      }, {
         label: this.$t('他の投げ物'),
         img: {
           src: 'img/icon_item_s/Texture2D/icon_item_s_10350010.png',
@@ -309,7 +300,7 @@ export default class extends VueWithMapFields {
   public get pageCharacters() {
     const characters = [
       {
-        label: this.$t('ランキング'),
+        label: this.$t('キャラクターランキング'),
         img: {
           src: 'img/other/Texture2D/item_texture_0025.png',
         },
@@ -361,7 +352,7 @@ export default class extends VueWithMapFields {
   public get pageEnemies() {
     return [
       {
-        label: this.$t('ランキング'),
+        label: this.$t('敵ランキング'),
         img: {
           src: 'img/other/Texture2D/item_texture_0025.png',
         },
@@ -434,7 +425,7 @@ export default class extends VueWithMapFields {
         },
       },
       {
-        label: this.$t('大事なもの'),
+        label: this.$t('大事なもの(財貨)'),
         img: {
           src: 'img/icon_item01/Texture2D/icon_item01_00001.png',
         },
@@ -645,35 +636,6 @@ export default class extends VueWithMapFields {
     this.showHiddenContent = value;
     window.location.reload();
   }
-
-  public onDarkMode(value: boolean) {
-    this.darkMode = value;
-    window.location.reload();
-  }
-
-  public async onResetSetting() {
-    await this.$confirm(`${this.$t('セッティングリセットよろしいでしか')}?`, '', {
-      confirmButtonText: 'OK',
-      cancelButtonText: 'Cancel',
-      type: 'warning',
-    });
-    await Promise.all([
-      this.$store.dispatch('home/reset'),
-      this.$store.dispatch('characterRankingFilter/reset'),
-      this.$store.dispatch('enemyRankingFilter/reset'),
-      this.$store.dispatch('equipmentRankingFilter/reset'),
-      this.$store.dispatch('skillsFilter/reset'),
-      this.$store.dispatch('itemsFilter/reset'),
-      this.$store.dispatch('enemiesFilter/reset'),
-      this.$store.dispatch('charactersFilter/reset'),
-      this.$store.dispatch('composeItemFilter/reset'),
-      this.$store.dispatch('itemEnhanceQuality/reset'),
-      this.$store.dispatch('questsFilter/reset'),
-      this.$store.dispatch('adventBattleFilter/reset'),
-      this.$store.dispatch('blazeArtLeveling/reset'),
-    ]);
-    window.location.reload();
-  }
 }
 </script>
 
@@ -727,4 +689,7 @@ export default class extends VueWithMapFields {
   margin: 12px
   h3
     color: rgb(153, 122, 79)
+
+.strategy-guides
+  overflow-wrap: anywhere
 </style>

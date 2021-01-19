@@ -1,5 +1,37 @@
 <template lang="pug">
 el-container.containter-main(v-loading="pageLoading")
+  el-dialog(title="" :visible.sync="settingDialogVisible" width="80%" :fullscreen="!!(md.mobile() || md.tablet())" @close="onCloseSettingDialog")
+    div.filters
+      div.filter
+        el-button(@click="onResetSetting" type="danger" icon="el-icon-refresh-left" size="small" :aria-label="$t('セッティングリセット')" round)
+      div.filter
+        el-switch(v-model="showSideBar" active-color="#13ce66" :active-text="$t('サイドバー')")
+      div.filter
+        el-switch(v-model="showBackTopButton" :active-text="$t('トップに移動ボタン')")
+      div.filter
+        el-switch(:value="darkMode" @change="onDarkMode" active-color="#13ce66" :active-text="$t('ダークモード')")
+      div.filter
+        el-switch(:value="showHiddenContent" @change="onShowHiddenContent" active-color="#f56c6c" :active-text="$t('ネタバレ')")
+    el-divider {{ $t('サイドバー') }}
+    div.filters
+      div.filter
+        el-button(@click="onClickResetSidbar" type="warning" icon="el-icon-refresh-left" size="small" :aria-label="$t('リセット')" round)
+      div.filter
+        el-button(@click="onClickAllSidebar" type="primary" icon="el-icon-d-arrow-left" size="small" :aria-label="$t('すべてのサイドアイテム')" round)
+    div.sidebar-setting-container
+      draggable.sidebar-setting-items(v-model="menuItems" group="sidebar" filter=".sidebar-item-fixed" @start="drag=true" @end="drag=false" :multiDrag="draggableOptions.multiDrag" :animation="draggableOptions.animation" :ghostClass="draggableOptions.ghostClass" :selectedClass="draggableOptions.selectedClass")
+        el-card(v-for="menuItem of menuItems" :class="{ 'sidebar-item-fixed': menuItem.id === 1 }" :key="menuItem.id")
+          div.sidebar-setting-item
+            img.icon-small(:src="menuItem.img.src" :alt="menuItem.title")
+            span.sidebar-setting-item__text {{ menuItem.title }}
+      draggable.sidebar-setting-items(v-model="menuItemOptions" group="sidebar" @start="drag=true" @end="drag=false" :multiDrag="draggableOptions.multiDrag" :animation="draggableOptions.animation" :ghostClass="draggableOptions.ghostClass" :selectedClass="draggableOptions.selectedClass")
+        el-card(v-for="menuItem of menuItemOptions" :key="menuItem.id")
+          div.sidebar-setting-item
+            img.icon-small(:src="menuItem.img.src" :alt="menuItem.title")
+            span.sidebar-setting-item__text {{ menuItem.title }}
+    div(slot="footer")
+      el-button(@click="settingDialogVisible = false" type="primary") {{ $t('閉じる') }}
+
   el-backtop.back-top(v-if="$store.state.home.showBackTopButton")
   el-aside(v-if="$store.state.home.showSideBar" width="")
     el-menu.menu(:active-text-color="menu.activeTextColor" :background-color="menu.backgroundColor" default-active="1" :collapse="true")
@@ -13,22 +45,36 @@ el-container.containter-main(v-loading="pageLoading")
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import sleep from 'sleep-promise';
 import ms from 'ms';
 import { mapFields } from 'vuex-map-fields';
 import { sify } from 'chinese-conv';
+import MobileDetect from 'mobile-detect';
+import draggable from 'vuedraggable';
+import VueBase from '@/components/VueBase';
 import { TranslationQueue } from '@/utils/TranslationQueue';
+import { defaultMenuItemIds } from './store/home';
 
 abstract class VueWithMapFields extends VueBase {
+  public settingDialogVisible!: boolean;
+
+  public showSideBar!: boolean;
+
+  public showBackTopButton!: boolean;
+
+  public showHiddenContent!: boolean;
+
   public darkMode!: boolean | null;
+
+  public menuItemIds!: number[];
 }
 
 @Component({
   components: {
+    draggable,
   },
   computed: {
-    ...mapFields('home', ['darkMode']),
+    ...mapFields('home', ['settingDialogVisible', 'showSideBar', 'showBackTopButton', 'showHiddenContent', 'darkMode', 'menuItemIds']),
   },
   metaInfo() {
     return {
@@ -42,6 +88,8 @@ abstract class VueWithMapFields extends VueBase {
   },
 })
 export default class extends VueWithMapFields {
+  public md = new MobileDetect(window.navigator.userAgent);
+
   // menu
   public routeToColor = {
     ToolsCharacterBuilder: '#e0c397',
@@ -59,9 +107,17 @@ export default class extends VueWithMapFields {
     };
   }
 
-  public get menuItems() {
+  public draggableOptions = {
+    multiDrag: true,
+    animation: 150,
+    ghostClass: 'sidebar-on-drag',
+    selectedClass: 'sidebar-on-drag',
+  };
+
+  public get allMenuItems() {
     return [
       {
+        id: 1,
         title: this.$t('ホームページ'),
         img: {
           src: 'img/icon_chara/Texture2D/icon_chara_face_3015.png',
@@ -71,6 +127,7 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        id: 2,
         title: this.$t('キャラクタービルダー'),
         img: {
           src: 'img/other/Texture2D/item_texture_0024.png',
@@ -80,6 +137,7 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        id: 3,
         title: this.$t('調合アイテム'),
         img: {
           src: 'img/icon/icon_bowl.png',
@@ -89,6 +147,7 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        id: 4,
         title: this.$t('材料強化'),
         img: {
           src: 'img/icon_item_s/Texture2D/icon_item_s_10020003.png',
@@ -98,6 +157,27 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        id: 5,
+        title: this.$t('ブレイズアーツレベリング'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_56010002.png',
+        },
+        to: {
+          name: 'ToolsBlazeArtLeveling',
+        },
+      },
+      {
+        id: 6,
+        title: this.$t('装備ランキング'),
+        img: {
+          src: 'img/other/Texture2D/item_texture_0025.png',
+        },
+        to: {
+          name: 'ToolsEquipmentRanking',
+        },
+      },
+      {
+        id: 7,
         title: this.$t('アイテム'),
         img: {
           src: 'img/icon_item_s/Texture2D/icon_item_s_10010001.png',
@@ -107,6 +187,27 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        id: 8,
+        title: this.$t('未使用アイテム'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_20020010.png',
+        },
+        to: {
+          name: 'ItemsUnusedItems',
+        },
+      },
+      {
+        id: 9,
+        title: this.$t('他の投げ物'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10350010.png',
+        },
+        to: {
+          name: 'ItemsThrowables',
+        },
+      },
+      {
+        id: 10,
         title: this.$t('スキル'),
         img: {
           src: 'img/icon/icon_skill_00003.png',
@@ -116,6 +217,37 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        id: 11,
+        title: this.$t('強化効果'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10950010.png',
+        },
+        to: {
+          name: 'SkillsAddon',
+        },
+      },
+      {
+        id: 12,
+        title: this.$t('異常状態'),
+        img: {
+          src: 'img/fx/Texture2D/FX_smoke.png',
+        },
+        to: {
+          name: 'SkillsAbnormalEffect',
+        },
+      },
+      {
+        id: 13,
+        title: this.$t('キャラクターランキング'),
+        img: {
+          src: 'img/other/Texture2D/item_texture_0025.png',
+        },
+        to: {
+          name: 'ToolsCharacterRanking',
+        },
+      },
+      {
+        id: 14,
         title: this.$t('キャラクター'),
         img: {
           src: 'img/icon_chara/Texture2D/icon_chara_face_0002.png',
@@ -125,6 +257,7 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        id: 15,
         title: this.$t('敵'),
         img: {
           src: 'img/icon_chara/Texture2D/icon_chara_all_9999_00.png',
@@ -134,6 +267,7 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        id: 16,
         title: this.$t('区域'),
         img: {
           src: 'img/icon/tree.png',
@@ -143,6 +277,7 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        id: 17,
         title: this.$t('クェスト'),
         img: {
           src: 'img/other/Texture2D/item_texture_0018.png',
@@ -151,7 +286,200 @@ export default class extends VueWithMapFields {
           name: 'InfoQuest',
         },
       },
+      {
+        id: 18,
+        title: this.$t('ダイアログ'),
+        img: {
+          src: 'img/icon_chara/Texture2D/icon_chara_all_1010_00.png',
+        },
+        to: {
+          name: 'InfoDialog',
+        },
+      },
+      {
+        id: 19,
+        title: this.$t('大事なもの(財貨)'),
+        img: {
+          src: 'img/icon_item01/Texture2D/icon_item01_00001.png',
+        },
+        to: {
+          name: 'InfoWealth',
+        },
+      },
+      {
+        id: 20,
+        title: this.$t('称号'),
+        img: {
+          src: 'img/icon_degree/Texture2D/icon_degree_0605.png',
+        },
+        to: {
+          name: 'InfoDegree',
+        },
+      },
+      {
+        id: 21,
+        title: this.$t('課題'),
+        img: {
+          src: 'img/icon/icon_mission.png',
+        },
+        to: {
+          name: 'InfoDailyMission',
+        },
+      },
+      {
+        id: 22,
+        title: this.$t('トレジャー'),
+        img: {
+          src: 'img/icon/icon_hunt.png',
+        },
+        to: {
+          name: 'InfoHunt',
+        },
+      },
+      {
+        id: 23,
+        title: this.$t('ゾーン'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10500014.png',
+        },
+        to: {
+          name: 'InfoZone',
+        },
+      },
+      {
+        id: 24,
+        title: this.$t('計算/公式'),
+        img: {
+          src: 'img/other/Texture2D/item_texture_0010.png',
+        },
+        to: {
+          name: 'OthersCalculate',
+        },
+      },
+      {
+        id: 25,
+        title: this.$t('音楽 / ボイス'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10950041.png',
+        },
+        to: {
+          name: 'OthersAudios',
+        },
+      },
+      {
+        id: 26,
+        title: this.$t('降臨バタル(昔)'),
+        img: {
+          src: 'img/enemy_tex/Texture2D/enemy_tex_023_03.png',
+        },
+        to: {
+          name: 'OthersAdventBattle',
+        },
+      },
+      {
+        id: 27,
+        title: 'Tips',
+        img: {
+          src: 'img/tips/Texture2D/Tips_Chara_01.png',
+        },
+        to: {
+          name: 'OthersTips',
+        },
+      },
+      {
+        id: 28,
+        title: this.$t('宝文字'),
+        img: {
+          src: 'img/other/Texture2D/item_texture_0020.png',
+        },
+        to: {
+          name: 'OthersTreasureText',
+        },
+      },
+      {
+        id: 29,
+        title: this.$t('チャット資料'),
+        img: {
+          src: 'img/other/stamp.png',
+        },
+        to: {
+          name: 'OthersChat',
+        },
+      },
     ];
+  }
+
+  public menuItemOptions = null;
+
+  public get menuItems() {
+    return [1].concat(this.menuItemIds).map((id) => this.allMenuItems.find((p) => p.id === id));
+  }
+
+  public set menuItems(items: { id: number }[]) {
+    this.menuItemIds = [...new Set(items.map(({ id }) => id))].filter((id) => !(id === 1 || id === 25));
+  }
+
+  public onClickAllSidebar() {
+    this.menuItems = this.allMenuItems;
+    this.resetMenuItemOptions();
+  }
+
+  public async onClickResetSidbar() {
+    await this.$confirm(`${this.$t('サイドバーセッティングリセットよろしいでしか')}?`, '', {
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      type: 'warning',
+    });
+    this.menuItemIds = defaultMenuItemIds;
+    this.resetMenuItemOptions();
+  }
+
+  private resetMenuItemOptions() {
+    this.menuItemOptions = this.allMenuItems.filter(({ id }) => !(id === 1 || id === 25 || this.menuItemIds.includes(id)));
+  }
+
+  // settings
+  public settingChangeRequireReload = false;
+
+  public async onResetSetting() {
+    await this.$confirm(`${this.$t('セッティングリセットよろしいでしか')}?`, '', {
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      type: 'warning',
+    });
+    await Promise.all([
+      this.$store.dispatch('home/reset'),
+      this.$store.dispatch('characterRankingFilter/reset'),
+      this.$store.dispatch('enemyRankingFilter/reset'),
+      this.$store.dispatch('equipmentRankingFilter/reset'),
+      this.$store.dispatch('skillsFilter/reset'),
+      this.$store.dispatch('itemsFilter/reset'),
+      this.$store.dispatch('enemiesFilter/reset'),
+      this.$store.dispatch('charactersFilter/reset'),
+      this.$store.dispatch('composeItemFilter/reset'),
+      this.$store.dispatch('itemEnhanceQuality/reset'),
+      this.$store.dispatch('questsFilter/reset'),
+      this.$store.dispatch('adventBattleFilter/reset'),
+      this.$store.dispatch('blazeArtLeveling/reset'),
+    ]);
+    window.location.reload();
+  }
+
+  public async onShowHiddenContent(value: boolean) {
+    this.settingChangeRequireReload = true;
+    this.showHiddenContent = value;
+  }
+
+  public onDarkMode(value: boolean) {
+    this.settingChangeRequireReload = true;
+    this.darkMode = value;
+  }
+
+  public onCloseSettingDialog() {
+    if (this.settingChangeRequireReload) {
+      this.settingChangeRequireReload = false;
+      window.location.reload();
+    }
   }
 
   // page
@@ -184,6 +512,8 @@ export default class extends VueWithMapFields {
 
   public created() {
     this.loadDarkMode();
+    this.settingDialogVisible = false;
+    this.resetMenuItemOptions();
   }
 
   public beforeMount() {
@@ -220,6 +550,7 @@ export default class extends VueWithMapFields {
 @import "./design/styles/degree.sass"
 @import "./design/styles/vue-select.sass"
 @import "./design/styles/element-ui.sass"
+@import "./design/styles/option.sass"
 
 *, .reset
   padding: 0
@@ -258,6 +589,24 @@ export default class extends VueWithMapFields {
 </style>
 
 <style lang="sass" scoped>
+.sidebar-on-drag
+  background-color: #F5F7FA
+
+.dark-mode .sidebar-on-drag
+  background-color: rgba(255, 255, 255, 0.1)
+
+.sidebar-setting-container
+  display: flex
+  flex-wrap: nowrap
+.sidebar-setting-items
+  margin: 4px
+  padding: 4px
+.sidebar-setting-item
+  display: flex
+  align-items: center
+.sidebar-setting-item__text
+  margin-left: 4px
+
 .containter-main
   min-height: 100vh
 

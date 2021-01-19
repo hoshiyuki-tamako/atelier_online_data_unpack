@@ -42,7 +42,7 @@ const toolsRotes: Array<RouteConfig> = [
     name: 'ToolsEquipmentRanking',
     component: () => import(/* webpackChunkName: "ToolsEquipmentRanking" */ '@/views/tools/EquipmentRanking.vue'),
     meta: {
-      title: 'ランキング',
+      title: '装備ランキング',
     },
   },
   {
@@ -50,7 +50,7 @@ const toolsRotes: Array<RouteConfig> = [
     name: 'ToolsCharacterRanking',
     component: () => import(/* webpackChunkName: "ToolsCharacterRanking" */ '@/views/tools/CharacterRanking.vue'),
     meta: {
-      title: 'ランキング',
+      title: 'キャラクターランキング',
     },
   },
   {
@@ -58,7 +58,7 @@ const toolsRotes: Array<RouteConfig> = [
     name: 'ToolsEnemyRanking',
     component: () => import(/* webpackChunkName: "ToolsEnemyRanking" */ '@/views/tools/EnemyRanking.vue'),
     meta: {
-      title: 'ランキング',
+      title: '敵ランキング',
     },
   },
 ];
@@ -230,7 +230,7 @@ const infoRoutes: Array<RouteConfig> = [
     name: 'InfoWealth',
     component: () => import(/* webpackChunkName: "InfoWealth" */ '@/views/info/Wealth.vue'),
     meta: {
-      title: '大事なもの',
+      title: '大事なもの(財貨)',
     },
   },
   {

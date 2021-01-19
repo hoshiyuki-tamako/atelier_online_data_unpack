@@ -74,6 +74,8 @@ export default class extends VueBase {
     const languageMap = {
       'ja-JP': 'ja',
       'zh-TW': 'zh_TW',
+      'zh-HK': 'zh_TW',
+      'zh-CN': 'zh_CN',
     };
     return humanizeDuration(second * 1000, {
       spacer: '',

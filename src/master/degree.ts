@@ -1,3 +1,4 @@
+import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
 
 export class Degree {
@@ -20,8 +21,16 @@ export class List {
     PRIO:           number;
     KEY_SIDE_QUEST: number;
 
+    public get iconFile() {
+      return `icon_degree_${this.TYP.toString().padStart(2, "0")}${this.RTY.toString().padStart(2, "0")}.png`;
+    }
+
+    public get hasIcon() {
+      return dataManager.files.img.icon_degree.Texture2D[this.iconFile];
+    }
+
     public get icon() {
-      return `img/icon_degree/Texture2D/icon_degree_${this.TYP.toString().padStart(2, "0")}${this.RTY.toString().padStart(2, "0")}.png`;
+      return `img/icon_degree/Texture2D/${this.iconFile}`;
     }
 }
 
