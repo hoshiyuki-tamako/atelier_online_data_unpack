@@ -3,6 +3,9 @@ div.filter
   span {{ title || $t('大事なもの(財貨)') }}
   el-select(v-model="wealth" @change="change" clearable filterable)
     el-option(v-for="item of wealths" :key="item.DF" :label="item.NAME" :value="item.DF")
+      template(v-if="item.CHARA" v-for="character of [dataManager.characterById[item.CHARA]].filter((p) => p)")
+        img.option-image(v-if="character.hasFaceIcon" :src="character.faceIcon" :alt="character.NAME")
+        img.option-image(v-else-if="character.hasIcon" :src="character.icon" :alt="character.NAME")
       img.option-image(:src="item.icon" :alt="item.NAME")
       span.option-text {{ item.NAME }}
 </template>

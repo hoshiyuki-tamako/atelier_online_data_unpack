@@ -9,17 +9,17 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
     el-table-column
       template(slot-scope="scope")
         div(v-if="scope.row.order === EOrderType.eCHARA_TALK")
-          h4 {{ replaceWithPlayerName(scope.row.name) }}
-          p {{ replaceWithPlayerName(scope.row.dialog) }}
+          h4(v-html="richTextService.richTextToHtml(scope.row.name)")
+          p(v-html="richTextService.richTextToHtml(scope.row.dialog)")
           audio(v-if="scope.row.voice && dataManager.files.audios.voices[`${scope.row.voice}.wav`]" controls)
             source(:src="`audios/voices/${scope.row.voice}.wav`" type="audio/mpeg")
         div(v-else-if="scope.row.order === EOrderType.eSELECTION")
           h4 {{ $t('選択') }}
-          p(v-for="option of scope.row.options") {{ replaceWithPlayerName(option) }}
+          p(v-for="option of scope.row.options" v-html="richTextService.richTextToHtml(option)")
         div(v-else-if="scope.row.order === EOrderType.eBG")
           h4 {{ $t('背景') }}
-          p {{ replaceWithPlayerName(scope.row.text1 || '') }}
-          p {{ replaceWithPlayerName(scope.row.text2 || '') }}
+          p(v-html="richTextService.richTextToHtml(scope.row.text1 || '')")
+          p(v-html="richTextService.richTextToHtml(scope.row.text2 || '')")
           img.dialog-image(:src="`img/bg_texture/BG_Texture_${scope.row.id.toString().padStart(4, '0')}.png`" :alt="scope.row.id")
         div(v-else-if="scope.row.order === EOrderType.eMUSIC")
           h4 {{ $t('音楽') }}
@@ -36,13 +36,13 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import Component from 'vue-class-component';
 import VueBase from '@/components/VueBase';
 import { MVList as QuestMVList } from '@/master/quest';
 import { IAdventure } from '@/utils/AdvManager';
 import MobileDetect from 'mobile-detect';
 import { EOrderType, eMusicID } from '@/logic/Enums';
+import { RichTextService } from '@/services/RichTextService';
 
 @Component({
   components: {
@@ -69,6 +69,9 @@ export default class extends VueBase {
   public adv = '';
 
   public questDialogs: IAdventure[] = [];
+
+  // services
+  private richTextService = new RichTextService();
 
   public async openDialog(quest: QuestMVList) {
     try {
@@ -100,10 +103,6 @@ export default class extends VueBase {
     } finally {
       this.loading = false;
     }
-  }
-
-  public replaceWithPlayerName(text: string) {
-    return text.replaceAll('[px]', `[${this.$t('プレーヤー')}${this.$t('名前')}]`);
   }
 }
 </script>

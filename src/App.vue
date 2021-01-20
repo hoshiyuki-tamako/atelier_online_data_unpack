@@ -19,12 +19,12 @@ el-container.containter-main(v-loading="pageLoading")
       div.filter
         el-button(@click="onClickAllSidebar" type="primary" icon="el-icon-d-arrow-left" size="small" :aria-label="$t('すべてのサイドアイテム')" round)
     div.sidebar-setting-container
-      draggable.sidebar-setting-items(v-model="menuItems" group="sidebar" filter=".sidebar-item-fixed" @start="drag=true" @end="drag=false" :multiDrag="draggableOptions.multiDrag" :animation="draggableOptions.animation" :ghostClass="draggableOptions.ghostClass" :selectedClass="draggableOptions.selectedClass")
+      draggable.sidebar-setting-items(v-model="menuItems" group="sidebar" filter=".sidebar-item-fixed" :multiDrag="draggableOptions.multiDrag" :animation="draggableOptions.animation" :ghostClass="draggableOptions.ghostClass" :selectedClass="draggableOptions.selectedClass")
         el-card(v-for="menuItem of menuItems" :class="{ 'sidebar-item-fixed': menuItem.id === 1 }" :key="menuItem.id")
           div.sidebar-setting-item
             img.icon-small(:src="menuItem.img.src" :alt="menuItem.title")
             span.sidebar-setting-item__text {{ menuItem.title }}
-      draggable.sidebar-setting-items(v-model="menuItemOptions" group="sidebar" @start="drag=true" @end="drag=false" :multiDrag="draggableOptions.multiDrag" :animation="draggableOptions.animation" :ghostClass="draggableOptions.ghostClass" :selectedClass="draggableOptions.selectedClass")
+      draggable.sidebar-setting-items(v-model="menuItemOptions" group="sidebar" :multiDrag="draggableOptions.multiDrag" :animation="draggableOptions.animation" :ghostClass="draggableOptions.ghostClass" :selectedClass="draggableOptions.selectedClass")
         el-card(v-for="menuItem of menuItemOptions" :key="menuItem.id")
           div.sidebar-setting-item
             img.icon-small(:src="menuItem.img.src" :alt="menuItem.title")
