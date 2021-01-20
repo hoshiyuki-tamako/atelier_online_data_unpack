@@ -278,7 +278,7 @@ export default class extends VueWithMapFields {
       },
       {
         id: 17,
-        title: this.$t('クェスト'),
+        title: this.$t('クエスト'),
         img: {
           src: 'img/other/Texture2D/item_texture_0018.png',
         },

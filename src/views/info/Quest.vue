@@ -15,7 +15,7 @@ div.container
       span {{ $t('名前') }}/DF
       el-input(v-model="filter.name" @change="resetPage" clearable)
     div.filter
-      el-switch(v-model="filter.extraQuest" @change="resetPage" :active-text="$t('EXクェスト')")
+      el-switch(v-model="filter.extraQuest" @change="resetPage" :active-text="$t('EXクエスト')")
     div.filter
       el-switch(v-model="defaultExpandAll" :active-text="$t('すべて展開')")
   div.filters
@@ -52,7 +52,7 @@ div.container
                 p {{ $t('種類') }}: {{ $t(dataManager.lookup.EQuestCategory[quest.CATEG]) }}
                 p(v-if="quest.TYPE") {{ $t('タイプ') }}: {{ $t(dataManager.lookup.EQuestType[quest.TYPE]) }}
                 p {{ $t('解放チャプター') }}: {{ quest.CHAPTER ? quest.CHAPTER : '-' }}
-                p {{ $t('キークェスト') }}: {{ tickCross(quest.KEY_QUEST) }}
+                p {{ $t('キークエスト') }}: {{ tickCross(quest.KEY_QUEST) }}
                 p {{ $t('重要') }}: {{ tickCross(quest.IMPORTANT) }}
                 p {{ $t('挑戦') }}: {{ tickCross(quest.CHALLENGE) }}
                 p(v-if="quest.AREA")
@@ -271,27 +271,27 @@ export default class extends VueWithMapFields {
         value: 4,
       },
       {
-        label: `${this.$t('場所に行く')}`,
+        label: this.$t('場所に行く'),
         value: 5,
       },
       {
-        label: `${this.$t('ダイアログ')}`,
+        label: this.$t('ダイアログ'),
         value: 6,
       },
       {
-        label: `${this.$t('キークェスト')}`,
+        label: this.$t('キークエスト'),
         value: 7,
       },
       {
-        label: `${this.$t('挑戦')}`,
+        label: this.$t('挑戦'),
         value: 8,
       },
       {
-        label: `${this.$t('必要称号')}`,
+        label: this.$t('必要称号'),
         value: 9,
       },
       {
-        label: `${this.$t('必要キャラクター')}`,
+        label: this.$t('必要キャラクター'),
         value: 10,
       },
     ];

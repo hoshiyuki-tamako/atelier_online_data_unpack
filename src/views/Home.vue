@@ -407,7 +407,7 @@ export default class extends VueWithMapFields {
   public get pageInfo() {
     return [
       {
-        label: this.$t('クェスト'),
+        label: this.$t('クエスト'),
         img: {
           src: 'img/other/Texture2D/item_texture_0018.png',
         },

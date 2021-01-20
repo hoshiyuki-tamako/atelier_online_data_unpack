@@ -278,11 +278,11 @@ export default class extends VueWithMapFields {
         value: 3,
       },
       {
-        label: `${this.$t('敵')}`,
+        label: this.$t('敵'),
         value: 4,
       },
       {
-        label: `${this.$t('人物')}`,
+        label: this.$t('人物'),
         value: 5,
       },
     ];

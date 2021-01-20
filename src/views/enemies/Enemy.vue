@@ -44,7 +44,7 @@ div.container
           router-link(:to="{ name: 'Areas', query: { df: area.iAreaId } }") {{ dataManager.fieldNameById[area.iAreaNameId].strAreaName }}
 
       div(v-if="dataManager.questsByEnemy[enemy.DF]")
-        el-divider {{ $t('クェスト') }}
+        el-divider {{ $t('クエスト') }}
         p(v-for="quest of dataManager.questsByEnemy[enemy.DF]")
           router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
       SkillTextInfo(v-if="enemy.sParam.SKILL.length" :skills="enemy.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)")

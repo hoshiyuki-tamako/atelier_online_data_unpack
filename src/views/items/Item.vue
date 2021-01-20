@@ -133,17 +133,17 @@ div.container
               el-tooltip(:content="character.NAME" placement="top")
                 img.icon-middle(:src="character.icon" :alt="character.NAME")
       div(v-if="dataManager.questsByGetItem[item.DF]")
-        el-divider {{ $t('クェスト調合/採取') }}
+        el-divider {{ $t('クエスト調合/採取') }}
         div(v-for="quest of dataManager.questsByGetItem[item.DF]")
           p
             router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
       div(v-if="dataManager.questsByDeliverItem[item.DF]")
-        el-divider {{ $t('クェスト納品') }}
+        el-divider {{ $t('クエスト納品') }}
         div(v-for="quest of dataManager.questsByDeliverItem[item.DF]")
           p
             router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
       div(v-if="dataManager.questsByRewardItem[item.DF]")
-        el-divider {{ $t('クェスト報酬') }}
+        el-divider {{ $t('クエスト報酬') }}
         div(v-for="quest of dataManager.questsByRewardItem[item.DF]")
           p
             router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}

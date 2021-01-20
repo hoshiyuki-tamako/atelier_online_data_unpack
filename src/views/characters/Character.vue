@@ -135,7 +135,7 @@ div.container
                 td {{ fdm[state] }}
 
       div(v-if="character.QST.length")
-        el-divider {{ $t('クェスト') }}
+        el-divider {{ $t('クエスト') }}
         div.character-quest(v-for="[qst, quest] of character.QST.map((p) => [p, dataManager.questById[p.QUEST_DF]]).filter(([, quest]) => quest)")
           el-divider LV {{ qst.LV }}
           router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}

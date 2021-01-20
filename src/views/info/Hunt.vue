@@ -1,6 +1,11 @@
 <template lang="pug">
 div.hunt-container(v-loading="loading")
-  el-card.hunt-card(v-for="row of rows" :key="row.HUNTID")
+  div.filters
+    div.filter
+      span {{ $t('所要時間') }}
+      el-select(v-model="timeCost" clearable filterable)
+        el-option(v-for="item of timeCosts" :key="item.value" :label="item.label" :value="item.value")
+  el-card.hunt-card(v-for="row of filteredRows" :key="row.HUNTID")
     div
       h2.hunt-title
         span {{ row.NAME }} ({{ humanizeDuration(row.TM) }})
@@ -60,6 +65,7 @@ import { HuntInfo } from '@/models/HuntInfo';
 import { api } from '@/utils/ApiManager';
 import humanizeDuration from 'humanize-duration';
 import { eConditionType } from '@/logic/Enums';
+import Enumerable from 'linq';
 
 @Component({
   components: {
@@ -85,7 +91,27 @@ export default class extends VueBase {
 
   public loading = true;
 
+  // data
   public rows = [] as HuntInfo[];
+
+  // filter
+  public timeCost: number | null = null;
+
+  public get timeCosts() {
+    return Enumerable.from(this.rows)
+      .groupBy((p) => this.humanizeDuration(p.TM))
+      .select((p) => ({
+        label: p.key(),
+        value: p.firstOrDefault().TM,
+      }))
+      .orderBy((p) => p.value);
+  }
+
+  public get filteredRows() {
+    return this.rows.filter((p) => (
+      (!this.timeCost || this.timeCost === p.TM)
+    )).sort((a, b) => a.DTY - b.DTY);
+  }
 
   public async created() {
     this.rows = await api.comHuntSummary();

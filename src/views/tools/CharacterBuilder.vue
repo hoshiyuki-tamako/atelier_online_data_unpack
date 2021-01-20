@@ -1124,7 +1124,7 @@ export default class extends VueBase {
   }
 
   public get unsavedMessage() {
-    return `${this.$t('キャラクター保存されません，ページを離れますか')}？`;
+    return `${this.$t('キャラクター保存されません，ページを離れますか')}?`;
   }
 
   // item picker

@@ -254,7 +254,7 @@ const infoRoutes: Array<RouteConfig> = [
     name: 'InfoQuest',
     component: () => import(/* webpackChunkName: "InfoQuest" */ '@/views/info/Quest.vue'),
     meta: {
-      title: 'クェスト',
+      title: 'クエスト',
     },
   },
   {

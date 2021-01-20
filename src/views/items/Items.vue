@@ -121,15 +121,15 @@ export default class extends VueWithMapFields {
         value: 3,
       },
       {
-        label: this.$t('クェスト調合/採取'),
+        label: this.$t('クエスト調合/採取'),
         value: 4,
       },
       {
-        label: this.$t('クェスト納品'),
+        label: this.$t('クエスト納品'),
         value: 5,
       },
       {
-        label: this.$t('クェスト報酬'),
+        label: this.$t('クエスト報酬'),
         value: 6,
       },
     ];

@@ -63,7 +63,7 @@ export default class extends VueBase {
         value: 1,
       },
       {
-        label: `${this.$t('敵')}`,
+        label: this.$t('敵'),
         value: 2,
       },
     ];

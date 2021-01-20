@@ -22,7 +22,7 @@ div.container
         el-option(v-for="item in rarityFilters" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       el-checkbox(v-model="isKeySideQuest" :label="$t('サイドクエスト')" border)
-
+      el-checkbox(v-model="hasQuest" :label="$t('クエストに必要')" border)
   div.content
     el-table(ref="table" :data="filteredPaginationDegrees" @sort-change="onSortChange")
       el-table-column(prop="DF" label="DF" width="100%" sortable="custom")
@@ -61,6 +61,8 @@ export default class extends VueBase {
   public rarity: number | null = null;
 
   public isKeySideQuest = false;
+
+  public hasQuest = false;
 
   public sort = '';
 
@@ -102,6 +104,7 @@ export default class extends VueBase {
       && ([null, '', -1].includes(this.type) || p.TYP === this.type)
       && ([null, '', -1].includes(this.rarity) || p.RTY === this.rarity)
       && (!this.isKeySideQuest || p.KEY_SIDE_QUEST)
+      && (!this.hasQuest || this.dataManager.questRequireDegrees.some((i) => i.DF === p.DF))
     ));
 
     if (this.sort) {

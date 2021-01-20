@@ -1,18 +1,9 @@
 import files from '@/../public/generated/files.json';
 import { eSpawnerKind } from '@/logic/Enums';
-import csv from 'csvtojson';
+import { SpawnerData } from '@/models/SpawnerData';
+import { plainArrayToClass } from 'class-transformer-for-array';
 import Enumerable from 'linq';
-
-export class SpawnerData {
-  // pos 0
-  public DF = 0;
-
-  // pos 1
-  public spawnerKind = eSpawnerKind.Ignore;
-
-  // pos 10
-  public text = '';
-}
+import { parse } from 'papaparse';
 
 export interface IEnemyMap {
   level: number;
@@ -47,18 +38,13 @@ export class SpawnerDataManager {
     await Promise.all(Object.values(spawnFiles).map(async (csvFileName: string) => {
       try {
         const url = `${spawnListFolders}/${csvFileName}`;
-        const spawnLists = await csv({
-          noheader: true,
-          output: 'csv',
-        }).fromString(await fetch(url).then((i) => i.text()));
-
-        this.spawnLists.set(csvFileName, spawnLists.map((row) => {
-          const that = new SpawnerData();
-          that.DF = +row[0];
-          that.spawnerKind = +row[1];
-          that.text = row[9]?.replaceAll(/\<br\\?>|\/\d(\/\d)?$/gi, '\r\n') ?? '';
-          return that;
+        const { data } = await new Promise((complete, error) => parse(url, {
+          download: true,
+          skipEmptyLines: true,
+          complete,
+          error,
         }));
+        this.spawnLists.set(csvFileName, plainArrayToClass(SpawnerData, data as unknown[][], { isArray: true }));
       } catch (e) {
         console.error(e);
       }
