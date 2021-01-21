@@ -4,12 +4,12 @@ div.container
     el-divider {{ $t('読み込み中Tips') }}
     div(v-for="tip of dataManager.tips.LOADING_LIST")
       h3 {{ tip.sTitle }}
-      p(v-html="richTextService.richTextToHtml(tip.sContent)")
+      p(v-html="richTextService.richTextToHtml(tip.sContent, { ignoreNewLine: true })")
       br
     el-divider {{ $t('戦闘Tips') }}
     div(v-for="tip of dataManager.tips.BATTLE_LIST")
       h3 {{ tip.sTitle }}
-      p(v-html="richTextService.richTextToHtml(tip.sContent)")
+      p(v-html="richTextService.richTextToHtml(tip.sContent, { ignoreNewLine: true })")
       br
 </template>
 
