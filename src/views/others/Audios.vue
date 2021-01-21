@@ -4,7 +4,7 @@ div.container
     el-tab-pane(:label="$t('音楽')" name="music")
       aplayer(v-if="musicList.length" :music="musicAplayerOption.music" :list="musicAplayerOption.list" :theme="musicAplayerOption.theme")
     el-tab-pane(:label="$t('キャラクター')" name="character")
-      div.filter
+      div.filters
         CharacterSelector(v-model="character" :characters="characters" :showTitle="false" :clearable="false")
       aplayer(v-if="characterList.length" :key="character" :music="characterAplayerOption.music" :list="characterAplayerOption.list" :theme="characterAplayerOption.theme")
     el-tab-pane(:label="$t('他')" name="other")

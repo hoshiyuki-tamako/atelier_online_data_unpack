@@ -5,6 +5,9 @@ div.hunt-container(v-loading="loading")
       span {{ $t('所要時間') }}
       el-select(v-model="timeCost" clearable filterable)
         el-option(v-for="item of timeCosts" :key="item.value" :label="item.label" :value="item.value")
+    CharacterSelector(v-model="character" :characters="characters")
+    ItemSelector(v-model="item" :items="items")
+    SkillSelector(v-model="skill" :skills="skills" :title="$t('強化効果')")
   el-card.hunt-card(v-for="row of filteredRows" :key="row.HUNTID")
     div
       h2.hunt-title
@@ -60,15 +63,21 @@ div.hunt-container(v-loading="loading")
 
 <script lang="ts">
 import Component from 'vue-class-component';
+import Enumerable from 'linq';
+import humanizeDuration from 'humanize-duration';
 import VueBase from '@/components/VueBase';
 import { HuntInfo } from '@/models/HuntInfo';
 import { api } from '@/utils/ApiManager';
-import humanizeDuration from 'humanize-duration';
 import { eConditionType } from '@/logic/Enums';
-import Enumerable from 'linq';
+import CharacterSelector from '@/components/inputs/CharacterSelector.vue';
+import ItemSelector from '@/components/inputs/ItemSelector.vue';
+import SkillSelector from '@/components/inputs/SkillSelector.vue';
 
 @Component({
   components: {
+    CharacterSelector,
+    ItemSelector,
+    SkillSelector,
   },
 })
 export default class extends VueBase {
@@ -97,6 +106,12 @@ export default class extends VueBase {
   // filter
   public timeCost: number | null = null;
 
+  public character: number | null = null;
+
+  public item: number | null = null;
+
+  public skill: number | null = null;
+
   public get timeCosts() {
     return Enumerable.from(this.rows)
       .groupBy((p) => this.humanizeDuration(p.TM))
@@ -107,9 +122,42 @@ export default class extends VueBase {
       .orderBy((p) => p.value);
   }
 
+  public get characters() {
+    return Enumerable.from(this.rows)
+      .selectMany((p) => p.JCND.filter((i) => i.TYPE === eConditionType.TargetChara).map((i) => i.VALS[0]))
+      .groupBy((p) => p)
+      .select((p) => this.dataManager.characterById[p.key()])
+      .where((p) => !!p)
+      .orderBy((p) => p.DF)
+      .toArray();
+  }
+
+  public get items() {
+    return Enumerable.from(this.rows)
+      .selectMany((p) => p.RWD.TRS.concat(p.RWD.ITM))
+      .groupBy((p) => p.DF)
+      .select((p) => this.dataManager.itemById[p.key()])
+      .where((p) => !!p)
+      .orderBy((p) => p.DF)
+      .toArray();
+  }
+
+  public get skills() {
+    return Enumerable.from(this.rows)
+      .selectMany((p) => p.RWD.TRS.concat(p.RWD.ITM))
+      .groupBy((p) => p.TRT)
+      .select((p) => this.dataManager.skillById[p.key()])
+      .where((p) => !!p)
+      .orderBy((p) => p.id)
+      .toArray();
+  }
+
   public get filteredRows() {
     return this.rows.filter((p) => (
       (!this.timeCost || this.timeCost === p.TM)
+      && (!this.character || p.JCND.some((i) => i.TYPE === eConditionType.TargetChara && i.VALS[0] === this.character))
+      && (!this.item || p.RWD.TRS.some((i) => i.DF === this.item) || p.RWD.ITM.some((i) => i.DF === this.item))
+      && (!this.skill || p.RWD.TRS.some((i) => i.TRT === this.skill) || p.RWD.ITM.some((i) => i.TRT === this.skill))
     )).sort((a, b) => a.DTY - b.DTY);
   }
 
