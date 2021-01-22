@@ -44,7 +44,7 @@ export class SpawnerDataManager {
           complete,
           error,
         }));
-        this.spawnLists.set(csvFileName, plainArrayToClass(SpawnerData, data as unknown[][], { isArray: true }));
+        this.spawnLists.set(csvFileName, plainArrayToClass(SpawnerData, data, { isArray: true }));
       } catch (e) {
         console.error(e);
       }
