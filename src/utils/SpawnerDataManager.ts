@@ -1,3 +1,4 @@
+import { DataManager } from './DataManager';
 import files from '@/../public/generated/files.json';
 import { eSpawnerKind } from '@/logic/Enums';
 import { SpawnerData } from '@/models/SpawnerData';
@@ -11,9 +12,6 @@ export interface IEnemyMap {
 }
 
 export class SpawnerDataManager {
-  // settings
-  public locale = 'ja-JP';
-
   // data
   public spawnLists = new Map<string, SpawnerData[]>();
 
@@ -23,15 +21,16 @@ export class SpawnerDataManager {
   public spawnerDataByAreaIdLevelId: { [id: string]: { [id: string]: SpawnerData[] }} = {};
   public kanbansByAreaId: { [id: string]: SpawnerData[] } = {};
 
-  public async load(locale: string) {
+  public constructor(private dataManager: DataManager) {
+  }
+
+  public async load() {
     this.spawnLists.clear();
 
-    this.locale = locale;
-
-    const spawnFiles = this.locale === 'ja-JP'
+    const spawnFiles = this.dataManager.locale === 'ja-JP'
       ? files.export.SpawnList.TextAsset
       : files.export.tw.SpawnList.TextAsset
-    const spawnListFolders = this.locale === 'ja-JP'
+    const spawnListFolders = this.dataManager.locale === 'ja-JP'
       ? 'export/SpawnList/TextAsset'
       : 'export/tw/SpawnList/TextAsset';
 

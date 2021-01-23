@@ -1,13 +1,18 @@
 <template lang="pug">
-div.hunt-container(v-loading="loading")
+div.hunt-container
   div.filters
     div.filter
       span {{ $t('所要時間') }}
       el-select(v-model="timeCost" clearable filterable)
-        el-option(v-for="item of timeCosts" :key="item.value" :label="item.label" :value="item.value")
-    CharacterSelector(v-model="character" :characters="characters")
-    ItemSelector(v-model="item" :items="items")
-    SkillSelector(v-model="skill" :skills="skills" :title="$t('強化効果')")
+        el-option(v-for="item of dataManager.api.huntInfoTimeCosts" :key="item" :label="humanizeDuration(item)" :value="item")
+    CharacterSelector(v-model="character" :characters="dataManager.api.huntInfoCharacters")
+    ItemSelector(v-model="item" :items="dataManager.api.huntInfoItems")
+    SkillSelector(v-model="skill" :skills="dataManager.api.huntInfoSkills" :title="$t('強化効果')")
+  div.filters
+    div.filter
+      span {{ $t('名前') }}/HUNTID
+      el-input(v-model="name" clearable)
+
   el-card.hunt-card(v-for="row of filteredRows" :key="row.HUNTID")
     div
       h2.hunt-title
@@ -63,11 +68,8 @@ div.hunt-container(v-loading="loading")
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import Enumerable from 'linq';
 import humanizeDuration from 'humanize-duration';
 import VueBase from '@/components/VueBase';
-import { HuntInfo } from '@/models/HuntInfo';
-import { api } from '@/utils/ApiManager';
 import { eConditionType } from '@/logic/Enums';
 import CharacterSelector from '@/components/inputs/CharacterSelector.vue';
 import ItemSelector from '@/components/inputs/ItemSelector.vue';
@@ -98,11 +100,6 @@ export default class extends VueBase {
     });
   }
 
-  public loading = true;
-
-  // data
-  public rows = [] as HuntInfo[];
-
   // filter
   public timeCost: number | null = null;
 
@@ -112,58 +109,20 @@ export default class extends VueBase {
 
   public skill: number | null = null;
 
-  public get timeCosts() {
-    return Enumerable.from(this.rows)
-      .groupBy((p) => this.humanizeDuration(p.TM))
-      .select((p) => ({
-        label: p.key(),
-        value: p.firstOrDefault().TM,
-      }))
-      .orderBy((p) => p.value);
-  }
-
-  public get characters() {
-    return Enumerable.from(this.rows)
-      .selectMany((p) => p.JCND.filter((i) => i.TYPE === eConditionType.TargetChara).map((i) => i.VALS[0]))
-      .groupBy((p) => p)
-      .select((p) => this.dataManager.characterById[p.key()])
-      .where((p) => !!p)
-      .orderBy((p) => p.DF)
-      .toArray();
-  }
-
-  public get items() {
-    return Enumerable.from(this.rows)
-      .selectMany((p) => p.RWD.TRS.concat(p.RWD.ITM))
-      .groupBy((p) => p.DF)
-      .select((p) => this.dataManager.itemById[p.key()])
-      .where((p) => !!p)
-      .orderBy((p) => p.DF)
-      .toArray();
-  }
-
-  public get skills() {
-    return Enumerable.from(this.rows)
-      .selectMany((p) => p.RWD.TRS.concat(p.RWD.ITM))
-      .groupBy((p) => p.TRT)
-      .select((p) => this.dataManager.skillById[p.key()])
-      .where((p) => !!p)
-      .orderBy((p) => p.id)
-      .toArray();
-  }
+  public name = '';
 
   public get filteredRows() {
-    return this.rows.filter((p) => (
+    return this.dataManager.api.huntInfos.filter((p) => (
       (!this.timeCost || this.timeCost === p.TM)
       && (!this.character || p.JCND.some((i) => i.TYPE === eConditionType.TargetChara && i.VALS[0] === this.character))
       && (!this.item || p.RWD.TRS.some((i) => i.DF === this.item) || p.RWD.ITM.some((i) => i.DF === this.item))
       && (!this.skill || p.RWD.TRS.some((i) => i.TRT === this.skill) || p.RWD.ITM.some((i) => i.TRT === this.skill))
+      && (!this.name || p.HUNTID === +this.name || p.NAME.toLocaleLowerCase().includes(this.name.trim().toLocaleLowerCase()))
     )).sort((a, b) => a.DTY - b.DTY);
   }
 
-  public async created() {
-    this.rows = await api.comHuntSummary();
-    this.loading = false;
+  public beforeMount() {
+    this.name = this.$route.query.huntId?.toString() || '';
   }
 }
 </script>

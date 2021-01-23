@@ -229,7 +229,12 @@ export class Player {
     // self abnormal state
     for (const abnormalStateEffect of this.abnormalStateEffects) {
       const target = EAbnormalStateTarget[abnormalStateEffect.trarget].substr(1);
-      if (
+      if (abnormalStateEffect.id === 1005) {
+        multipliers.push({
+          translatedLabel: abnormalStateEffect.name,
+          value: 1.5,
+        });
+      } else if (
           ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMDEF) ||
           abnormalStateEffect.trarget === EAbnormalStateTarget.eSDEF) &&
           dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)

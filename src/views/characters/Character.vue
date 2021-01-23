@@ -104,7 +104,12 @@ div.container
           router-link(:to="{ name: 'ItemsItem', query: { df: item.DF } }")
             el-tooltip(:content="item.NAME" placement="top")
               img.icon-small(:src="item.icon" :alt="item.NAME")
-
+      div(v-if="dataManager.api.huntInfosByCharacterId[character.DF]")
+        el-divider {{ $t('トレジャー') }}
+        div(v-for="(huntInfo, i) of dataManager.api.huntInfosByCharacterId[character.DF]")
+          p
+            router-link(:to="{ name: 'InfoHunt', query: { huntId: huntInfo.HUNTID } }") {{ huntInfo.NAME }}
+          p(v-for="join of huntInfo.JCND.filter((join) => join.TYPE === eConditionType.TargetChara && join.VALS[0] === character.DF)") {{ $t('LV{0}以上の{1}の編成', [join.VALS[1], character.NAME]) }}
       div(v-if="character.SKILL.length")
         el-divider {{ $t('スキル') }}
         div(v-for="{ level, skillDfs } of character.skillsByLevel")
@@ -147,6 +152,7 @@ import VueBase from '@/components/VueBase';
 import { MVList as CharacterMVList } from '@/master/chara';
 import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
 import SkillTextInfo from '@/components/SkillTextInfo.vue';
+import { eConditionType } from '@/logic/Enums';
 
 @Component({
   components: {
@@ -154,6 +160,10 @@ import SkillTextInfo from '@/components/SkillTextInfo.vue';
   },
 })
 export default class extends VueBase {
+  public get eConditionType() {
+    return eConditionType;
+  }
+
   public character: CharacterMVList | null = null;
 
   public characterModifier = new CharacterModifier();

@@ -37,6 +37,7 @@ import Enumerable from 'linq';
 
 import { Bgm } from './../master/soundList';
 import { IBattleArea } from './../scripts/ModelExport';
+import { ApiManager } from './ApiManager';
 
 export class DataManager {
   public static supportedLocales = ['ja-JP', 'zh-TW', 'zh-HK', 'zh-CN'];
@@ -54,7 +55,6 @@ export class DataManager {
   }
   public set locale(value: string | null) {
     this.#locale = DataManager.supportedLocales.find((p) => p.toLocaleLowerCase() === value?.toLocaleLowerCase()) || DataManager.defaultLocale;
-    this.advManager.setLocale(this.locale);
   }
 
   public get dataFolder() {
@@ -212,8 +212,9 @@ export class DataManager {
   public soundListBgmById: { [id: string]: Bgm }
 
   // other managers
-  public spawnerDataManager = new SpawnerDataManager();
-  public advManager = new AdvManager();
+  public spawnerDataManager = new SpawnerDataManager(this);
+  public advManager = new AdvManager(this);
+  public api = new ApiManager(this);
 
   // custom data
   public lookup = lookup;
@@ -269,7 +270,8 @@ export class DataManager {
       this.loadGeneric('treasure'),
       this.loadGeneric('chat'),
 
-      this.spawnerDataManager.load(this.locale),
+      this.spawnerDataManager.load(),
+      this.api.load(),
     ]);
     this.afterLoad();
   }
@@ -283,6 +285,7 @@ export class DataManager {
     this.afterLoadQuest();
     this.processFiles();
     this.processAdvs();
+    this.api.afterLoad();
   }
 
   public async loadGeneric(name: string, key = '', value?: unknown) {

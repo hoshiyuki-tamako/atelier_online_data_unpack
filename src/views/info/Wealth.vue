@@ -52,8 +52,8 @@ export default class extends VueBase {
 
   public get filteredWealth() {
     return this.dataManager.wealthOrderBySort.filter((p) => (
-      (!this.name || p.DF === +this.name || p.NAME.includes(this.name))
-      && (!this.description || p.DESC.includes(this.description))
+      (!this.name || p.DF === +this.name || p.NAME.toLocaleLowerCase().includes(this.name.trim().toLocaleLowerCase()))
+      && (!this.description || p.DESC.toLocaleLowerCase().includes(this.description.trim().toLocaleLowerCase()))
       && (!this.has.includes(1) || this.dataManager.questCostWealths.some((i) => i.DF === p.DF))
       && (!this.has.includes(2) || this.dataManager.questRewardWealths.some((i) => i.DF === p.DF))
     ));

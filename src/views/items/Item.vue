@@ -147,6 +147,16 @@ div.container
         div(v-for="quest of dataManager.questsByRewardItem[item.DF]")
           p
             router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
+      div(v-if="dataManager.api.huntInfosByItemId[item.DF]")
+        el-divider {{ $t('トレジャー') }}
+        div(v-for="(huntInfo, i) of dataManager.api.huntInfosByItemId[item.DF]")
+          p
+            router-link(:to="{ name: 'InfoHunt', query: { huntId: huntInfo.HUNTID } }") {{ huntInfo.NAME }}
+          p(v-for="(rwd, i) of huntInfo.RWD.TRS.concat(huntInfo.RWD.ITM).filter((o) => o.DF === item.DF)")
+            span {{ $t('品質') }}{{ rwd.QTY }}
+            span(v-if="rwd.TRT")  {{ dataManager.skillById[rwd.TRT].name.replace(/\s+/gm, '') }}
+          br(v-if="dataManager.api.huntInfosByItemId[item.DF].length !== (i + 1)")
+
       div(v-for="fieldItem of [dataManager.fieldItemById[item.DF]].filter((p) => p)")
         el-divider {{ $t('フィールド用') }}
         table

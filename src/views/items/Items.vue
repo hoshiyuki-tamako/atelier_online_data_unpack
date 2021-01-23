@@ -132,6 +132,10 @@ export default class extends VueWithMapFields {
         label: this.$t('クエスト報酬'),
         value: 6,
       },
+      {
+        label: this.$t('トレジャー'),
+        value: 7,
+      },
     ];
   }
 
@@ -163,6 +167,7 @@ export default class extends VueWithMapFields {
       && (!this.has.includes(4) || this.dataManager.questsByGetItem[p.DF])
       && (!this.has.includes(5) || this.dataManager.questsByDeliverItem[p.DF])
       && (!this.has.includes(6) || this.dataManager.questsByRewardItem[p.DF])
+      && (!this.has.includes(7) || this.dataManager.api.huntInfosByItemId[p.DF])
     ));
 
     if (this.sort === 1) {

@@ -36,15 +36,10 @@ export interface IWindowItem extends IAdventure {
 }
 
 export class AdvManager {
-  public locale = DataManager.defaultLocale;
-
   #advCache = new Map<string, Adv>();
   #dialogCache = new Map<string, IAdventure[]>();
 
-  public setLocale(locale: string) {
-    this.locale = locale;
-    this.#advCache.clear();
-    this.#dialogCache.clear();
+  public constructor(private dataManager: DataManager) {
   }
 
   public async getAdv(adv: string) {
@@ -120,6 +115,6 @@ export class AdvManager {
   }
 
   private getAdvJsonUrl(adv: string) {
-    return `export/${this.locale === 'ja-JP' ? '' : 'tw/'}adv/${adv}.json`;
+    return `export/${this.dataManager.locale === 'ja-JP' ? '' : 'tw/'}adv/${adv}.json`;
   }
 }

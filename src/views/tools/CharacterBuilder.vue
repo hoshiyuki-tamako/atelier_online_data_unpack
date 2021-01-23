@@ -970,6 +970,7 @@ export default class extends VueBase {
       .concat(this.dataManager.abnormalStateEffectsElements)
       .concat(this.dataManager.abnormalStateEffectsByTarget[EAbnormalStateTarget.eSDEF] || [])
       .concat(this.dataManager.abnormalStateEffectsByTarget[EAbnormalStateTarget.eMDEF] || [])
+      .concat([this.dataManager.abnormalStateEffectById[1005]])
       .map((p) => p.id);
     return this.dataManager.abnormalState.m_vList.filter((p) => p.effectlist.some((i) => effectIds.includes(i)));
   }

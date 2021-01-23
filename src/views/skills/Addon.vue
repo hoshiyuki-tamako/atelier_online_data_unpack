@@ -3,9 +3,10 @@ div.container
   div.filters
     div.filter
       el-switch(v-model="equipmentUseful" :active-text="$t('装備有効')")
-
+    div.filter
+      el-checkbox(v-model="hunt" :label="$t('トレジャー')" border)
   div.content
-    el-table(:data="filteredSills")
+    el-table(:data="filteredSkills")
       el-table-column(prop="id" label="ID" width="100%" sortable)
       el-table-column(prop="name" :label="$t('名前')" :filters="typeFilters" :filter-method="typeFilderHandler" sortable)
       el-table-column(prop="detail" :label="$t('詳細')" sortable)
@@ -27,12 +28,20 @@ import { List as SkillList } from '@/master/skill';
 export default class extends VueBase {
   public equipmentUseful = false;
 
-  public get filteredSills() {
+  public hunt = false;
+
+  public get skills() {
     if (this.equipmentUseful) {
       return this.dataManager.skillAddonsEquipmentUseful;
     }
 
     return this.dataManager.skillAddons;
+  }
+
+  public get filteredSkills() {
+    return this.skills.filter((p) => (
+      (!this.hunt || this.dataManager.api.huntInfosBySkillId[p.id])
+    ));
   }
 
   public get typeFilters() {
