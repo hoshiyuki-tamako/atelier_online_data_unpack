@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "chinese-conv": "^1.0.1",
-    "class-transformer": "^0.2.3",
-    "class-transformer-for-array": "^1.0.17",
+    "class-transformer": "0.3.1",
+    "class-transformer-for-array": "^1.0.18",
     "class-transformer-validator": "^0.9.1",
     "class-validator": "^0.13.1",
     "color": "^3.1.3",
