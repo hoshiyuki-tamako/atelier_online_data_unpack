@@ -80,11 +80,16 @@ div.container
               p(v-if="props.row.effect") {{ $t('エフェクト') }} {{ EBattleEffectKind[props.row.effect] || props.row.effect }}
               p(v-if="props.row.effectTarget") {{ $t('エフェクトターゲット') }} {{ EBattleEffectTarget[props.row.effectTarget] || props.row.effectTarget }}
               p(v-if="props.row.coolTime") {{ $t('クールダウンタイム') }}: {{ props.row.coolTime }}{{ $t('ターン') }}
-              div(v-if="props.row.combSkillList.length")
+              div(v-if="props.row.combSkillList.length || props.row.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE")
                 br
                 h4 {{ $t('含まれるスキル') }}
-                p(v-for="skill of props.row.combSkillList")
-                  router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+                template(v-for="skill of props.row.combSkillList")
+                  p
+                    router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+                  p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[skill.id]].filter((p) => p)")
+                    router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
+                p(v-if="props.row.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[props.row.id]].filter((p) => p)")
+                  router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
               div(v-if="props.row.stateOwn.length")
                 br
                 h4 {{ $t('追加状態 (自)') }}

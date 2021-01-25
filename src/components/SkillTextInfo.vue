@@ -44,11 +44,17 @@ div(v-if="skills && skills.length")
         td
           p(v-for="skill of [dataManager.skillById[skill.effectValue]]")
             router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
-      tr(v-if="skill.combSkillList.length")
+      tr(v-if="skill.combSkillList.length || skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE")
         th {{ $t('含まれるスキル') }}
         td
-          p(v-for="skill of skill.combSkillList")
-            router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
+          template(v-for="skill of skill.combSkillList")
+            p
+              router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
+            p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[skill.id]].filter((p) => p)")
+              router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
+          p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[skill.id]].filter((p) => p)")
+            router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
+
     p(v-if="skills.length !== (i + 1)") {{ '>' }}
 </template>
 
