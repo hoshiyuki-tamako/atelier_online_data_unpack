@@ -52,7 +52,7 @@ import { sify } from 'chinese-conv';
 import MobileDetect from 'mobile-detect';
 import draggable from 'vuedraggable';
 import VueBase from '@/components/VueBase';
-import { TranslationQueue } from '@/utils/TranslationQueue';
+import { TranslateMutationObserver } from 'translate-mutation-observer';
 import { defaultMenuItemIds } from './store/home';
 
 abstract class VueWithMapFields extends VueBase {
@@ -493,7 +493,9 @@ export default class extends VueWithMapFields {
     document.title = this.$t(document.title).toString();
 
     if (this.$i18n.locale === 'zh-CN') {
-      TranslationQueue.start(sify);
+      const titles = document.getElementsByTagName('title');
+      const translateMutationObserver = TranslateMutationObserver.n(sify, { targets: [document.body, ...titles] });
+      translateMutationObserver.translate(titles as never);
     }
 
     let retry = 10;
