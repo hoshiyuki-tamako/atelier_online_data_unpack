@@ -494,8 +494,13 @@ export default class extends VueWithMapFields {
 
     if (this.$i18n.locale === 'zh-CN') {
       const titles = document.getElementsByTagName('title');
-      const translateMutationObserver = TranslateMutationObserver.n(sify, { targets: [document.body, ...titles] });
-      translateMutationObserver.translate(titles as never);
+      const translateMutationObserver = TranslateMutationObserver.n(sify, {
+        targets: [document.body, ...titles],
+        filterAttribute(attribute) {
+          return ['alt', 'title', 'placeholder'].includes(attribute.name) || attribute.name.startsWith('aria-');
+        },
+      });
+      translateMutationObserver.translate(titles);
     }
 
     let retry = 10;

@@ -1,10 +1,11 @@
 import fs from 'fs-extra';
 import path from 'path';
-import ApiExport from './ApiExport';
 
+import ApiExport from './ApiExport';
 import AtelierOnlineExportProcessor from './AtelierOnlineExportProcessor';
 import AtelierOnlineFileExport from './AtelierOnlineFileExport';
 import AudioExport from './AudioExport';
+import DataProcessor from './DataProcessor';
 import ModelExport from './ModelExport';
 import StaticGenerate from './StaticGenerate';
 import TextureExport from './TextureExport';
@@ -24,6 +25,7 @@ class Main {
         new ModelExport().process(sourceFolder, rootFolder),
         new AudioExport().process(sourceFolder, rootFolder),
         new ApiExport().process(sourceFolder, rootFolder),
+        new DataProcessor().process(sourceFolder, rootFolder),
       );
     } else {
       console.log(`source folder not found, skipping process source assets: ${sourceFolder}`);

@@ -1,17 +1,18 @@
 import fs from 'fs-extra';
 import msgpack from 'msgpack-lite';
 import path from 'path';
+import { serverIds } from './config';
 
 export default class ApiExport {
   public async process(sourceFolder: string, rootFolder: string) {
     await Promise.all([
-      this.processHunt(sourceFolder, rootFolder),
+      ...serverIds.map((id) => this.processHunt(id, sourceFolder, rootFolder)),
     ]);
   }
 
-  private async processHunt(sourceFolder: string, rootFolder: string) {
-    const rawFolder = path.join(sourceFolder, 'aoserver', 'nat', 'api', 'com', 'hunt');
-    const outFolder = path.join(rootFolder, 'aoserver', 'nat', 'api', 'com', 'hunt');
+  private async processHunt(serverId: string, sourceFolder: string, rootFolder: string) {
+    const rawFolder = path.join(sourceFolder, serverId, 'aoserver', 'nat', 'api', 'com', 'hunt');
+    const outFolder = path.join(rootFolder, serverId, 'aoserver', 'nat', 'api', 'com', 'hunt');
 
     if (!await fs.pathExists(rawFolder)) {
       console.log(`skipping API process: required ${rawFolder}`);
