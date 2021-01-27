@@ -10,6 +10,7 @@ export interface IDialog extends IAdventure {
   characterDf?: number;
   name: string;
   dialog: string;
+  facialExpression?: string;
   voice?: string;
 }
 
@@ -67,6 +68,7 @@ export class AdvManager {
               characterDf: +p.vsParam[0],
               name: p.vsParam[1],
               dialog: p.vsParam[2],
+              facialExpression: p.vsParam[3] || '0',
               voice: p.vsParam[6],
             } as IDialog;
           case EOrderType.eSELECTION:

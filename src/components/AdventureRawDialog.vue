@@ -5,7 +5,7 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
   el-table(:data="questDialogs" :show-header="false")
     el-table-column(width="210px")
       template(slot-scope="scope")
-        img.dialog-character-image(v-if="scope.row.characterDf" :src="`img/icon_chara/Texture2D/icon_chara_all_${scope.row.characterDf.toString().padStart(4, '0')}_00.png`" :alt="dataManager.characterById[scope.row.characterDf] ? dataManager.characterById[scope.row.characterDf].NAME : scope.row.characterDf")
+        img.dialog-character-image(v-if="scope.row.characterDf" :src="`img/icon_chara/Texture2D/icon_chara_all_${scope.row.characterDf.toString().padStart(4, '0')}_${scope.row.facialExpression.toString().padStart(2, '0')}.png`" :alt="dataManager.characterById[scope.row.characterDf] ? dataManager.characterById[scope.row.characterDf].NAME : scope.row.characterDf")
     el-table-column
       template(slot-scope="scope")
         div(v-if="scope.row.order === EOrderType.eCHARA_TALK")
