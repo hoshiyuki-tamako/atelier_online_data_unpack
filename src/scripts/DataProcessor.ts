@@ -14,7 +14,7 @@ export default class DataProcessor {
 
   private async processMaster(serverId: string, sourceFolder: string, rootFolder: string) {
     const rawFolder = path.join(sourceFolder, serverId, 'master', 'MonoBehaviour');
-    const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export') : path.join(rootFolder, 'tw', 'export');
+    const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export') : path.join(rootFolder, 'export', 'tw');
 
     if (!await fs.pathExists(rawFolder)) {
       console.log(`skipping master data process: required ${rawFolder}`);
@@ -31,7 +31,7 @@ export default class DataProcessor {
 
   private async processAdv(serverId: string, sourceFolder: string, rootFolder: string) {
     const rawFolder = path.join(sourceFolder, serverId, 'adv', 'MonoBehaviour');
-    const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export', 'adv') : path.join(rootFolder, 'tw', 'export', 'adv');
+    const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export', 'adv') : path.join(rootFolder, 'export', 'tw', 'adv');
 
     if (!await fs.pathExists(rawFolder)) {
       console.log(`skipping adv data process: required ${rawFolder}`);
@@ -47,8 +47,8 @@ export default class DataProcessor {
   }
 
   private async processSpawnList(serverId: string, sourceFolder: string, rootFolder: string) {
-    const rawFolder = path.join(sourceFolder, serverId, 'master', 'TextAsset');
-    const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export', 'SpawnList', 'TextAsset') : path.join(rootFolder, 'tw', 'export', 'SpawnList', 'TextAsset');
+    const rawFolder = path.join(sourceFolder, serverId, 'spawnList', 'TextAsset');
+    const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export', 'SpawnList', 'TextAsset') : path.join(rootFolder, 'export', 'tw', 'SpawnList', 'TextAsset');
 
     if (!await fs.pathExists(rawFolder)) {
       console.log(`skipping spawnList data process: required ${rawFolder}`);

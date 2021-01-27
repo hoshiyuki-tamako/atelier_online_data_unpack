@@ -2,7 +2,6 @@ import fs from 'fs-extra';
 import path from 'path';
 
 import ApiExport from './ApiExport';
-import AtelierOnlineExportProcessor from './AtelierOnlineExportProcessor';
 import AtelierOnlineFileExport from './AtelierOnlineFileExport';
 import AudioExport from './AudioExport';
 import DataProcessor from './DataProcessor';
@@ -16,7 +15,6 @@ class Main {
     const rootFolder = path.join(__dirname, '..', '..', 'public');
     const promises = [
       new StaticGenerate().save(rootFolder),
-      new AtelierOnlineExportProcessor().process(path.join(__dirname, '..', '..', 'public', 'export')),
     ];
 
     if (await fs.pathExists(sourceFolder)) {
