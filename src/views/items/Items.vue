@@ -17,6 +17,10 @@ div.container
       span {{ $t('スキル属性') }}
       el-select(v-model="skillElement" clearable filterable)
         el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+    div.filter
+      span {{ $t('性別') }}
+      el-select(v-model="gender" clearable filterable)
+        el-option(v-for="item in genderOptions" :key="item.value" :label="item.label" :value="item.value")
   div.filters
     div.filter
       span {{ $t('名前') }}/DF
@@ -46,6 +50,7 @@ div.container
 import Component from 'vue-class-component';
 import VueBase from '@/components/VueBase';
 import { mapFields } from 'vuex-map-fields';
+import { eRaceKind } from '@/logic/Enums';
 
 abstract class VueWithMapFields extends VueBase {
   public category!: number | null;
@@ -55,6 +60,8 @@ abstract class VueWithMapFields extends VueBase {
   public battleElement!: number | null;
 
   public skillElement!: number | null;
+
+  public gender!: eRaceKind | null;
 
   public name!: string;
 
@@ -71,7 +78,7 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('itemsFilter', ['category', 'weaponKind', 'battleElement', 'skillElement', 'name', 'sort', 'legendRecipe', 'characterOnlyItem', 'has']),
+    ...mapFields('itemsFilter', ['category', 'weaponKind', 'battleElement', 'skillElement', 'gender', 'name', 'sort', 'legendRecipe', 'characterOnlyItem', 'has']),
   },
 })
 export default class extends VueWithMapFields {
@@ -87,6 +94,19 @@ export default class extends VueWithMapFields {
       label: this.$t(this.dataManager.lookup.weaponKind[value]),
       value: +value,
     })).filter((p) => p.value);
+  }
+
+  public get genderOptions() {
+    return [
+      {
+        label: '♂',
+        value: eRaceKind.Human_Male,
+      },
+      {
+        label: '♀',
+        value: eRaceKind.Human_Female,
+      },
+    ];
   }
 
   public get sortOptions() {
@@ -168,6 +188,7 @@ export default class extends VueWithMapFields {
       && (!this.has.includes(5) || this.dataManager.questsByDeliverItem[p.DF])
       && (!this.has.includes(6) || this.dataManager.questsByRewardItem[p.DF])
       && (!this.has.includes(7) || this.dataManager.api.huntInfosByItemId[p.DF])
+      && (!this.gender || p.canGenderUseEquipment(this.gender))
     ));
 
     if (this.sort === 1) {

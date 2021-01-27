@@ -1,6 +1,8 @@
 import VuexModuleBase from '@/store/base/VuexModuleBase';
 import { Module, MutationAction } from 'vuex-module-decorators';
 
+import { eRaceKind } from './../../logic/Enums';
+
 @Module({
   namespaced: true,
 })
@@ -13,6 +15,8 @@ export default class extends VuexModuleBase {
 
   public skillElement: number | null = null;
 
+  public gender: eRaceKind | null = null;
+
   public name = '';
 
   public sort = 1;
@@ -23,13 +27,14 @@ export default class extends VuexModuleBase {
 
   public has = [] as number[];
 
-  @MutationAction({ mutate: ['category', 'weaponKind', 'battleElement', 'skillElement', 'name', 'sort', 'legendRecipe', 'characterOnlyItem', 'has'] })
+  @MutationAction({ mutate: ['category', 'weaponKind', 'battleElement', 'skillElement', 'gender', 'name', 'sort', 'legendRecipe', 'characterOnlyItem', 'has'] })
   public async reset() {
     return {
       category: null,
       weaponKind: null,
       battleElement: null,
       skillElement: null,
+      gender: null,
       name: '',
       sort: 1,
       legendRecipe: false,
