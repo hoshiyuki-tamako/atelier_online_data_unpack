@@ -51,6 +51,7 @@ export class ApiManager {
     this.huntInfoTimeCosts = Enumerable.from(this.huntInfos)
       .groupBy((p) => p.TM)
       .select((p) => p.key())
+      .orderBy((p) => p)
       .toArray();
     this.huntInfoCharacters = Enumerable.from(this.huntInfos)
       .selectMany((p) => p.JCND.filter((i) => i.TYPE === eConditionType.TargetChara).map((i) => i.VALS[0]))

@@ -96,6 +96,9 @@ export default class extends VueBase {
     };
     return humanizeDuration(second * 1000, {
       spacer: '',
+      delimiter: '',
+      conjunction: '',
+      serialComma: false,
       language: languageMap[this.dataManager.locale],
     });
   }
