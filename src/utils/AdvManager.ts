@@ -2,6 +2,10 @@ import { DataManager } from './DataManager';
 import { EOrderType } from '@/logic/Enums';
 import { Adv } from '@/master/adv';
 
+export type AdvCharacterMap = {
+  [id: string]: string[];
+}
+
 export interface IAdventure {
   order: EOrderType;
 }

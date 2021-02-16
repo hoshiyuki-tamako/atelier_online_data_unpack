@@ -1,3 +1,4 @@
+import { AdvCharacterMap } from './AdvManager';
 import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
 import areaModel from '@/../public/generated/areaModel.json';
 import characterVoices from '@/../public/generated/characterVoices.json';
@@ -57,6 +58,18 @@ export class DataManager {
     this.#locale = DataManager.supportedLocales.find((p) => p.toLocaleLowerCase() === value?.toLocaleLowerCase()) || DataManager.defaultLocale;
   }
 
+  public get serverId() {
+    switch (this.locale) {
+      case 'zh-TW':
+      case 'zh-HK':
+      case 'zh-CN':
+        return 'tw';
+      case 'ja-JP':
+      default:
+        return 'jp';
+    }
+  }
+
   public get dataFolder() {
     switch (this.locale) {
       case 'zh-TW':
@@ -80,11 +93,14 @@ export class DataManager {
   public getGeneratedJsonUrl(file: string) {
     return `${this.generatedFolder}${file}`;
   }
-  public async loadJson(file: string) {
-    return fetch(this.getExportJsonUrl(`${file}.json`)).then((p) => p.json());
+  public async loadJson(url: string) {
+    return fetch(url).then((p) => p.json());
+  }
+  public async loadExportJson(file: string) {
+    return this.loadJson(this.getExportJsonUrl(`${file}.json`));
   }
   public async loadGeneratedJson(file: string) {
-    return fetch(this.getGeneratedJsonUrl(`${file}.json`)).then((p) => p.json());
+    return this.loadJson(this.getGeneratedJsonUrl(`${file}.json`));
   }
 
   // parsed raw data
@@ -223,6 +239,8 @@ export class DataManager {
   public areaDungeonModel: IAreaModel[] = areaDungeonModel;
   public characterVoices = characterVoices;
 
+  public advCharacterById: AdvCharacterMap;
+
   // processed custom data
   public areaModelsById: { [iAreaId: string]: IAreaModel[] };
   public areaDungeonsById: { [iAreaId: string]: IAreaModel[] };
@@ -234,6 +252,8 @@ export class DataManager {
   public unusedAdvs: { [s: string]: string[] };
 
   public townIcons = [] as string[];
+
+  public advCharacterByName: AdvCharacterMap;
 
   //
   public async load(showHiddenContent = false) {
@@ -270,6 +290,8 @@ export class DataManager {
       this.loadGeneric('treasure'),
       this.loadGeneric('chat'),
 
+      this.loadAdvCharacterById(),
+
       this.spawnerDataManager.load(),
       this.api.load(),
     ]);
@@ -289,7 +311,7 @@ export class DataManager {
   }
 
   public async loadGeneric(name: string, key = '', value?: unknown) {
-    this[key || name] = value || await this.loadJson(name);
+    this[key || name] = value || await this.loadExportJson(name);
   }
 
   public async loadGeneratedGeneric(name: string, key = '', value?: unknown) {
@@ -297,7 +319,7 @@ export class DataManager {
   }
 
   public async loadItem(item?: unknown) {
-    this.item = plainToClass(Item, item || await this.loadJson('item'));
+    this.item = plainToClass(Item, item || await this.loadExportJson('item'));
     // order
     this.itemsOrderByCategory = Enumerable.from(this.item.m_vList).orderBy((p) => p.CATEG).toArray();
     // data
@@ -370,7 +392,7 @@ export class DataManager {
   }
 
   public async loadCharacter(chara?: unknown) {
-    this.chara = plainToClass(Chara, chara || await this.loadJson('chara'));
+    this.chara = plainToClass(Chara, chara || await this.loadExportJson('chara'));
     if (!this.showHiddenContent) {
       this.chara.m_vList = this.chara.m_vList.filter((p) => !CharacterMVList.hides.includes(p.DF));
     }
@@ -402,7 +424,7 @@ export class DataManager {
   }
 
   public async loadSkill(skill?: unknown) {
-    this.skill = plainToClass(Skill, skill || await this.loadJson('skill'));
+    this.skill = plainToClass(Skill, skill || await this.loadExportJson('skill'));
     // filtered items
     this.skills = this.skill.m_vList.filter((p) => p.type === 1);
     this.skillEffects = this.skill.m_vList.filter((p) => p.type === 2 && !p.category);
@@ -470,7 +492,7 @@ export class DataManager {
   }
 
   public async loadEnemy(enemy?: unknown) {
-    this.enemy = plainToClass(Enemy, enemy || await this.loadJson('enemy'));
+    this.enemy = plainToClass(Enemy, enemy || await this.loadExportJson('enemy'));
     // data
     this.enemiesHasValidSpec = this.enemy.m_vList.filter((p) => p.sParam.SPEC.HP.R);
     // order
@@ -522,7 +544,7 @@ export class DataManager {
   }
 
   public async loadWealth(wealth?: unknown) {
-    this.wealth = plainToClass(Wealth, wealth || await this.loadJson('wealth'));
+    this.wealth = plainToClass(Wealth, wealth || await this.loadExportJson('wealth'));
     // order
     this.wealthOrderBySort = Enumerable.from(this.wealth.m_vList)
       .orderBy((p) => p.SORT)
@@ -532,7 +554,7 @@ export class DataManager {
   }
 
   public async loadDegree(degree?: Degree) {
-    this.degree = plainToClass(Degree, degree || await this.loadJson('degree'));
+    this.degree = plainToClass(Degree, degree || await this.loadExportJson('degree'));
     this.degrees = this.degree.List.filter((p) => p.TYP !== EDegreeMissonType.eNONE);
     this.degreeDailyMissions = this.degree.List.filter((p) => p.TYP === EDegreeMissonType.eNONE);
     this.degreeById = Enumerable.from(this.degree.List)
@@ -557,7 +579,7 @@ export class DataManager {
   }
 
   public async loadBlazeArt(blazeArt?: unknown) {
-    this.blazeArt = plainToClass(BlazeArt, blazeArt || await this.loadJson('blaze_arts'));
+    this.blazeArt = plainToClass(BlazeArt, blazeArt || await this.loadExportJson('blaze_arts'));
     // lookup
     this.blazeArtById = Enumerable.from(this.blazeArt.m_vList)
       .toObject((p) => p.DF) as { [df: string]: BlazeArtMvList };
@@ -636,7 +658,7 @@ export class DataManager {
   }
 
   public async loadAreaDetail(areaDetail?: unknown) {
-    this.areaDetail = plainToClass(AreaDetail, areaDetail || await this.loadJson('areaDetail'));
+    this.areaDetail = plainToClass(AreaDetail, areaDetail || await this.loadExportJson('areaDetail'));
     this.areaDetailById = Enumerable.from(this.areaDetail.List).toObject((p) => p.iAreaID) as { [s: string]: AreaDetailList };
   }
 
@@ -646,7 +668,7 @@ export class DataManager {
   }
 
   public async loadTownInfo(townInfo?: unknown) {
-    this.townInfo = plainToClass(TownInfo, townInfo || await this.loadJson('townInfo'));
+    this.townInfo = plainToClass(TownInfo, townInfo || await this.loadExportJson('townInfo'));
     this.townInfosByAreaId = Enumerable.from(this.townInfo.List)
       .groupBy((p) => p.iAreaId)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [s: string]: TownInfoList[] };
@@ -685,10 +707,20 @@ export class DataManager {
   }
 
   public async loadSoundList(soundList?: unknown) {
-    this.soundList = plainToClass(SoundList, soundList || await this.loadJson('soundList'));
+    this.soundList = plainToClass(SoundList, soundList || await this.loadExportJson('soundList'));
     this.soundListBgmById = Enumerable.from(this.soundList.BGM)
       .groupBy((p) => p.iID)
       .toObject((p) => p.key(), (p) => p.firstOrDefault()) as { [id: string]: Bgm };
+  }
+
+  //
+  public async loadAdvCharacterById(advCharacterById?: AdvCharacterMap) {
+    this.advCharacterById = advCharacterById || await this.loadJson(`${this.serverId}/generated/advCharacterById.json`);
+
+    this.advCharacterByName = Enumerable.from(Object.entries(this.advCharacterById))
+      .selectMany(([id, names]) => names.map((name) => ({ id, name })))
+      .groupBy(({ name }) => name)
+      .toObject((p) => p.key(), (p) => p.select(({ id }) => id).toArray()) as AdvCharacterMap;
   }
 
   // other load

@@ -3,7 +3,8 @@ div.container
   div.item-container(v-if="character")
     div.item-container-left
       h3.item-name {{ character.NAME }}
-        img.icon-full(v-for="src of images" :src="src" :alt="character.NAME")
+      img.icon-full(v-for="src of character.images" :src="src" :alt="character.NAME")
+      img.icon-full(v-for="src of character.otherImages" :src="src" :alt="character.NAME")
       p {{ character.DESC }}
       br
       p DF: {{ character.DF }}
@@ -176,12 +177,6 @@ export default class extends VueBase {
     if (!this.character) {
       this.$router.push({ name: 'Characters' });
     }
-  }
-
-  public get images() {
-    return Object.values(this.dataManager.files.img.icon_chara.Texture2D)
-      .filter((p: string) => p.startsWith(`icon_chara_all_${this.character.DF.toString().padStart(4, '0')}`))
-      .map((p) => `img/icon_chara/Texture2D/${p}`);
   }
 
   public get weapons() {

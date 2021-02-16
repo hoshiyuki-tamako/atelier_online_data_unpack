@@ -191,6 +191,22 @@ export class MVList {
     return `img/icon_chara/Texture2D/${this.faceIconFile}`;
   }
 
+  public get images() {
+    return Object.values(dataManager.files.img.icon_chara.Texture2D)
+      .filter((p) => p.startsWith(`icon_chara_all_${this.DF.toString().padStart(4, '0')}`))
+      .map((p) => `img/icon_chara/Texture2D/${p}`);
+  }
+
+  public get otherImages() {
+    const images = this.images;
+    return dataManager.advCharacterByName[this.NAME]?.map((df) =>
+      Object.values(dataManager.files.img.icon_chara.Texture2D)
+      .filter((p) => p.startsWith(`icon_chara_all_${df.toString().padStart(4, '0')}`))
+      .map((p) => `img/icon_chara/Texture2D/${p}`)
+      .filter((p) => !images.includes(p))
+    ).flat() ?? [];
+  }
+
   public get genderTextIcon() {
     switch (this.GEN) {
       case eRaceKind.Human_Male:

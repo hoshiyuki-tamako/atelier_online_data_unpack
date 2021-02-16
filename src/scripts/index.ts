@@ -18,12 +18,13 @@ class Main {
     ];
 
     if (await fs.pathExists(sourceFolder)) {
+      await new DataProcessor().process(sourceFolder, rootFolder);
+
       promises.push(
         new TextureExport().process(sourceFolder, rootFolder),
         new ModelExport().process(sourceFolder, rootFolder),
         new AudioExport().process(sourceFolder, rootFolder),
         new ApiExport().process(sourceFolder, rootFolder),
-        new DataProcessor().process(sourceFolder, rootFolder),
       );
     } else {
       console.log(`source folder not found, skipping process source assets: ${sourceFolder}`);
