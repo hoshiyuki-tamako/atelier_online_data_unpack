@@ -539,7 +539,7 @@ export default class extends VueWithMapFields {
         title: 'ブレセイル観光局',
         links: [
           {
-            href: 'https://bresail-kanko.info/index.html',
+            href: 'https://bresail-kanko.info',
           },
           {
             href: 'https://twitter.com/bresail_kanko',
