@@ -24,10 +24,10 @@ function loadLocaleMessages(): LocaleMessages {
   locales.keys().forEach((key) => {
     const matched = key.match(/([A-Za-z0-9-_]+)\./i);
     if (matched && matched.length > 1) {
-      let locale = matched[1];
+      const locale = matched[1];
       messages[locale] = {
-        ... locales(key),
-        ... getElementUiLocale(locale),
+        ...locales(key),
+        ...getElementUiLocale(locale),
       };
     }
   });

@@ -1,20 +1,20 @@
-import { Type } from "class-transformer";
+import { Type } from 'class-transformer';
 
 export class SoundList {
   m_GameObject: MGameObject;
-  m_Enabled:    number;
-  m_Script:     MGameObject;
-  m_Name:       string;
-  @Type(_ => Bgm)
-  BGM:          Bgm[];
-  SE:           Bgm[];
-  VOICE:        Voice;
+  m_Enabled: number;
+  m_Script: MGameObject;
+  m_Name: string;
+  @Type((_) => Bgm)
+  BGM: Bgm[];
+  SE: Bgm[];
+  VOICE: Voice;
 }
 
 export class Bgm {
-  iID:       number;
+  iID: number;
   sFilePath: string;
-  bLocal:    number;
+  bLocal: number;
 
   public get fileName() {
     return `${this.sFilePath}.wav`;

@@ -44,7 +44,7 @@ export class RichTextParser {
         expressions.push(new RichTextStyleTextExpression(chars.substr(pos, startPos - pos)));
       } else if (`${char}${chars[pos + 1]}${chars[pos + 2]}${chars[pos + 3]}` === RichTextTokens.playerName) {
         expressions.push(new RichTextTextExpression(chars.substr(startPos, pos - startPos)));
-        expressions.push(new RichTextPlayerNameExpression(options?.playerName))
+        expressions.push(new RichTextPlayerNameExpression(options?.playerName));
         startPos = pos + RichTextTokens.playerName.length;
       }
     }

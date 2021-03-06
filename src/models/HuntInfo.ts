@@ -74,7 +74,6 @@ export class HuntReward {
   public WTH: DfCntInfo[] = [];
 }
 
-
 export class EventInfo {
   @ArrayMember(0)
   public SALE = 0;

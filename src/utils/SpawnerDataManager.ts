@@ -1,10 +1,10 @@
-import { DataManager } from './DataManager';
 import files from '@/../public/generated/files.json';
 import { eSpawnerKind } from '@/logic/Enums';
 import { SpawnerData } from '@/models/SpawnerData';
 import { plainArrayToClass } from 'class-transformer-for-array';
 import Enumerable from 'linq';
 import { parse } from 'papaparse';
+import { DataManager } from './DataManager';
 
 export interface IEnemyMap {
   level: number;
@@ -29,7 +29,7 @@ export class SpawnerDataManager {
 
     const spawnFiles = this.dataManager.locale === 'ja-JP'
       ? files.export.SpawnList.TextAsset
-      : files.export.tw.SpawnList.TextAsset
+      : files.export.tw.SpawnList.TextAsset;
     const spawnListFolders = this.dataManager.locale === 'ja-JP'
       ? 'export/SpawnList/TextAsset'
       : 'export/tw/SpawnList/TextAsset';

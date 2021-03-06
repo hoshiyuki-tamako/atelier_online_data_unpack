@@ -1,9 +1,10 @@
-import { AdvCharacterMap } from './AdvManager';
 import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
 import areaModel from '@/../public/generated/areaModel.json';
 import characterVoices from '@/../public/generated/characterVoices.json';
 import files from '@/../public/generated/files.json';
-import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger, EDegreeMissonType } from '@/logic/Enums';
+import {
+  EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger, EDegreeMissonType,
+} from '@/logic/Enums';
 import { lookup } from '@/logic/Lookup';
 import { AbnormalState, MVList as AbnormalStateMVList } from '@/master/abnormalState';
 import { AbnormalStateEffect, MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
@@ -23,21 +24,19 @@ import { GateInfo, List as GateInfoList } from '@/master/gateInfo';
 import { Item, MVList as ItemMVList } from '@/master/item';
 import { MVList as QuestMVList, Quest } from '@/master/quest';
 import { List as SkillList, Skill } from '@/master/skill';
-import { SoundList } from '@/master/soundList';
+import { SoundList, Bgm } from '@/master/soundList';
 import { Tips } from '@/master/tips';
 import { List as TownInfoList, TownInfo } from '@/master/townInfo';
 import { Treasure } from '@/master/treasure';
 import { MVList as WealthMvList, Wealth } from '@/master/wealth';
 import { List as ZoneList, Zone } from '@/master/zone';
 import { List as ZoneEffectList, ZoneEffect } from '@/master/zoneEffect';
-import { IAreaModel } from '@/scripts/ModelExport';
-import { AdvManager } from '@/utils/AdvManager';
+import { IAreaModel, IBattleArea } from '@/scripts/ModelExport';
+import { AdvManager, AdvCharacterMap } from '@/utils/AdvManager';
 import { SpawnerDataManager } from '@/utils/SpawnerDataManager';
 import { plainToClass } from 'class-transformer';
 import Enumerable from 'linq';
 
-import { Bgm } from './../master/soundList';
-import { IBattleArea } from './../scripts/ModelExport';
 import { ApiManager } from './ApiManager';
 
 export class DataManager {
@@ -377,18 +376,16 @@ export class DataManager {
 
   public afterLoadItem() {
     this.itemsByZone = Enumerable.from(this.zone.List)
-    .select((zone) => ({
-      zone,
-      items: this.itemsOrderByCategory.filter((item) =>
-        item.SPC
+      .select((zone) => ({
+        zone,
+        items: this.itemsOrderByCategory.filter((item) => item.SPC
           .map((p) => p.SKILL)
           .flat()
           .map((p) => this.skillById[p.DF])
-          .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)
-      ),
-    }))
-    .where((p) => !!p.items.length)
-    .toObject((p) => p.zone.id, (p) => p.items) as { [id: string]: ItemMVList[] };
+          .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)),
+      }))
+      .where((p) => !!p.items.length)
+      .toObject((p) => p.zone.id, (p) => p.items) as { [id: string]: ItemMVList[] };
   }
 
   public async loadCharacter(chara?: unknown) {
@@ -408,19 +405,19 @@ export class DataManager {
 
   public afterLoadCharacter() {
     this.charactersBySkill = Enumerable.from(this.chara.m_vList)
-    .selectMany((character) => {
-      const normalSkillDfs = character.SKILL.map((skill) => skill.DF);
-      const blazeArtSkillDfs = character.BA.map((p) => this.blazeArtById[p.DF]?.LV.map((lv) => lv.SKILL_DF)).filter((p) => p).flat();
-      return [...new Set(normalSkillDfs.concat(blazeArtSkillDfs))].map((df) => ({
-        character,
-        df,
-      }));
-    })
-    .groupBy((p) => p.df)
-    .toObject(
-      p => p.key(),
-      p => p.groupBy(({ character }) => character.DF).select((p) => p.first().character).toArray(),
-    ) as { [id: string]: CharacterMVList[] };
+      .selectMany((character) => {
+        const normalSkillDfs = character.SKILL.map((skill) => skill.DF);
+        const blazeArtSkillDfs = character.BA.map((p) => this.blazeArtById[p.DF]?.LV.map((lv) => lv.SKILL_DF)).filter((p) => p).flat();
+        return [...new Set(normalSkillDfs.concat(blazeArtSkillDfs))].map((df) => ({
+          character,
+          df,
+        }));
+      })
+      .groupBy((p) => p.df)
+      .toObject(
+        (p) => p.key(),
+        (p) => p.groupBy(({ character }) => character.DF).select((p) => p.first().character).toArray(),
+      ) as { [id: string]: CharacterMVList[] };
   }
 
   public async loadSkill(skill?: unknown) {
@@ -433,7 +430,7 @@ export class DataManager {
       .groupBy((p) => p.name.split('　')[0])
       .select((p) => p.key())
       .where((p) => !!p)
-      .toArray()
+      .toArray();
     this.skillAddonsEquipmentUseful = this.skillAddons.filter((p) => (
       p.type === 2
       && [EBattleEffectTrigger.eANYTIME, EBattleEffectTrigger.eATTACK_SKILL].includes(p.trigger)
@@ -449,7 +446,7 @@ export class DataManager {
     const characterBlazeArtSkillDfs = new Set(
       this.chara.m_vList
         .map((character) => character.BA.map((ba) => this.blazeArtById[ba.DF].LV.map((lv) => lv.SKILL_DF)))
-        .flat(Infinity)
+        .flat(Infinity),
     );
     this.skillBlazeArts = this.skills.filter((p) => characterBlazeArtSkillDfs.has(p.id));
   }
@@ -521,22 +518,20 @@ export class DataManager {
 
   public afterLoadEnemy() {
     this.enemiesByZone = Enumerable.from(this.zone.List)
-    .select((zone) => ({
-      zone,
-      enemies: this.enemiesOrderByCategory.filter((enemy) =>
-        enemy.sParam.SKILL
+      .select((zone) => ({
+        zone,
+        enemies: this.enemiesOrderByCategory.filter((enemy) => enemy.sParam.SKILL
           .map((p) => this.skillById[p.DF])
-          .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)
-      ),
-    }))
-    .where((p) => !!p.enemies.length)
-    .toObject((p) => p.zone.id, (p) => p.enemies) as { [id: string]: EnemyMVList[] };
+          .some((p) => p && p.effect === EBattleEffectKind.eZONE_CHANGE && p.effectValue === zone.id)),
+      }))
+      .where((p) => !!p.enemies.length)
+      .toObject((p) => p.zone.id, (p) => p.enemies) as { [id: string]: EnemyMVList[] };
 
     for (const skill of this.skill.m_vList) {
       for (const enemyId of skill.enemyList) {
         const enemy = this.enemyById[enemyId];
         if (enemy) {
-          this.enemiesBySkill[skill.id] ||= []
+          this.enemiesBySkill[skill.id] ||= [];
           this.enemiesBySkill[skill.id].push(enemy);
         }
       }
@@ -594,12 +589,12 @@ export class DataManager {
       .groupBy((p) => p.CATEG)
       .toObject((p) => p.key(), (p) => p.toArray()) as { [CATEG: string]: QuestMVList[] };
     this.questsByGetItem = Enumerable.from(this.quest.m_vList)
-    .selectMany((quest) => quest.GET.map((get) => ({
-      quest,
-      get,
-    })))
-    .groupBy((p) => p.get.DF)
-    .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
+      .selectMany((quest) => quest.GET.map((get) => ({
+        quest,
+        get,
+      })))
+      .groupBy((p) => p.get.DF)
+      .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
     this.questsByDeliverItem = Enumerable.from(this.quest.m_vList)
       .selectMany((quest) => quest.DLV.map((dlv) => ({
         quest,
@@ -735,8 +730,8 @@ export class DataManager {
       .groupBy((p) => p.iAreaID)
       .toObject((p) => p.key(), (p) => p.orderBy((i) => i.iLevel).toArray()) as { [iAreaId: string]: IAreaModel[] };
     this.areaDungeonsById = Enumerable.from(this.areaDungeonModel)
-    .groupBy((p) => p.iAreaID)
-    .toObject((p) => p.key(), (p) => p.orderBy((i) => i.iLevel).toArray()) as { [iAreaId: string]: IAreaModel[] };
+      .groupBy((p) => p.iAreaID)
+      .toObject((p) => p.key(), (p) => p.orderBy((i) => i.iLevel).toArray()) as { [iAreaId: string]: IAreaModel[] };
     const battleAreas = Object.keys(this.files.models.battleAreas);
     this.areaBattleAreas = Enumerable.from(battleAreas)
       .where((folder) => !!folder.match(/^BattleArea_\d+/))

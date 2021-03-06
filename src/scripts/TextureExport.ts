@@ -4,7 +4,6 @@ import path from 'path';
 
 import { ExportBase } from './ExportBase';
 
-
 export default class TextureExport extends ExportBase {
   public async process(sourceFolder: string, rootFolder: string) {
     const textureFolder = path.join(sourceFolder, 'Texture2D');
@@ -79,21 +78,21 @@ export default class TextureExport extends ExportBase {
       }
       await fs.copy(imagePath, outPath);
     })
-    .concat(advs.map(async (p) => {
-      const imagePath = path.join(textureFolder, p);
-      const outPath = path.join(advOutFolder, p.replace(replaceAdvRegex, ''));
-      if (await this.isPathUpToDate(imagePath, outPath)) {
-        return;
-      }
-      await fs.copy(imagePath, outPath);
-    }))
-    .concat(advItems.map(async (p) => {
-      const imagePath = path.join(textureFolder, p);
-      const outPath = path.join(advItemOutFolder, p.replace(replaceAdvRegex, ''));
-      if (await this.isPathUpToDate(imagePath, outPath)) {
-        return;
-      }
-      await fs.copy(imagePath, outPath);
-    })));
+      .concat(advs.map(async (p) => {
+        const imagePath = path.join(textureFolder, p);
+        const outPath = path.join(advOutFolder, p.replace(replaceAdvRegex, ''));
+        if (await this.isPathUpToDate(imagePath, outPath)) {
+          return;
+        }
+        await fs.copy(imagePath, outPath);
+      }))
+      .concat(advItems.map(async (p) => {
+        const imagePath = path.join(textureFolder, p);
+        const outPath = path.join(advItemOutFolder, p.replace(replaceAdvRegex, ''));
+        if (await this.isPathUpToDate(imagePath, outPath)) {
+          return;
+        }
+        await fs.copy(imagePath, outPath);
+      })));
   }
 }

@@ -80,7 +80,7 @@ export default class ModelExport extends ExportBase {
         .filter((p) => +p >= 0)
         .map((p) => EWeaponKind[p].substring(1).toLocaleLowerCase())
         .concat(['helm', 'acc_', 'body'])
-        .map((name) => this.processItemModels(name, modelFolders, rootFolder, modelFolder))
+        .map((name) => this.processItemModels(name, modelFolders, rootFolder, modelFolder)),
     );
   }
 
@@ -206,7 +206,7 @@ export default class ModelExport extends ExportBase {
         startsWith: ['Gimmick_'],
       },
     ] as IGenericModelOption[];
-    await Promise.all(options.map(({ outFolder, startsWith }) => this.processGenericModel(outFolder, startsWith, rootFolder, modelFolders, modelFolder) ));
+    await Promise.all(options.map(({ outFolder, startsWith }) => this.processGenericModel(outFolder, startsWith, rootFolder, modelFolders, modelFolder)));
   }
 
   private async processGenericModel(outFolder: string, startsWith: string[], rootFolder: string, modelFolders: string[], modelFolder: string) {
@@ -237,5 +237,4 @@ export default class ModelExport extends ExportBase {
     }
     return result;
   }
-
 }

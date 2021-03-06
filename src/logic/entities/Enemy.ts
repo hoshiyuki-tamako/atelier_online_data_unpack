@@ -1,4 +1,6 @@
-import { EAbnormalStateTarget, EBattleAttribute, EBattleEffectKind, EBattleEffectTrigger, EElement } from '@/logic/Enums';
+import {
+  EAbnormalStateTarget, EBattleAttribute, EBattleEffectKind, EBattleEffectTrigger, EElement,
+} from '@/logic/Enums';
 import { MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
 import { MVList as EnemyMVList } from '@/master/enemy';
 import { List as SkillList } from '@/master/skill';
@@ -22,7 +24,7 @@ export class EnemyReceiveDamage {
   public total = 0;
 
   public hp = 0;
-};
+}
 
 export class Enemy {
   public enemyId : number | null = null;
@@ -104,12 +106,12 @@ eDAMAGED_DARK,
 eDAMAGED_STRONG,
 eRECOVER,
     */
-   const zeroMultiplierSkills = [] as SkillList[];
-   const onePlusMultiplierSkills = [] as SkillList[];
+    const zeroMultiplierSkills = [] as SkillList[];
+    const onePlusMultiplierSkills = [] as SkillList[];
 
     zeroMultiplierSkills.push(...attribute === EBattleAttribute.eMAGIC_DAMAGED
-        ? this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED_MAGIC && skill.effect === EBattleEffectKind.eDAMAGE_RATE)
-        : this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED_PHYSICS && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
+      ? this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED_MAGIC && skill.effect === EBattleEffectKind.eDAMAGE_RATE)
+      : this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED_PHYSICS && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
     zeroMultiplierSkills.push(...this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
 
     if (this.enemy.eKind === 31) {
@@ -140,9 +142,9 @@ eRECOVER,
           value: 1.5,
         });
       } else if (
-          ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMDEF) ||
-          abnormalStateEffect.trarget === EAbnormalStateTarget.eSDEF) &&
-          dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
+        ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMDEF)
+          || abnormalStateEffect.trarget === EAbnormalStateTarget.eSDEF)
+          && dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
       ) {
         if (abnormalStateEffect.name.toLocaleLowerCase().includes('down')) {
           multipliers.push({
@@ -173,9 +175,9 @@ eRECOVER,
     // other abnormal states
     for (const abnormalStateEffect of abnormalStateEffects) {
       if (
-          ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMATK) ||
-          abnormalStateEffect.trarget === EAbnormalStateTarget.eSATK) &&
-          dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
+        ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMATK)
+          || abnormalStateEffect.trarget === EAbnormalStateTarget.eSATK)
+          && dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
       ) {
         multipliers.push({
           translatedLabel: abnormalStateEffect.name,

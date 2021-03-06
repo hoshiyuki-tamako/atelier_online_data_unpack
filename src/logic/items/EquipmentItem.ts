@@ -6,7 +6,7 @@ import { Type } from 'class-transformer';
 export class EquipmentItem {
   public itemId: number;
 
-  @Type(_ => EquipmentModifier)
+  @Type((_) => EquipmentModifier)
   public modifier = new EquipmentModifier();
 
   public get item() {

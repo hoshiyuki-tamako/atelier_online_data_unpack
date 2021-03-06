@@ -32,7 +32,7 @@ export abstract class ExportBase {
       const oldFile = path.join(newFilePath, file.name);
       if (file.isFile() && !await this.isFileUpToDate(newFile, oldFile)) {
         return false;
-      } else if (file.isDirectory() && !await this.isDirectoryUpToDate(newFile, oldFile)) {
+      } if (file.isDirectory() && !await this.isDirectoryUpToDate(newFile, oldFile)) {
         return false;
       }
     }

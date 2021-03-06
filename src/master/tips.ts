@@ -1,16 +1,16 @@
 export interface Tips {
   m_GameObject: MGameObject;
-  m_Enabled:    number;
-  m_Script:     MGameObject;
-  m_Name:       string;
+  m_Enabled: number;
+  m_Script: MGameObject;
+  m_Name: string;
   LOADING_LIST: List[];
-  BATTLE_LIST:  List[];
+  BATTLE_LIST: List[];
 }
 
 export interface List {
-  iID:      number;
+  iID: number;
   sContent: string;
-  sTitle:   string;
+  sTitle: string;
 }
 
 export interface MGameObject {

@@ -14,7 +14,7 @@ export class RichTextStyleTextExpression extends RichTextTextExpression {
     if (!color) {
       this.color = Color('#000000');
     } else {
-      this.color = Color(`#${color}`)
+      this.color = Color(`#${color}`);
     }
 
     if (text.includes(RichTextTokens.boldEnd)) {

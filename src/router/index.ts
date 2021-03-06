@@ -27,7 +27,7 @@ const toolsRotes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "ToolsItemEnhanceQuality" */ '@/views/tools/ItemEnhanceQuality.vue'),
     meta: {
       title: '材料強化',
-    }
+    },
   },
   {
     path: '/tools/blazeArtLeveling',
@@ -35,7 +35,7 @@ const toolsRotes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "ToolsBlazeArtLeveling" */ '@/views/tools/BlazeArtLeveling.vue'),
     meta: {
       title: 'ブレイズアーツレベリング',
-    }
+    },
   },
   {
     path: '/tools/equipmentRanking',

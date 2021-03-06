@@ -1,7 +1,7 @@
 import VuexModuleBase from '@/store/base/VuexModuleBase';
 import { Module, MutationAction } from 'vuex-module-decorators';
 
-import { eRaceKind } from './../../logic/Enums';
+import { eRaceKind } from '../../logic/Enums';
 
 @Module({
   namespaced: true,

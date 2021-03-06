@@ -11,7 +11,6 @@ interface IVersioning {
 }
 
 export class PlayerExportVersionConvertor {
-
   public locale: string;
 
   public constructor(locale: string) {
@@ -41,7 +40,7 @@ export class PlayerExportVersionConvertor {
       player.equipment[key] = new EquipmentItem(dataManager.itemById[id]);
     }
     player.supports = obj.supportIds.map((p) => new EquipmentItem(p));
-    player.equipmentModifiers = plainToClass(EquipmentsModifier, { ... obj.equipmentModifier, armor: obj.equipmentModifier.cloth, cloth: undefined });
+    player.equipmentModifiers = plainToClass(EquipmentsModifier, { ...obj.equipmentModifier, armor: obj.equipmentModifier.cloth, cloth: undefined });
     player.supports = obj.supportIds.map((p) => new EquipmentItem(p));
     for (const [i, supports] of player.supports.entries()) {
       supports.modifier.quality = obj.supportModifier[i]?.quality || supports.modifier.quality;
@@ -51,5 +50,4 @@ export class PlayerExportVersionConvertor {
     playerExport.skillChain = obj.skillCombo;
     return playerExport;
   }
-
 }

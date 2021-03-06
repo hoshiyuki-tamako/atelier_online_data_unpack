@@ -1,6 +1,6 @@
-import { EJobKind, EWealthKind } from './../Enums';
 import { Enemy } from '@/logic/entities/Enemy';
-import { EAbnormalStateTarget, EBattleAttribute, EBattleEffectTrigger, EElement, EWeaponKind } from '@/logic/Enums';
+import {
+  EAbnormalStateTarget, EBattleAttribute, EBattleEffectTrigger, EElement, EWeaponKind, EJobKind, EWealthKind } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
 import { Equipment } from '@/logic/items/Equipment';
 import { EquipmentItem } from '@/logic/items/EquipmentItem';
@@ -13,44 +13,45 @@ import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
 
+
 type multiplier = { translatedLabel?: string, label?: string, value: number };
 
 export class EquipmentsModifier {
-  @Type(_ => EquipmentModifier)
+  @Type((_) => EquipmentModifier)
   public weapon = new EquipmentModifier();
 
-  @Type(_ => EquipmentModifier)
+  @Type((_) => EquipmentModifier)
   public shield = new EquipmentModifier();
 
-  @Type(_ => EquipmentModifier)
+  @Type((_) => EquipmentModifier)
   public helmet = new EquipmentModifier();
 
-  @Type(_ => EquipmentModifier)
+  @Type((_) => EquipmentModifier)
   public armor = new EquipmentModifier();
 
-  @Type(_ => EquipmentModifier)
+  @Type((_) => EquipmentModifier)
   public accessory1 = new EquipmentModifier();
 
-  @Type(_ => EquipmentModifier)
+  @Type((_) => EquipmentModifier)
   public accessory2 = new EquipmentModifier();
 
-  @Type(_ => EquipmentModifier)
+  @Type((_) => EquipmentModifier)
   public accessory3 = new EquipmentModifier();
 }
 
 export class Player {
   public characterId : number | null = null;
 
-  @Type(_ => CharacterModifier)
+  @Type((_) => CharacterModifier)
   public characterModifier = new CharacterModifier();
 
-  @Type(_ => Equipment)
+  @Type((_) => Equipment)
   public equipment = new Equipment();
 
-  @Type(_ => EquipmentsModifier)
+  @Type((_) => EquipmentsModifier)
   public equipmentModifiers = new EquipmentsModifier();
 
-  @Type(_ => EquipmentItem)
+  @Type((_) => EquipmentItem)
   public supports = [] as EquipmentItem[];
 
   public constructor() {
@@ -174,7 +175,7 @@ export class Player {
 
   public attack(skill: SkillList | null = null, skillChain = 0) {
     const attribute = skill?.attackSkill.attribute || this.attribute;
-    const skillMultipliers = this.skillMultipliers;
+    const { skillMultipliers } = this;
     const multipliers = [{
       label: 'ベース',
       value: this.totalState(attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MATK' : 'SATK'),
@@ -235,9 +236,9 @@ export class Player {
           value: 1.5,
         });
       } else if (
-          ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMDEF) ||
-          abnormalStateEffect.trarget === EAbnormalStateTarget.eSDEF) &&
-          dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
+        ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMDEF)
+          || abnormalStateEffect.trarget === EAbnormalStateTarget.eSDEF)
+          && dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
       ) {
         if (abnormalStateEffect.name.toLocaleLowerCase().includes('down')) {
           multipliers.push({
@@ -268,9 +269,9 @@ export class Player {
     // other abnormal states
     for (const abnormalStateEffect of abnormalStateEffects) {
       if (
-          ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMATK) ||
-          abnormalStateEffect.trarget === EAbnormalStateTarget.eSATK) &&
-          dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
+        ((attribute === EBattleAttribute.eMAGIC_DAMAGED && abnormalStateEffect.trarget === EAbnormalStateTarget.eMATK)
+          || abnormalStateEffect.trarget === EAbnormalStateTarget.eSATK)
+          && dataManager.abnormalStateEffectsStates.includes(abnormalStateEffect)
       ) {
         multipliers.push({
           translatedLabel: abnormalStateEffect.name,
@@ -292,7 +293,7 @@ export class Player {
       }
     }
 
-    let total =  Math.round(multipliers.reduce((sum, multiplier) => sum * multiplier.value, 1) - defense);
+    let total = Math.round(multipliers.reduce((sum, multiplier) => sum * multiplier.value, 1) - defense);
     if (total <= 0) {
       total = 1;
     }
@@ -330,10 +331,10 @@ export class PlayerExport {
 
   public locale: string;
 
-  @Type(_ => Player)
+  @Type((_) => Player)
   public player: Player;
 
-  @Type(_ => Enemy)
+  @Type((_) => Enemy)
   public enemy: Enemy | null;
 
   public skillChain = 0;

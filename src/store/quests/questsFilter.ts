@@ -25,7 +25,6 @@ export default class extends VuexModuleBase {
 
   public showColumnCharacter = true;
 
-
   @MutationAction({ mutate: ['showColumnDF', 'showColumnNAME', 'showColumnCATEG', 'showColumnCOST', 'showColumnENM', 'showColumnGET', 'showColumnDLV', 'showColumnARA', 'showColumnDialog', 'showColumnCharacter'] })
   public async reset() {
     return {

@@ -4,7 +4,7 @@ import { List as SkillList } from '@/master/skill';
 import { Type } from 'class-transformer';
 import Enumerable from 'linq';
 
-import { dataManager } from './../utils/DataManager';
+import { dataManager } from '../utils/DataManager';
 
 // custom types
 export interface IElementResult {
@@ -25,7 +25,6 @@ export interface IStateResult {
   total: number;
 }
 
-
 // generated types
 export interface MGameObject {
   m_FileID: number;
@@ -43,27 +42,27 @@ export interface SKILL {
 }
 
 export class SPEC {
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   HP: Formula;
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   SATK: Formula;
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   SDEF: Formula;
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   MATK: Formula;
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   MDEF: Formula;
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   SPD: Formula;
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   SDA: Formula;
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   LDA: Formula;
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   QTH: Formula;
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   DDG: Formula;
-  @Type(_ => Formula)
+  @Type((_) => Formula)
   SADD: Formula;
 }
 
@@ -146,7 +145,7 @@ export class MVList {
   BTST: number;
   EXC: number;
   SKILL: SKILL[];
-  @Type(_ => SPEC)
+  @Type((_) => SPEC)
   SPEC: SPEC;
   FDM: FDM[];
   QST: QST[];
@@ -198,13 +197,11 @@ export class MVList {
   }
 
   public get otherImages() {
-    const images = this.images;
-    return dataManager.advCharacterByName[this.NAME]?.map((df) =>
-      Object.values(dataManager.files.img.icon_chara.Texture2D)
+    const { images } = this;
+    return dataManager.advCharacterByName[this.NAME]?.map((df) => Object.values(dataManager.files.img.icon_chara.Texture2D)
       .filter((p) => p.startsWith(`icon_chara_all_${df.toString().padStart(4, '0')}`))
       .map((p) => `img/icon_chara/Texture2D/${p}`)
-      .filter((p) => !images.includes(p))
-    ).flat() ?? [];
+      .filter((p) => !images.includes(p))).flat() ?? [];
   }
 
   public get genderTextIcon() {
@@ -271,7 +268,7 @@ export class MVList {
     const key = JSON.stringify({ element, level });
     if (!this.#elementCache.has(key)) {
       const skills = this.getSkillWithComboSkills(level)
-      .filter((p) => dataManager.lookup.elementMapSkillEffectTarget[element].includes(p.effectTarget) && p.effect === EBattleEffectKind.eSTATUS_FIX);
+        .filter((p) => dataManager.lookup.elementMapSkillEffectTarget[element].includes(p.effectTarget) && p.effect === EBattleEffectKind.eSTATUS_FIX);
       const result = {
         element,
         label: dataManager.lookup.element[element],
@@ -306,8 +303,8 @@ export class MVList {
     const key = JSON.stringify({ state, level, foodLevel });
     if (!this.#stateCache.has(key)) {
       const baseSkills = this.getSkillWithComboSkills(level);
-      const skills = ['QTH', 'DDG'].includes(state) ?
-        baseSkills.filter((p) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state])
+      const skills = ['QTH', 'DDG'].includes(state)
+        ? baseSkills.filter((p) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state])
         : baseSkills.filter((p) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state] && p.effect === EBattleEffectKind.eSTATUS_FIX);
       const result = {
         state,
@@ -335,6 +332,6 @@ export class Chara {
   m_Script: MScript;
   m_Name: string;
 
-  @Type(_ => MVList)
+  @Type((_) => MVList)
   m_vList: MVList[];
 }

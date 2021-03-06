@@ -9,17 +9,17 @@ export interface IOtherEnemies {
 
 export class AreaDetail {
   m_GameObject: MGameObject;
-  m_Enabled:    number;
-  m_Script:     MGameObject;
-  m_Name:       string;
-  @Type(_ => List)
-  List:         List[];
+  m_Enabled: number;
+  m_Script: MGameObject;
+  m_Name: string;
+  @Type((_) => List)
+  List: List[];
 }
 
 export class List {
-  iAreaID:      number;
-  iLevel:       number;
-  iItemIDList:  number[];
+  iAreaID: number;
+  iLevel: number;
+  iItemIDList: number[];
   iEnemyIDList: number[];
 
   #otherEnemies: IOtherEnemies[];
@@ -35,11 +35,11 @@ export class List {
 
   public get otherEnemies() {
     return this.#otherEnemies ??= dataManager.spawnerDataManager.enemyIdsInAreaByAreaId[this.iAreaID]
-    ?.map(({ level, enemyIds }) => ({
-      level,
-      enemies: enemyIds.map((p) => dataManager.enemyById[p]).filter((p) => p).sort((a, b) => a.eKind - b.eKind),
-    }))
-    .filter(({ enemies }) => enemies.length) || [];
+      ?.map(({ level, enemyIds }) => ({
+        level,
+        enemies: enemyIds.map((p) => dataManager.enemyById[p]).filter((p) => p).sort((a, b) => a.eKind - b.eKind),
+      }))
+      .filter(({ enemies }) => enemies.length) || [];
   }
 
   public get dungeonEnemies() {

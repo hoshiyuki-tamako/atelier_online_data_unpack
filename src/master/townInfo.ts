@@ -3,20 +3,20 @@ import { Type } from 'class-transformer';
 
 export class TownInfo {
   m_GameObject: MGameObject;
-  m_Enabled:    number;
-  m_Script:     MGameObject;
-  m_Name:       string;
-  @Type(_ => List)
-  List:         List[];
+  m_Enabled: number;
+  m_Script: MGameObject;
+  m_Name: string;
+  @Type((_) => List)
+  List: List[];
 }
 
 export class List {
-  iTownId:      number;
-  iAreaNameId:  number;
-  iAreaId:      number;
-  eMusic_Day:   number;
+  iTownId: number;
+  iAreaNameId: number;
+  iAreaId: number;
+  eMusic_Day: number;
   eMusic_Night: number;
-  clsExitList:  ClsExitList[];
+  clsExitList: ClsExitList[];
 
   #townIcons: string[];
 
@@ -28,12 +28,12 @@ export class List {
 }
 
 export interface ClsExitList {
-  iTownId:    number;
-  eExit:      number;
-  iExitArea:  number;
+  iTownId: number;
+  eExit: number;
+  iExitArea: number;
   iExitStage: number;
   iExitSpawn: number;
-  iExitTown:  number;
+  iExitTown: number;
 }
 
 export interface MGameObject {

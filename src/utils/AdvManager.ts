@@ -1,6 +1,6 @@
-import { DataManager } from './DataManager';
 import { EOrderType } from '@/logic/Enums';
 import { Adv } from '@/master/adv';
+import { DataManager } from './DataManager';
 
 export type AdvCharacterMap = {
   [id: string]: string[];
@@ -65,7 +65,7 @@ export class AdvManager {
     if (!this.#dialogCache.has(url)) {
       const data = await this.getAdv(adv);
       const orders = data.vOrderList.map((p) => {
-        switch(p.eOrder) {
+        switch (p.eOrder) {
           case EOrderType.eCHARA_TALK:
             return {
               order: p.eOrder,

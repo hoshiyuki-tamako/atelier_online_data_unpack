@@ -18,7 +18,7 @@ export class Formula {
   public B = 0;
 
   public getValue(level = 1) {
-    return Math.floor(((this.M - this.B)/this.R) * level + this.B);
+    return Math.floor(((this.M - this.B) / this.R) * level + this.B);
   }
 
   public getSupportValue(level = 1) {

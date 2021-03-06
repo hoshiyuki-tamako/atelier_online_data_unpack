@@ -33,7 +33,7 @@ export class Quality {
     if (this.isMaxLevel) {
       return 0;
     }
-    const quality = this.quality;
+    const { quality } = this;
     return Quality.experiences[quality] - Quality.experiences[quality - 1] - this.leftover;
   }
 

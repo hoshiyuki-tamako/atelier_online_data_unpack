@@ -1,9 +1,9 @@
 export interface Treasure {
   m_GameObject: MGameObject;
-  m_Enabled:    number;
-  m_Script:     MGameObject;
-  m_Name:       string;
-  m_vList:      MVList[];
+  m_Enabled: number;
+  m_Script: MGameObject;
+  m_Name: string;
+  m_vList: MVList[];
 }
 
 export interface MGameObject {

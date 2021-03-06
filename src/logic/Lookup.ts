@@ -49,7 +49,7 @@ export const lookup = {
     53: 'アクセ強化',
     54: '限界突破',
     55: '万能強化',
-    56: 'ブレイズアーツ経験値'
+    56: 'ブレイズアーツ経験値',
   },
   weaponKind: {
     1: '剣',
@@ -58,7 +58,7 @@ export const lookup = {
     5: '杖',
     7: '大剣',
     9: 'メイス',
-    12: '盾'
+    12: '盾',
   },
 
   targetTeam: {
@@ -97,7 +97,7 @@ export const lookup = {
 
   attackType: {
     0: '物理',
-    1: '魔法'
+    1: '魔法',
   },
 
   // enum lookup
@@ -190,7 +190,7 @@ export const lookup = {
     5015: 'タッチ',
     5016: '対話アイテム',
     5017: '対話',
-    5018: '対話納品'
+    5018: '対話納品',
   },
   EBattleAttribute: {
     0: '無',

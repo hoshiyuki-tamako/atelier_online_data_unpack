@@ -1,9 +1,9 @@
 export interface Adv {
   m_GameObject: MGameObject;
-  m_Enabled:    number;
-  m_Script:     MGameObject;
-  m_Name:       string;
-  vOrderList:   VOrderList[];
+  m_Enabled: number;
+  m_Script: MGameObject;
+  m_Name: string;
+  vOrderList: VOrderList[];
 }
 
 export interface MGameObject {
@@ -12,6 +12,6 @@ export interface MGameObject {
 }
 
 export interface VOrderList {
-  eOrder:  number;
+  eOrder: number;
   vsParam: string[];
 }

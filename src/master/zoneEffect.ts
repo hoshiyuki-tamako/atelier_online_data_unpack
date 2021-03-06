@@ -1,16 +1,16 @@
 export interface ZoneEffect {
   m_GameObject: MGameObject;
-  m_Enabled:    number;
-  m_Script:     MGameObject;
-  m_Name:       string;
-  List:         List[];
+  m_Enabled: number;
+  m_Script: MGameObject;
+  m_Name: string;
+  List: List[];
 }
 
 export interface List {
-  id:      number;
-  name:    string;
-  effect:  number;
-  value:   number;
+  id: number;
+  name: string;
+  effect: number;
+  value: number;
   element: number;
 }
 

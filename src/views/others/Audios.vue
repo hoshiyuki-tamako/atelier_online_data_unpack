@@ -34,7 +34,9 @@ export default class extends VueBase {
   public character: number | null | string = null;
 
   public get characters() {
-    return Object.entries(this.dataManager.characterVoices as CharacterVoiceMap).map(([df, voices]) => this.getCharacter(+df, this.getMostName(voices)));
+    return Object.entries(this.dataManager.characterVoices as CharacterVoiceMap)
+      .filter(([df]) => df)
+      .map(([df, voices]) => this.getCharacter(+df, this.getMostName(voices)));
   }
 
   public get defaultAplayerOption() {
@@ -110,7 +112,7 @@ export default class extends VueBase {
   }
 
   public onTabClick() {
-    for (const audio of [...document.getElementsByTagName('audio')]) {
+    for (const audio of document.getElementsByTagName('audio')) {
       audio.pause();
     }
   }

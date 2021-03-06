@@ -25,7 +25,7 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
           h4 {{ $t('音楽') }}
           p {{ eMusicID[scope.row.id] || '-' }}
           template(v-if="scope.row.id > 0" v-for="bgm of [dataManager.soundListBgmById[scope.row.id]].filter(p => p)")
-            audio(v-if="dataManager.files.audios.musics[bgm.fileName]" controls)
+            audio(v-if="dataManager.files.audios.musics[bgm.fileName]" @play="onPlay" controls)
               source(:src="bgm.file" type="audio/mpeg")
         div(v-else-if="scope.row.order === EOrderType.ePICTURE")
           img.dialog-image(:src="`img/still_texture/Still_Texture_${scope.row.id.toString().padStart(4, '0')}.png`" :alt="scope.row.id")
@@ -73,6 +73,14 @@ export default class extends VueBase {
   // services
   private richTextService = new RichTextService();
 
+  //
+  public onPlay() {
+    for (const audio of document.getElementsByTagName('audio')) {
+      audio.pause();
+    }
+  }
+
+  // event
   public async openDialog(quest: QuestMVList) {
     try {
       this.quest = quest;

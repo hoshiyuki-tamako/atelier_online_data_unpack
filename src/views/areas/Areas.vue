@@ -21,23 +21,23 @@ div.container
             template(v-if="dataManager.areaModelsById[areaDetail.iAreaID]")
               br
               div(v-for="{ root, iLevel } of dataManager.areaModelsById[areaDetail.iAreaID]")
-                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, root } }" v-slot="{ href, navigate }")
+                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, root } }" v-slot="{ href, navigate }" custom)
                   el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ $t('地図') }} {{ iLevel }}
 
             template(v-if="dataManager.areaDungeonsById[areaDetail.iAreaID]")
               br
               div(v-for="{ root, iLevel } of dataManager.areaDungeonsById[areaDetail.iAreaID]")
-                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, root } }" v-slot="{ href, navigate }")
+                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, root } }" v-slot="{ href, navigate }" custom)
                   el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ $t('ダンジョン') }} {{ iLevel }}
             template(v-if="dataManager.areaDungeonBattleAreas[areaDetail.iAreaID]")
               br
               div(v-for="{ folder, iLevel } of dataManager.areaBattleAreas[areaDetail.iAreaID]")
-                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, battleArea: folder } }" v-slot="{ href, navigate }")
+                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, battleArea: folder } }" v-slot="{ href, navigate }" custom)
                   el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ $t('バトルエリア') }} {{ iLevel }}
             template(v-if="dataManager.areaDungeonBattleAreas[areaDetail.iAreaID]")
               br
               div(v-for="{ folder, iLevel } of dataManager.areaDungeonBattleAreas[areaDetail.iAreaID]")
-                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, battleArea: folder } }" v-slot="{ href, navigate }")
+                router-link(:to="{ name: 'AreasArea', query: { iAreaID: areaDetail.iAreaID, battleArea: folder } }" v-slot="{ href, navigate }" custom)
                   el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ $t('バトルエリア') }}{{ $t('ダンジョン') }} {{ iLevel }}
 
           div.item-container-right

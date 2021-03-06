@@ -59,7 +59,7 @@ div.container
   div
     h3 {{ $t('材料強化') }}
     div
-      p sum({{ $t('品質') }}{{ $t('経験値') }})
+      p {{ $t('品質') }} = sum({{ $t('品質') }}{{ $t('経験値') }})
 </template>
 
 <script lang="ts">

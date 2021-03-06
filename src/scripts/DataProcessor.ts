@@ -56,16 +56,16 @@ export default class DataProcessor {
     const advCharacterByIds = await Promise.all(files.map(async (file) => {
       const adv = await fs.readJson(path.join(advFolder, file)) as Adv;
       return Enumerable.from(adv.vOrderList)
-      .where((p) => p.eOrder === EOrderType.eCHARA_TALK)
-      .select((p) => p.vsParam)
-      .where((p) => !!p[0])
-      .groupBy((p) => p[0])
-      .toObject(
-        (p) => p.key(),
-        (p) => p.groupBy((o) => o[1])
-        .select((o) => o.key())
-        .where((p) => !!p)
-        .toArray(),
+        .where((p) => p.eOrder === EOrderType.eCHARA_TALK)
+        .select((p) => p.vsParam)
+        .where((p) => !!p[0])
+        .groupBy((p) => p[0])
+        .toObject(
+          (p) => p.key(),
+          (p) => p.groupBy((o) => o[1])
+            .select((o) => o.key())
+            .where((p) => !!p)
+            .toArray(),
         ) as AdvCharacterMap;
     }));
 

@@ -3,7 +3,6 @@ import { Module, Mutation, MutationAction } from 'vuex-module-decorators';
 
 import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 
-
 export class MaterialOptions extends ItemModifier {
   public addonQuality = 0;
 }

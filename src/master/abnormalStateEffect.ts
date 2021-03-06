@@ -1,9 +1,9 @@
 export interface AbnormalStateEffect {
   m_GameObject: MGameObject;
-  m_Enabled:    number;
-  m_Script:     MGameObject;
-  m_Name:       string;
-  m_vList:      MVList[];
+  m_Enabled: number;
+  m_Script: MGameObject;
+  m_Name: string;
+  m_vList: MVList[];
 }
 
 export interface MGameObject {
@@ -12,9 +12,9 @@ export interface MGameObject {
 }
 
 export interface MVList {
-  id:      number;
-  name:    string;
-  group:   number;
+  id: number;
+  name: string;
+  group: number;
   trarget: number;
-  value:   number;
+  value: number;
 }

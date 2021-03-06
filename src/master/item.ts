@@ -1,4 +1,6 @@
-import { EBattleEffectKind, ECategory, eRaceKind, ESubCategory, EWeaponKind } from '@/logic/Enums';
+import {
+  EBattleEffectKind, ECategory, eRaceKind, ESubCategory, EWeaponKind,
+} from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
 import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
@@ -35,7 +37,7 @@ export class Item {
   m_Script: MGameObject;
   m_Name: string;
 
-  @Type(_ => MVList)
+  @Type((_) => MVList)
   public m_vList: MVList[] = [];
 }
 
@@ -71,7 +73,7 @@ export class MVList {
   EQU_BRD: number;
   RSP: Rsp[];
   ALT: Alt;
-  @Type(_ => EQU)
+  @Type((_) => EQU)
   EQU: EQU;
   EQU_GND: EquGnd[];
   ELM: Elm;
@@ -145,11 +147,11 @@ export class MVList {
 
   public get modelThrowable() {
     const throwable = Object.keys(dataManager.files.models.throwables).find((folder) => dataManager.folderLabel(folder) === `throw${this.DF}`);
-      if (!throwable) {
-        return '';
-      }
+    if (!throwable) {
+      return '';
+    }
 
-      return `models/throwables/${throwable}/${dataManager.folderLabel(throwable)}.fbx`;
+    return `models/throwables/${throwable}/${dataManager.folderLabel(throwable)}.fbx`;
   }
 
   public get genderTextIcon() {
@@ -159,17 +161,16 @@ export class MVList {
       || (this.EQU_GND.some((p) => p.ENB && p.GEN === eRaceKind.Human_Male) && this.EQU_GND.some((p) => p.ENB && p.GEN === eRaceKind.Human_Female))
     ) {
       return '♂ ♀';
-    } else if (this.EQU_GND.some((p) => p.ENB && p.GEN === eRaceKind.Human_Male)) {
+    } if (this.EQU_GND.some((p) => p.ENB && p.GEN === eRaceKind.Human_Male)) {
       return '♂';
-    } else if (this.EQU_GND.some((p) => p.ENB && p.GEN === eRaceKind.Human_Female)) {
+    } if (this.EQU_GND.some((p) => p.ENB && p.GEN === eRaceKind.Human_Female)) {
       return '♀';
-    } else {
-      return '';
     }
+    return '';
   }
 
   public canGenderUseEquipment(gender: eRaceKind) {
-    return !this.EQU_GND.length || this.EQU_GND.some((p) => !p.GEN) || this.EQU_GND.some((p) => p.ENB && p.GEN === gender)
+    return !this.EQU_GND.length || this.EQU_GND.some((p) => !p.GEN) || this.EQU_GND.some((p) => p.ENB && p.GEN === gender);
   }
 
   // skills
@@ -242,10 +243,12 @@ export class MVList {
   }
 
   public getState(state: string, quality = MVList.equipmentMaxQuality, level = MVList.equipmentMaxLevel, addonSkill: SkillList | null = null) {
-    const key = JSON.stringify({ state, quality, level, addonSkill: addonSkill?.id });
+    const key = JSON.stringify({
+      state, quality, level, addonSkill: addonSkill?.id,
+    });
     if (!this.#stateCache.has(key)) {
-      const skillFilter = ['QTH', 'DDG'].includes(state) ?
-        (p: SkillList) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state]
+      const skillFilter = ['QTH', 'DDG'].includes(state)
+        ? (p: SkillList) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state]
         : (p: SkillList) => p.effectTarget === dataManager.lookup.stateMapSkillEffectTarget[state] && p.effect === EBattleEffectKind.eSTATUS_FIX;
       const skills = this.getSkillWithComboSkills(quality).filter(skillFilter);
       const result = {
@@ -283,7 +286,7 @@ export class MVList {
   }
 
   public getSupportElement(element: string) {
-    return{
+    return {
       element,
       label: dataManager.lookup.element[element],
       value: Formula.getSupportElement(this.ELM[element]),
@@ -317,48 +320,48 @@ export interface Elm {
 }
 
 export class EQU {
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   EB: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   SATK: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   SDEF: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   MATK: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   MDEF: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   SPD: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   SDA: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   LDA: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   QTH: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   DDG: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   SADD: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   RST_SLP: Formula;
-  @Type(_  => Formula)
-  @Type(_  => Formula)
+  @Type((_) => Formula)
+  @Type((_) => Formula)
   RST_PSN: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   RST_BRN: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   RST_FRZ: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   RST_PRZ: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   RST_DRK: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   RST_SLN: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   RST_CUS: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   RST_SLW: Formula;
-  @Type(_  => Formula)
+  @Type((_) => Formula)
   RST_STN: Formula;
 }
 
