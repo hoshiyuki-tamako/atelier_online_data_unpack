@@ -5,7 +5,7 @@ div.container
     p
       span.version-link__container
         span
-          span Game Version 3.15.1 (2021-02-24) &nbsp;
+          span Game Version 3.15.2 (2021-03-10) &nbsp;
           span(v-if="$i18n.locale !== 'ja-JP'")
             el-link(type="success" :underline="false" :href="changeLocaleHref('ja-JP')") (日本語)
           span(v-else) (日本語)
