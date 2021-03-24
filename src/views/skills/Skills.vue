@@ -93,11 +93,16 @@ div.container
               div(v-if="props.row.stateOwn.length")
                 br
                 h4 {{ $t('追加状態 (自)') }}
-                p(v-for="[state, abnormalState] of props.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
+                template(v-for="[state, abnormalState] of props.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                  el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
+                    p {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
               div(v-if="props.row.state.length")
                 br
                 h4 {{ $t('追加状態') }}
-                p(v-for="[state, abnormalState] of props.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
+                template(v-for="[state, abnormalState] of props.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                  el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
+                    p {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
+
               div(v-if="props.row.effect === EBattleEffectKind.eZONE_CHANGE" v-for="zone of [dataManager.zoneById[props.row.effectValue]].filter((p) => p)")
                 br
                 h4
@@ -136,10 +141,14 @@ div.container
         template(slot-scope="scope") {{ $t(dataManager.lookup.targetTeam[scope.row.targetTeam]) }}{{ $t(dataManager.lookup.eFieldItemRange[scope.row.targetScope]) }}
       el-table-column(v-if="showColumnStateOwn" prop="stateOwn.length" :label="$t('追加状態 (自)')" sortable="custom")
         template(slot-scope="scope")
-          p(v-for="[state, abnormalState] of scope.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
+          template(v-for="[state, abnormalState] of scope.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+            el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
+              p {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
       el-table-column(v-if="showColumnState" prop="state.length" :label="$t('追加状態')" sortable="custom")
         template(slot-scope="scope")
-          p(v-for="[state, abnormalState] of scope.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
+          template(v-for="[state, abnormalState] of scope.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+            el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
+              p {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }}
     el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredSkills.length" layout="prev, pager, next" background="")
 </template>
 
