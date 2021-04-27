@@ -94,7 +94,7 @@ docker-compose up --build -d
 4. export type `Texture2D` to `./source/Texture2D/*.png`
 5. export models fbx version 7.5 binary with folder to `./source/models/**/*`
 6. export models fbx version 7.5 ascii to `./source/modelsMeta/**/*`
-7. (optional) export type `AudioClip` filter by `vo` to `./source/voice/AudioClip/*.wav`
+7. (optional) export type `AudioClip` filter by `vo` to `./source/voice/AudioClip/*.wav` and delete `M11_Volcano.wav`
 8. (optional) export type `AudioClip` filter by `music` to `./source/music/AudioClip/*.wav`
 9. (optional) extract `Enum` from ILSpy if any to `./src/logic/Enums.ts`
 10. (optional) update `./src/logic/Lookup.ts` if any updates on `Enum`
