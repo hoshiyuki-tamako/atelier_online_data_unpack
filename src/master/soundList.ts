@@ -17,7 +17,7 @@ export class Bgm {
   bLocal: number;
 
   public get fileName() {
-    return `${this.sFilePath}.wav`;
+    return `${this.sFilePath}.m4a`;
   }
 
   public get file() {

@@ -79,7 +79,7 @@ export default class extends VueBase {
     return this.dataManager.characterVoices[this.character]
       ?.map(({ voice, characterName }) => ({
         title: voice,
-        src: `audios/voices/${voice}.wav`,
+        src: `audios/voices/${voice}.m4a`,
         artist: characterName || ' ',
         pic: this.getCharacter(+this.character, characterName).icon,
       })) ?? [];
@@ -95,7 +95,7 @@ export default class extends VueBase {
   }
 
   public get otherList() {
-    const characterVoices = Object.values(this.dataManager.characterVoices).flat().map(({ voice }) => `${voice}.wav`);
+    const characterVoices = Object.values(this.dataManager.characterVoices).flat().map(({ voice }) => `${voice}.m4a`);
     return Object.values(this.dataManager.files.audios.voices)
       .filter((p) => p !== '.keep' && !characterVoices.includes(p))
       .map((p) => ({

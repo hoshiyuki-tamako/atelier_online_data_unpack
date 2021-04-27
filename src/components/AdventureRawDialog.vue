@@ -11,8 +11,8 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
         div(v-if="scope.row.order === EOrderType.eCHARA_TALK")
           h4(v-html="richTextService.richTextToHtml(scope.row.name)")
           p(v-html="richTextService.richTextToHtml(scope.row.dialog)")
-          audio(v-if="scope.row.voice && dataManager.files.audios.voices[`${scope.row.voice}.wav`]" controls)
-            source(:src="`audios/voices/${scope.row.voice}.wav`" type="audio/mpeg")
+          audio(v-if="scope.row.voice && dataManager.files.audios.voices[`${scope.row.voice}.m4a`]" controls)
+            source(:src="`audios/voices/${scope.row.voice}.m4a`" type="audio/mp4")
         div(v-else-if="scope.row.order === EOrderType.eSELECTION")
           h4 {{ $t('選択') }}
           p(v-for="option of scope.row.options" v-html="richTextService.richTextToHtml(option)")
@@ -25,8 +25,8 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
           h4 {{ $t('音楽') }}
           p {{ eMusicID[scope.row.id] || '-' }}
           template(v-if="scope.row.id > 0" v-for="bgm of [dataManager.soundListBgmById[scope.row.id]].filter(p => p)")
-            audio(v-if="dataManager.files.audios.musics[bgm.fileName]" @play="onPlay" controls)
-              source(:src="bgm.file" type="audio/mpeg")
+            audio(v-if="dataManager.files.audios.musics[bgm.fileName]" controls)
+              source(:src="bgm.file" type="audio/mp4")
         div(v-else-if="scope.row.order === EOrderType.ePICTURE")
           img.dialog-image(:src="`img/still_texture/Still_Texture_${scope.row.id.toString().padStart(4, '0')}.png`" :alt="scope.row.id")
         div(v-else-if="scope.row.order === EOrderType.eWINDOW_ITEM")
@@ -74,9 +74,11 @@ export default class extends VueBase {
   private richTextService = new RichTextService();
 
   //
-  public onPlay() {
+  public onPlay(ev: Event) {
     for (const audio of document.getElementsByTagName('audio')) {
-      audio.pause();
+      if (audio !== ev.target) {
+        audio.pause();
+      }
     }
   }
 

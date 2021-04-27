@@ -1,11 +1,20 @@
+import eachLimit from 'async/eachLimit';
 import deepmerge from 'deepmerge';
+import ffmpegStatic from 'ffmpeg-static';
+import ffprobeStatic from 'ffprobe-static';
+import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs-extra';
 import Enumerable from 'linq';
+import { cpus } from 'os';
+import pEvent from 'p-event';
 import path from 'path';
 
 import { EOrderType } from '../logic/Enums';
 import { Adv } from '../master/adv';
 import { ExportBase } from './ExportBase';
+
+ffmpeg.setFfmpegPath(ffmpegStatic);
+ffmpeg.setFfprobePath(ffprobeStatic.path);
 
 export type CharacterVoice = {
   voice: string;
@@ -13,12 +22,27 @@ export type CharacterVoice = {
 };
 export type CharacterVoiceMap = { [characterDf: string]: CharacterVoice[] };
 
+type AudioConvertItem = {
+  newFile: string,
+  outFile: string,
+}
+
 export default class AudioExport extends ExportBase {
+  private audioConvertorQueue = [] as AudioConvertItem[];
+
   public async process(sourceFolder: string, rootFolder: string) {
     await Promise.all([
       this.processMusics(sourceFolder, rootFolder),
       this.processVoices(sourceFolder, rootFolder),
     ]);
+
+    await this.processAudioConvertQueue();
+  }
+
+  private async processAudioConvertQueue() {
+    await eachLimit(this.audioConvertorQueue, cpus().length, async ({ newFile, outFile: out }) => {
+      await pEvent(ffmpeg(newFile).audioBitrate(96).audioCodec('aac').save(out), 'end');
+    },);
   }
 
   private async processMusics(sourceFolder: string, rootFolder: string) {
@@ -37,11 +61,15 @@ export default class AudioExport extends ExportBase {
     const outFolder = path.join(rootFolder, 'audios', 'musics');
     await Promise.all(musics.filter((p) => !p.includes('#')).map(async (p) => {
       const newFile = path.join(musicFolder, p);
-      const out = path.join(outFolder, p);
-      if (await this.isPathUpToDate(newFile, out)) {
+      const outFile = path.join(outFolder, p).replace('.wav', '.m4a');
+      if (await fs.pathExists(outFile)) {
         return;
       }
-      await fs.copy(newFile, out);
+
+      this.audioConvertorQueue.push({
+        newFile,
+        outFile,
+      });
     }));
   }
 
@@ -66,11 +94,15 @@ export default class AudioExport extends ExportBase {
       this.generateCharacterVoices(filteredVoices, rootFolder),
       Promise.all(filteredVoices.map(async (p) => {
         const newFile = path.join(voiceFolder, p);
-        const out = path.join(outFolder, p);
-        if (await this.isPathUpToDate(newFile, out)) {
+        const outFile = path.join(outFolder, p).replace('.wav', '.m4a');
+        if (await fs.pathExists(outFile)) {
           return;
         }
-        await fs.copy(newFile, out);
+
+        this.audioConvertorQueue.push({
+          newFile,
+          outFile,
+        });
       })),
     ]);
   }
