@@ -1,10 +1,12 @@
+import advAudioById from '@/../public/generated/advAudioById.json';
+import advBgById from '@/../public/generated/advBgById.json';
+import advCgById from '@/../public/generated/advCgById.json';
+import advWindowItemById from '@/../public/generated/advWindowItemById.json';
 import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
 import areaModel from '@/../public/generated/areaModel.json';
 import characterVoices from '@/../public/generated/characterVoices.json';
 import files from '@/../public/generated/files.json';
-import {
-  EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger, EDegreeMissonType,
-} from '@/logic/Enums';
+import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger, EDegreeMissonType } from '@/logic/Enums';
 import { lookup } from '@/logic/Lookup';
 import { AbnormalState, MVList as AbnormalStateMVList } from '@/master/abnormalState';
 import { AbnormalStateEffect, MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
@@ -24,7 +26,7 @@ import { GateInfo, List as GateInfoList } from '@/master/gateInfo';
 import { Item, MVList as ItemMVList } from '@/master/item';
 import { MVList as QuestMVList, Quest } from '@/master/quest';
 import { List as SkillList, Skill } from '@/master/skill';
-import { SoundList, Bgm } from '@/master/soundList';
+import { Bgm, SoundList } from '@/master/soundList';
 import { Tips } from '@/master/tips';
 import { List as TownInfoList, TownInfo } from '@/master/townInfo';
 import { Treasure } from '@/master/treasure';
@@ -32,7 +34,7 @@ import { MVList as WealthMvList, Wealth } from '@/master/wealth';
 import { List as ZoneList, Zone } from '@/master/zone';
 import { List as ZoneEffectList, ZoneEffect } from '@/master/zoneEffect';
 import { IAreaModel, IBattleArea } from '@/scripts/ModelExport';
-import { AdvManager, AdvCharacterMap } from '@/utils/AdvManager';
+import { AdvManager, AdvMap } from '@/utils/AdvManager';
 import { SpawnerDataManager } from '@/utils/SpawnerDataManager';
 import { plainToClass } from 'class-transformer';
 import Enumerable from 'linq';
@@ -195,6 +197,7 @@ export class DataManager {
   public questRewardWealths: WealthMvList[];
   public questCharacters: CharacterMVList[];
   public questRequireDegrees: DegreeList[];
+  public questsByAdv: { [adv: string]: QuestMVList[] };
 
   public fieldNameById: { [id: string]: FieldNameList };
 
@@ -238,7 +241,13 @@ export class DataManager {
   public areaDungeonModel: IAreaModel[] = areaDungeonModel;
   public characterVoices = characterVoices;
 
-  public advCharacterById: AdvCharacterMap;
+  public advCharacterById: AdvMap;
+  public advCgById = advCgById;
+  public advWindowItemById = advWindowItemById;
+  public advBgById = advBgById;
+  public advAudioById = advAudioById;
+  public advHasCg: { [adv: string]: boolean };
+  public advHasAudio: { [adv: string]: boolean };
 
   // processed custom data
   public areaModelsById: { [iAreaId: string]: IAreaModel[] };
@@ -252,7 +261,7 @@ export class DataManager {
 
   public townIcons = [] as string[];
 
-  public advCharacterByName: AdvCharacterMap;
+  public advCharacterByName: AdvMap;
 
   //
   public async load(showHiddenContent = false) {
@@ -616,6 +625,14 @@ export class DataManager {
       })))
       .groupBy((p) => p.enm.DF)
       .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
+    this.questsByAdv = Enumerable.from(this.quest.m_vList)
+      .selectMany((quest) => quest.NPC_FD.map((npcfd) => ({
+        quest,
+        npcfd,
+      })))
+      .where((p) => !!p.npcfd.ADV)
+      .groupBy((p) => p.npcfd.ADV)
+      .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
   }
 
   public afterLoadQuest() {
@@ -709,13 +726,23 @@ export class DataManager {
   }
 
   //
-  public async loadAdvCharacterById(advCharacterById?: AdvCharacterMap) {
+  public async loadAdvCharacterById(advCharacterById?: AdvMap) {
     this.advCharacterById = advCharacterById || await this.loadJson(`${this.serverId}/generated/advCharacterById.json`);
 
     this.advCharacterByName = Enumerable.from(Object.entries(this.advCharacterById))
       .selectMany(([id, names]) => names.map((name) => ({ id, name })))
       .groupBy(({ name }) => name)
-      .toObject((p) => p.key(), (p) => p.select(({ id }) => id).toArray()) as AdvCharacterMap;
+      .toObject((p) => p.key(), (p) => p.select(({ id }) => id).toArray()) as AdvMap;
+
+    this.advHasCg = Enumerable.from(Object.entries(this.advCgById))
+      .selectMany(([id, advs]) => advs.map((adv) => ({ id, adv })))
+      .groupBy(({ adv }) => adv)
+      .toObject((p) => p.key(), (p) => p.any()) as { [adv: string]: boolean };
+
+    this.advHasAudio = Enumerable.from(Object.entries(this.advAudioById))
+      .selectMany(([id, advs]) => advs.map((adv) => ({ id, adv })))
+      .groupBy(({ adv }) => adv)
+      .toObject((p) => p.key(), (p) => p.any()) as { [adv: string]: boolean };
   }
 
   // other load

@@ -3,13 +3,13 @@ div.container
   div.dungeons(v-for="{ level, folders } of dungeons")
     el-divider {{ level || '' }}
     div.dungeon(v-for="folder of folders")
-      router-link(:to="{ name: 'AreasArea', query: { dungeon: folder } }" v-slot="{ href, navigate }")
+      router-link(:to="{ name: 'AreasArea', query: { dungeon: folder } }" v-slot="{ href, navigate }" custom)
         el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ dataManager.folderLabel(folder) }}
 
   el-divider
   div.dungeons
     div.dungeon(v-for="{ label, folder } of fieldDungeons")
-      router-link(:to="{ name: 'AreasArea', query: { fieldDungeon: folder } }" v-slot="{ href, navigate }")
+      router-link(:to="{ name: 'AreasArea', query: { fieldDungeon: folder } }" v-slot="{ href, navigate }" custom)
         el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ label }}
 </template>
 

@@ -12,7 +12,7 @@ div.container
     DegreeSelector(v-model="filter.requireDegree" :degrees="dataManager.questRequireDegrees" :title="$t('必要称号')" @change="resetPage")
   div.filters
     div.filter
-      span {{ $t('名前') }}/DF
+      span {{ $t('名前') }}/DF/ADV
       el-input(v-model="filter.name" @change="resetPage" clearable)
     div.filter
       el-switch(v-model="filter.extraQuest" @change="resetPage" :active-text="$t('EXクエスト')")
@@ -294,6 +294,14 @@ export default class extends VueWithMapFields {
         label: this.$t('必要キャラクター'),
         value: 10,
       },
+      {
+        label: this.$t('CG'),
+        value: 11,
+      },
+      {
+        label: this.$t('音声あり'),
+        value: 12,
+      },
     ];
   }
 
@@ -306,7 +314,7 @@ export default class extends VueWithMapFields {
         && (!this.filter.costWealth || p.COST.WTH.DF === this.filter.costWealth)
         && (!this.filter.rewardWealth || p.RWD_WTH.some((i) => i.DF === this.filter.rewardWealth))
         && (!this.filter.requireDegree || p.UNLOCK.some((i) => i.DF === this.filter.requireDegree))
-        && (!this.filter.name || p.DF === +this.filter.name || p.NAME.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
+        && (!this.filter.name || p.DF === +this.filter.name || p.NAME.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()) || p.NPC_FD.some((i) => i.ADV === this.filter.name))
         && (!this.filter.extraQuest || this.dataManager.extraQuestsByQuest[p.DF])
         && (!this.filter.has.includes(1) || p.COST.WTH.CNT)
         && (!this.filter.has.includes(2) || p.ENM.length)
@@ -318,6 +326,8 @@ export default class extends VueWithMapFields {
         && (!this.filter.has.includes(8) || p.CHALLENGE)
         && (!this.filter.has.includes(9) || p.UNLOCK.length)
         && (!this.filter.has.includes(10) || p.PARTY_IN)
+        && (!this.filter.has.includes(11) || p.NPC_FD.some((i) => this.dataManager.advHasCg[i.ADV]))
+        && (!this.filter.has.includes(12) || p.NPC_FD.some((i) => this.dataManager.advHasAudio[i.ADV]))
       ));
 
       if (this.filter.order) {
@@ -350,6 +360,9 @@ export default class extends VueWithMapFields {
   public beforeMount() {
     if (this.$route.query.df) {
       this.filter.name = this.$route.query.df.toString();
+    }
+    if (this.$route.query.name) {
+      this.filter.name = this.$route.query.name.toString();
     }
   }
 

@@ -11,11 +11,11 @@ div.container
           span(v-else) (日本語)
       br
       span.version-link__container
-        span Game Version 3.5.0 (2021-03-24) &nbsp;
+        span Game Version 3.5.0 (2021-04-27) &nbsp;
           span(v-if="$i18n.locale !== 'zh-TW'")
             el-link(type="success" :underline="false" :href="changeLocaleHref('zh-TW')") (繁體中文)
           span(v-else) (繁體中文)
-        template(v-if="!isProduction")
+        template
           span &nbsp;
             span(v-if="$i18n.locale !== 'zh-CN'")
               el-link(type="success" :underline="false" :href="changeLocaleHref('zh-CN')") (简体)
@@ -475,6 +475,24 @@ export default class extends VueWithMapFields {
 
   public get otherPageInfo() {
     return [
+      this.showHiddenContent ? {
+        label: this.$t('CG'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10350020.png',
+        },
+        to: {
+          name: 'OthersCgs',
+        },
+      } : null,
+      this.showHiddenContent ? {
+        label: this.$t('音楽 / ボイス'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10950041.png',
+        },
+        to: {
+          name: 'OthersAudios',
+        },
+      } : null,
       {
         label: this.$t('計算/公式'),
         img: {
@@ -484,15 +502,6 @@ export default class extends VueWithMapFields {
           name: 'OthersCalculate',
         },
       },
-      !this.isProduction ? {
-        label: this.$t('音楽 / ボイス'),
-        img: {
-          src: 'img/icon_item_s/Texture2D/icon_item_s_10950041.png',
-        },
-        to: {
-          name: 'OthersAudios',
-        },
-      } : null,
       {
         label: this.$t('降臨バタル(昔)'),
         img: {

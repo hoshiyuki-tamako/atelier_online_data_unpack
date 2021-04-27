@@ -2,7 +2,7 @@ import { EOrderType } from '@/logic/Enums';
 import { Adv } from '@/master/adv';
 import { DataManager } from './DataManager';
 
-export type AdvCharacterMap = {
+export type AdvMap = {
   [id: string]: string[];
 }
 
@@ -104,12 +104,12 @@ export class AdvManager {
               id: +p.vsParam[0],
             } as IPicture;
           case EOrderType.eWINDOW_ITEM:
-            if (!+p.vsParam[0]) {
+            if (!+p.vsParam[1]) {
               return null;
             }
             return {
               order: p.eOrder,
-              id: +p.vsParam[0],
+              id: +p.vsParam[1],
             } as IWindowItem;
           default:
             return null;

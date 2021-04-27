@@ -2,7 +2,7 @@
 div.container
   div.gimmicks
     div.gimmick(v-for="{ label, folder } of gimmicks")
-      router-link(:to="{ name: 'AreasArea', query: { raw: `models/gimmicks/${folder}/${label}.fbx` } }" v-slot="{ href, navigate }")
+      router-link(:to="{ name: 'AreasArea', query: { raw: `models/gimmicks/${folder}/${label}.fbx` } }" v-slot="{ href, navigate }" custom)
         el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ label }}
 </template>
 

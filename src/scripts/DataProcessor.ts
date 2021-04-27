@@ -5,7 +5,7 @@ import path from 'path';
 
 import { EOrderType } from '../logic/Enums';
 import { Adv } from '../master/adv';
-import { AdvCharacterMap } from '../utils/AdvManager';
+import { AdvMap } from '../utils/AdvManager';
 import { serverIds } from './config';
 
 export default class DataProcessor {
@@ -34,13 +34,14 @@ export default class DataProcessor {
     }));
   }
 
+  //
   private async processAdv(serverId: string, sourceFolder: string, rootFolder: string) {
     const rawFolder = path.join(sourceFolder, serverId, 'adv', 'MonoBehaviour');
     const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export', 'adv') : path.join(rootFolder, 'export', 'tw', 'adv');
 
     if (await fs.pathExists(rawFolder)) {
-      const files = await fs.readdir(rawFolder);
-      await Promise.all(files.map(async (file) => {
+      const rawFiles = await fs.readdir(rawFolder);
+      await Promise.all(rawFiles.map(async (file) => {
         const rawFile = path.join(rawFolder, file);
         const outFile = path.join(outFolder, file);
         await fs.writeJson(outFile, await fs.readJson(rawFile));
@@ -49,7 +50,14 @@ export default class DataProcessor {
       console.log(`skipping adv data process: required ${rawFolder}`);
     }
 
-    await this.generateCharacterNameMapFromAdv(serverId, outFolder, await fs.readdir(outFolder), rootFolder);
+    const files = await fs.readdir(outFolder);
+    await Promise.all([
+      this.generateCharacterNameMapFromAdv(serverId, outFolder, files, rootFolder),
+      this.generateCgAdvMap(serverId, outFolder, files, rootFolder),
+      this.generateBgAdvMap(serverId, outFolder, files, rootFolder),
+      this.generateWindowItemAdvMap(serverId, outFolder, files, rootFolder),
+      this.generateAudioAdvMap(serverId, outFolder, files, rootFolder),
+    ]);
   }
 
   private async generateCharacterNameMapFromAdv(serverId: string, advFolder: string, files: string[], rootFolder: string) {
@@ -66,10 +74,10 @@ export default class DataProcessor {
             .select((o) => o.key())
             .where((p) => !!p)
             .toArray(),
-        ) as AdvCharacterMap;
+        ) as AdvMap;
     }));
 
-    const advCharacterById = deepmerge.all(advCharacterByIds) as AdvCharacterMap;
+    const advCharacterById = deepmerge.all(advCharacterByIds) as AdvMap;
     for (const k of Object.keys(advCharacterById)) {
       advCharacterById[k] = [...new Set(advCharacterById[k])];
     }
@@ -77,6 +85,86 @@ export default class DataProcessor {
     await fs.writeJson(path.join(rootFolder, serverId, 'generated', 'advCharacterById.json'), advCharacterById);
   }
 
+  private async generateCgAdvMap(serverId: string, advFolder: string, files: string[], rootFolder: string) {
+    const cgs = await Promise.all(files.map(async (file) => {
+      const adv = await fs.readJson(path.join(advFolder, file)) as Adv;
+      return Enumerable.from(adv.vOrderList)
+        .where((p) => p.eOrder === EOrderType.ePICTURE)
+        .select((p) => +p.vsParam[0])
+        .where((p) => p > 0)
+        .groupBy((p) => p)
+        .toObject((p) => p.key(), (p) => [file.split('.')[0]]) as AdvMap;
+    }));
+
+    const filteredCgs = cgs.filter((p) => Object.keys(p).length);
+    const cgsById = deepmerge.all(filteredCgs) as AdvMap;
+    for (const k of Object.keys(cgsById)) {
+      cgsById[k] = [...new Set(cgsById[k])];
+    }
+
+    await fs.writeJson(path.join(rootFolder, 'generated', 'advCgById.json'), cgsById);
+  }
+
+  private async generateBgAdvMap(serverId: string, advFolder: string, files: string[], rootFolder: string) {
+    const cgs = await Promise.all(files.map(async (file) => {
+      const adv = await fs.readJson(path.join(advFolder, file)) as Adv;
+      return Enumerable.from(adv.vOrderList)
+        .where((p) => p.eOrder === EOrderType.eBG)
+        .select((p) => +p.vsParam[0])
+        .where((p) => p > 0)
+        .groupBy((p) => p)
+        .toObject((p) => p.key(), (p) => [file.split('.')[0]]) as AdvMap;
+    }));
+
+    const filteredCgs = cgs.filter((p) => Object.keys(p).length);
+    const cgsById = deepmerge.all(filteredCgs) as AdvMap;
+    for (const k of Object.keys(cgsById)) {
+      cgsById[k] = [...new Set(cgsById[k])];
+    }
+
+    await fs.writeJson(path.join(rootFolder, 'generated', 'advBgById.json'), cgsById);
+  }
+
+
+  private async generateWindowItemAdvMap(serverId: string, advFolder: string, files: string[], rootFolder: string) {
+    const cgs = await Promise.all(files.map(async (file) => {
+      const adv = await fs.readJson(path.join(advFolder, file)) as Adv;
+      return Enumerable.from(adv.vOrderList)
+        .where((p) => p.eOrder === EOrderType.eWINDOW_ITEM)
+        .select((p) => +p.vsParam[1])
+        .where((p) => p > 0)
+        .groupBy((p) => p)
+        .toObject((p) => p.key(), (p) => [file.split('.')[0]]) as AdvMap;
+    }));
+
+    const cgsById = deepmerge.all(cgs) as AdvMap;
+    for (const k of Object.keys(cgsById)) {
+      cgsById[k] = [...new Set(cgsById[k])];
+    }
+
+    await fs.writeJson(path.join(rootFolder, 'generated', 'advWindowItemById.json'), cgsById);
+  }
+
+  private async generateAudioAdvMap(serverId: string, advFolder: string, files: string[], rootFolder: string) {
+    const audios = await Promise.all(files.map(async (file) => {
+      const adv = await fs.readJson(path.join(advFolder, file)) as Adv;
+      return Enumerable.from(adv.vOrderList)
+        .where((p) => p.eOrder === EOrderType.eCHARA_TALK)
+        .select((p) => p.vsParam[6])
+        .where((p) => !!p)
+        .groupBy((p) => p)
+        .toObject((p) => p.key(), (p) => [file.split('.')[0]]) as AdvMap;
+    }));
+
+    const audiosById = deepmerge.all(audios) as AdvMap;
+    for (const k of Object.keys(audiosById)) {
+      audiosById[k] = [...new Set(audiosById[k])];
+    }
+
+    await fs.writeJson(path.join(rootFolder, 'generated', 'advAudioById.json'), audiosById);
+  }
+
+  //
   private async processSpawnList(serverId: string, sourceFolder: string, rootFolder: string) {
     const rawFolder = path.join(sourceFolder, serverId, 'spawnList', 'TextAsset');
     const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export', 'SpawnList', 'TextAsset') : path.join(rootFolder, 'export', 'tw', 'SpawnList', 'TextAsset');

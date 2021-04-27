@@ -285,6 +285,14 @@ const othersRoutes: Array<RouteConfig> = [
     },
   },
   {
+    path: '/others/cgs',
+    name: 'OthersCgs',
+    component: () => import(/* webpackChunkName: "OthersCgs" */ '@/views/others/Cgs.vue'),
+    meta: {
+      title: 'CG',
+    },
+  },
+  {
     path: '/others/audios',
     name: 'OthersAudios',
     component: () => import(/* webpackChunkName: "OthersAudios" */ '@/views/others/Audios.vue'),
