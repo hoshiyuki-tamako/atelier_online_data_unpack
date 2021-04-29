@@ -88,8 +88,8 @@
   "ランク": "Rank",
   "物理攻撃": "Physical Attack",
   "物理防禦": "Physical Defense",
-  "魔法攻撃": "Magic Attack",
-  "魔法防禦": "Magic Defense",
+  "魔法攻撃": "Magical Attack",
+  "魔法防禦": "Magical Defense",
   "速度": "Speed",
   "総戦闘力": "Total Combat Power",
   "火": "Fire",
@@ -307,5 +307,12 @@
   "音声あり": "Has Voice",
   "スキル連携": "Skill Combo",
   "消費財貨": "Cost Wealth",
-  "報酬財貨": "Reward Wealth"
+  "報酬財貨": "Reward Wealth",
+  "正常": "normal",
+  "魔法攻撃UP中": "Magical ATK Up (B)",
+  "上+魔法防御DOWN大": "Above + Magical DEF Down (A)",
+  "上+属性(-100)": "Above + Element(-100)",
+  "全超+-": "All S+-",
+  "物攻増UP中+": "Physical ATK Up (B+)",
+  "上+物理防御DOWN大": "Above + Physical DEF Down (A)"
 }
