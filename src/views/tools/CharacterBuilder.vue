@@ -8,10 +8,10 @@ div.top-container
             el-option(v-for="item of itemPickerSortOption" :key="item.value" :label="item.label" :value="item.value")
         div.filter
           el-select(v-model="itemPickerFilterBattleElement" :placeholder="$t('攻撃属性')" clearable filterable)
-            el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+            el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
         div.filter
           el-select(v-model="itemPickerFilterSkillElement" :placeholder="$t('スキル属性')" clearable filterable)
-            el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+            el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
         div.filter
           el-input(v-model="itemPickerFilterKeyword" :placeholder="`${$t('名前')}/DF`" clearable)
         div.filter
@@ -619,7 +619,7 @@ div.top-container
                         td {{ skill.effectValue }}
       br
       div
-        span {{ $t('スキル') }}{{ $t('連携') }} x {{ +(1 + skillChain * .2).toFixed(15) }}
+        span {{ $t('スキル連携') }} x {{ +(1 + skillChain * .2).toFixed(15) }}
         el-slider(v-model="skillChain" :step="1" :max="14")
       br
       template(v-if="player.character")

@@ -93,14 +93,24 @@ export default class extends VueBase {
       'zh-TW': 'zh_TW',
       'zh-HK': 'zh_TW',
       'zh-CN': 'zh_CN',
+      en: 'en',
     };
     return humanizeDuration(second * 1000, {
-      spacer: '',
+      spacer: this.spacer,
       delimiter: '',
       conjunction: '',
       serialComma: false,
       language: languageMap[this.dataManager.locale],
     });
+  }
+
+  private get spacer() {
+    switch (this.dataManager.locale) {
+      case 'en':
+        return ' ';
+      default:
+        return '';
+    }
   }
 
   // filter

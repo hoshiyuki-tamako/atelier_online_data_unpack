@@ -3,7 +3,7 @@ import i18n from '@/i18n';
 import { RichTextExpression } from './RichTextExpression';
 
 export class RichTextPlayerNameExpression extends RichTextExpression {
-  public static defaultPlayerName = `[${i18n.t('プレーヤー')}${i18n.t('名前')}]`;
+  public static defaultPlayerName = `[${i18n.t('プレーヤー名前')}]`;
 
   public playerName = '';
 

@@ -40,6 +40,8 @@ el-container.containter-main(v-loading="pageLoading")
         router-link.menu__link(:to="menuItem.to")
           img.menu__icon(:src="menuItem.img.src" :alt="menuItem.title")
   el-main.reset(v-loading="loading")
+    div.container(v-if="cssLoaded && pageLoading")
+      InfoHeader
     router-view(v-if="!pageLoading" :key="$route.fullPath")
 </template>
 
@@ -52,6 +54,7 @@ import { sify } from 'chinese-conv';
 import MobileDetect from 'mobile-detect';
 import draggable from 'vuedraggable';
 import VueBase from '@/components/VueBase';
+import InfoHeader from '@/components/home/InfoHeader.vue';
 import { TranslateMutationObserver } from 'translate-mutation-observer';
 import { defaultMenuItemIds } from './store/home';
 
@@ -72,6 +75,7 @@ abstract class VueWithMapFields extends VueBase {
 @Component({
   components: {
     draggable,
+    InfoHeader,
   },
   computed: {
     ...mapFields('home', ['settingDialogVisible', 'showSideBar', 'showBackTopButton', 'showHiddenContent', 'darkMode', 'menuItemIds']),
@@ -89,6 +93,8 @@ abstract class VueWithMapFields extends VueBase {
 })
 export default class extends VueWithMapFields {
   public md = new MobileDetect(window.navigator.userAgent);
+
+  public cssLoaded = false;
 
   // menu
   public routeToColor = {
@@ -556,9 +562,15 @@ export default class extends VueWithMapFields {
       const link = document.createElement('link');
       link.setAttribute('rel', 'stylesheet');
       link.setAttribute('href', 'css/element-theme-dark/index.css');
+      link.addEventListener('load', async () => {
+        this.$nextTick(() => {
+          this.cssLoaded = true;
+        });
+      });
       document.head.appendChild(link);
     } else {
       document.body.classList.add('light-mode');
+      this.cssLoaded = true;
     }
   }
 }

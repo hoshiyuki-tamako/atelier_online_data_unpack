@@ -1,40 +1,6 @@
 <template lang="pug">
 div.container
-  div.title__container
-    h2 {{ $t('アトリエオンライン資料庫') }}
-    p
-      span.version-link__container
-        span
-          span Game Version 3.15.2 (2021-03-24) &nbsp;
-          span(v-if="$i18n.locale !== 'ja-JP'")
-            el-link(type="success" :underline="false" :href="changeLocaleHref('ja-JP')") (日本語)
-          span(v-else) (日本語)
-      br
-      span.version-link__container
-        span Game Version 3.5.0 (2021-04-27) &nbsp;
-          span(v-if="$i18n.locale !== 'zh-TW'")
-            el-link(type="success" :underline="false" :href="changeLocaleHref('zh-TW')") (繁體中文)
-          span(v-else) (繁體中文)
-        template
-          span &nbsp;
-            span(v-if="$i18n.locale !== 'zh-CN'")
-              el-link(type="success" :underline="false" :href="changeLocaleHref('zh-CN')") (简体)
-            span(v-else) (简体)
-      br
-      span.version-link__container
-        span Game Version 1.0.0 (2021-04-08) &nbsp;
-          span(v-if="$i18n.locale !== 'en'")
-            el-link(type="success" :underline="false" :href="changeLocaleHref('en')") (English)
-          span(v-else) (English)
-    p
-      span Twitter
-      el-link(href="https://twitter.com/hoshiyuki_git" target="_blank" rel="noopener" type="primary") @hoshiyuki_git
-    br
-    div.filters
-      div.filter
-        el-button(@click="settingDialogVisible = true") {{ $t('設定') }}
-      div.filter
-        el-switch(:value="showHiddenContent" @change="onShowHiddenContent" active-color="#f56c6c" :active-text="$t('ネタバレ')")
+  InfoHeader
   el-divider
   div
     div.categories__container(v-for="allPage of allPages")
@@ -60,14 +26,18 @@ div.container
   el-divider
   div.other-links
     h3 {{ $t('他のサイト') }}
-    div(v-for="otherLink of otherLinks")
-      el-link(:href="otherLink.href" target="_blank" rel="noopener") {{ otherLink.title }}
+    template(v-for="(_otherLinks, i) of otherLinks")
+      div(v-for="otherLink of _otherLinks")
+        el-link(:href="otherLink.href" target="_blank" rel="noopener") {{ otherLink.title }}
+      el-divider(v-if="otherLinks.length !== (i + 1)")
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component';
 import Enumerable from 'linq';
 import VueBase from '@/components/VueBase';
+import InfoHeader from '@/components/home/InfoHeader.vue';
+
 import { mapFields } from 'vuex-map-fields';
 import { CharacterType } from '@/store/characters/charactersFilter';
 import { SkillKind } from './skills/Skills.vue';
@@ -82,6 +52,7 @@ abstract class VueWithMapFields extends VueBase {
 
 @Component({
   components: {
+    InfoHeader,
   },
   computed: {
     ...mapFields('home', ['settingDialogVisible', 'showHiddenContent', 'darkMode']),
@@ -615,6 +586,14 @@ export default class extends VueWithMapFields {
 
   public get otherLinks() {
     return [
+      this.otherLinksJp,
+      this.otherLinksTw,
+      this.otherLinksEn,
+    ];
+  }
+
+  public get otherLinksJp() {
+    return [
       {
         title: '【公式】アトリエオンライン',
         href: 'https://twitter.com/ao_forest',
@@ -627,10 +606,20 @@ export default class extends VueWithMapFields {
         title: 'アトリエ オンライン ～ブレセイルの錬金術士～',
         href: 'https://play.google.com/store/apps/details?id=jp.nhnpa.SJAO',
       },
+    ];
+  }
+
+  public get otherLinksTw() {
+    return [
       {
         title: '鍊金工房 Online ～布雷賽爾的鍊金術士～',
         href: 'https://play.google.com/store/apps/details?id=com.boltrend.ateliertc',
       },
+    ];
+  }
+
+  public get otherLinksEn() {
+    return [
     ];
   }
 
@@ -655,15 +644,6 @@ export default class extends VueWithMapFields {
 </script>
 
 <style lang="sass" scoped>
-.title__container
-  margin: 12px
-.light-mode .title__container h2
-  color: rgb(153, 122, 79)
-
-.version-link__container
-  > span
-    padding-right: 4px
-
 .categories__container
   display: flex
   flex-direction: column

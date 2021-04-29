@@ -7,8 +7,8 @@ div.container
       el-select(v-model="filter.category" @change="resetPage" clearable filterable)
         el-option(v-for="item of categoryFilter" :key="item.value" :label="item.label" :value="item.value")
     CharacterSelector(v-model="filter.character" :characters="dataManager.questCharacters" @change="resetPage")
-    WealthSelector(v-model="filter.costWealth" :wealths="dataManager.questCostWealths" :title="$t('消費') + $t('財貨')" @change="resetPage")
-    WealthSelector(v-model="filter.rewardWealth" :wealths="dataManager.questRewardWealths" :title="$t('報酬') + $t('財貨')" @change="resetPage")
+    WealthSelector(v-model="filter.costWealth" :wealths="dataManager.questCostWealths" :title="$t('消費財貨')" @change="resetPage")
+    WealthSelector(v-model="filter.rewardWealth" :wealths="dataManager.questRewardWealths" :title="$t('報酬財貨')" @change="resetPage")
     DegreeSelector(v-model="filter.requireDegree" :degrees="dataManager.questRequireDegrees" :title="$t('必要称号')" @change="resetPage")
   div.filters
     div.filter
@@ -30,7 +30,7 @@ div.container
       el-checkbox(v-model="showColumnCOST") {{ $t('消費') }}
       el-checkbox(v-model="showColumnENM") {{ $t('討伐') }}
       el-checkbox(v-model="showColumnGET") {{ $t('調合/採取') }}
-      el-checkbox(v-model="showColumnDLV") {{ `${$t('納品')}${$t('報告')}` }}
+      el-checkbox(v-model="showColumnDLV") {{ `${$t('納品')}/${$t('報告')}` }}
       el-checkbox(v-model="showColumnARA") {{ `${$t('場所に行く')}` }}
       el-checkbox(v-model="showColumnDialog") {{ $t('ダイアログ') }}
       el-checkbox(v-model="showColumnCharacter") {{ $t('キャラクター') }}
@@ -152,17 +152,17 @@ div.container
                         img.icon-middle(:src="dataManager.characterById[quest.PARTY_IN].icon" :alt="dataManager.characterById[quest.PARTY_IN].NAME")
       el-table-column(v-if="showColumnDF" prop="DF" label="DF" width="100%" sortable="custom")
       el-table-column(v-if="showColumnNAME" prop="NAME" :label="$t('名前')" sortable="custom")
-      el-table-column(v-if="showColumnCATEG" prop="CATEG" :label="$t('カテゴリー')" sortable="custom")
+      el-table-column(v-if="showColumnCATEG" prop="CATEG" :label="$t('カテゴリー')" width="130%" sortable="custom")
         template(slot-scope="scope") {{ $t(dataManager.lookup.EQuestCategory[scope.row.CATEG]) }}
       el-table-column(v-if="showColumnCOST" prop="COST.WTH.CNT" :label="$t('消費')" width="100%" sortable="custom")
         template(slot-scope="scope") {{ tickCross(scope.row.COST.WTH.CNT) }}
       el-table-column(v-if="showColumnENM" prop="ENM.length" :label="$t('討伐')" width="100%" sortable="custom")
         template(slot-scope="scope") {{ tickCross(scope.row.ENM.length) }}
-      el-table-column(v-if="showColumnGET" prop="GET.length" :label="$t('調合/採取')" width="120%" sortable="custom")
+      el-table-column(v-if="showColumnGET" prop="GET.length" :label="$t('調合/採取')" :width="tableOptions.column.composeOrGatherWidth" sortable="custom")
         template(slot-scope="scope") {{ tickCross(scope.row.GET.length) }}
-      el-table-column(v-if="showColumnDLV" prop="DLV.length" :label="`${$t('納品')}${$t('報告')}`" width="100%" sortable="custom")
+      el-table-column(v-if="showColumnDLV" prop="DLV.length" :label="`${$t('納品')}/${$t('報告')}`" :width="tableOptions.column.composeOrGatherWidth" sortable="custom")
         template(slot-scope="scope") {{ tickCross(scope.row.DLV.length) }}
-      el-table-column(v-if="showColumnARA" prop="ARA.length" :label="`${$t('場所に行く')}`" width="120%" sortable="custom")
+      el-table-column(v-if="showColumnARA" prop="ARA.length" :label="`${$t('場所に行く')}`" :width="tableOptions.column.gotoLocationWidth" sortable="custom")
         template(slot-scope="scope") {{ tickCross(scope.row.ARA.length || scope.row.REG.length) }}
       el-table-column(v-if="showColumnCharacter" prop="CHARA" :label="$t('キャラクター')"  width="130%" sortable="custom")
         template(slot-scope="scope")
@@ -220,6 +220,25 @@ abstract class VueWithMapFields extends VueBase {
   },
 })
 export default class extends VueWithMapFields {
+  public get tableOptions() {
+    switch (this.dataManager.locale) {
+      case 'en':
+        return {
+          column: {
+            composeOrGatherWidth: '180',
+            gotoLocationWidth: '140%',
+          },
+        };
+      default:
+        return {
+          column: {
+            composeOrGatherWidth: '110%',
+            gotoLocationWidth: '120%',
+          },
+        };
+    }
+  }
+
   public filter = {
     category: null,
     character: null,

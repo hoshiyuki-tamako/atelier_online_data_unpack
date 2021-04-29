@@ -7,11 +7,11 @@ div.container
     div.filter
       span {{ $t('属性') + $t('ダメージ') }}+
       el-select(v-model="addElement" clearable filterable)
-        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filter
       span {{ $t('属性') + $t('ダメージ') }}-
       el-select(v-model="negativeElement" clearable filterable)
-        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
   div.filters
     div.filter
       el-checkbox-group(v-model="has" size="small")

@@ -12,11 +12,11 @@ div.container
     div.filter
       span {{ $t('攻撃属性') }}
       el-select(v-model="battleElement" clearable filterable)
-        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filter
       span {{ $t('スキル属性') }}
       el-select(v-model="skillElement" clearable filterable)
-        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filter
       span {{ $t('性別') }}
       el-select(v-model="gender" clearable filterable)

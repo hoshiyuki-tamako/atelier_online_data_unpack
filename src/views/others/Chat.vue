@@ -1,7 +1,7 @@
 <template lang="pug">
 div.container
   div.content
-    img(src="img/icon/Texture2D/icon_stamp.png" alt="stamp")
+    img(:src="`${dataManager.serverId}/img/icon/icon_stamp.png`" alt="stamp")
     table
       tr(v-for="chat of dataManager.chat.List")
         td {{ eChatTab[chat.eTab] }}

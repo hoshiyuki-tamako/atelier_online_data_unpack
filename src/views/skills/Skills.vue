@@ -75,7 +75,7 @@ div.container
               p {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.EBattleAttribute[props.row.attackSkill.attribute]) }}
               p {{ $t('属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[props.row.attackSkill.element]) }}
               p {{ $t('對象') }}: {{ $t(dataManager.lookup.targetTeam[props.row.targetTeam]) }}{{ $t(dataManager.lookup.eFieldItemRange[props.row.targetScope]) }}
-              p(v-if="props.row.spAdd") {{ $t('SP回復率') }}: {{ props.row.spAdd }}{{ $t('倍') }}
+              p(v-if="props.row.spAdd") {{ $t('SP回復率') }}: {{ props.row.spAdd }} {{ $t('倍') }}
               p(v-if="props.row.trigger") {{ $t('トリガー') }}: {{ EBattleEffectTrigger[props.row.trigger] || props.row.trigger }}
               p(v-if="props.row.effect") {{ $t('エフェクト') }} {{ EBattleEffectKind[props.row.effect] || props.row.effect }}
               p(v-if="props.row.effectTarget") {{ $t('エフェクトターゲット') }} {{ EBattleEffectTarget[props.row.effectTarget] || props.row.effectTarget }}

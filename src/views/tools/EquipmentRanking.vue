@@ -12,11 +12,11 @@ div.container
     div.filter
       span {{ $t('攻撃属性') }}
       el-select(v-model="battleElement" clearable filterable)
-        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filter
       span {{ $t('スキル属性') }}
       el-select(v-model="skillElement" clearable filterable)
-        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="label" :value="+value")
+        el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filters
       el-checkbox(@change="onSupportChange" v-model="support") {{ $t('サブ装備') }}
   div.filters
@@ -48,26 +48,26 @@ div.container
     el-table-column(prop="NAME" :label="$t('名前')")
       template(slot-scope="scope")
         span {{ scope.row.NAME }}
-        router-link(:to="{ name: 'ItemsItem', query: { df: scope.row.DF } }" target="_blank")
+        router-link(:to="{ name: 'ItemsItem', query: { df: scope.row.DF, quality, level } }" target="_blank")
           img.icon-small(:src="scope.row.icon" :alt="scope.row.NAME")
         template(v-if="scope.row.GROUP_DF && dataManager.charactersByGroupDf[scope.row.GROUP_DF]" v-for="character of dataManager.charactersByGroupDf[scope.row.GROUP_DF]")
           router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }" target="_blank")
             img.icon-small(:src="character.icon" :alt="character.NAME")
-    el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnSATK" prop="SATK" :label="$t('物理攻撃')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnSDEF" prop="SDEF" :label="$t('物理防禦')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnMATK" prop="MATK" :label="$t('魔法攻撃')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnMDEF" prop="MDEF" :label="$t('魔法防禦')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnSPD" prop="SPD" :label="$t('速度')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnQTH" prop="QTH" :label="$t('クリティカル')" sortable="custom")
-    el-table-column(v-if="showColumnDDG" prop="DDG" :label="$t('回避')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnTotalElement" prop="totalElement" :label="$t('全属性')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnFIRE" prop="FIRE" :label="$t('火')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnWATER" prop="WATER" :label="$t('水')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnEARTH" prop="EARTH" :label="$t('土')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnWIND" prop="WIND" :label="$t('風')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnLIGHT" prop="LIGHT" :label="$t('光')" width="100%" sortable="custom")
-    el-table-column(v-if="showColumnDARK" prop="DARK" :label="$t('闇')" width="100%" sortable="custom")
+    el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnSATK" prop="SATK" :label="$t('物理攻撃')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnSDEF" prop="SDEF" :label="$t('物理防禦')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnMATK" prop="MATK" :label="$t('魔法攻撃')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnMDEF" prop="MDEF" :label="$t('魔法防禦')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnSPD" prop="SPD" :label="$t('速度')" width="100%" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnQTH" prop="QTH" :label="$t('クリティカル')" :width="tableOptions.column.criticalHitWidth" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnDDG" prop="DDG" :label="$t('回避')" width="100%" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnTotalElement" prop="totalElement" :label="$t('全属性')" :width="tableOptions.column.allElementWidth" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnFIRE" prop="FIRE" :label="$t('火')" width="100%" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnWATER" prop="WATER" :label="$t('水')" width="100%" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnEARTH" prop="EARTH" :label="$t('土')" width="100%" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnWIND" prop="WIND" :label="$t('風')" width="100%" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnLIGHT" prop="LIGHT" :label="$t('光')" width="100%" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnDARK" prop="DARK" :label="$t('闇')" :width="tableOptions.column.darknessWidth" :align="tableOptions.column.align" sortable="custom")
 </template>
 
 <script lang="ts">
@@ -133,6 +133,31 @@ abstract class VueWithMapFields extends VueBase {
   },
 })
 export default class extends VueWithMapFields {
+  public get tableOptions() {
+    switch (this.dataManager.locale) {
+      case 'en':
+        return {
+          column: {
+            longTextWidth: '180',
+            criticalHitWidth: '120%',
+            allElementWidth: '120%',
+            darknessWidth: '110%',
+            align: 'center',
+          },
+        };
+      default:
+        return {
+          column: {
+            longTextWidth: '100%',
+            criticalHitWidth: '130%',
+            allElementWidth: '120%',
+            darknessWidth: '100%',
+            align: 'left',
+          },
+        };
+    }
+  }
+
   public sort = '';
 
   public order = null;

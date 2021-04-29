@@ -27,7 +27,7 @@ div.container
         p(v-if="item.WPN_KIND !== EWeaponKind.eSHIELD") {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.attackType[+ItemMVList.magicDamageWeaponKinds.includes(item.WPN_KIND)]) }}
         template(v-if="item.JOB.length")
           p {{ $t('職業') }}: {{ item.JOB.map(p => $t(dataManager.lookup.EJobKind[p])).join(',') }}
-        p(v-if="item.getAttackSkill()") {{ $t('SP回復率') }}{{ item.getAttackSkill().spAdd }}{{ $t('倍') }}
+        p(v-if="item.getAttackSkill()") {{ $t('SP回復率') }} {{ item.getAttackSkill().spAdd }} {{ $t('倍') }}
 
       template(v-if="item.RSP.length")
         p {{ $t('レシピ種類') }}: {{ item.RCP_TYPE === 1 ? $t('レジェンドレシピ') : $t('一般レシピ') }}

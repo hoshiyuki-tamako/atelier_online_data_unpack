@@ -447,7 +447,7 @@ export class DataManager {
     this.skillAddonsEquipmentUseful = this.skillAddons.filter((p) => (
       p.type === 2
       && [EBattleEffectTrigger.eANYTIME, EBattleEffectTrigger.eATTACK_SKILL].includes(p.trigger)
-      && p.name.includes('強化')
+      && (p.name.includes('強化') || p.name.includes('Boost'))
       && !p.name.includes('【')
       && !p.name.includes('】')
     ));
