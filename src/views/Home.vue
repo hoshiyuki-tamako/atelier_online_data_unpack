@@ -20,6 +20,12 @@ div.container
             span(v-if="$i18n.locale !== 'zh-CN'")
               el-link(type="success" :underline="false" :href="changeLocaleHref('zh-CN')") (简体)
             span(v-else) (简体)
+      br
+      span.version-link__container
+        span Game Version 1.0.0 (2021-04-08) &nbsp;
+          span(v-if="$i18n.locale !== 'en'")
+            el-link(type="success" :underline="false" :href="changeLocaleHref('en')") (English)
+          span(v-else) (English)
     p
       span Twitter
       el-link(href="https://twitter.com/hoshiyuki_git" target="_blank" rel="noopener" type="primary") @hoshiyuki_git

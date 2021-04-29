@@ -42,7 +42,7 @@ import Enumerable from 'linq';
 import { ApiManager } from './ApiManager';
 
 export class DataManager {
-  public static supportedLocales = ['ja-JP', 'zh-TW', 'zh-HK', 'zh-CN'];
+  public static supportedLocales = ['ja-JP', 'zh-TW', 'zh-HK', 'zh-CN', 'en'];
 
   public static get defaultLocale() {
     return this.supportedLocales[0];
@@ -65,6 +65,8 @@ export class DataManager {
       case 'zh-HK':
       case 'zh-CN':
         return 'tw';
+      case 'en':
+        return 'en';
       case 'ja-JP':
       default:
         return 'jp';
@@ -77,6 +79,8 @@ export class DataManager {
       case 'zh-HK':
       case 'zh-CN':
         return 'tw/';
+      case 'en':
+        return 'en/';
       case 'ja-JP':
       default:
         return '';
@@ -802,13 +806,25 @@ export class DataManager {
   }
 
   public processAdvs() {
-    const advFiles = this.locale === 'zh-TW' ? dataManager.files.export.tw.adv : dataManager.files.export.adv;
+    const advFiles = this.getAdvFilesTree();
     const advs = Object.values(advFiles).map((p: string) => p.split('.')[0]) as string[];
     const existingAdvs = dataManager.quest.m_vList.map((p) => p.NPC_FD.map((i) => i.ADV)).flat().filter((p) => p);
     const notExistingAdvs = advs.filter((p) => !existingAdvs.includes(p));
     this.unusedAdvs = Enumerable.from(notExistingAdvs)
       .groupBy((p) => p.split('_')[0] || p)
       .toObject((p) => p.key(), (p) => p.orderBy((p) => p).toArray()) as { [s: string]: string[] };
+  }
+
+  private getAdvFilesTree() {
+    switch (this.serverId) {
+      case 'tw':
+        return dataManager.files.export.tw.adv;
+      case 'en':
+        return dataManager.files.export.en.adv;
+      case 'jp':
+      default:
+        return dataManager.files.export.adv;
+    }
   }
 
   // helper

@@ -14,7 +14,7 @@ export class ApiManager {
   }
 
   private async call(url: string) {
-    return fetch(`${this.dataManager.locale === 'ja-JP' ? 'jp/' : 'tw/'}${url}`);
+    return fetch(`${this.dataManager.serverId}/${url}`);
   }
 
   // raw data

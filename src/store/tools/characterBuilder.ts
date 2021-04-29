@@ -5,8 +5,8 @@ import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
 })
 export default class extends VuexModule {
   public importStringJaJp = '';
-
   public importStringZhTw = '';
+  public importStringEn = '';
 
   public get importString() {
     return (locale: string) => {
@@ -15,6 +15,9 @@ export default class extends VuexModule {
         case 'zh-HK':
         case 'zh-CN':
           return this.importStringZhTw;
+        case 'en':
+          return this.importStringEn;
+        case 'ja-JP':
         default:
           return this.importStringJaJp;
       }
@@ -29,6 +32,10 @@ export default class extends VuexModule {
       case 'zh-CN':
         this.importStringZhTw = importString;
         break;
+      case 'en':
+        this.importStringEn = importString;
+        break;
+      case 'ja-JP':
       default:
         this.importStringJaJp = importString;
     }
@@ -42,6 +49,10 @@ export default class extends VuexModule {
       case 'zh-CN':
         this.importStringZhTw = '';
         break;
+      case 'en':
+        this.importStringEn = '';
+        break;
+      case 'ja-JP':
       default:
         this.importStringJaJp = '';
     }

@@ -1,1 +1,1 @@
-export const serverIds = ['jp', 'tw'];
+export const serverIds = ['jp', 'tw', 'en'];

@@ -1,4 +1,6 @@
+import enLocale from 'element-ui/lib/locale/lang/en';
 import jaLocale from 'element-ui/lib/locale/lang/ja';
+import zhCNLocale from 'element-ui/lib/locale/lang/zh-CN';
 import zhTWLocale from 'element-ui/lib/locale/lang/zh-TW';
 import Vue from 'vue';
 import VueI18n, { LocaleMessages } from 'vue-i18n';
@@ -9,8 +11,11 @@ function getElementUiLocale(locale: string) {
   switch (locale) {
     case 'zh-TW':
     case 'zh-HK':
-    case 'zh-CN':
       return zhTWLocale;
+    case 'zh-CN':
+      return zhCNLocale;
+    case 'en':
+      return enLocale;
     case 'ja-JP':
       return jaLocale;
     default:

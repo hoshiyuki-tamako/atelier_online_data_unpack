@@ -166,7 +166,8 @@ div.container
         template(slot-scope="scope") {{ tickCross(scope.row.ARA.length || scope.row.REG.length) }}
       el-table-column(v-if="showColumnCharacter" prop="CHARA" :label="$t('キャラクター')"  width="130%" sortable="custom")
         template(slot-scope="scope")
-          img.character-preview(v-if="scope.row.CHARA" :src="dataManager.characterById[scope.row.CHARA].icon" :alt="dataManager.characterById[scope.row.CHARA].NAME")
+          router-link(:to="{ name: 'CharactersCharacter', query: { df: scope.row.CHARA } }" target="_blank")
+            img.character-preview(v-if="scope.row.CHARA" :src="dataManager.characterById[scope.row.CHARA].icon" :alt="dataManager.characterById[scope.row.CHARA].NAME")
       el-table-column(v-if="showColumnDialog" prop="NPC_FD.length" :label="$t('ダイアログ')" width="120%" sortable="custom")
         template(slot-scope="scope")
           el-button(v-if="scope.row.NPC_FD.some((p) => p.ADV)" @click="$refs.advDialog.openDialog(scope.row)" type="primary" size="small") {{ $t('ダイアログ') }}

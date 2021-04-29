@@ -121,6 +121,6 @@ export class AdvManager {
   }
 
   private getAdvJsonUrl(adv: string) {
-    return `export/${this.dataManager.locale === 'ja-JP' ? '' : 'tw/'}adv/${adv}.json`;
+    return `export/${this.dataManager.locale === 'ja-JP' ? '' : `${this.dataManager.serverId}/`}adv/${adv}.json`;
   }
 }

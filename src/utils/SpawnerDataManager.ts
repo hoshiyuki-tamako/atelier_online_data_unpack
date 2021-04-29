@@ -27,12 +27,10 @@ export class SpawnerDataManager {
   public async load() {
     this.spawnLists.clear();
 
-    const spawnFiles = this.dataManager.locale === 'ja-JP'
-      ? files.export.SpawnList.TextAsset
-      : files.export.tw.SpawnList.TextAsset;
-    const spawnListFolders = this.dataManager.locale === 'ja-JP'
+    const spawnFiles = this.getSpawnFilesTree();
+    const spawnListFolders = this.dataManager.serverId === 'jp'
       ? 'export/SpawnList/TextAsset'
-      : 'export/tw/SpawnList/TextAsset';
+      : `export/${this.dataManager.serverId}/SpawnList/TextAsset`;
 
     await Promise.all(Object.values(spawnFiles).map(async (csvFileName: string) => {
       try {
@@ -49,6 +47,18 @@ export class SpawnerDataManager {
       }
     }));
     this.processData();
+  }
+
+  private getSpawnFilesTree() {
+    switch (this.dataManager.serverId) {
+      case 'tw':
+        return files.export.tw.SpawnList.TextAsset;
+      case 'en':
+        return files.export.en.SpawnList.TextAsset;
+      case 'jp':
+      default:
+        return files.export.SpawnList.TextAsset;
+    }
   }
 
   private processData() {

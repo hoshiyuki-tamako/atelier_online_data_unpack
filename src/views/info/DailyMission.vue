@@ -53,6 +53,8 @@ export default class extends VueBase {
     const localeTimezone = {
       'ja-JP': 'Asia/Tokyo',
       'zh-TW': 'Asia/Taipei',
+      'zh-CN': 'Asia/Taipei',
+      en: 'Asia/Tokyo',
     };
     const weekFormat = new Intl.DateTimeFormat(this.dataManager.locale, {
       weekday: 'long',

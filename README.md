@@ -84,6 +84,8 @@ docker-compose up --build -d
 
 ## Content Update Steps
 
+server ids `jp` `tw` `en`
+
 - Download latest `APK` and `assets`
 - use `AssetStudio` >= 0.15 load folders that include both un-zipped APK, and assets
 - (optional) use `Il2CppDumper` to dump DLL for Enums/others

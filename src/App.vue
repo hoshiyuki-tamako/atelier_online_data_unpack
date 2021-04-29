@@ -114,6 +114,10 @@ export default class extends VueWithMapFields {
     selectedClass: 'sidebar-on-drag',
   };
 
+  public get hiddenContentIds() {
+    return [8, 9, 25, 30];
+  }
+
   public get allMenuItems() {
     return [
       {
@@ -406,6 +410,16 @@ export default class extends VueWithMapFields {
           name: 'OthersChat',
         },
       },
+      {
+        id: 30,
+        title: this.$t('CG'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10350020.png',
+        },
+        to: {
+          name: 'OthersCgs',
+        },
+      },
     ];
   }
 
@@ -416,7 +430,7 @@ export default class extends VueWithMapFields {
   }
 
   public set menuItems(items: { id: number }[]) {
-    this.menuItemIds = [...new Set(items.map(({ id }) => id))].filter((id) => !(id === 1 || id === 25));
+    this.menuItemIds = [...new Set(items.map(({ id }) => id))].filter((id) => id !== 1);
   }
 
   public onClickAllSidebar() {
@@ -435,7 +449,9 @@ export default class extends VueWithMapFields {
   }
 
   private resetMenuItemOptions() {
-    this.menuItemOptions = this.allMenuItems.filter(({ id }) => !(id === 1 || id === 25 || this.menuItemIds.includes(id)));
+    this.menuItemOptions = this.allMenuItems
+      .filter(({ id }) => !(id === 1 || this.menuItemIds.includes(id)))
+      .filter(({ id }) => !(!this.showHiddenContent && this.hiddenContentIds.includes(id)));
   }
 
   // settings
