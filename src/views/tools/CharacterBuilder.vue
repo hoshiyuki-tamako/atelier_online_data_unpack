@@ -631,36 +631,36 @@ div.top-container
           div(v-if="skill.attackSkill.attribute === 3")
             table
               tr
-                th 正常
+                th {{ $t('正常') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
-                th 魔法攻撃UP中
+                th {{ $t('魔法攻撃UP中') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3], skillChain) }}
               tr
-                th 上+魔法防御DOWN大
+                th {{ $t('上+魔法防御DOWN大') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
               tr
-                th 上+屬性(-100)
+                th {{ $t('上+属性(-100)') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
-                th 全超+-
+                th {{ $t('全超+-') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
           div(v-else-if="skill.attackSkill.attribute")
             table
               tr
-                th 正常
+                th {{ $t('正常') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
-                th 物攻増UP中+
+                th {{ $t('物攻増UP中+') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35], skillChain) }}
               tr
-                th 上+物理防御DOWN大
+                th {{ $t('上+物理防御DOWN大') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
               tr
-                th 上+屬性(-100)
+                th {{ $t('上+属性(-100)') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
-                th 全超+-
+                th {{ $t('全超+-') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
         br
       template(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)")
@@ -672,36 +672,36 @@ div.top-container
           div(v-if="skill.attackSkill.attribute === 3")
             table
               tr
-                th 正常
+                th {{ $t('正常') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
-                th 魔法攻撃UP中
+                th {{ $t('魔法攻撃UP中') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3], skillChain) }}
               tr
-                th 上+魔法防御DOWN大
+                th {{ $t('上+魔法防御DOWN大') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
               tr
-                th 上+屬性(-100)
+                th {{ $t('上+属性(-100)') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
-                th 全超+-
+                th {{ $t('全超+-') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
           div(v-else-if="skill.attackSkill.attribute")
             table
               tr
-                th 正常
+                th {{ $t('正常') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
-                th 物攻増UP中+
+                th {{ $t('物攻増UP中+') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35], skillChain) }}
               tr
-                th 上+物理防御DOWN大
+                th {{ $t('上+物理防御DOWN大') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
               tr
-                th 上+屬性(-100)
+                th {{ $t('上+属性(-100)') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
-                th 全超+-
+                th {{ $t('全超+-') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
         br
       template(v-if="player.equipment.shield && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)")
@@ -713,36 +713,36 @@ div.top-container
           div(v-if="skill.attackSkill.attribute === 3")
             table
               tr
-                th 正常
+                th {{ $t('正常') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
-                th 魔法攻撃UP中
+                th {{ $t('魔法攻撃UP中') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3], skillChain) }}
               tr
-                th 上+魔法防御DOWN大
+                th {{ $t('上+魔法防御DOWN大') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
               tr
-                th 上+屬性(-100)
+                th {{ $t('上+属性(-100)') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
-                th 全超+-
+                th {{ $t('全超+-') }}
                 td {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
           div(v-else-if="skill.attackSkill.attribute")
             table
               tr
-                th 正常
+                th {{ $t('正常') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue], skillChain) }}
               tr
-                th 物攻増UP中+
+                th {{ $t('物攻増UP中+') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35], skillChain) }}
               tr
-                th 上+物理防御DOWN大
+                th {{ $t('上+物理防御DOWN大') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
               tr
-                th 上+屬性(-100)
+                th {{ $t('上+属性(-100)') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
               tr
-                th 全超+-
+                th {{ $t('全超+-') }}
                 td {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
 
     div.battle
