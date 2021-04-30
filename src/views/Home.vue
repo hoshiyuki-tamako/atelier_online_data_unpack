@@ -43,8 +43,6 @@ import { CharacterType } from '@/store/characters/charactersFilter';
 import { SkillKind } from './skills/Skills.vue';
 
 abstract class VueWithMapFields extends VueBase {
-  public settingDialogVisible!: boolean;
-
   public showHiddenContent!: boolean;
 
   public darkMode!: boolean;
@@ -55,7 +53,7 @@ abstract class VueWithMapFields extends VueBase {
     InfoHeader,
   },
   computed: {
-    ...mapFields('home', ['settingDialogVisible', 'showHiddenContent', 'darkMode']),
+    ...mapFields('home', ['showHiddenContent', 'darkMode']),
   },
 })
 export default class extends VueWithMapFields {

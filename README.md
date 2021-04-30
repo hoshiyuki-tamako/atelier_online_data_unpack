@@ -24,7 +24,7 @@ due to ad-blocker, some of the files has rename to fit the needs such as removin
 
 #### Development Requirement
 
-Suggest to have 32GB Ram, nvme ssd 3000MB/s Read due to large amount of audio/assets files when using vuecli
+Suggest to have 16GB or more ram, a fast nvme ssd due to large amount of audio/assets files when using vue-cli
 
 - NodeJs >= 14
 
@@ -84,23 +84,41 @@ docker-compose up --build -d
 
 ## Content Update Steps
 
-server ids `jp` `tw` `en`
-
 - Download latest `APK` and `assets`
 - use `AssetStudio` >= 0.15 load folders that include both un-zipped APK, and assets
+- (optional) use `mitmproxy` to extract API messagepack
 - (optional) use `Il2CppDumper` to dump DLL for Enums/others
 
-1. export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./source/jp/master/MonoBehaviour/*.json`
-2. export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/jp/adv/MonoBehaviour/*.json`
-3. export type `TextAsset` Name filter `SpawnList` to `./source/jp/spawnList/TextAsset/*.txt`
-4. export type `Texture2D` to `./source/Texture2D/*.png`
-5. export models fbx version 7.5 binary with folder to `./source/models/**/*`
-6. export models fbx version 7.5 ascii to `./source/modelsMeta/**/*`
+1. (optional) export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./source/jp/master/MonoBehaviour/*.json`
+2. (optional) export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/jp/adv/MonoBehaviour/*.json`
+3. (optional) export type `TextAsset` Name filter `SpawnList` to `./source/jp/spawnList/TextAsset/*.txt`
+4. (optional) export type `Texture2D` to `./source/Texture2D/*.png`
+5. (optional) export models fbx version 7.5 binary with folder to `./source/models/**/*`
+6. (optional) export models fbx version 7.5 ascii to `./source/modelsMeta/**/*`
 7. (optional) export type `AudioClip` filter by `vo` to `./source/voice/AudioClip/*.wav` and delete `M11_Volcano.wav`
 8. (optional) export type `AudioClip` filter by `music` to `./source/music/AudioClip/*.wav`
 9. (optional) extract `Enum` from ILSpy if any to `./src/logic/Enums.ts`
 10. (optional) update `./src/logic/Lookup.ts` if any updates on `Enum`
 11. (optional) extract API result with url path as folder to `./source/jp/aoserver/**/*`
 12. (optional) update other images/models if any
-13. delete `./public/models/roots/**/*` `./public/models/dungeons/**/*` `./public/models/fieldDungeons/**/*` `./public/models/gimmicks/**/*` `./public/models/throwables/**/*`
-14. run command at root directory of this project `npm run process`
+13. run command at root directory of this project `npm run process`
+
+### For other region
+
+server ids `jp` `tw` `en`
+
+- make sure replace {serverId} to one of the server ids value
+
+1. (optional) export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./source/{serverId}/master/MonoBehaviour/*.json`
+2. (optional) export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/{serverId}/adv/MonoBehaviour/*.json`
+3. (optional) export type `TextAsset` Name filter `SpawnList` to `./source/{serverId}/spawnList/TextAsset/*.txt`
+4. (optional) export type `Texture2D` to `./source/{serverId}/Texture2D/*.png`
+5. (optional) export models fbx version 7.5 binary with folder to `./source/{serverId}/models/**/*`
+6. (optional) export models fbx version 7.5 ascii to `./source/{serverId}/modelsMeta/**/*`
+7. (optional) export type `AudioClip` filter by `vo` to `./source/{serverId}/voice/AudioClip/*.wav` and delete `M11_Volcano.wav`
+8. (optional) export type `AudioClip` filter by `music` to `./source/{serverId}/music/AudioClip/*.wav`
+9. (optional) extract `Enum` from ILSpy if any to `./src/logic/Enums.ts`
+10. (optional) update `./src/logic/Lookup.ts` if any updates on `Enum`
+11. (optional) extract API result with url path as folder to `./source/{serverId}/aoserver/**/*`
+12. (optional) update other images/models if any
+13. run command at root directory of this project `npm run process`

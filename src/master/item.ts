@@ -6,6 +6,7 @@ import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
 import Enumerable from 'linq';
+import dotProp from 'dot-prop';
 
 // custom types
 export interface IElementResult {
@@ -92,10 +93,14 @@ export class MVList {
 
   public get icon() {
     const filename = `icon_item_s_${this.DF}.png`;
-    if (!dataManager.files.img.icon_item_s.Texture2D[filename]) {
+    const localeDotPathFolder = `${dataManager.serverId}.img.icon_item_s`;
+    if (dotProp.get(dataManager.files, `${localeDotPathFolder}`)?.[filename]) {
+      return `${localeDotPathFolder.replace(/\./g, '/')}/${filename}`
+    } else if (dataManager.files.img.icon_item_s.Texture2D[filename]) {
+      return `img/icon_item_s/Texture2D/${filename}`;
+    } else {
       return 'data:,';
     }
-    return `img/icon_item_s/Texture2D/${filename}`;
   }
 
   public get model() {

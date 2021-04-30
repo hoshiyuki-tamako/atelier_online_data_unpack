@@ -1,22 +1,22 @@
 <template lang="pug">
 div.container
   div.calculation-state
-    h3 ステータスの公式
+    h3 {{ $t('ステータスの公式') }}
     div
       p floor(((M - B)/R) * level + B)
       br
-      p R = 目標レベル值
-      p M = R レベルのステータス最大值
-      p B = ステータス初始值
-      p level = アイテムのレベル
+      p R = {{ $t('目標レベル值') }}
+      p M = R {{ $t('レベルのステータス最大值') }}
+      p B = {{ $t('ステータス初始值') }}
+      p level = {{ $t('アイテムのレベル') }}
 
     br
-    h4 Example
+    h4 {{ $t('Example') }}
     div
-      p 闇夜の盾
+      p {{ $t('闇夜の盾') }}
       p LV 1 {{ $t('物理攻撃') }} SATK 6
       p LV 60 {{ $t('物理攻撃') }} SATK 40
-      p R = 60, M = 40, B = 6, 欲しいレベル = 80
+      p R = 60, M = 40, B = 6, {{ $t('欲しいレベル') }} = 80
       p ((40 - 6)/60) * 80 + 6 = 51.3333333333
       p floor(51.3333333333) = 51
       p LV 80 {{ $t('物理攻撃') }} SATK = 51
@@ -24,11 +24,11 @@ div.container
     br
     h3 {{ $t('サブ装備') }}
     div
-      p x = 上值 * 0.05
+      p x = {{ $t('上值') }} * 0.05
       p x {{ '>' }}= 0 ? ceil(x) : floor(x)
 
     br
-    h4 計算
+    h4 {{ $t('計算') }}
     el-form(label-position="right" label-width="80px")
       el-form-item(label="R")
         el-input-number(v-model="state.r" label="R" placeholder="R" size="mini" :min="0" :step="1" step-strictly)

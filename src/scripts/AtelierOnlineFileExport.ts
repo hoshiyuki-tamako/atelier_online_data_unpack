@@ -2,6 +2,7 @@ import dirTree, { DirectoryTree } from 'directory-tree';
 import fs from 'fs-extra';
 import path from 'path';
 
+import { serverIds } from './config';
 import { ISaveable } from './interfaces/ISaveable';
 
 export type PathTree = { [s: string]: PathTree | string | null };
@@ -25,7 +26,7 @@ export default class AtelierOnlineFileExport implements ISaveable {
 
   //
   private load() {
-    ['export', 'img', 'models', 'audios'].forEach((p) => {
+    serverIds.concat(['export', 'img', 'models', 'audios']).forEach((p) => {
       this[p] = this.directoryTreeToLookup(dirTree(path.join(__dirname, '..', '..', 'public', p)).children);
     });
   }

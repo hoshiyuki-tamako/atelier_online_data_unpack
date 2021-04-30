@@ -10,7 +10,7 @@ div.title__container
         span(v-else) (日本語)
     br
     span.version-link__container
-      span Game Version 3.5.0 (2021-04-27) &nbsp;
+      span Game Version 3.5.0 (2021-04-30) &nbsp;
         span(v-if="$i18n.locale !== 'zh-TW'")
           el-link(type="success" :underline="false" :href="changeLocaleHref('zh-TW')") (繁體中文)
         span(v-else) (繁體中文)
@@ -26,7 +26,7 @@ div.title__container
           el-link(type="success" :underline="false" :href="changeLocaleHref('en')") (English)
         span(v-else) (English)
   p
-    span Twitter
+    span Twitter &nbsp;
     el-link(href="https://twitter.com/hoshiyuki_git" target="_blank" rel="noopener" type="primary") @hoshiyuki_git
   br
   div.filters

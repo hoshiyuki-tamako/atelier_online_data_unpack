@@ -2,6 +2,7 @@ import fs from 'fs-extra';
 import { escapeRegExp } from 'lodash';
 import path from 'path';
 
+import { serverIds } from './config';
 import { ExportBase } from './ExportBase';
 
 export default class TextureExport extends ExportBase {
@@ -19,23 +20,23 @@ export default class TextureExport extends ExportBase {
     }
 
     await Promise.all([
-      this.processGenericTexture2D(files, textureFolder, rootFolder),
+      this.processGenericTexture2D(files, textureFolder, sourceFolder, rootFolder),
       this.processFieldTitle(files, textureFolder, rootFolder),
       this.processAdvTextures(files, textureFolder, rootFolder),
     ]);
   }
 
-  private async processGenericTexture2D(files: string[], textureFolder: string, rootFolder: string) {
+  private async processGenericTexture2D(files: string[], textureFolder: string, sourceFolder: string, rootFolder: string) {
     const names = ['icon_chara', 'icon_degree', 'icon_item_s', 'icon_item01', 'icon_skill', 'enemy_tex', 'map_town', 'item_pickup', 'icon_area'];
-    await Promise.all(names.map((name) => this.processTexture2D(name, files, textureFolder, rootFolder)));
+    await Promise.all(names.map((name) => this.processTexture2D(name, files, textureFolder, sourceFolder, rootFolder)));
   }
 
-  private async processTexture2D(name: string, files: string[], textureFolder: string, rootFolder: string) {
+  private async processTexture2D(name: string, files: string[], textureFolder: string, sourceFolder: string, rootFolder: string) {
     const outFolder = path.join(rootFolder, 'img', name, 'Texture2D');
     const regex = new RegExp(`^${escapeRegExp(name)}.*`, 'i');
     const imagePaths = files.filter((p) => !p.includes('#') && regex.exec(p));
 
-    await Promise.all(imagePaths.map(async (p) => {
+    const defaultProcessPromise = Promise.all(imagePaths.map(async (p) => {
       const imagePath = path.join(textureFolder, p);
       const outPath = path.join(outFolder, p);
       if (await this.isPathUpToDate(imagePath, outPath)) {
@@ -43,6 +44,32 @@ export default class TextureExport extends ExportBase {
       }
       await fs.copy(imagePath, outPath);
     }));
+
+    // compute difference
+    const diffProcessPromise = Promise.all(serverIds.filter((p) => p !== 'jp').map(async (serverId) => {
+      const diffOutFolder = path.join(rootFolder, serverId, 'img', name);
+      const diffTextureFolder = path.join(sourceFolder, serverId, 'Texture2D');
+      if (!await fs.pathExists(diffTextureFolder)) {
+        console.log(`skipping diff ${serverId} ${name} texture process: missing ${diffTextureFolder}`);
+        return;
+      }
+      const diffTextureFiles = await fs.readdir(diffTextureFolder);
+      if (!diffTextureFiles.length) {
+        console.log(`empty diff ${serverId} ${name} texture folder: ${textureFolder}`);
+        return;
+      }
+
+      await Promise.all(diffTextureFiles.filter((p) => !p.includes('#') && regex.exec(p) && !imagePaths.includes(p)).map(async (p) => {
+        const imagePath = path.join(diffTextureFolder, p);
+        const outPath = path.join(diffOutFolder, p);
+        if (await this.isPathUpToDate(imagePath, outPath)) {
+          return;
+        }
+        await fs.copy(imagePath, outPath);
+      }));
+    }));
+
+    await Promise.all([defaultProcessPromise, diffProcessPromise]);
   }
 
   private async processFieldTitle(files: string[], textureFolder: string, rootFolder: string) {

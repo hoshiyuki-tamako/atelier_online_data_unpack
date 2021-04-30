@@ -314,5 +314,15 @@
   "上+属性(-100)": "Above + Element(-100)",
   "全超+-": "All S+-",
   "物攻増UP中+": "Physical ATK Up (B+)",
-  "上+物理防御DOWN大": "Above + Physical DEF Down (A)"
+  "上+物理防御DOWN大": "Above + Physical DEF Down (A)",
+  "ステータスの公式": "Status formula",
+  "目標レベル值": "Target level value",
+  "レベルのステータス最大值": "Level at maximum status",
+  "ステータス初始值": "Original status value",
+  "アイテムのレベル": "Item level",
+  "闇夜の盾": "Shield of the Dark Night",
+  "欲しいレベル": "Wanted level",
+  "上值": "Above value",
+  "計算": "Calculate",
+  "Example": "Example"
 }
