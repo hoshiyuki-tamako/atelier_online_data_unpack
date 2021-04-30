@@ -1,5 +1,6 @@
 import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
+import dotProp from 'dot-prop';
 
 export class Degree {
     m_GameObject: MGameObject;
@@ -26,11 +27,18 @@ export class List {
     }
 
     public get hasIcon() {
-      return dataManager.files.img.icon_degree.Texture2D[this.iconFile];
+      return this.icon !== 'data:,';
     }
 
     public get icon() {
-      return `img/icon_degree/Texture2D/${this.iconFile}`;
+      const localeDotPathFolder = `${dataManager.serverId}.img.icon_degree`;
+      if (dotProp.get(dataManager.files, localeDotPathFolder)?.[this.iconFile]) {
+        return `${localeDotPathFolder.replace(/\./g, '/')}/${this.iconFile}`
+      } else if (dataManager.files.img.icon_degree.Texture2D[this.iconFile]) {
+        return `img/icon_degree/Texture2D/${this.iconFile}`;
+      } else {
+        return 'data:,';
+      }
     }
 }
 
