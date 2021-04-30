@@ -94,7 +94,7 @@ export class MVList {
   public get icon() {
     const filename = `icon_item_s_${this.DF}.png`;
     const localeDotPathFolder = `${dataManager.serverId}.img.icon_item_s`;
-    if (dotProp.get(dataManager.files, `${localeDotPathFolder}`)?.[filename]) {
+    if (dotProp.get(dataManager.files, localeDotPathFolder)?.[filename]) {
       return `${localeDotPathFolder.replace(/\./g, '/')}/${filename}`
     } else if (dataManager.files.img.icon_item_s.Texture2D[filename]) {
       return `img/icon_item_s/Texture2D/${filename}`;
