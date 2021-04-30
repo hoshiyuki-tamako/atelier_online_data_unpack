@@ -3,7 +3,7 @@ div.hunt-container
   div.filters
     div.filter
       span {{ $t('所要時間') }}
-      el-select(v-model="timeCost" clearable filterable)
+      el-select(v-model="timeCost" placeholder="" clearable filterable)
         el-option(v-for="item of dataManager.api.huntInfoTimeCosts" :key="item" :label="humanizeDuration(item)" :value="item")
     CharacterSelector(v-model="character" :characters="dataManager.api.huntInfoCharacters")
     ItemSelector(v-model="item" :items="dataManager.api.huntInfoItems")

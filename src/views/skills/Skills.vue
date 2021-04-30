@@ -2,40 +2,40 @@
 div.container
   div.filters
     div.filter
-      el-select(v-model="filter.skillKind" @change="resetPage" clearable filterable)
+      el-select(v-model="filter.skillKind" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of skillKindFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('攻撃タイプ') }}
-      el-select(v-model="filter.attribute" @change="resetPage" clearable filterable)
+      el-select(v-model="filter.attribute" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of attributeFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('属性') }}
-      el-select(v-model="filter.element" @change="resetPage" clearable filterable)
+      el-select(v-model="filter.element" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of elementFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('目標') }}
-      el-select(v-model="filter.targetTeam" @change="resetPage" clearable filterable)
+      el-select(v-model="filter.targetTeam" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of targetTeamFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('範囲') }}
-      el-select(v-model="filter.targetScope" @change="resetPage" clearable filterable)
+      el-select(v-model="filter.targetScope" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of targetScopeFilter" :key="item.value" :label="item.label" :value="item.value")
   div.filters
     div.filter
       span {{ $t('トリガー') }}
-      el-select(v-model="filter.trigger" @change="resetPage" clearable filterable)
+      el-select(v-model="filter.trigger" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of triggerFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('エフェクト') }}
-      el-select(v-model="filter.effect" @change="resetPage" clearable filterable)
+      el-select(v-model="filter.effect" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of effectFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('エフェクトターゲット') }}
-      el-select(v-model="filter.effectTarget" @change="resetPage" clearable filterable)
+      el-select(v-model="filter.effectTarget" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of effectTargetFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('異常状態') }}
-      el-select(v-model="filter.abnormalState" @change="resetPage" clearable filterable)
+      el-select(v-model="filter.abnormalState" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of dataManager.abnormalState.m_vList" :key="item.value" :label="item.name" :value="item.id")
   div.filters
     div.filter

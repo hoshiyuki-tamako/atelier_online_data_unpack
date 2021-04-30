@@ -1,7 +1,7 @@
 <template lang="pug">
 div.filter
   span {{ title || $t('大事なもの(財貨)') }}
-  el-select(v-model="wealth" @change="change" clearable filterable)
+  el-select(v-model="wealth" @change="change" placeholder="" clearable filterable)
     el-option(v-for="item of wealths" :key="item.DF" :label="item.NAME" :value="item.DF")
       template(v-if="item.CHARA" v-for="character of [dataManager.characterById[item.CHARA]].filter((p) => p)")
         img.option-image(v-if="character.hasFaceIcon" :src="character.faceIcon" :alt="character.NAME")

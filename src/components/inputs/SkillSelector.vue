@@ -1,7 +1,7 @@
 <template lang="pug">
 div.filter
   span {{ title || $t('スキル') }}
-  el-select(v-model="skill" @change="change" clearable filterable)
+  el-select(v-model="skill" @change="change" placeholder="" clearable filterable)
     el-option(v-for="item of skills" :key="item.id" :label="item.name" :value="item.id")
 </template>
 

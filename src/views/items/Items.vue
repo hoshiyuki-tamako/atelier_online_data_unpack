@@ -3,23 +3,23 @@ div.container
   div.filters
     div.filter
       span {{ $t('カテゴリー') }}
-      el-select(v-model="category" clearable filterable)
+      el-select(v-model="category" placeholder="" clearable filterable)
         el-option(v-for="item of categoryOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('武器種類') }}
-      el-select(v-model="weaponKind" clearable filterable :disabled="!enableWeaponKindFilter")
+      el-select(v-model="weaponKind" placeholder="" clearable filterable :disabled="!enableWeaponKindFilter")
         el-option(v-for="item of weaponKindOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('攻撃属性') }}
-      el-select(v-model="battleElement" clearable filterable)
+      el-select(v-model="battleElement" placeholder="" clearable filterable)
         el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filter
       span {{ $t('スキル属性') }}
-      el-select(v-model="skillElement" clearable filterable)
+      el-select(v-model="skillElement" placeholder="" clearable filterable)
         el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filter
       span {{ $t('性別') }}
-      el-select(v-model="gender" clearable filterable)
+      el-select(v-model="gender" placeholder="" clearable filterable)
         el-option(v-for="item in genderOptions" :key="item.value" :label="item.label" :value="item.value")
   div.filters
     div.filter
@@ -27,7 +27,7 @@ div.container
       el-input(v-model="name" clearable)
     div.filter
       span {{ $t('ソート') }}
-      el-select(v-model="sort" clearable filterable)
+      el-select(v-model="sort" placeholder="" clearable filterable)
         el-option(v-for="item in sortOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('レジェンドレシピ') }}

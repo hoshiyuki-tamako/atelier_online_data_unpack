@@ -4,7 +4,7 @@ div.container
   div.filters
     div.filter
       span {{ $t('カテゴリー') }}
-      el-select(v-model="filter.category" @change="resetPage" clearable filterable)
+      el-select(v-model="filter.category" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of categoryFilter" :key="item.value" :label="item.label" :value="item.value")
     CharacterSelector(v-model="filter.character" :characters="dataManager.questCharacters" @change="resetPage")
     WealthSelector(v-model="filter.costWealth" :wealths="dataManager.questCostWealths" :title="$t('消費財貨')" @change="resetPage")

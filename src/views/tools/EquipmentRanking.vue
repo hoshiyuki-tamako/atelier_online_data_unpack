@@ -3,19 +3,19 @@ div.container
   div.filters
     div.filter
       span {{ $t('カテゴリー') }}
-      el-select(v-model="category" searchable clearable)
+      el-select(v-model="category" placeholder="" searchable clearable)
         el-option(v-for="item of itemCategoryOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('武器種類') }}
-      el-select(v-model="weaponKind" searchable clearable :disabled="!enableWeaponKindFilter")
+      el-select(v-model="weaponKind" placeholder="" searchable clearable :disabled="!enableWeaponKindFilter")
         el-option(v-for="item of weaponKindOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('攻撃属性') }}
-      el-select(v-model="battleElement" clearable filterable)
+      el-select(v-model="battleElement" placeholder="" clearable filterable)
         el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filter
       span {{ $t('スキル属性') }}
-      el-select(v-model="skillElement" clearable filterable)
+      el-select(v-model="skillElement" placeholder="" clearable filterable)
         el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filters
       el-checkbox(@change="onSupportChange" v-model="support") {{ $t('サブ装備') }}

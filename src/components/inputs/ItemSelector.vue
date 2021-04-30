@@ -1,7 +1,7 @@
 <template lang="pug">
 div.filter
   span {{ $t('アイテム') }}
-  el-select(v-model="item" @change="change" clearable filterable)
+  el-select(v-model="item" @change="change" placeholder="" clearable filterable)
     el-option(v-for="item of items" :key="item.DF" :label="item.NAME" :value="item.DF")
       img.option-image(:src="item.icon" :alt="item.NAME")
       span.option-text {{ item.NAME }}

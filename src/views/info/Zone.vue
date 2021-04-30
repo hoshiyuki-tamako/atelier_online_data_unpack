@@ -5,12 +5,12 @@ div.container
       span {{ $t('名前') }}/ID
       el-input(v-model="name" clearable)
     div.filter
-      span {{ $t('属性') + $t('ダメージ') }}+
-      el-select(v-model="addElement" clearable filterable)
+      span {{ $t('属性ダメージ') }}+
+      el-select(v-model="addElement" placeholder="" clearable filterable)
         el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filter
-      span {{ $t('属性') + $t('ダメージ') }}-
-      el-select(v-model="negativeElement" clearable filterable)
+      span {{ $t('属性ダメージ') }}-
+      el-select(v-model="negativeElement" placeholder="" clearable filterable)
         el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
   div.filters
     div.filter

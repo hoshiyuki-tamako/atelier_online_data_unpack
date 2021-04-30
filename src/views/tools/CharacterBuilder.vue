@@ -126,7 +126,7 @@ div.top-container
         tr
           th {{ $t('特性') }}
           td
-            el-select(v-model="mainItemAllSkillId" filterable clearable)
+            el-select(v-model="mainItemAllSkillId" placeholder="" filterable clearable)
               el-option(v-for="skill of dataManager.skillAddonsEquipmentUseful" :key="skill.id" :label="skill.name" :value="skill.id")
           td
             el-button(@click="onConfirmSetAllMainItemSkill" type="primary") {{ $t('確認') }}

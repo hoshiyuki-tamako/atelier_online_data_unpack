@@ -2,24 +2,25 @@
 div.container
   div.filters
     div.filter
+      span {{ $t('種類') }}
+      el-select(v-model="type" placeholder="" clearable filterable)
+        el-option(v-for="item in typeFilters" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('ステップ') }}
+      el-select(v-model="step" placeholder="" clearable filterable)
+        el-option(v-for="item in stepFilters" :key="item.value" :label="item.label" :value="item.value")
+    div.filter
+      span {{ $t('レア度') }}
+      el-select(v-model="rarity" placeholder="" clearable filterable)
+        el-option(v-for="item in rarityFilters" :key="item.value" :label="item.label" :value="item.value")
+  div.filters
+    div.filter
       span {{ $t('名前') }}/DF
       el-input(v-model="name" clearable)
     div.filter
       span {{ $t('詳細') }}
       el-input(v-model="description" clearable)
   div.filters
-    div.filter
-      span {{ $t('種類') }}
-      el-select(v-model="type" clearable filterable)
-        el-option(v-for="item in typeFilters" :key="item.value" :label="item.label" :value="item.value")
-    div.filter
-      span {{ $t('ステップ') }}
-      el-select(v-model="step" clearable filterable)
-        el-option(v-for="item in stepFilters" :key="item.value" :label="item.label" :value="item.value")
-    div.filter
-      span {{ $t('レア度') }}
-      el-select(v-model="rarity" clearable filterable)
-        el-option(v-for="item in rarityFilters" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       el-checkbox(v-model="isKeySideQuest" :label="$t('サイドクエスト')" border)
       el-checkbox(v-model="hasQuest" :label="$t('クエストに必要')" border)

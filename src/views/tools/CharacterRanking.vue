@@ -3,11 +3,11 @@ div.container
   div.filters
     div.filter
       span {{ $t('性別') }}
-      el-select(v-model="gender" clearable filterable)
+      el-select(v-model="gender" placeholder="" clearable filterable)
         el-option(v-for="item in genderOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('武器種類') }}
-      el-select(v-model="weaponType" clearable filterable)
+      el-select(v-model="weaponType" placeholder="" clearable filterable)
         el-option(v-for="item in weaponTypeOptions" :key="item.value" :label="item.label" :value="item.value")
   div.filters
     div.filter

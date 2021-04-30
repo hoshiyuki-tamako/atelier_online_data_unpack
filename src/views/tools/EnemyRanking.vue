@@ -2,15 +2,16 @@
 div.container
   div.filters
     div.filter
-      el-select(v-model="eKind" :placeholder="$t('種類')" clearable filterable)
+      span {{ $t('種類') }}
+      el-select(v-model="eKind" placeholder="" clearable filterable)
         el-option(v-for="item of enemyCategoryFilter" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('大きさ') }}
-      el-select(v-model="enemySize" clearable filterable)
+      el-select(v-model="enemySize" placeholder="" clearable filterable)
         el-option(v-for="item in enemySizeOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('出現エリア') }}
-      el-select(v-model="appearArea" clearable filterable)
+      el-select(v-model="appearArea" placeholder="" clearable filterable)
         el-option(v-for="item in appearAreaOptions" :key="item.value" :label="item.label" :value="item.value")
   div.filters
     div.filter
