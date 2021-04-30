@@ -148,7 +148,7 @@ div.top-container
       p
         el-input(:value="exportString" type="textarea" autosize)
 
-  el-dialog(title="" :visible.sync="characterEditDialogVisible" width="80%")
+  el-dialog(title="" :visible.sync="characterEditDialogVisible" width="80%" :fullscreen="!!(md.mobile() || md.tablet())")
     div.character-edit-dialog
       div.character-picker
         div(@click="onPickCharacter()")
@@ -242,7 +242,7 @@ div.top-container
                     p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
                     p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ (state.rate * 100).toFixed() }}% {{ abnormalState.name }} {{ abnormalState.turn }}{{ $t('ターン') }}
 
-  el-dialog(title="" :visible.sync="enemyEditDialogVisible" width="80%")
+  el-dialog(title="" :visible.sync="enemyEditDialogVisible" width="80%" :fullscreen="!!(md.mobile() || md.tablet())")
     div.enemy-edit
       div.enemy-edit-picker
         div.filters
@@ -295,6 +295,7 @@ div.top-container
         el-button(@click="exportDialogVisible = true" round) {{ $t('エクスポート') }}
         el-button(@click="onSave" type="primary" round) {{ $t('保存') }}
         el-button(@click="onClear" type="danger" round) {{ $t('クリアー') }}
+        el-switch.switch__show-main-equipment-popover(v-model="mainEquipmentPopover" :active-text="$t('ポップオーバー')")
       div.equipment-container
         div.main-equipment-container
           div.filters
@@ -307,7 +308,7 @@ div.top-container
                   div.equipment-icon
                     p {{ $t('品質') }} {{ player.equipmentModifiers[slot].quality }} LV {{ player.equipmentModifiers[slot].level }}
                     img(@click="onPickEquipment(slot)" :src="getEquipmentImage(slot)")
-                  template(v-if="player.equipment[slot]" slot="popover")
+                  template(v-if="mainEquipmentPopover && player.equipment[slot]" slot="popover")
                     div.equipment-popover
                       h3
                         router-link(:to="{ name: 'ItemsItem', query: { df: player.equipment[slot].item.DF, quality: player.equipmentModifiers[slot].quality, level: player.equipmentModifiers[slot].level } }" target="_blank")
@@ -364,7 +365,7 @@ div.top-container
                   div.equipment-icon
                     p {{ $t('品質') }} {{ player.equipmentModifiers[slot].quality }} LV {{ player.equipmentModifiers[slot].level }}
                     img(@click="onPickEquipment(slot)" :src="getEquipmentImage(slot)")
-                  template(v-if="player.equipment[slot]" slot="popover")
+                  template(v-if="mainEquipmentPopover && player.equipment[slot]" slot="popover")
                     div.equipment-popover
                       h3
                         router-link(:to="{ name: 'ItemsItem', query: { df: player.equipment[slot].item.DF, quality: player.equipmentModifiers[slot].quality, level: player.equipmentModifiers[slot].level } }" target="_blank")
@@ -930,6 +931,7 @@ import { plainToClass } from 'class-transformer';
 import { PlayerExportVersionConvertor } from '@/logic/convertor/PlayerExportVersionConvertor';
 import { clamp } from 'lodash';
 import Enumerable from 'linq';
+import MobileDetect from 'mobile-detect';
 
 @Component({
   components: {
@@ -963,6 +965,11 @@ export default class extends VueBase {
   public get clamp() {
     return clamp;
   }
+
+  //
+  public md = new MobileDetect(window.navigator.userAgent);
+
+  public mainEquipmentPopover = true;
 
   //
   public get abnormalStates() {
@@ -1622,10 +1629,13 @@ a
     cursor: pointer
 
 .character-state
-  width: 30%
+  width: 40%
 
   h3
     text-align: center
+
+  td
+    white-space: nowrap
 
 .character-image
   width: 100%
@@ -1701,6 +1711,9 @@ a
 
 .button__label-text
     margin-left: 4px
+
+.switch__show-main-equipment-popover
+  margin-left: 8px
 
 /* support equipment
 .sub-equipment, .result
