@@ -621,7 +621,7 @@ export class DataManager {
         rwd,
       })))
       .groupBy((p) => p.rwd.DF)
-      .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).toArray()) as { [df: string]: QuestMVList[] };
+      .toObject((p) => p.key(), (p) => p.select(({ quest }) => quest).distinct().toArray()) as { [df: string]: QuestMVList[] };
     this.questsByEnemy = Enumerable.from(this.quest.m_vList)
       .selectMany((quest) => quest.ENM.map((enm) => ({
         quest,
