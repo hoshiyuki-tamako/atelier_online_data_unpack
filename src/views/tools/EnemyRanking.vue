@@ -121,7 +121,27 @@ abstract class VueWithMapFields extends VueBase {
 })
 export default class extends VueWithMapFields {
   public get tableOptions() {
+    const d = {
+      column: {
+        longTextWidth: '100%',
+        criticalHitWidth: '130%',
+        allElementWidth: '120%',
+        darknessWidth: '100%',
+        align: 'left',
+      },
+    };
+
     switch (this.dataManager.locale) {
+      case 'zh-TW':
+      case 'zh-HK':
+      case 'zh-CN':
+        return {
+          ...d,
+          column: {
+            ...d.column,
+            criticalHitWidth: '100%',
+          },
+        };
       case 'en':
         return {
           column: {
@@ -133,15 +153,7 @@ export default class extends VueWithMapFields {
           },
         };
       default:
-        return {
-          column: {
-            longTextWidth: '100%',
-            criticalHitWidth: '130%',
-            allElementWidth: '120%',
-            darknessWidth: '100%',
-            align: 'left',
-          },
-        };
+        return d;
     }
   }
 
