@@ -562,7 +562,7 @@ export default class extends VueWithMapFields {
       const link = document.createElement('link');
       link.setAttribute('rel', 'stylesheet');
       link.setAttribute('href', 'css/element-theme-dark/index.css');
-      link.addEventListener('load', async () => {
+      link.addEventListener('load', () => {
         this.$nextTick(() => {
           this.cssLoaded = true;
         });
