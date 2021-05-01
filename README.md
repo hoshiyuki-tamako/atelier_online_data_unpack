@@ -107,7 +107,7 @@ docker-compose up --build -d
 
 server ids `jp` `tw` `en`
 
-- make sure replace {serverId} to one of the server ids value
+- make sure replace `{serverId}` to one of the server ids value
 
 1. (optional) export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./source/{serverId}/master/MonoBehaviour/*.json`
 2. (optional) export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/{serverId}/adv/MonoBehaviour/*.json`
