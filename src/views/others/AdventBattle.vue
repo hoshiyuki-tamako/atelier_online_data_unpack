@@ -24,7 +24,7 @@ div.container
                 th {{ $t('ダメージ') }}
                 th {{ $t('回数') }}
               tr(v-for="(score, i) of enemyList.ScoreList")
-                td {{ score.name }}
+                td.advent-battle-name {{ score.name }}
                 td {{ score.score }}
                 td
                   el-input-number(v-if="!score.isDiapNum" v-model="scores[adventBattle.ID][enemyListIndex][i].damage" size="small" :min="1" :step="1" step-strictly)
@@ -151,4 +151,7 @@ th, td
   display: flex
   flex-direction: row
   flex-wrap: wrap
+
+.advent-battle-name
+  min-width: 100%
 </style>
