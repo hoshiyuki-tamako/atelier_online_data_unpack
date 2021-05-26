@@ -618,6 +618,10 @@ export default class extends VueWithMapFields {
 
   public get otherLinksEn() {
     return [
+      {
+        title: 'Atelier Online: Alchemist of Bressisle',
+        href: 'https://play.google.com/store/apps/details?id=com.boltrend.atelieren',
+      },
     ];
   }
 

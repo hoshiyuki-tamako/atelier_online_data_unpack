@@ -40,7 +40,7 @@ export default class AudioExport extends ExportBase {
   }
 
   private async processAudioConvertQueue() {
-    await eachLimit(this.audioConvertorQueue, cpus().length, async ({ newFile, outFile: out }) => {
+    await eachLimit(this.audioConvertorQueue, cpus().length * 2, async ({ newFile, outFile: out }) => {
       await pEvent(ffmpeg(newFile).audioBitrate(96).audioCodec('aac').save(out), 'end');
     },);
   }
