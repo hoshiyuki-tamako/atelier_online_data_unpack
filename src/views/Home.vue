@@ -527,6 +527,9 @@ export default class extends VueWithMapFields {
           {
             href: 'https://twitter.com/bresail_kanko',
           },
+          {
+            href: 'https://twitter.com/re_dream5',
+          },
         ],
       },
       {
