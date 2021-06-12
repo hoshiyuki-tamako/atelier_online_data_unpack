@@ -15,7 +15,7 @@ div.container
 
   el-divider
   div.strategy-guides
-    h3 {{ $t('他の人の攻略サイト') }}
+    h3 {{ $t('他のサイト') }}
     br
     div(v-for="(page, i) of otherStrategyPages")
       h4 {{ page.title }}
@@ -25,7 +25,6 @@ div.container
 
   el-divider
   div.other-links
-    h3 {{ $t('他のサイト') }}
     template(v-for="(_otherLinks, i) of otherLinks")
       div(v-for="otherLink of _otherLinks")
         el-link(:href="otherLink.href" target="_blank" rel="noopener") {{ otherLink.title }}
@@ -528,9 +527,6 @@ export default class extends VueWithMapFields {
           {
             href: 'https://twitter.com/bresail_kanko',
           },
-          {
-            href: 'https://twitter.com/re_dream5',
-          },
         ],
       },
       {
@@ -593,6 +589,10 @@ export default class extends VueWithMapFields {
   public get otherLinksJp() {
     return [
       {
+        title: 'アトリエオンライン',
+        href: 'https://atelier-online.jp/',
+      },
+      {
         title: '【公式】アトリエオンライン',
         href: 'https://twitter.com/ao_forest',
       },
@@ -611,6 +611,18 @@ export default class extends VueWithMapFields {
     return [
       {
         title: '鍊金工房 Online ～布雷賽爾的鍊金術士～',
+        href: 'https://atelier-online.boltrend.com/zh-tw/preorder',
+      },
+      {
+        title: '鍊金工房 Online Facebook',
+        href: 'https://www.facebook.com/AtelieronlineTW',
+      },
+      {
+        title: '鍊金工房 Online 巴哈姆特',
+        href: 'https://forum.gamer.com.tw/B.php?bsn=33099',
+      },
+      {
+        title: '鍊金工房 Online Google Play',
         href: 'https://play.google.com/store/apps/details?id=com.boltrend.ateliertc',
       },
     ];
@@ -621,6 +633,10 @@ export default class extends VueWithMapFields {
       {
         title: 'Atelier Online: Alchemist of Bressisle',
         href: 'https://play.google.com/store/apps/details?id=com.boltrend.atelieren',
+      },
+      {
+        title: 'Atelier Online Discord',
+        href: 'https://discord.gg/8smHyfwmPM',
       },
     ];
   }
