@@ -16,7 +16,6 @@
   "Tips": "Tips",
   "キャラクタービルダー": "Character Builder",
   "調合アイテム": "Synthesize Item",
-  "他の人の攻略サイト": "Other Strategy Guides",
   "名前": "Name",
   "テクスト": "Text",
   "ターン": "Turn",
@@ -327,5 +326,6 @@
   "Example": "Example",
   "キャラクター專用": "Exclusive Gear",
   "属性ダメージ": "Element Damage",
-  "ポップオーバー": "Popover"
+  "ポップオーバー": "Popover",
+  "※ゲーム内ではLV1食事お0/60表示されます LV2食事は1/60です": "※Note in game display 0/60 mean LV1 food level and 1/60 mean LV2"
 }
