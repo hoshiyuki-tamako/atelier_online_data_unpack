@@ -592,6 +592,10 @@ export default class extends VueWithMapFields {
   public get otherLinksJp() {
     return [
       {
+        title: 'アトリエ オンライン ～ブレセイルの錬金術士～',
+        href: 'https://play.google.com/store/apps/details?id=jp.nhnpa.SJAO',
+      },
+      {
         title: 'アトリエオンライン',
         href: 'https://atelier-online.jp/',
       },
@@ -603,10 +607,6 @@ export default class extends VueWithMapFields {
         title: '『アトリエ オンライン』 4コマ漫画まとめ',
         href: 'https://twitter.com/i/events/1037277820232163328',
       },
-      {
-        title: 'アトリエ オンライン ～ブレセイルの錬金術士～',
-        href: 'https://play.google.com/store/apps/details?id=jp.nhnpa.SJAO',
-      },
     ];
   }
 
@@ -614,6 +614,10 @@ export default class extends VueWithMapFields {
     return [
       {
         title: '鍊金工房 Online ～布雷賽爾的鍊金術士～',
+        href: 'https://play.google.com/store/apps/details?id=com.boltrend.ateliertc',
+      },
+      {
+        title: '鍊金工房 Online',
         href: 'https://atelier-online.boltrend.com/zh-tw/preorder',
       },
       {
@@ -623,10 +627,6 @@ export default class extends VueWithMapFields {
       {
         title: '鍊金工房 Online 巴哈姆特',
         href: 'https://forum.gamer.com.tw/B.php?bsn=33099',
-      },
-      {
-        title: '鍊金工房 Online Google Play',
-        href: 'https://play.google.com/store/apps/details?id=com.boltrend.ateliertc',
       },
     ];
   }
