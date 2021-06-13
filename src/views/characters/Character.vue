@@ -137,7 +137,7 @@ div.container
                   span.character-food__quality-text {{ $t('品質') }} {{ fd.QTY }}
                   img.icon-small(:src="item.icon" :alt="item.NAME")
             table
-              tr(v-for="state of Object.keys(character.SPEC)")
+              tr(v-for="state of Object.keys(character.SPEC).filter((state) => fdm[state])")
                 td {{ $t(dataManager.lookup.state[state] )}}
                 td {{ fdm[state] }}
 
