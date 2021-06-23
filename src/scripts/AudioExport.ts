@@ -11,6 +11,7 @@ import path from 'path';
 
 import { EOrderType } from '../logic/Enums';
 import { Adv } from '../master/adv';
+import { serverIds } from './config';
 import { ExportBase } from './ExportBase';
 
 ffmpeg.setFfmpegPath(ffmpegStatic);
@@ -40,14 +41,14 @@ export default class AudioExport extends ExportBase {
   }
 
   private async processAudioConvertQueue() {
-    await eachLimit(this.audioConvertorQueue, cpus().length * 2, async ({ newFile, outFile: out }) => {
-      await pEvent(ffmpeg(newFile).audioBitrate(96).audioCodec('aac').save(out), 'end');
+    await eachLimit(this.audioConvertorQueue, cpus().length * 2, async ({ newFile, outFile }) => {
+      await pEvent(ffmpeg(newFile).audioBitrate(96).audioCodec('aac').save(outFile), 'end');
     },);
   }
 
   private async processMusics(sourceFolder: string, rootFolder: string) {
     const musicFolder = path.join(sourceFolder, 'music', 'AudioClip');
-    if (!fs.pathExists(musicFolder)) {
+    if (!await fs.pathExists(musicFolder)) {
       console.log(`skipping music process: required ${musicFolder}`);
       return;
     }
@@ -75,24 +76,24 @@ export default class AudioExport extends ExportBase {
 
   private async processVoices(sourceFolder: string, rootFolder: string) {
     const voiceFolder = path.join(sourceFolder, 'voice', 'AudioClip');
-    if (!fs.pathExists(voiceFolder)) {
+    if (!await fs.pathExists(voiceFolder)) {
       console.log(`skipping voice process: required ${voiceFolder} and ${voiceFolder}`);
-      await this.writeCharacterVoices(rootFolder);
+      await this.writeEmptyCharacterVoices(rootFolder);
       return;
     }
 
     const voices = await fs.readdir(voiceFolder);
     if (!voices.length) {
       console.log(`empty voice folder: ${voiceFolder}`);
-      await this.writeCharacterVoices(rootFolder);
+      await this.writeEmptyCharacterVoices(rootFolder);
       return;
     }
     const filteredVoices = voices.filter((p) => !p.includes('#'));
 
     const outFolder = path.join(rootFolder, 'audios', 'voices');
     await Promise.all([
-      this.generateCharacterVoices(filteredVoices, rootFolder),
-      Promise.all(filteredVoices.map(async (p) => {
+      ...serverIds.map(serverId => this.generateCharacterVoices(sourceFolder, rootFolder, serverId, filteredVoices)),
+      ...filteredVoices.map(async (p) => {
         const newFile = path.join(voiceFolder, p);
         const outFile = path.join(outFolder, p).replace('.wav', '.m4a');
         if (await fs.pathExists(outFile)) {
@@ -103,12 +104,18 @@ export default class AudioExport extends ExportBase {
           newFile,
           outFile,
         });
-      })),
+      }),
     ]);
   }
 
-  private async generateCharacterVoices(voices: string[], rootFolder: string) {
-    const advFolder = path.join(rootFolder, 'export', 'adv');
+  private async generateCharacterVoices(sourceFolder: string, rootFolder: string, serverId: string, voices: string[]) {
+    const advFolder = path.join(sourceFolder, serverId, 'adv', 'MonoBehaviour');
+    if (!await fs.pathExists(advFolder)) {
+      console.log(`empty adv folder for generateCharacterVoices: ${advFolder}`);
+      await this.writeCharacterVoices(rootFolder, serverId);
+      return;
+    }
+
     const advFiles = await fs.readdir(advFolder);
     const characterMaps = await Promise.all(advFiles.map(async (advFile) => {
       const adv = await fs.readJson(path.join(advFolder, advFile)) as Adv;
@@ -133,11 +140,15 @@ export default class AudioExport extends ExportBase {
     for (const characterDf of Object.keys(characterVoices)) {
       characterVoices[characterDf].sort((a, b) => new Intl.Collator(undefined, { numeric: true }).compare(a.voice, b.voice));
     }
-    await this.writeCharacterVoices(rootFolder, characterVoices);
+    await this.writeCharacterVoices(rootFolder, serverId, characterVoices);
   }
 
-  private async writeCharacterVoices(rootFolder: string, characterVoices: CharacterVoiceMap = {}) {
-    const characterVoiceMapOut = path.join(rootFolder, 'generated', 'characterVoices.json');
+  private async writeCharacterVoices(rootFolder: string, serverId: string, characterVoices: CharacterVoiceMap = {}) {
+    const characterVoiceMapOut = path.join(rootFolder, serverId, 'generated', 'characterVoices.json');
     await fs.writeJSON(characterVoiceMapOut, characterVoices);
+  }
+
+  private async writeEmptyCharacterVoices(rootFolder: string) {
+    await Promise.all(serverIds.map((p) => this.writeCharacterVoices(rootFolder, p)));
   }
 }

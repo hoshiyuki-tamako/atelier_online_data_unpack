@@ -4,7 +4,6 @@ import advCgById from '@/../public/generated/advCgById.json';
 import advWindowItemById from '@/../public/generated/advWindowItemById.json';
 import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
 import areaModel from '@/../public/generated/areaModel.json';
-import characterVoices from '@/../public/generated/characterVoices.json';
 import files from '@/../public/generated/files.json';
 import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger, EDegreeMissonType } from '@/logic/Enums';
 import { lookup } from '@/logic/Lookup';
@@ -33,6 +32,7 @@ import { Treasure } from '@/master/treasure';
 import { MVList as WealthMvList, Wealth } from '@/master/wealth';
 import { List as ZoneList, Zone } from '@/master/zone';
 import { List as ZoneEffectList, ZoneEffect } from '@/master/zoneEffect';
+import { CharacterVoiceMap } from '@/scripts/AudioExport';
 import { IAreaModel, IBattleArea } from '@/scripts/ModelExport';
 import { AdvManager, AdvMap } from '@/utils/AdvManager';
 import { SpawnerDataManager } from '@/utils/SpawnerDataManager';
@@ -170,33 +170,7 @@ export class DataManager {
     };
   }
 
-  public dataLoadMap = {
-    item: false,
-    chara: false,
-    skill: false,
-    abnormalState: false,
-    abnormalStateEffect: false,
-    zone: false,
-    zoneEffect: false,
-    enemy: false,
-    wealth: false,
-    degree: false,
-    blazeArt: false,
-    quest: false,
-    fieldName: false,
-    areaDetail: false,
-    areaInfo: false,
-    townInfo: false,
-    gateInfo: false,
-    dungeonInfo: false,
-    fieldItem: false,
-    extraQuest: false,
-    adventBattle: false,
-    soundList: false,
-    tips: false,
-    treasure: false,
-    chat: false,
-  };
+  public dataLoadMap = {} as { [name: string]: boolean };
 
   // parsed raw data
   public blazeArt: BlazeArt;
@@ -697,7 +671,7 @@ export class DataManager {
   public files = files;
   public areaModel: IAreaModel[] = areaModel;
   public areaDungeonModel: IAreaModel[] = areaDungeonModel;
-  public characterVoices = characterVoices;
+  public characterVoices: CharacterVoiceMap;
 
   public advCharacterById: AdvMap;
   public advCgById = advCgById;
@@ -804,7 +778,7 @@ export class DataManager {
     this.showHiddenContent = showHiddenContent;
     await Promise.all([
       ...Object.keys(this.dataDependency).map((name) => this.loadData(name)),
-      this.loadAdvCharacterById(),
+      this.loadGenerated(),
       this.spawnerDataManager.load(),
       this.api.load(),
     ]);
@@ -819,7 +793,7 @@ export class DataManager {
     try {
       const [value] = await Promise.all([
         this.loadExportJson(this.dataFileMap[name] || name),
-        Promise.all(this.dataDependency[name]?.map((n: string) => this.loadData(n)) || []),
+        ...this.dataDependency[name]?.map((n: string) => this.loadData(n)) || [],
       ]);
       const classType = this.dataClassMap[name];
       this[name] = classType ? plainToClass(classType, value) : value;
@@ -830,8 +804,14 @@ export class DataManager {
   }
 
   //
-  public async loadAdvCharacterById() {
-    this.advCharacterById = await this.loadJson(`${this.serverId}/generated/advCharacterById.json`);
+  public async loadGenerated() {
+    [
+      this.advCharacterById,
+      this.characterVoices,
+    ] = await Promise.all([
+      this.loadJson(`${this.serverId}/generated/advCharacterById.json`),
+      this.loadJson(`${this.serverId}/generated/characterVoices.json`),
+    ]);
   }
 
   private getAdvFilesTree() {

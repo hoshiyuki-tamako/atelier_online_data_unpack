@@ -89,11 +89,11 @@ docker-compose up --build -d
 - (optional) use `mitmproxy` to extract API messagepack
 - (optional) use `Il2CppDumper` to dump DLL for Enums/others
 
-1. (optional) export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./source/jp/master/MonoBehaviour/*.json`
-2. (optional) export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/jp/adv/MonoBehaviour/*.json`
+1. export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./source/jp/master/MonoBehaviour/*.json`
+2. export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/jp/adv/MonoBehaviour/*.json`
 3. (optional) export type `TextAsset` Name filter `SpawnList` to `./source/jp/spawnList/TextAsset/*.txt`
 4. (optional) export type `Texture2D` to `./source/Texture2D/*.png`
-5. (optional) export models fbx version 7.5 binary with folder to `./source/models/**/*`
+5. (optional) export models fbx version 7.5 binary to `./source/models/**/*`
 6. (optional) export models fbx version 7.5 ascii to `./source/modelsMeta/**/*`
 7. (optional) export type `AudioClip` filter by `vo` to `./source/voice/AudioClip/*.wav` and delete `M11_Volcano.wav`
 8. (optional) export type `AudioClip` filter by `music` to `./source/music/AudioClip/*.wav`
@@ -109,11 +109,11 @@ server ids `jp` `tw` `en`
 
 - make sure replace `{serverId}` to one of the server ids value
 
-1. (optional) export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./source/{serverId}/master/MonoBehaviour/*.json`
-2. (optional) export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/{serverId}/adv/MonoBehaviour/*.json`
+1. export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./source/{serverId}/master/MonoBehaviour/*.json`
+2. export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/{serverId}/adv/MonoBehaviour/*.json`
 3. (optional) export type `TextAsset` Name filter `SpawnList` to `./source/{serverId}/spawnList/TextAsset/*.txt`
 4. (optional) export type `Texture2D` to `./source/{serverId}/Texture2D/*.png`
-5. (optional) export models fbx version 7.5 binary with folder to `./source/{serverId}/models/**/*`
+5. (optional) export models fbx version 7.5 binary to `./source/{serverId}/models/**/*`
 6. (optional) export models fbx version 7.5 ascii to `./source/{serverId}/modelsMeta/**/*`
 7. (optional) export type `AudioClip` filter by `vo` to `./source/{serverId}/voice/AudioClip/*.wav` and delete `M11_Volcano.wav`
 8. (optional) export type `AudioClip` filter by `music` to `./source/{serverId}/music/AudioClip/*.wav`
