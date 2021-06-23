@@ -1,7 +1,7 @@
 <template lang="pug">
 div.container
   div.other-characters
-    el-card.other-character(v-for="otherCharacter of otherCharacters" :key="otherCharacter.df")
+    el-card.other-character(v-for="otherCharacter of otherCharacters")
       el-popover(v-if="dataManager.advCharacterById[otherCharacter.df]" placement="top-start" trigger="hover")
         div(slot="reference")
           h3 {{ otherCharacter.df }}
