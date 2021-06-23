@@ -15,11 +15,77 @@ export class SpawnerDataManager {
   // data
   public spawnLists = new Map<string, SpawnerData[]>();
 
-  public enemyIdsInAreaByAreaId: { [id: string]: IEnemyMap[] } = {};
-  public enemyIdsInDungeonByAreaId: { [id: string]: IEnemyMap[] } = {};
+  public get enemyIdsInAreaByAreaId() {
+    return this.dataManager.cache('SpawnerDataManager.enemyIdsInAreaByAreaId', () => Enumerable.from([...this.spawnLists.keys()])
+    .where((fileName) => !fileName.includes('Dun'))
+    .select((fileName) => ({
+      match: fileName.match(/^SpawnList\_(\d+)\_(\d+)/),
+      fileName,
+    }))
+    .where(({ match }) => !!match)
+    .select(({ fileName, match }) => ({
+      areaId: +match[1],
+      level: +match[2] || 0,
+      spawnList: this.spawnLists.get(fileName).filter((p) => p.spawnerKind === eSpawnerKind.Enemy),
+    }))
+    .where(({ spawnList }) => !!spawnList.length)
+    .groupBy(({ areaId }) => areaId)
+    .toObject((p) => p.key(), (p) => p.select(({ level, spawnList }) => ({
+      level,
+      enemyIds: spawnList.map((p) => p.DF),
+    } as IEnemyMap)).toArray()) as { [id: string]: IEnemyMap[] });
+  }
+  public get enemyIdsInDungeonByAreaId() {
+    return this.dataManager.cache('SpawnerDataManager.enemyIdsInDungeonByAreaId', () => Enumerable.from([...this.spawnLists.keys()])
+    .where((fileName) => fileName.includes('Dun'))
+    .select((fileName) => ({
+      match: fileName.match(/^SpawnList\_(\d+)\_(\d+)/),
+      fileName,
+    }))
+    .where(({ match }) => !!match)
+    .select(({ fileName, match }) => ({
+      areaId: +match[1],
+      level: +match[2] || 0,
+      spawnList: this.spawnLists.get(fileName).filter((p) => p.spawnerKind === eSpawnerKind.Enemy),
+    }))
+    .where(({ spawnList }) => !!spawnList.length)
+    .groupBy(({ areaId }) => areaId)
+    .toObject((p) => p.key(), (p) => p.select(({ level, spawnList }) => ({
+      level,
+      enemyIds: spawnList.map((p) => p.DF).sort((a, b) => a - b),
+    } as IEnemyMap)).toArray()) as { [id: string]: IEnemyMap[] });
+  }
 
-  public spawnerDataByAreaIdLevelId: { [id: string]: { [id: string]: SpawnerData[] }} = {};
-  public kanbansByAreaId: { [id: string]: SpawnerData[] } = {};
+  public get spawnerDataByAreaIdLevelId() {
+    return this.dataManager.cache('SpawnerDataManager.spawnerDataByAreaIdLevelId', () => Enumerable.from([...this.spawnLists.keys()])
+    .where((fileName) => !fileName.includes('Dun'))
+    .select((fileName) => ({
+      match: fileName.match(/^SpawnList\_(\d+)\_(\d+)/),
+      fileName,
+    }))
+    .where(({ match }) => !!match)
+    .select(({ fileName, match }) => ({
+      areaId: +match[1],
+      level: +match[2] || 0,
+      spawnList: this.spawnLists.get(fileName),
+    }))
+    .groupBy((p) => p.areaId)
+    .toObject(
+      (p) => p.key(),
+      (p) => p.groupBy((o) => o.level)
+        .toObject((o) => o.key(), (o) => o.selectMany((i) => i.spawnList).toArray()),
+    ) as { [id: string]: { [id: string]: SpawnerData[] }});
+  }
+  public get kanbansByAreaId() {
+    return this.dataManager.cache('SpawnerDataManager.kanbansByAreaId', () => Enumerable.from(Object.entries(this.spawnerDataByAreaIdLevelId))
+    .select(([areaId, p]) => ({
+      areaId,
+      spawnLists: Object.values(p).flat().filter((o) => o.spawnerKind === eSpawnerKind.Kanban),
+    }))
+    .where((p) => !!p.spawnLists.length)
+    .groupBy(({ areaId }) => areaId)
+    .toObject((p) => p.key(), (p) => p.selectMany((o) => o.spawnLists).toArray()) as { [id: string]: SpawnerData[] });
+  }
 
   public constructor(private dataManager: DataManager) {
   }
@@ -46,7 +112,6 @@ export class SpawnerDataManager {
         console.error(e);
       }
     }));
-    this.processData();
   }
 
   private getSpawnFilesTree() {
@@ -59,72 +124,5 @@ export class SpawnerDataManager {
       default:
         return files.export.SpawnList.TextAsset;
     }
-  }
-
-  private processData() {
-    this.enemyIdsInAreaByAreaId = Enumerable.from([...this.spawnLists.keys()])
-      .where((fileName) => !fileName.includes('Dun'))
-      .select((fileName) => ({
-        match: fileName.match(/^SpawnList\_(\d+)\_(\d+)/),
-        fileName,
-      }))
-      .where(({ match }) => !!match)
-      .select(({ fileName, match }) => ({
-        areaId: +match[1],
-        level: +match[2] || 0,
-        spawnList: this.spawnLists.get(fileName).filter((p) => p.spawnerKind === eSpawnerKind.Enemy),
-      }))
-      .where(({ spawnList }) => !!spawnList.length)
-      .groupBy(({ areaId }) => areaId)
-      .toObject((p) => p.key(), (p) => p.select(({ level, spawnList }) => ({
-        level,
-        enemyIds: spawnList.map((p) => p.DF),
-      } as IEnemyMap)).toArray()) as { [id: string]: IEnemyMap[] };
-    this.enemyIdsInDungeonByAreaId = Enumerable.from([...this.spawnLists.keys()])
-      .where((fileName) => fileName.includes('Dun'))
-      .select((fileName) => ({
-        match: fileName.match(/^SpawnList\_(\d+)\_(\d+)/),
-        fileName,
-      }))
-      .where(({ match }) => !!match)
-      .select(({ fileName, match }) => ({
-        areaId: +match[1],
-        level: +match[2] || 0,
-        spawnList: this.spawnLists.get(fileName).filter((p) => p.spawnerKind === eSpawnerKind.Enemy),
-      }))
-      .where(({ spawnList }) => !!spawnList.length)
-      .groupBy(({ areaId }) => areaId)
-      .toObject((p) => p.key(), (p) => p.select(({ level, spawnList }) => ({
-        level,
-        enemyIds: spawnList.map((p) => p.DF).sort((a, b) => a - b),
-      } as IEnemyMap)).toArray()) as { [id: string]: IEnemyMap[] };
-
-    this.spawnerDataByAreaIdLevelId = Enumerable.from([...this.spawnLists.keys()])
-      .where((fileName) => !fileName.includes('Dun'))
-      .select((fileName) => ({
-        match: fileName.match(/^SpawnList\_(\d+)\_(\d+)/),
-        fileName,
-      }))
-      .where(({ match }) => !!match)
-      .select(({ fileName, match }) => ({
-        areaId: +match[1],
-        level: +match[2] || 0,
-        spawnList: this.spawnLists.get(fileName),
-      }))
-      .groupBy((p) => p.areaId)
-      .toObject(
-        (p) => p.key(),
-        (p) => p.groupBy((o) => o.level)
-          .toObject((o) => o.key(), (o) => o.selectMany((i) => i.spawnList).toArray()),
-      ) as { [id: string]: { [id: string]: SpawnerData[] }};
-
-    this.kanbansByAreaId = Enumerable.from(Object.entries(this.spawnerDataByAreaIdLevelId))
-      .select(([areaId, p]) => ({
-        areaId,
-        spawnLists: Object.values(p).flat().filter((o) => o.spawnerKind === eSpawnerKind.Kanban),
-      }))
-      .where((p) => !!p.spawnLists.length)
-      .groupBy(({ areaId }) => areaId)
-      .toObject((p) => p.key(), (p) => p.selectMany((o) => o.spawnLists).toArray()) as { [id: string]: SpawnerData[] };
   }
 }
