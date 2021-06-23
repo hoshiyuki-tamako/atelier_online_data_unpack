@@ -170,7 +170,7 @@ export class MVList {
 
   public get icon() {
     if (!this.hasIcon) {
-      return 'data:,';
+      return this.images[0] || this.otherImages[0] || 'data:,';
     }
     return `img/icon_chara/Texture2D/${this.iconFile}`;
   }
