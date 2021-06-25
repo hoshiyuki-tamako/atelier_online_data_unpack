@@ -35,7 +35,7 @@ export default class extends VueBase {
 
   public get characters() {
     return Object.entries(this.dataManager.characterVoices as CharacterVoiceMap)
-      .filter(([df]) => df)
+      .filter(([df]) => df && +df)
       .map(([df, voices]) => this.getCharacter(+df, this.getMostName(voices)));
   }
 
