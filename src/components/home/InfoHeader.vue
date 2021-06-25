@@ -10,7 +10,7 @@ div.title__container
         span(v-else) (日本語)
     br
     span.version-link__container
-      span Game Version 3.5.0 (2021-05-22) &nbsp;
+      span Game Version 3.5.0 (2021-06-25) &nbsp;
         span(v-if="$i18n.locale !== 'zh-TW'")
           el-link(type="success" :underline="false" :href="changeLocaleHref('zh-TW')") (繁體中文)
         span(v-else) (繁體中文)
@@ -21,7 +21,7 @@ div.title__container
           span(v-else) (简体)
     br
     span.version-link__container
-      span Game Version 1.0.0 (2021-04-08) &nbsp;
+      span Game Version 1.0.0 (2021-06-25) &nbsp;
         span(v-if="$i18n.locale !== 'en'")
           el-link(type="success" :underline="false" :href="changeLocaleHref('en')") (English)
         span(v-else) (English)
