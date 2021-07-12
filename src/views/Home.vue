@@ -638,6 +638,10 @@ export default class extends VueWithMapFields {
         href: 'https://play.google.com/store/apps/details?id=com.boltrend.atelieren',
       },
       {
+        title: 'Atelier Online Reddit',
+        href: 'https://www.reddit.com/r/AtelierOnlineOfficial',
+      },
+      {
         title: 'Atelier Online Discord',
         href: 'https://discord.gg/8smHyfwmPM',
       },
