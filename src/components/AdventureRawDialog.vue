@@ -5,7 +5,7 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
   el-table(:data="questDialogs" :show-header="false")
     el-table-column(width="210px")
       template(slot-scope="scope")
-        img.dialog-character-image(v-if="scope.row.characterDf" :src="`img/icon_chara/Texture2D/icon_chara_all_${scope.row.characterDf.toString().padStart(4, '0')}_${scope.row.facialExpression.toString().padStart(2, '0')}.png`" :alt="dataManager.characterById[scope.row.characterDf] ? dataManager.characterById[scope.row.characterDf].NAME : scope.row.characterDf")
+        img.dialog-character-image(v-if="scope.row.characterDf" :src="getCharacterIcon(scope.row.characterDf, scope.row.facialExpression)" :alt="dataManager.characterById[scope.row.characterDf] ? dataManager.characterById[scope.row.characterDf].NAME : scope.row.characterDf")
     el-table-column
       template(slot-scope="scope")
         div(v-if="scope.row.order === EOrderType.eCHARA_TALK")
@@ -43,6 +43,7 @@ import { IAdventure } from '@/utils/AdvManager';
 import MobileDetect from 'mobile-detect';
 import { EOrderType, eMusicID } from '@/logic/Enums';
 import { RichTextService } from '@/services/RichTextService';
+import { MVList as CharaMVList } from '@/master/chara';
 
 @Component({
   components: {
@@ -72,6 +73,17 @@ export default class extends VueBase {
 
   // services
   private richTextService = new RichTextService();
+
+  public getCharacterIcon(df: number, facialExpression: number) {
+    const imageFile = `icon_chara_all_${df.toString().padStart(4, '0')}_${facialExpression.toString().padStart(2, '0')}.png`;
+    if (this.dataManager.files.img.icon_chara.Texture2D[imageFile]) {
+      return `img/icon_chara/Texture2D/${imageFile}`;
+    }
+
+    const chara = new CharaMVList();
+    chara.DF = df;
+    return chara.icon;
+  }
 
   //
   public onPlay(ev: Event) {
