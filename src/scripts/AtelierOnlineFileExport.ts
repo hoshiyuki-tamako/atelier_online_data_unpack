@@ -8,27 +8,20 @@ import { ISaveable } from './interfaces/ISaveable';
 export type PathTree = { [s: string]: PathTree | string | null };
 
 export default class AtelierOnlineFileExport implements ISaveable {
-  public export: PathTree = {};
 
-  public img: PathTree = {};
-
-  public models: PathTree = {};
-
-  public audio: PathTree = {};
+  public files: PathTree;
 
   public constructor() {
     this.load();
   }
 
   public save(rootFolder: string, fileName = 'files.json') {
-    return fs.writeJson(path.join(rootFolder, 'generated', fileName), this);
+    return fs.writeJson(path.join(rootFolder, 'generated', fileName), this.files);
   }
 
   //
   private load() {
-    serverIds.concat(['export', 'img', 'models', 'audios']).forEach((p) => {
-      this[p] = this.directoryTreeToLookup(dirTree(path.join(__dirname, '..', '..', 'public', p)).children);
-    });
+    this.files = this.directoryTreeToLookup(dirTree(path.join(__dirname, '..', '..', 'public')).children);
   }
 
   private directoryTreeToLookup(tree: DirectoryTree[]) {

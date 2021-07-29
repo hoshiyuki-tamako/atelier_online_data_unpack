@@ -31,7 +31,7 @@ export default class extends VueBase {
   }
 
   public get fieldDungeons() {
-    return Object.keys(this.dataManager.files.models.fieldDungeons)
+    return Object.keys(this.dataManager.files[this.dataManager.baseServerId]?.models.fieldDungeons ?? {})
       .map((folder) => ({
         label: this.dataManager.folderLabel(folder),
         folder,

@@ -143,7 +143,15 @@ export class MVList {
     }
 
     const id = this.MDL.toString().padStart(4, '0');
-    return `models/items/${name}${id}/${name}${id}.fbx`;
+    const modelName = `${name}${id}`;
+    const localeDotPathFolder = `${dataManager.serverId}.models.items.${modelName}`;
+    if (dotProp.get(dataManager.files, localeDotPathFolder)) {
+      return `${localeDotPathFolder.replace(/\./g, '/')}/${modelName}.fbx`;
+    } else if (dataManager.files[dataManager.baseServerId]?.models.items[modelName]) {
+      return `${dataManager.baseServerId}/models/items/${modelName}/${modelName}.fbx`;
+    } else {
+      return '';
+    }
   }
 
   public get modelThrowableName() {
@@ -151,12 +159,19 @@ export class MVList {
   }
 
   public get modelThrowable() {
-    const throwable = Object.keys(dataManager.files.models.throwables).find((folder) => dataManager.folderLabel(folder) === `throw${this.DF}`);
+    const throwable = Object.keys(dataManager.files.jp.models.throwables).find((folder) => dataManager.folderLabel(folder) === `throw${this.DF}`);
     if (!throwable) {
       return '';
     }
 
-    return `models/throwables/${throwable}/${dataManager.folderLabel(throwable)}.fbx`;
+    const localeDotPathFolder = `${dataManager.serverId}.models.throwables.${throwable}`;
+    if (dotProp.get(dataManager.files, localeDotPathFolder)) {
+      return `${localeDotPathFolder.replace(/\./g, '/')}/${dataManager.folderLabel(throwable)}.fbx`;
+    } else if (dataManager.files[dataManager.baseServerId]?.models.items[throwable]) {
+      return `${dataManager.baseServerId}/models/throwables/${throwable}/${dataManager.folderLabel(throwable)}.fbx`;
+    } else {
+      return '';
+    }
   }
 
   public get genderTextIcon() {

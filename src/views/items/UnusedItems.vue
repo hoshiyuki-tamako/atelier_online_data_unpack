@@ -6,7 +6,7 @@ div.container
   h3 {{ $t('模型') }}
   div.models-container
     div.model-container(v-for="model of models")
-      el-link(@click="openFbxDialog(`models/items/${model}/${model}.fbx`)" type="primary" :underline="false") {{ model }}
+      el-link(@click="openFbxDialog(`${dataManager.baseServerId}/models/items/${model}/${model}.fbx`)" type="primary" :underline="false") {{ model }}
   el-divider
   div.unused-items-container
     div.unused-item-container(v-for="icon of icons")
@@ -36,7 +36,7 @@ export default class extends VueBase {
   }
 
   public get models() {
-    const itemModels = Object.keys(this.dataManager.files.models.items);
+    const itemModels = Object.keys(this.dataManager.files[this.dataManager.baseServerId]?.models.items ?? {});
     return this.unusedWeaponCategory
       .map((prefix) => itemModels.filter((p: string) => p.includes(prefix)))
       .flat()

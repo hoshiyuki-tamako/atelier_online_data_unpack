@@ -1,9 +1,10 @@
-import { List as AreaInfoList } from '@/master/areaInfo';
 import { EBattleEffectKind } from '@/logic/Enums';
 import { Formula } from '@/logic/Formula';
+import { List as AreaInfoList } from '@/master/areaInfo';
 import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
+import dotProp from 'dot-prop';
 
 // custom types
 export interface IElementResult {
@@ -128,19 +129,35 @@ export class MVList {
 
   public get model() {
     const folder = `Enemy${this.sParam.MDL}`;
-    if (!(this.sParam.MDL && dataManager.files.models.enemies[folder])) {
+    if (!this.sParam.MDL) {
       return '';
     }
 
-    return `models/enemies/${folder}/${folder}.fbx`;
+    const localeDotPathFolder = `${dataManager.serverId}.models.enemies.${folder}`;
+    if (dotProp.get(dataManager.files, localeDotPathFolder)) {
+      return `${localeDotPathFolder.replace(/\./g, '/')}/${folder}.fbx`;
+    } else if (dataManager.files[dataManager.baseServerId]?.models.enemies[folder]) {
+      return `${dataManager.baseServerId}/models/enemies/${folder}/${folder}.fbx`;
+    } else {
+      return '';
+    }
   }
 
   public get icon() {
-    const filename = `enemy_tex_${this.sParam.MDL}.png`;
-    if (!dataManager.files.img.enemy_tex.Texture2D[filename]) {
+    if (!this.sParam.MDL) {
       return 'data:,';
     }
-    return `img/enemy_tex/Texture2D/${filename}`;
+
+    const filename = `enemy_tex_${this.sParam.MDL}.png`;
+
+    const localeDotPathFolder = `${dataManager.serverId}.img.enemy_tex.${filename}`;
+    if (dotProp.get(dataManager.files, localeDotPathFolder)) {
+      return localeDotPathFolder.replace(/\./g, '/');
+    } else if (dataManager.files.img.enemy_tex.Texture2D[filename]) {
+      return `img/enemy_tex/Texture2D/${filename}`;
+    } else {
+      return 'data:,';
+    }
   }
 
   public get viewAngleDegree() {

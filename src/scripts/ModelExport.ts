@@ -5,6 +5,7 @@ import path from 'path';
 import { promisify } from 'util';
 
 import { EWeaponKind } from '../logic/Enums';
+import { baseServerId, serverIds } from './config';
 import { ExportBase } from './ExportBase';
 
 export interface IAreaModel {
@@ -39,80 +40,121 @@ async function isDirectoryEmpty(folder: string) {
 }
 
 export default class ModelExport extends ExportBase {
+  public hasAlertedSkipping = {} as { [serverId: string]: boolean };
+
   public ncp = promisify(ncp);
 
   public async process(sourceFolder: string, rootFolder: string) {
-    const modelFolder = path.join(sourceFolder, 'models');
-    const modelMetaFolder = path.join(sourceFolder, 'modelsMeta');
+    const baseModelFolder = path.join(sourceFolder, baseServerId, 'models');
+    const baseModelMetaFolder = path.join(sourceFolder, baseServerId, 'modelsMeta');
     const requireFolderExists = await Promise.all([
-      fs.pathExists(modelFolder),
-      fs.pathExists(modelMetaFolder),
+      fs.pathExists(baseModelFolder),
+      fs.pathExists(baseModelMetaFolder),
     ]);
     if (!requireFolderExists.every((p) => p)) {
-      console.log(`skipping model process: missing ${modelFolder} or ${modelMetaFolder}`);
+      console.log(`skipping model process missing ${baseModelFolder} or ${baseModelMetaFolder}`);
       return;
     }
 
-    const [modelFolders, isModelMetaFolderEmpty] = await Promise.all([
-      fs.readdir(modelFolder),
-      isDirectoryEmpty(modelMetaFolder),
+    const [baseModelFolders, isModelMetaFolderEmpty] = await Promise.all([
+      fs.readdir(baseModelFolder),
+      isDirectoryEmpty(baseModelMetaFolder),
     ]);
-    if (!modelFolders.length) {
-      console.log(`empty model folder: ${modelFolder}`);
+    if (!baseModelFolders.length) {
+      console.log(`empty base models folder: ${baseModelFolder}`);
       return;
     }
     if (isModelMetaFolderEmpty) {
-      console.log(`empty modelMeta folder: ${modelMetaFolder}`);
+      console.log(`empty base modelsMeta folder: ${baseModelMetaFolder}`);
       return;
     }
 
-    await Promise.all([
-      this.processItemsModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
-      this.processEnemiesModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
-      this.processAreaModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
-      this.processGenericModels(modelFolders, sourceFolder, rootFolder, modelFolder, modelMetaFolder),
-    ]);
+    await Promise.all(serverIds.map((serverId) => [
+      this.processItemsModels(serverId, baseModelFolders, sourceFolder, rootFolder),
+      this.processEnemiesModels(serverId, baseModelFolders, sourceFolder, rootFolder),
+      this.processAreaModels(serverId, baseModelFolders, sourceFolder, rootFolder),
+      this.processGenericModels(serverId, baseModelFolders, sourceFolder, rootFolder),
+    ]).flat());
   }
 
-  private async processItemsModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
+  private async processItemsModels(serverId: string, baseModelFolders: string[], sourceFolder: string, rootFolder: string) {
     await Promise.all(
       Object.values(EWeaponKind)
         .filter((p) => +p >= 0)
         .map((p) => EWeaponKind[p].substring(1).toLocaleLowerCase())
         .concat(['helm', 'acc_', 'body'])
-        .map((name) => this.processItemModels(name, modelFolders, rootFolder, modelFolder)),
+        .map((name) => this.processItemModels(serverId, name, baseModelFolders, sourceFolder, rootFolder)),
     );
   }
 
-  private async processItemModels(name: string, modelFolders: string[], rootFolder: string, modelFolder: string) {
-    const outFolder = path.join(rootFolder, 'models', 'items');
+  private async processItemModels(serverId: string, name: string, baseModelFolders: string[], sourceFolder: string, rootFolder: string) {
+    const modelFolder = path.join(sourceFolder, serverId, 'models');
+    if (serverId !== baseServerId && !await fs.pathExists(modelFolder)) {
+      if (!this.hasAlertedSkipping[serverId]) {
+        this.hasAlertedSkipping[serverId] = true;
+        console.log(`skipping ${serverId} models process missing: ${modelFolder}`);
+      }
+      return;
+    }
+    const serverModelFolders = serverId === baseServerId ? baseModelFolders : await fs.readdir(modelFolder);
+
+    const outFolder = path.join(rootFolder, serverId, 'models', 'items');
     const regex = new RegExp(`^${escapeRegExp(name)}.*`);
-    const itemFolders = modelFolders.filter((p) => regex.exec(p));
+    const itemBaseFolders = baseModelFolders.filter((p) => regex.exec(p));
+    const itemFolders = serverId === baseServerId ? itemBaseFolders : serverModelFolders.filter((p) => regex.exec(p) && !itemBaseFolders.includes(p));
     await Promise.all(itemFolders.map(async (p) => {
       const sourceModelFolder = path.join(modelFolder, p);
       const outModelFolder = path.join(outFolder, p);
       if (await this.isPathUpToDate(sourceModelFolder, outModelFolder)) {
         return;
       }
+      await fs.mkdir(outFolder, { recursive: true });
       await this.ncp(sourceModelFolder, outModelFolder);
     }));
   }
 
-  private async processEnemiesModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
-    const outFolder = path.join(rootFolder, 'models', 'enemies');
+  private async processEnemiesModels(serverId: string, baseModelFolders: string[], sourceFolder: string, rootFolder: string) {
+    const modelFolder = path.join(sourceFolder, serverId, 'models');
+    if (serverId !== baseServerId && !await fs.pathExists(modelFolder)) {
+      if (!this.hasAlertedSkipping[serverId]) {
+        this.hasAlertedSkipping[serverId] = true;
+        console.log(`skipping ${serverId} models process missing: ${modelFolder}`);
+      }
+      return;
+    }
+    const serverModelFolders = serverId === baseServerId ? baseModelFolders : await fs.readdir(modelFolder);
+
+    const outFolder = path.join(rootFolder, serverId, 'models', 'enemies');
     const regex = new RegExp(`^${escapeRegExp('Enemy')}.*`, 'i');
-    const enemiesFolders = modelFolders.filter((p) => regex.exec(p));
+    const enemyBaseFolders = baseModelFolders.filter((p) => regex.exec(p));
+    const enemiesFolders = serverId === baseServerId ? enemyBaseFolders : serverModelFolders.filter((p) => regex.exec(p) && !enemyBaseFolders.includes(p));
     await Promise.all(enemiesFolders.map(async (p) => {
       const sourceModelFolder = path.join(modelFolder, p);
       const outModelFolder = path.join(outFolder, p);
       if (await this.isPathUpToDate(sourceModelFolder, outModelFolder)) {
         return;
       }
+      await fs.mkdir(outFolder, { recursive: true });
       await this.ncp(sourceModelFolder, outModelFolder);
     }));
   }
 
-  private async processAreaModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
+  private async processAreaModels(serverId: string, baseModelFolders: string[], sourceFolder: string, rootFolder: string) {
+    if (serverId !== baseServerId) {
+      return;
+    }
+
+    const modelFolder = path.join(sourceFolder, serverId, 'models');
+    const modelMetaFolder =  path.join(sourceFolder, serverId, 'modelsMeta');
+    if (serverId !== baseServerId && !await fs.pathExists(modelFolder)) {
+      if (!this.hasAlertedSkipping[serverId]) {
+        this.hasAlertedSkipping[serverId] = true;
+        console.log(`skipping ${serverId} models process missing: ${modelFolder}`);
+      }
+      return;
+    }
+    const serverModelFolders = serverId === baseServerId ? baseModelFolders : await fs.readdir(modelFolder);
+
     // custom meta
     const hideAreas = [] as number[];
     const deDuplicationAreas = [5, 6, 106] as number[];
@@ -121,8 +163,8 @@ export default class ModelExport extends ExportBase {
     const intlCompare = new Intl.Collator(undefined, { numeric: true }).compare;
 
     // start process
-    const modelOutFolder = path.join(rootFolder, 'models', 'roots');
-    const roots = modelFolders.filter((p) => p.includes('root'))
+    const modelOutFolder = path.join(rootFolder, serverId, 'models', 'roots');
+    const roots = serverModelFolders.filter((p) => p.includes('root'))
       .sort(intlCompare)
       .reverse();
     const areas = [] as IAreaModel[];
@@ -178,12 +220,13 @@ export default class ModelExport extends ExportBase {
         if (await this.isPathUpToDate(sourceModelFolder, outFolder)) {
           return;
         }
+        await fs.mkdir(modelOutFolder, { recursive: true });
         await this.ncp(sourceModelFolder, outFolder);
       })),
     ]);
   }
 
-  private async processGenericModels(modelFolders: string[], sourceFolder: string, rootFolder: string, modelFolder: string, modelMetaFolder: string) {
+  private async processGenericModels(serverId: string, modelFolders: string[], sourceFolder: string, rootFolder: string) {
     const options = [
       {
         outFolder: 'battleAreas',
@@ -206,12 +249,29 @@ export default class ModelExport extends ExportBase {
         startsWith: ['Gimmick_'],
       },
     ] as IGenericModelOption[];
-    await Promise.all(options.map(({ outFolder, startsWith }) => this.processGenericModel(outFolder, startsWith, rootFolder, modelFolders, modelFolder)));
+    await Promise.all(options.map(({ outFolder, startsWith }) => this.processGenericModel(serverId, outFolder, startsWith, rootFolder, modelFolders, sourceFolder)));
   }
 
-  private async processGenericModel(outFolder: string, startsWith: string[], rootFolder: string, modelFolders: string[], modelFolder: string) {
-    const modelOutFolder = path.join(rootFolder, 'models', outFolder);
-    const folders = modelFolders.filter((p) => startsWith.some((s) => p.startsWith(s)))
+  private async processGenericModel(serverId: string, outFolder: string, startsWith: string[], rootFolder: string, baseModelFolders: string[], sourceFolder: string) {
+    if (serverId !== baseServerId) {
+      return;
+    }
+
+    const modelFolder = path.join(sourceFolder, serverId, 'models');
+    if (serverId !== baseServerId && !await fs.pathExists(modelFolder)) {
+      if (!this.hasAlertedSkipping[serverId]) {
+        this.hasAlertedSkipping[serverId] = true;
+        console.log(`skipping ${serverId} models process missing: ${modelFolder}`);
+      }
+      return;
+    }
+    const serverModelFolders = serverId === baseServerId ? baseModelFolders : await fs.readdir(modelFolder);
+
+    const modelOutFolder = path.join(rootFolder, serverId, 'models', outFolder);
+    const baseFolders = baseModelFolders.filter((p) => startsWith.some((s) => p.startsWith(s)))
+      .sort(new Intl.Collator(undefined, { numeric: true }).compare)
+      .reverse();
+    const folders = serverId === baseServerId ? baseFolders : serverModelFolders.filter((p) => startsWith.some((s) => p.startsWith(s)) && !baseFolders.includes(p))
       .sort(new Intl.Collator(undefined, { numeric: true }).compare)
       .reverse();
     await Promise.all([
@@ -221,6 +281,7 @@ export default class ModelExport extends ExportBase {
         if (await this.isPathUpToDate(sourceModelFolder, outFolder)) {
           return;
         }
+        await fs.mkdir(modelOutFolder, { recursive: true });
         await this.ncp(sourceModelFolder, outFolder);
       }),
     ]);

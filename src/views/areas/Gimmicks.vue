@@ -2,7 +2,7 @@
 div.container
   div.gimmicks
     div.gimmick(v-for="{ label, folder } of gimmicks")
-      router-link(:to="{ name: 'AreasArea', query: { raw: `models/gimmicks/${folder}/${label}.fbx` } }" v-slot="{ href, navigate }" custom)
+      router-link(:to="{ name: 'AreasArea', query: { raw: `${dataManager.baseServerId}/models/gimmicks/${folder}/${label}.fbx` } }" v-slot="{ href, navigate }" custom)
         el-link(:href="href" @click="navigate" type="primary" :underline="false") {{ label }}
 </template>
 
@@ -16,7 +16,7 @@ import VueBase from '@/components/VueBase';
 })
 export default class extends VueBase {
   public get gimmicks() {
-    return Object.keys(this.dataManager.files.models.gimmicks)
+    return Object.keys(this.dataManager.files[this.dataManager.baseServerId].models.gimmicks ?? {})
       .map((folder) => ({
         label: this.dataManager.folderLabel(folder),
         folder,

@@ -93,8 +93,8 @@ docker-compose up --build -d
 2. export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/jp/adv/MonoBehaviour/*.json`
 3. (optional) export type `TextAsset` Name filter `SpawnList` to `./source/jp/spawnList/TextAsset/*.txt`
 4. (optional) export type `Texture2D` to `./source/Texture2D/*.png`
-5. (optional) export models fbx version 7.5 binary to `./source/models/**/*`
-6. (optional) export models fbx version 7.5 ascii to `./source/modelsMeta/**/*`
+5. (optional) export models fbx version 7.5 binary to `./source/jp/models/**/*`
+6. (optional) export models fbx version 7.5 ascii to `./source/jp/modelsMeta/**/*`
 7. (optional) export type `AudioClip` filter by `vo` to `./source/voice/AudioClip/*.wav` and delete `M11_Volcano.wav`
 8. (optional) export type `AudioClip` filter by `music` to `./source/music/AudioClip/*.wav`
 9. (optional) extract `Enum` from ILSpy if any to `./src/logic/Enums.ts`

@@ -43,10 +43,13 @@ import { ApiManager } from './ApiManager';
 
 export class DataManager {
   public static supportedLocales = ['ja-JP', 'zh-TW', 'zh-HK', 'zh-CN', 'en'];
+  public static serverIds = ['jp', 'tw', 'en'];
 
   public static get defaultLocale() {
     return this.supportedLocales[0];
   }
+
+  public baseServerId = DataManager.serverIds[0];
 
   // settings
   public showHiddenContent = false;
@@ -693,7 +696,7 @@ export class DataManager {
 
   // processed custom data
   public get battleAreas() {
-    return this.cache('battleAreas', () => Object.keys(this.files.models.battleAreas));
+    return this.cache('battleAreas', () => Object.keys(this.files.jp.models.battleAreas));
   }
   public get areaModelsById() {
     return this.cache('areaModelsById', () => Enumerable.from(this.areaModel)
@@ -743,7 +746,7 @@ export class DataManager {
     .toObject((p) => p.key(), (p) => p.select((i) => i.fileName).toArray()) as { [iAreaId: string]: string[] });
   }
   public get dungeonModelsByLevel() {
-    return this.cache('dungeonModelsByLevel', () => Enumerable.from(Object.keys(this.files.models.dungeons))
+    return this.cache('dungeonModelsByLevel', () => Enumerable.from(Object.keys(this.files.jp.models.dungeons))
     .groupBy((p) => +p.split('_')[1])
     .toObject((p) => p.key() || '', (p) => p.toArray()) as { [level: string]: string[] });
   }

@@ -56,19 +56,19 @@ export default class extends VueBase {
 
   public get fbx() {
     if (this.root) {
-      return `models/roots/${this.root}/root.fbx`;
+      return `${this.dataManager.baseServerId}/models/roots/${this.root}/root.fbx`;
     }
 
     if (this.battleArea) {
-      return `models/battleAreas/${this.battleArea}/${this.battleArea}.fbx`;
+      return `${this.dataManager.baseServerId}/models/battleAreas/${this.battleArea}/${this.battleArea}.fbx`;
     }
 
     if (this.dungeon) {
-      return `models/dungeons/${this.dungeon}/${this.dungeon.replace(/\s*\(\d+\)/, '')}.fbx`;
+      return `${this.dataManager.baseServerId}/models/dungeons/${this.dungeon}/${this.dungeon.replace(/\s*\(\d+\)/, '')}.fbx`;
     }
 
     if (this.fieldDungeon) {
-      return `models/fieldDungeons/${this.fieldDungeon}/${this.fieldDungeon.replace(/\s*\(\d+\)/, '')}.fbx`;
+      return `${this.dataManager.baseServerId}/models/fieldDungeons/${this.fieldDungeon}/${this.fieldDungeon.replace(/\s*\(\d+\)/, '')}.fbx`;
     }
 
     return this.raw;

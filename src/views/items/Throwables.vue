@@ -5,7 +5,7 @@ div.container
 
   div.throwables
     div.throwable(v-for="{ label, folder } of throwables")
-      el-link(@click="openFbxDialog(`models/throwables/${folder}/${label}.fbx`)" type="primary" :underline="false") {{ label }}
+      el-link(@click="openFbxDialog(`${dataManager.baseServerId}/models/throwables/${folder}/${label}.fbx`)" type="primary" :underline="false") {{ label }}
 </template>
 
 <script lang="ts">
@@ -27,7 +27,7 @@ export default class extends VueBase {
 
   public get throwables() {
     const throwableNames = this.dataManager.item.m_vList.map((p) => p.modelThrowableName);
-    return Object.keys(this.dataManager.files.models.throwables)
+    return Object.keys(this.dataManager.files[this.dataManager.baseServerId]?.models.throwables ?? {})
       .filter((folder) => !throwableNames.includes(this.dataManager.folderLabel(folder)))
       .map((folder) => ({
         label: this.dataManager.folderLabel(folder),

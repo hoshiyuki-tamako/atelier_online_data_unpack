@@ -21,7 +21,7 @@ div.title__container
           span(v-else) (简体)
     br
     span.version-link__container
-      span Game Version 1.0.0 (2021-07-07) &nbsp;
+      span Game Version 1.0.0 (2021-07-23) &nbsp;
         span(v-if="$i18n.locale !== 'en'")
           el-link(type="success" :underline="false" :href="changeLocaleHref('en')") (English)
         span(v-else) (English)
