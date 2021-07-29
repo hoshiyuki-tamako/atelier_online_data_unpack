@@ -27,9 +27,9 @@ most file follow naming convention from the source code
 
 ### Models
 
-- enemies `./public/models/enemies/**/*`
-- items `./public/models/items/**/*`
-- areas `./public/models/roots/**/*`
+- enemies `./public/{serverId}/models/enemies/**/*`
+- items `./public/{serverId}/models/items/**/*`
+- areas `./public/{serverId}/models/roots/**/*`
 
 ### Images
 
