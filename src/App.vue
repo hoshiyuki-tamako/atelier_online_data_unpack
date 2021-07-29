@@ -525,7 +525,7 @@ export default class extends VueWithMapFields {
       translateMutationObserver.translate(titles);
     }
 
-    let retry = 10;
+    let retry = 3;
     while (retry-- > 0) {
       try {
         await this.dataManager.load(this.$store.state.home.showHiddenContent);
