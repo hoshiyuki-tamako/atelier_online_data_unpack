@@ -85,7 +85,7 @@ docker-compose up --build -d
 ## Content Update Steps
 
 - Download latest `APK` and `assets`
-- use `AssetStudio` >= 0.15 load folders that include both un-zipped APK, and assets
+- use `AssetStudio` >= 0.15 load folders that include both un-zipped APK, and assets / obb
 - (optional) use `mitmproxy` to extract API messagepack
 - (optional) use `Il2CppDumper` to dump DLL for Enums/others
 
