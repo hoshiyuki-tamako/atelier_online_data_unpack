@@ -1,33 +1,19 @@
 <template lang="pug">
 div.title__container
   h2 {{ $t('アトリエオンライン資料庫') }}
-  p
-    span.version-link__container
-      span
-        span Game Version 3.15.2 (2021-05-26) &nbsp;
-        span(v-if="$i18n.locale !== 'ja-JP'")
-          el-link(type="success" :underline="false" :href="changeLocaleHref('ja-JP')") (日本語)
-        span(v-else) (日本語)
-    br
-    span.version-link__container
-      span Game Version 3.5.0 (2021-06-25) &nbsp;
-        span(v-if="$i18n.locale !== 'zh-TW'")
-          el-link(type="success" :underline="false" :href="changeLocaleHref('zh-TW')") (繁體中文)
-        span(v-else) (繁體中文)
-      template
-        span &nbsp;
-          span(v-if="$i18n.locale !== 'zh-CN'")
-            el-link(type="success" :underline="false" :href="changeLocaleHref('zh-CN')") (简体)
-          span(v-else) (简体)
-    br
-    span.version-link__container
-      span Game Version 1.0.0 (2021-07-23) &nbsp;
-        span(v-if="$i18n.locale !== 'en'")
-          el-link(type="success" :underline="false" :href="changeLocaleHref('en')") (English)
-        span(v-else) (English)
-  p
-    span Twitter &nbsp;
-    el-link(href="https://twitter.com/hoshiyuki_git" target="_blank" rel="noopener" type="primary") @hoshiyuki_git
+  div
+    p(v-for="server in servers")
+      span.version-link__container
+        span Game Version {{ server.gameVersion }} ({{ server.updateDate }})&nbsp;
+        template(v-for="(language, i) in server.languages")
+          span(v-if="$i18n.locale !== language.locale")
+            el-link(type="success" :underline="false" :href="changeLocaleHref(server.serverId, language.locale)") ({{ language.name }})
+          span(v-else) ({{ language.name }})
+          span(v-if="server.languages.length !== (i - 1) ")
+  div
+    p
+      span Twitter &nbsp;
+      el-link(href="https://twitter.com/hoshiyuki_git" target="_blank" rel="noopener" type="primary") @hoshiyuki_git
   br
   div.filters
     div.filter
@@ -55,8 +41,51 @@ abstract class VueWithMapFields extends VueBase {
   },
 })
 export default class extends VueWithMapFields {
-  public changeLocaleHref(locale: string) {
+  public get servers() {
+    return [
+      {
+        serverId: 'jp',
+        gameVersion: '3.15.2',
+        updateDate: '2021-05-26',
+        languages: [
+          {
+            name: '日本語',
+            locale: 'ja-JP',
+          },
+        ],
+      },
+      {
+        serverId: 'tw',
+        gameVersion: '3.5.0',
+        updateDate: '2021-07-29',
+        languages: [
+          {
+            name: '繁體中文',
+            locale: 'zh-TW',
+          },
+          {
+            name: '简体',
+            locale: 'zh-CN',
+          },
+        ],
+      },
+      {
+        serverId: 'en',
+        gameVersion: '1.0.0',
+        updateDate: '2021-07-23',
+        languages: [
+          {
+            name: 'English',
+            locale: 'en',
+          },
+        ],
+      },
+    ];
+  }
+
+  public changeLocaleHref(serverId: string, locale: string) {
     const url = new URL(window.location.href);
+    url.searchParams.set('serverId', serverId);
     url.searchParams.set('locale', locale);
     return url.toString();
   }
