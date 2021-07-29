@@ -2,6 +2,8 @@
 
 Info for developer
 
+serverIds = jp | tw | en
+
 ## Notes
 
 - Make sure to unpack both downloaded asset and APK asset as seems some item is not included in the downloaded asset
