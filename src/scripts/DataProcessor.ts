@@ -102,7 +102,7 @@ export default class DataProcessor {
       cgsById[k] = [...new Set(cgsById[k])];
     }
 
-    await fs.writeJson(path.join(rootFolder, 'generated', 'advCgById.json'), cgsById);
+    await fs.writeJson(path.join(rootFolder, serverId, 'generated', 'advCgById.json'), cgsById);
   }
 
   private async generateBgAdvMap(serverId: string, advFolder: string, files: string[], rootFolder: string) {
@@ -122,7 +122,7 @@ export default class DataProcessor {
       cgsById[k] = [...new Set(cgsById[k])];
     }
 
-    await fs.writeJson(path.join(rootFolder, 'generated', 'advBgById.json'), cgsById);
+    await fs.writeJson(path.join(rootFolder, serverId, 'generated', 'advBgById.json'), cgsById);
   }
 
 
@@ -142,7 +142,7 @@ export default class DataProcessor {
       cgsById[k] = [...new Set(cgsById[k])];
     }
 
-    await fs.writeJson(path.join(rootFolder, 'generated', 'advWindowItemById.json'), cgsById);
+    await fs.writeJson(path.join(rootFolder, serverId, 'generated', 'advWindowItemById.json'), cgsById);
   }
 
   private async generateAudioAdvMap(serverId: string, advFolder: string, files: string[], rootFolder: string) {
@@ -161,7 +161,7 @@ export default class DataProcessor {
       audiosById[k] = [...new Set(audiosById[k])];
     }
 
-    await fs.writeJson(path.join(rootFolder, 'generated', 'advAudioById.json'), audiosById);
+    await fs.writeJson(path.join(rootFolder, serverId, 'generated', 'advAudioById.json'), audiosById);
   }
 
   //

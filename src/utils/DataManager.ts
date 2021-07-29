@@ -1,7 +1,3 @@
-import advAudioById from '@/../public/generated/advAudioById.json';
-import advBgById from '@/../public/generated/advBgById.json';
-import advCgById from '@/../public/generated/advCgById.json';
-import advWindowItemById from '@/../public/generated/advWindowItemById.json';
 import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
 import areaModel from '@/../public/generated/areaModel.json';
 import files from '@/../public/generated/files.json';
@@ -677,10 +673,10 @@ export class DataManager {
   public characterVoices: CharacterVoiceMap;
 
   public advCharacterById: AdvMap;
-  public advCgById = advCgById;
-  public advWindowItemById = advWindowItemById;
-  public advBgById = advBgById;
-  public advAudioById = advAudioById;
+  public advCgById: AdvMap;
+  public advWindowItemById: AdvMap;
+  public advBgById: AdvMap;
+  public advAudioById: AdvMap;
   public get advHasCg() {
     return this.cache('advHasCg', () => Enumerable.from(Object.entries(this.advCgById))
     .selectMany(([id, advs]) => advs.map((adv) => ({ id, adv })))
@@ -810,9 +806,17 @@ export class DataManager {
   public async loadGenerated() {
     [
       this.advCharacterById,
+      this.advCgById,
+      this.advWindowItemById,
+      this.advBgById,
+      this.advAudioById,
       this.characterVoices,
     ] = await Promise.all([
       this.loadJson(`${this.serverId}/generated/advCharacterById.json`),
+      this.loadJson(`${this.serverId}/generated/advCgById.json`),
+      this.loadJson(`${this.serverId}/generated/advWindowItemById.json`),
+      this.loadJson(`${this.serverId}/generated/advBgById.json`),
+      this.loadJson(`${this.serverId}/generated/advAudioById.json`),
       this.loadJson(`${this.serverId}/generated/characterVoices.json`),
     ]);
   }
