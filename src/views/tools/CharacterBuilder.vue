@@ -1034,7 +1034,7 @@ export default class extends VueBase {
       value,
     }))
       .concat(Object.entries(this.dataManager.lookup.element).map(([value, label]) => ({
-        label,
+        label: this.$t(label),
         value,
       })));
   }
