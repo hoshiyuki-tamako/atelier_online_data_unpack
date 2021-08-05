@@ -72,7 +72,7 @@ export default class extends VueWithMapFields {
       {
         serverId: 'en',
         gameVersion: '1.0.0',
-        updateDate: '2021-07-23',
+        updateDate: '2021-08-05',
         languages: [
           {
             name: 'English',
