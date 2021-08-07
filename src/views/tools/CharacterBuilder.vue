@@ -301,6 +301,7 @@ div.top-container
           div.filters
             el-button(@click="mainItemEditorVisible = true" type="success" icon="el-icon-edit" circle)
             span.button__label-text {{ $t('まとめで設定') }}
+            el-switch.switch__show-main-equipment-popover(v-model="mainEquipmentLock" :active-text="$t('装備🔒')")
           div.main-equipments
             div.left-equipment
               template(v-for="slot of ['weapon', 'shield', 'helmet', 'armor']")
@@ -970,6 +971,7 @@ export default class extends VueBase {
   public md = new MobileDetect(window.navigator.userAgent);
 
   public mainEquipmentPopover = true;
+  public mainEquipmentLock = false;
 
   //
   public get abnormalStates() {
@@ -1283,7 +1285,11 @@ export default class extends VueBase {
   }
 
   public onPickEquipment(slot: string) {
-    return this[`onPick${pascalCase(slot)}`]();
+    if (this.mainEquipmentLock) {
+      return;
+    }
+
+    this[`onPick${pascalCase(slot)}`]();
   }
 
   public getEquipmentImage(slot: string) {
@@ -1383,26 +1389,26 @@ export default class extends VueBase {
   }
 
   public get weaponImage() {
-    return this.player.equipment.weapon?.item.icon || 'img/icon/icon_pick_weapon.png';
+    return this.player.equipment.weapon?.item.icon || `${this.dataManager.serverId}/img/icon/icon_pick_weapon.png`;
   }
 
   public get shieldImage() {
     if (this.dataManager.lookup.twoHandledWeaponKind.includes(this.player.equipment.weapon?.item.WPN_KIND)) {
-      return 'img/icon/icon_pick_shield_disabled.png';
+      return `${this.dataManager.serverId}/img/icon/icon_pick_shield_disabled.png`;
     }
-    return this.player.equipment.shield?.item.icon || 'img/icon/icon_pick_shield.png';
+    return this.player.equipment.shield?.item.icon || `${this.dataManager.serverId}/img/icon/icon_pick_shield.png`;
   }
 
   public get helmetImage() {
-    return this.player.equipment.helmet?.item.icon || 'img/icon/icon_pick_helmet.png';
+    return this.player.equipment.helmet?.item.icon || `${this.dataManager.serverId}/img/icon/icon_pick_helmet.png`;
   }
 
   public get armorImage() {
-    return this.player.equipment.armor?.item.icon || 'img/icon/icon_pick_armor.png';
+    return this.player.equipment.armor?.item.icon || `${this.dataManager.serverId}/img/icon/icon_pick_armor.png`;
   }
 
   public accessoryImage(i) {
-    return this.player.equipment[`accessory${i}`]?.item.icon || 'img/icon/icon_pick_accessory.png';
+    return this.player.equipment[`accessory${i}`]?.item.icon || `${this.dataManager.serverId}/img/icon/icon_pick_accessory.png`;
   }
 
   public get accessory1Image() {
