@@ -37,15 +37,63 @@ import Enumerable from 'linq';
 
 import { ApiManager } from './ApiManager';
 
-export class DataManager {
-  public static supportedLocales = ['ja-JP', 'zh-TW', 'zh-HK', 'zh-CN', 'en'];
-  public static serverIds = ['jp', 'tw', 'en'];
+type AtelierServerInfo = {
+  id: string;
+  locales: string[];
+}
 
-  public static get defaultLocale() {
-    return this.supportedLocales[0];
+export class DataManager {
+  public static localesLabel = {
+    'ja-JP': '日本語',
+    'zh-TW': '繁體中文',
+    'zh-CN': '简体',
+    'en': 'English',
+  };
+
+  public static serverIdLabels = {
+    'jp': '日本',
+    'tw': '台灣',
+    'en': 'Global',
+  };
+
+  public static servers = [
+    {
+      id: 'jp',
+      locales: ['ja-JP'],
+    },
+    {
+      id: 'tw',
+      locales: ['zh-TW', 'zh-CN'],
+    },
+    {
+      id: 'en',
+      locales: ['en'],
+    },
+  ];
+
+  public static get serversById () {
+    return Enumerable.from(this.servers).toObject((p) => p.id, (p) => p) as { [id: string]: AtelierServerInfo };
   }
 
-  public baseServerId = DataManager.serverIds[0];
+  public static get supportedLocales() {
+    return this.servers.map((server) => server.locales).flat();
+  }
+
+  public static get serverIds() {
+    return this.servers.map((server) => server.id);
+  }
+
+  public static get defaultLocale() {
+    return this.servers[0].locales[0];
+  }
+
+  public static get defaultServerId() {
+    return this.servers[0].id;
+  }
+
+  public get baseServerId() {
+    return DataManager.servers[0].id;
+  }
 
   // settings
   public showHiddenContent = false;

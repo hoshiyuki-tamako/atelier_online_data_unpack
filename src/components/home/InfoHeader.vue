@@ -85,7 +85,7 @@ export default class extends VueWithMapFields {
 
   public changeLocaleHref(serverId: string, locale: string) {
     const url = new URL(window.location.href);
-    url.searchParams.set('serverId', serverId);
+    // url.searchParams.set('serverId', serverId);
     url.searchParams.set('locale', locale);
     return url.toString();
   }

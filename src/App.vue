@@ -12,6 +12,15 @@ el-container.containter-main(v-loading="pageLoading")
         el-switch(:value="darkMode" @change="onDarkMode" active-color="#13ce66" :active-text="$t('ダークモード')")
       div.filter
         el-switch(:value="showHiddenContent" @change="onShowHiddenContent" active-color="#f56c6c" :active-text="$t('ネタバレ')")
+    div.filters
+      div.filter
+        span {{ $t('デフォルトサーバ') }}
+        el-select(v-model="defaultServerId" placeholder="" @change="onChangeServerId")
+          el-option(v-for="server in dataManager.constructor.servers" :key="server.id" :label="dataManager.constructor.serverIdLabels[server.id]" :value="server.id")
+      div.filter(v-if="dataManager.constructor.serversById[defaultServerId] && dataManager.constructor.serversById[defaultServerId].locales")
+        span {{ $t('デフォルトロケール') }}
+        el-select(v-model="defaultLocale" placeholder="")
+          el-option(v-for="locale in dataManager.constructor.serversById[defaultServerId].locales" :key="locale" :label="dataManager.constructor.localesLabel[locale]" :value="locale")
     el-divider {{ $t('サイドバー') }}
     div.filters
       div.filter
@@ -57,6 +66,7 @@ import VueBase from '@/components/VueBase';
 import InfoHeader from '@/components/home/InfoHeader.vue';
 import { TranslateMutationObserver } from 'translate-mutation-observer';
 import { defaultMenuItemIds } from './store/home';
+import { DataManager } from './utils/DataManager';
 
 abstract class VueWithMapFields extends VueBase {
   public settingDialogVisible!: boolean;
@@ -70,6 +80,10 @@ abstract class VueWithMapFields extends VueBase {
   public darkMode!: boolean | null;
 
   public menuItemIds!: number[];
+
+  public defaultServerId!: string;
+
+  public defaultLocale!: string;
 }
 
 @Component({
@@ -78,7 +92,7 @@ abstract class VueWithMapFields extends VueBase {
     InfoHeader,
   },
   computed: {
-    ...mapFields('home', ['settingDialogVisible', 'showSideBar', 'showBackTopButton', 'showHiddenContent', 'darkMode', 'menuItemIds']),
+    ...mapFields('home', ['settingDialogVisible', 'showSideBar', 'showBackTopButton', 'showHiddenContent', 'darkMode', 'menuItemIds', 'defaultServerId', 'defaultLocale']),
   },
   metaInfo() {
     return {
@@ -509,10 +523,17 @@ export default class extends VueWithMapFields {
 
   public pageLoading = true;
 
-  public async beforeCreate() {
-    this.dataManager.locale = new URLSearchParams(window.location.search).get('locale');
+  public created() {
+    const url = new URL(window.location.toString());
+    this.dataManager.locale = url.searchParams.get('locale') || this.defaultLocale;
     this.$i18n.locale = this.dataManager.locale;
     document.title = this.$t(document.title).toString();
+
+    const urlSearchParamCorrect = this.dataManager.locale === url.searchParams.get('locale');
+    if (!urlSearchParamCorrect && window.history.pushState) {
+      url.searchParams.set('locale', this.dataManager.locale);
+      window.history.pushState({}, null, url.toString());
+    }
 
     if (this.$i18n.locale === 'zh-CN') {
       const titles = document.getElementsByTagName('title');
@@ -525,24 +546,11 @@ export default class extends VueWithMapFields {
       translateMutationObserver.translate(titles);
     }
 
-    let retry = 3;
-    while (retry-- > 0) {
-      try {
-        await this.dataManager.load(this.$store.state.home.showHiddenContent);
-        this.pageLoading = false;
-        retry = 0;
-      } catch (e) {
-        console.error(e);
-        this.$message.error(e.toString());
-        await sleep(ms('3s'));
-      }
-    }
-  }
-
-  public created() {
     this.loadDarkMode();
     this.settingDialogVisible = false;
     this.resetMenuItemOptions();
+
+    this.loadData();
   }
 
   public beforeMount() {
@@ -555,6 +563,27 @@ export default class extends VueWithMapFields {
     });
   }
 
+  private async loadData() {
+    let retry = 3;
+    while (retry-- > 0) {
+      try {
+        await this.dataManager.load(this.showHiddenContent);
+        this.pageLoading = false;
+        retry = 0;
+      } catch (e) {
+        console.error(e);
+        this.$message.error(e.toString());
+        await sleep(ms('3s'));
+      }
+    }
+  }
+
+  //
+  public onChangeServerId() {
+    [this.defaultLocale] = DataManager.serversById[this.defaultServerId].locales;
+  }
+
+  //
   private loadDarkMode() {
     this.darkMode ??= window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (this.darkMode) {

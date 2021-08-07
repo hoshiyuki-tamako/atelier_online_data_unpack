@@ -1,3 +1,4 @@
+import { DataManager } from '@/utils/DataManager';
 import { Module, MutationAction } from 'vuex-module-decorators';
 
 import VuexModuleBase from './base/VuexModuleBase';
@@ -20,7 +21,11 @@ export default class extends VuexModuleBase {
 
   public menuItemIds = defaultMenuItemIds;
 
-  @MutationAction({ mutate: ['settingDialogVisible', 'showSideBar', 'showBackTopButton', 'showHiddenContent', 'darkMode', 'menuItemIds'] })
+  public defaultServerId = DataManager.defaultServerId;
+
+  public defaultLocale = DataManager.defaultLocale;
+
+  @MutationAction({ mutate: ['settingDialogVisible', 'showSideBar', 'showBackTopButton', 'showHiddenContent', 'darkMode', 'menuItemIds', 'defaultServerId','defaultLocale'] })
   public async reset() {
     return {
       settingDialogVisible: false,
@@ -29,6 +34,8 @@ export default class extends VuexModuleBase {
       showHiddenContent: false,
       darkMode: null,
       menuItemIds: defaultMenuItemIds,
+      defaultServerId: DataManager.defaultServerId,
+      defaultLocale: DataManager.defaultLocale,
     };
   }
 }

@@ -218,7 +218,7 @@
   "倍": "",
   "状態": "State",
   "ネタバレ": "Spoiler",
-  "ネタバレのコンテンツ表示しでよろしいでしか": "Are you sure enable spoiler",
+  "ネタバレのコンテンツ表示しでよろしいでしか": "Are you sure to allow display spoiler content",
   "未使用アイテム": "Unused Items",
   "他のキャラクター": "Other Characters",
   "模型": "Model",
@@ -328,5 +328,7 @@
   "属性ダメージ": "Element Damage",
   "ポップオーバー": "Popover",
   "※ゲーム内ではLV1食事お0/60表示されます LV2食事は1/60です": "※Note in game display 0/60 mean LV1 food level and 1/60 mean LV2",
-  "確率": "{0}% chance"
+  "確率": "{0}% chance",
+  "デフォルトサーバ": "Default Server",
+  "デフォルトロケール": "Default Locale"
 }
