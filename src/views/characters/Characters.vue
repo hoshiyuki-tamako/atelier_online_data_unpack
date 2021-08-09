@@ -136,7 +136,7 @@ export default class extends VueWithMapFields {
   public get filteredCharacters() {
     const characters = this.characters.filter((p) => (
       (!this.gender || p.GEN === this.gender)
-      && ([null, '', -1].includes(this.weaponType) || p.WEAPON.some((o) => o.GEN === this.weaponType || !o.GEN))
+      && ([null, '', -1].includes(this.weaponType) || p.WEAPON.some((o) => o.GEN === this.weaponType))
       && (!this.name || p.DF === +this.name || p.NAME.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()))
       && (!this.has.includes(1) || this.dataManager.itemsByCharacterLegendRecipe[p.DF])
       && (!this.has.includes(2) || this.dataManager.itemsByGroupDf[p.GROUP_DF]?.length)
