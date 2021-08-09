@@ -22,9 +22,13 @@ export default class extends VuexModuleBase {
 
   public showColumnTotalState = true;
 
+  public showColumnSATKSkill = true;
+
   public showColumnSATK = true;
 
   public showColumnSDEF = true;
+
+  public showColumnMATKSkill = true;
 
   public showColumnMATK = true;
 
@@ -50,7 +54,7 @@ export default class extends VuexModuleBase {
 
   public showColumnDARK = true;
 
-  @MutationAction({ mutate: ['category', 'weaponKind', 'battleElement', 'skillElement', 'support', 'quality', 'level', 'showColumnTotalState', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK'] })
+  @MutationAction({ mutate: ['category', 'weaponKind', 'battleElement', 'skillElement', 'support', 'quality', 'level', 'showColumnTotalState', 'showColumnSATKSkill', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATKSkill', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK'] })
   public async reset() {
     return {
       category: null,
@@ -61,8 +65,10 @@ export default class extends VuexModuleBase {
       quality: ItemMVList.equipmentMaxQuality,
       level: ItemMVList.equipmentMaxLevel,
       showColumnTotalState: true,
+      showColumnSATKSkill: true,
       showColumnSATK: true,
       showColumnSDEF: true,
+      showColumnMATKSkill: true,
       showColumnMATK: true,
       showColumnMDEF: true,
       showColumnSPD: true,

@@ -3,11 +3,11 @@ div.container
   div.filters
     div.filter
       span {{ $t('カテゴリー') }}
-      el-select(v-model="category" placeholder="" searchable clearable)
+      el-select(v-model="category" placeholder="" searchable clearable @change="updateSort")
         el-option(v-for="item of itemCategoryOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('武器種類') }}
-      el-select(v-model="weaponKind" placeholder="" searchable clearable :disabled="!enableWeaponKindFilter")
+      el-select(v-model="weaponKind" placeholder="" searchable clearable :disabled="!isCurrentCategoryWeaponKindFilter")
         el-option(v-for="item of weaponKindOptions" :key="item.value" :label="item.label" :value="item.value")
     div.filter
       span {{ $t('攻撃属性') }}
@@ -18,7 +18,7 @@ div.container
       el-select(v-model="skillElement" placeholder="" clearable filterable)
         el-option(v-for="[value, label] of Object.entries(dataManager.lookup.EBattleElementKind)" :key="value" :label="$t(label)" :value="+value")
     div.filters
-      el-checkbox(@change="onSupportChange" v-model="support") {{ $t('サブ装備') }}
+      el-checkbox(@change="updateSort" v-model="support") {{ $t('サブ装備') }}
   div.filters
     div.filter
       span {{ $t('品質') }}
@@ -29,8 +29,10 @@ div.container
   div.filters
     div.filter
       el-checkbox(v-model="showColumnTotalState") {{ $t('総戦闘力') }}
+      el-checkbox(v-model="showColumnSATKSkill") {{ $t('物理スキル') }}
       el-checkbox(v-model="showColumnSATK") {{ $t('物理攻撃') }}
       el-checkbox(v-model="showColumnSDEF") {{ $t('物理防禦') }}
+      el-checkbox(v-model="showColumnMATKSkill") {{ $t('魔法スキル') }}
       el-checkbox(v-model="showColumnMATK") {{ $t('魔法攻撃') }}
       el-checkbox(v-model="showColumnMDEF") {{ $t('魔法防禦') }}
       el-checkbox(v-model="showColumnSPD") {{ $t('速度') }}
@@ -44,7 +46,7 @@ div.container
       el-checkbox(v-model="showColumnLIGHT") {{ $t('光') }}
       el-checkbox(v-model="showColumnDARK") {{ $t('闇') }}
 
-  el-table(:data="filteredData" @sort-change="onSortChange")
+  el-table(ref="table" :data="filteredData" @sort-change="onSortChange")
     el-table-column(prop="NAME" :label="$t('名前')")
       template(slot-scope="scope")
         span {{ scope.row.NAME }}
@@ -54,13 +56,41 @@ div.container
           router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }" target="_blank")
             img.icon-small(:src="character.icon" :alt="character.NAME")
     el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
+
+    el-table-column(v-if="showColumnSATK && showAttackSkillColumn" prop="SATKSkill" :width="tableOptions.column.attackSkillWidth" :align="tableOptions.column.align" sortable="custom")
+      template(slot="header")
+        el-tooltip(v-if="dataManager.locale === 'en'" :content="$t('物理スキル')" placement="top")
+          span P.ATK Skill
+        span(v-else) {{ $t('物理スキル') }}
+      template(slot-scope="scope")
+        span {{ scope.row.SATKSkill }}
+        template(v-if="scope.row.SATKSkill && scope.row.skill")
+          span  (
+          span {{ scope.row.skill.effectValue * 100 }}%
+          span  {{ $t(dataManager.lookup.EBattleElementKindShort[scope.row.skill.element]) }}
+          span )
+
     el-table-column(v-if="showColumnSATK" prop="SATK" :label="$t('物理攻撃')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
     el-table-column(v-if="showColumnSDEF" prop="SDEF" :label="$t('物理防禦')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
+
+    el-table-column(v-if="showColumnMATKSkill && showAttackSkillColumn" prop="MATKSkill" :width="tableOptions.column.attackSkillWidth" :align="tableOptions.column.align" sortable="custom")
+      template(slot="header")
+        el-tooltip(v-if="dataManager.locale === 'en'" :content="$t('魔法スキル')" placement="top")
+          span M.ATK Skill
+        span(v-else) {{ $t('魔法スキル') }}
+      template(slot-scope="scope")
+        span {{ scope.row.MATKSkill }}
+        template(v-if="scope.row.MATKSkill && scope.row.skill")
+          span  (
+          span {{ scope.row.skill.effectValue * 100 }}%
+          span  {{ $t(dataManager.lookup.EBattleElementKindShort[scope.row.skill.element]) }}
+          span )
+
     el-table-column(v-if="showColumnMATK" prop="MATK" :label="$t('魔法攻撃')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
     el-table-column(v-if="showColumnMDEF" prop="MDEF" :label="$t('魔法防禦')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
     el-table-column(v-if="showColumnSPD" prop="SPD" :label="$t('速度')" width="100%" :align="tableOptions.column.align" sortable="custom")
-    el-table-column(v-if="showColumnQTH" prop="QTH" :label="$t('クリティカル')" :width="tableOptions.column.criticalHitWidth" :align="tableOptions.column.align" sortable="custom")
-    el-table-column(v-if="showColumnDDG" prop="DDG" :label="$t('回避')" width="100%" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnQTH && !support" prop="QTH" :label="$t('クリティカル')" :width="tableOptions.column.criticalHitWidth" :align="tableOptions.column.align" sortable="custom")
+    el-table-column(v-if="showColumnDDG && !support" prop="DDG" :label="$t('回避')" width="100%" :align="tableOptions.column.align" sortable="custom")
     el-table-column(v-if="showColumnTotalElement" prop="totalElement" :label="$t('全属性')" :width="tableOptions.column.allElementWidth" :align="tableOptions.column.align" sortable="custom")
     el-table-column(v-if="showColumnFIRE" prop="FIRE" :label="$t('火')" width="100%" :align="tableOptions.column.align" sortable="custom")
     el-table-column(v-if="showColumnWATER" prop="WATER" :label="$t('水')" width="100%" :align="tableOptions.column.align" sortable="custom")
@@ -78,6 +108,8 @@ import { sum } from 'lodash';
 import { Formula } from '@/logic/Formula';
 import { MVList as ItemMVList } from '@/master/item';
 import { mapFields } from 'vuex-map-fields';
+import { EBattleAttribute } from '@/logic/Enums';
+import Vue from 'vue';
 
 abstract class VueWithMapFields extends VueBase {
   public category!: number | null;
@@ -96,9 +128,13 @@ abstract class VueWithMapFields extends VueBase {
 
   public showColumnTotalState!: boolean;
 
+  public showColumnSATKSkill!: boolean;
+
   public showColumnSATK!: boolean;
 
   public showColumnSDEF!: boolean;
+
+  public showColumnMATKSkill!: boolean;
 
   public showColumnMATK!: boolean;
 
@@ -129,7 +165,7 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('equipmentRankingFilter', ['category', 'weaponKind', 'battleElement', 'skillElement', 'support', 'quality', 'level', 'showColumnTotalState', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
+    ...mapFields('equipmentRankingFilter', ['category', 'weaponKind', 'battleElement', 'skillElement', 'support', 'quality', 'level', 'showColumnTotalState', 'showColumnSATKSkill', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATKSkill', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
   },
 })
 export default class extends VueWithMapFields {
@@ -137,6 +173,7 @@ export default class extends VueWithMapFields {
     const d = {
       column: {
         longTextWidth: '100%',
+        attackSkillWidth: '120%',
         criticalHitWidth: '130%',
         allElementWidth: '120%',
         darknessWidth: '100%',
@@ -159,6 +196,7 @@ export default class extends VueWithMapFields {
         return {
           column: {
             longTextWidth: '180',
+            attackSkillWidth: '130%',
             criticalHitWidth: '120%',
             allElementWidth: '120%',
             darknessWidth: '110%',
@@ -174,7 +212,11 @@ export default class extends VueWithMapFields {
 
   public order = null;
 
-  public get enableWeaponKindFilter() {
+  public get showAttackSkillColumn() {
+    return this.isCurrentCategoryWeaponKindFilter && !this.support;
+  }
+
+  public get isCurrentCategoryWeaponKindFilter() {
     return !this.category || this.dataManager.itemsWeaponKindCategories.includes(this.category);
   }
 
@@ -216,7 +258,7 @@ export default class extends VueWithMapFields {
   }
 
   private get items() {
-    if (!this.enableWeaponKindFilter) {
+    if (!this.isCurrentCategoryWeaponKindFilter) {
       this.weaponKind = null;
     }
 
@@ -247,8 +289,10 @@ export default class extends VueWithMapFields {
 
       totalState: sum(ItemMVList.states.filter((state) => state in p.EQU).map((state) => p.EQU[state].getSupportValue(this.level))),
       SATK: p.EQU.SATK.getSupportValue(this.level),
+      SATKSkill: 0,
       SDEF: p.EQU.SDEF.getSupportValue(this.level),
       MATK: p.EQU.MATK.getSupportValue(this.level),
+      MATKSkill: 0,
       MDEF: p.EQU.MDEF.getSupportValue(this.level),
       SPD: p.EQU.SPD.getSupportValue(this.level),
       QTH: 0,
@@ -260,32 +304,43 @@ export default class extends VueWithMapFields {
       WIND: Formula.getSupportElement(p.ELM.WIND),
       LIGHT: Formula.getSupportElement(p.ELM.LIGHT),
       DARK: Formula.getSupportElement(p.ELM.DARK),
+
+      skill: null,
     }));
   }
 
   private get equpiments() {
-    return this.filteredItems.map((p) => ({
-      DF: p.DF,
-      NAME: p.NAME,
-      GROUP_DF: p.GROUP_DF,
-      icon: p.icon,
+    return this.filteredItems.map((p) => {
+      const SATK = p.getState('SATK', this.quality, this.level).total;
+      const MATK = p.getState('MATK', this.quality, this.level).total;
+      const skill = p.getAttackSkill(this.quality);
+      return {
+        DF: p.DF,
+        NAME: p.NAME,
+        GROUP_DF: p.GROUP_DF,
+        icon: p.icon,
 
-      totalState: sum(p.getStates(this.quality, this.level).map((i) => i.total)),
-      SATK: p.getState('SATK', this.quality, this.level).total,
-      SDEF: p.getState('SDEF', this.quality, this.level).total,
-      MATK: p.getState('MATK', this.quality, this.level).total,
-      MDEF: p.getState('MDEF', this.quality, this.level).total,
-      SPD: p.getState('SPD', this.quality, this.level).total,
-      QTH: p.getState('QTH', this.quality, this.level).total,
-      DDG: p.getState('DDG', this.quality, this.level).total,
-      totalElement: sum(p.getElements(this.quality).map((i) => i.total)),
-      FIRE: p.getElement('FIRE', this.quality).total,
-      WATER: p.getElement('WATER', this.quality).total,
-      EARTH: p.getElement('EARTH', this.quality).total,
-      WIND: p.getElement('WIND', this.quality).total,
-      LIGHT: p.getElement('LIGHT', this.quality).total,
-      DARK: p.getElement('DARK', this.quality).total,
-    }));
+        totalState: sum(p.getStates(this.quality, this.level).map((i) => i.total)),
+        SATK,
+        SATKSkill: skill && [EBattleAttribute.eSLASH_DAMAGED, EBattleAttribute.eBLOW_DAMAGED].includes(skill.attackSkill.attribute) ? Math.round(SATK * skill.effectValue) : 0,
+        SDEF: p.getState('SDEF', this.quality, this.level).total,
+        MATK,
+        MATKSkill: skill && skill.attackSkill.attribute === EBattleAttribute.eMAGIC_DAMAGED ? Math.round(MATK * skill.effectValue) : 0,
+        MDEF: p.getState('MDEF', this.quality, this.level).total,
+        SPD: p.getState('SPD', this.quality, this.level).total,
+        QTH: p.getState('QTH', this.quality, this.level).total,
+        DDG: p.getState('DDG', this.quality, this.level).total,
+        totalElement: sum(p.getElements(this.quality).map((i) => i.total)),
+        FIRE: p.getElement('FIRE', this.quality).total,
+        WATER: p.getElement('WATER', this.quality).total,
+        EARTH: p.getElement('EARTH', this.quality).total,
+        WIND: p.getElement('WIND', this.quality).total,
+        LIGHT: p.getElement('LIGHT', this.quality).total,
+        DARK: p.getElement('DARK', this.quality).total,
+
+        skill,
+      };
+    });
   }
 
   public beforeMount() {
@@ -294,14 +349,31 @@ export default class extends VueWithMapFields {
     }
   }
 
-  public onSupportChange() {
-    this.level += 1;
-    this.level -= 1;
-  }
-
   public onSortChange({ prop, order }: { prop: string, order: string }) {
     this.sort = prop;
     this.order = order;
+  }
+
+  public updateSort() {
+    const { sort } = this;
+    if (this.sort) {
+      (this.$refs.table as { clearSort: () => void } & HTMLTableElement).clearSort();
+    }
+
+    if (!this.showAttackSkillColumn) {
+      switch (sort) {
+        case 'SATKSkill':
+          this.sort = 'SATK';
+          break;
+        case 'MATKSkill':
+          this.sort = 'MATK';
+          break;
+        default:
+          this.sort = sort;
+      }
+    } else {
+      this.sort = sort;
+    }
   }
 }
 </script>

@@ -1,4 +1,4 @@
-import { EBattleEffectTrigger, EWeaponKind } from './Enums';
+import { EWeaponKind } from './Enums';
 
 export const lookup = {
   // value lookups
@@ -143,6 +143,15 @@ export const lookup = {
     5: '光属性',
     6: '闇属性',
   },
+  EBattleElementKindShort: {
+    0: '無',
+    1: '火',
+    2: '水',
+    3: '風',
+    4: '土',
+    5: '光',
+    6: '闇',
+  },
   eFieldItemRange: {
     1: '一人',
     2: '全人',
@@ -193,7 +202,7 @@ export const lookup = {
     5018: '対話納品',
   },
   EBattleAttribute: {
-    0: '無',
+    0: '無種類',
     1: 'スラッシュ',
     2: '打撃',
     3: '魔法',
