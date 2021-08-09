@@ -246,7 +246,7 @@
   "セッティングリセット": "Setting Reset",
   "セッティングリセットよろしいでしか": "Are you sure to reset all settings",
   "-": "-",
-  "無": "none(physical)",
+  "無種類": "none(physical)",
   "他のサイト": "Other sites",
   "材料強化": "Enhance Material",
   "次まで": "Until next",
@@ -331,5 +331,8 @@
   "※ゲーム内ではLV1食事お0/60表示されます LV2食事は1/60です": "※Note in game display 0/60 mean LV1 food level and 1/60 mean LV2",
   "確率": "{0}% chance",
   "デフォルトサーバ": "Default Server",
-  "デフォルトロケール": "Default Locale"
+  "デフォルトロケール": "Default Locale",
+  "物理スキル": "Physical Attack Skill",
+  "魔法スキル": "Magical Attack Skill",
+  "無": "Non"
 }
