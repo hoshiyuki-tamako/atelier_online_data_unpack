@@ -12,7 +12,7 @@ div.item-enhance-quality
       div.item(v-for="(quality, i) of qualities")
         div
           el-input-number(v-model="quality.quality" size="mini" :min="1" :max="Quality.experiences.length" :step="1" step-strictly)
-        el-tooltip(effect="light" :content="`${$t('品質')}${$t('経験値')} ${quality}`" placement="right")
+        el-tooltip(effect="light" :content="`${$t('品質経験値')} ${quality}`" placement="right")
           div.item__icon(@click="remove(i)")
             img.icon-small(src="img/icon_item_s/Texture2D/icon_item_s_10020003.png" :alt="$t('アイテム')")
   div.right
@@ -21,18 +21,29 @@ div.item-enhance-quality
       div.orginal-item__edit
         span {{ $t('品質') }}
         el-input-number(v-model="originalQuality" size="mini" :min="1" :max="Quality.experiences.length" :step="1" step-strictly)
-        span {{ $t('次まで') }}
+        span {{ $t('あと') }}
         el-input-number(v-model="untilNextQuality" size="mini" :min="0" :max="maxNextLevel" :step="1" step-strictly)
       div.after-item
-        div x{{ qualities.length }}{{ $t('個') }} / {{ $t('品質') }} {{ result.quality }} / {{ $t('次まで') }} {{ result.untilNext }} / {{ $t('品質') }}{{ $t('経験値') }} {{ result }}
+        p x{{ qualities.length }} {{ $t('個') }}
+        br
+        table
+          tr
+            th {{ $t('目標品質') }}
+            td {{ result.quality }}
+          tr
+            th {{ $t('あと') }}
+            td {{ result.untilNext }}
+          tr
+            th {{ $t('品質経験値') }}
+            td {{ result }}
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import { mapFields } from 'vuex-map-fields';
-import { Quality } from '@/logic/Quality';
 import { plainToClass } from 'class-transformer';
+import VueBase from '@/components/VueBase';
+import { Quality } from '@/logic/Quality';
 
 abstract class VueWithMapFields extends VueBase {
   public quality!: number;
@@ -140,4 +151,12 @@ a
     margin-left: 12px
 .after-item
   margin-top: 12px
+
+.after-item th
+  text-align: left
+  white-space: nowrap
+  padding: 4px
+
+.after-item td
+  padding: 4px
 </style>

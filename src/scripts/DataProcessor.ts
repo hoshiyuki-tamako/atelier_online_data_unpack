@@ -14,10 +14,31 @@ export default class DataProcessor {
       ...serverIds.map((id) => this.processMaster(id, sourceFolder, rootFolder)),
       ...serverIds.map((id) => this.processAdv(id, sourceFolder, rootFolder)),
       ...serverIds.map((id) => this.processSpawnList(id, sourceFolder, rootFolder)),
+
+      ...serverIds.map((id) => this.processMasterOld(id, sourceFolder, rootFolder)),
+      ...serverIds.map((id) => this.processAdvOld(id, sourceFolder, rootFolder)),
+      ...serverIds.map((id) => this.processSpawnListOld(id, sourceFolder, rootFolder)),
     ]);
   }
 
   private async processMaster(serverId: string, sourceFolder: string, rootFolder: string) {
+    const rawFolder = path.join(sourceFolder, serverId, 'master', 'MonoBehaviour');
+    const outFolder = path.join(rootFolder, serverId, 'export', 'master');
+
+    if (!await fs.pathExists(rawFolder)) {
+      console.log(`skipping master data process: required ${rawFolder}`);
+      return;
+    }
+
+    const files = await fs.readdir(rawFolder);
+    await Promise.all(files.map(async (file) => {
+      const rawFile = path.join(rawFolder, file);
+      const outFile = path.join(outFolder, file);
+      await fs.writeJson(outFile, await fs.readJson(rawFile));
+    }));
+  }
+
+  private async processMasterOld(serverId: string, sourceFolder: string, rootFolder: string) {
     const rawFolder = path.join(sourceFolder, serverId, 'master', 'MonoBehaviour');
     const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export') : path.join(rootFolder, 'export', serverId);
 
@@ -35,9 +56,25 @@ export default class DataProcessor {
   }
 
   //
-  private async processAdv(serverId: string, sourceFolder: string, rootFolder: string) {
+  private async processAdvOld(serverId: string, sourceFolder: string, rootFolder: string) {
     const rawFolder = path.join(sourceFolder, serverId, 'adv', 'MonoBehaviour');
     const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export', 'adv') : path.join(rootFolder, 'export', serverId, 'adv');
+
+    if (await fs.pathExists(rawFolder)) {
+      const rawFiles = await fs.readdir(rawFolder);
+      await Promise.all(rawFiles.map(async (file) => {
+        const rawFile = path.join(rawFolder, file);
+        const outFile = path.join(outFolder, file);
+        await fs.writeJson(outFile, await fs.readJson(rawFile));
+      }));
+    } else {
+      console.log(`skipping adv data process: required ${rawFolder}`);
+    }
+  }
+
+  private async processAdv(serverId: string, sourceFolder: string, rootFolder: string) {
+    const rawFolder = path.join(sourceFolder, serverId, 'adv', 'MonoBehaviour');
+    const outFolder = path.join(rootFolder, serverId, 'export', 'adv');
 
     if (await fs.pathExists(rawFolder)) {
       const rawFiles = await fs.readdir(rawFolder);
@@ -166,6 +203,23 @@ export default class DataProcessor {
 
   //
   private async processSpawnList(serverId: string, sourceFolder: string, rootFolder: string) {
+    const rawFolder = path.join(sourceFolder, serverId, 'spawnList', 'TextAsset');
+    const outFolder = path.join(rootFolder, serverId, 'export', 'SpawnList');
+
+    if (!await fs.pathExists(rawFolder)) {
+      console.log(`skipping spawnList data process: required ${rawFolder}`);
+      return;
+    }
+
+    const files = await fs.readdir(rawFolder);
+    await Promise.all(files.map(async (file) => {
+      const rawFile = path.join(rawFolder, file);
+      const outFile = path.join(outFolder, file);
+      await fs.copy(rawFile, outFile);
+    }));
+  }
+
+  private async processSpawnListOld(serverId: string, sourceFolder: string, rootFolder: string) {
     const rawFolder = path.join(sourceFolder, serverId, 'spawnList', 'TextAsset');
     const outFolder = serverId === 'jp' ? path.join(rootFolder, 'export', 'SpawnList', 'TextAsset') : path.join(rootFolder, 'export', serverId, 'SpawnList', 'TextAsset');
 

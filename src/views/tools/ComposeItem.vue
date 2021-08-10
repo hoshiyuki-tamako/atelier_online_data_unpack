@@ -12,6 +12,8 @@ div
         div(v-for="item in filteredItems" @click="onPickItem(item)")
           p {{ item.NAME }}
           img.icon-small(:src="item.icon" :alt="item.NAME")
+    div(slot="footer")
+      el-button(@click="itemPickerDialogVisible = false" type="primary") {{ $t('閉じる') }}
 
   el-dialog(title="" :visible.sync="exportComposeItemUrlVisible")
     el-input(type="textarea" :value="href" autosize)

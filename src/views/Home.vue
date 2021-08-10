@@ -34,10 +34,9 @@ div.container
 <script lang="ts">
 import Component from 'vue-class-component';
 import Enumerable from 'linq';
+import { mapFields } from 'vuex-map-fields';
 import VueBase from '@/components/VueBase';
 import InfoHeader from '@/components/home/InfoHeader.vue';
-
-import { mapFields } from 'vuex-map-fields';
 import { CharacterType } from '@/store/characters/charactersFilter';
 import { SkillKind } from './skills/Skills.vue';
 

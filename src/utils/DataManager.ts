@@ -40,6 +40,7 @@ import { ApiManager } from './ApiManager';
 type AtelierServerInfo = {
   id: string;
   locales: string[];
+  timeZone: string;
 }
 
 export class DataManager {
@@ -60,16 +61,19 @@ export class DataManager {
     {
       id: 'jp',
       locales: ['ja-JP'],
+      timeZone: 'Asia/Tokyo',
     },
     {
       id: 'tw',
       locales: ['zh-TW', 'zh-CN'],
+      timeZone: 'Asia/Taipei',
     },
     {
       id: 'en',
       locales: ['en'],
+      timeZone: 'America/Los_Angeles',
     },
-  ];
+  ] as AtelierServerInfo[];
 
   public static get serversById () {
     return Enumerable.from(this.servers).toObject((p) => p.id, (p) => p) as { [id: string]: AtelierServerInfo };
@@ -106,6 +110,10 @@ export class DataManager {
     this.#locale = DataManager.supportedLocales.find((p) => p.toLocaleLowerCase() === value?.toLocaleLowerCase()) || DataManager.defaultLocale;
   }
 
+  public get server() {
+    return DataManager.serversById[this.serverId];
+  }
+
   public get serverId() {
     switch (this.locale) {
       case 'zh-TW':
@@ -120,34 +128,23 @@ export class DataManager {
     }
   }
 
-  public get dataFolder() {
-    switch (this.locale) {
-      case 'zh-TW':
-      case 'zh-HK':
-      case 'zh-CN':
-        return 'tw/';
-      case 'en':
-        return 'en/';
-      case 'ja-JP':
-      default:
-        return '';
-    }
+  public get exportFolderUrl() {
+    return `${this.serverId}/export/`;
   }
 
-  public exportFolder = './export/';
-  public get exportFolderUrl() {
-    return `${this.exportFolder}${this.dataFolder}`;
+  public getExportMasterJsonUrl(file: string) {
+    return `${this.exportFolderUrl}master/${file}`;
   }
-  public getExportJsonUrl(file: string) {
-    return `${this.exportFolderUrl}${file}`;
-  }
+
   public async loadJson(url: string) {
     return fetch(url).then((p) => p.json());
   }
-  public async loadExportJson(file: string) {
-    return this.loadJson(this.getExportJsonUrl(`${file}.json`));
+
+  public async loadExportMasterJson(file: string) {
+    return this.loadJson(this.getExportMasterJsonUrl(`${file}.json`));
   }
 
+  //
   public cache<T>(name: string, getValue: () => T): T {
     const cachedResult = this.valueCache.get(name);
     if (cachedResult) {
@@ -797,9 +794,9 @@ export class DataManager {
 
   public get unusedAdvs() {
     return this.cache('unusedAdvs', () => {
-      const advFiles = this.getAdvFilesTree();
+      const advFiles = this.advFilesTree;
       const advs = Object.values(advFiles).map((p: string) => p.split('.')[0]) as string[];
-      const existingAdvs = dataManager.quest.m_vList.map((p) => p.NPC_FD.map((i) => i.ADV)).flat().filter((p) => p);
+      const existingAdvs = this.quest.m_vList.map((p) => p.NPC_FD.map((i) => i.ADV)).flat().filter((p) => p);
       const notExistingAdvs = advs.filter((p) => !existingAdvs.includes(p));
       return Enumerable.from(notExistingAdvs)
         .groupBy((p) => p.split('_')[0] || p)
@@ -808,7 +805,7 @@ export class DataManager {
   }
 
   public get townIcons() {
-    return this.cache('townIcons', () => Object.values(dataManager.files.img.map_town.Texture2D)
+    return this.cache('townIcons', () => Object.values(this.files.img.map_town.Texture2D)
     .filter((p) => !p.endsWith('_02.png')));
   }
 
@@ -819,19 +816,26 @@ export class DataManager {
     .toObject((p) => p.key(), (p) => p.select(({ id }) => id).toArray()) as AdvMap);
   }
 
+  public get advFilesTree() {
+    return this.files[this.serverId]?.export.adv || this.files.jp.export.adv;
+  }
+
   //
   public async load(showHiddenContent = false) {
     this.valueCache.clear();
+    this.advManager.clearCache();
+    this.spawnerDataManager.clearCache();
+
     this.showHiddenContent = showHiddenContent;
     await Promise.all([
-      ...Object.keys(this.dataDependency).map((name) => this.loadData(name)),
+      ...Object.keys(this.dataDependency).map((name) => this.loadMasterData(name)),
       this.loadGenerated(),
       this.spawnerDataManager.load(),
       this.api.load(),
     ]);
   }
 
-  public async loadData(name: string) {
+  public async loadMasterData(name: string) {
     if (this.dataLoadMap[name]) {
       return;
     }
@@ -839,8 +843,8 @@ export class DataManager {
 
     try {
       const [value] = await Promise.all([
-        this.loadExportJson(this.dataFileMap[name] || name),
-        ...this.dataDependency[name]?.map((n: string) => this.loadData(n)) || [],
+        this.loadExportMasterJson(this.dataFileMap[name] || name),
+        ...this.dataDependency[name]?.map((n: string) => this.loadMasterData(n)) || [],
       ]);
       const classType = this.dataClassMap[name];
       this[name] = classType ? plainToClass(classType, value) : value;
@@ -867,18 +871,6 @@ export class DataManager {
       this.loadJson(`${this.serverId}/generated/advAudioById.json`),
       this.loadJson(`${this.serverId}/generated/characterVoices.json`),
     ]);
-  }
-
-  private getAdvFilesTree() {
-    switch (this.serverId) {
-      case 'tw':
-        return dataManager.files.export.tw.adv;
-      case 'en':
-        return dataManager.files.export.en.adv;
-      case 'jp':
-      default:
-        return dataManager.files.export.adv;
-    }
   }
 
   // helper

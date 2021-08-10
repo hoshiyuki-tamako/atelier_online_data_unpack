@@ -13,6 +13,7 @@ div.item-enhance-quality
           img.icon-middle(:src="item.icon" :alt="item.NAME")
   div.right
     div.character
+      CharacterSelector(v-model="characterDf" :characters="dataManager.charactersCanBattle" :showTitle="false" :clearable="false")
       img.icon-large(:src="character.icon" :alt="character.NAME")
     div.blaze-art
       div
@@ -32,11 +33,12 @@ div.item-enhance-quality
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import { mapFields } from 'vuex-map-fields';
+import Enumerable from 'linq';
+import VueBase from '@/components/VueBase';
 import { ECategory } from '@/logic/Enums';
 import { MVList as ItemMVList } from '@/master/item';
-import Enumerable from 'linq';
+import CharacterSelector from '@/components/inputs/CharacterSelector.vue';
 
 abstract class VueWithMapFields extends VueBase {
   public level!: number;
@@ -48,6 +50,7 @@ abstract class VueWithMapFields extends VueBase {
 
 @Component({
   components: {
+    CharacterSelector,
   },
   computed: {
     ...mapFields('blazeArtLeveling', ['level', 'untilExp', 'characterDf']),
@@ -91,7 +94,7 @@ export default class extends VueWithMapFields {
   }
 
   public get character() {
-    return this.dataManager.characterById[this.characterDf] || this.dataManager.characterById[5014];
+    return this.dataManager.characterById[this.characterDf];
   }
 
   public get blazeArt() {
@@ -127,6 +130,13 @@ export default class extends VueWithMapFields {
       untilNextLevel: 0,
       overExp: this.blazeArt.LV.reduce((sum, p) => sum + p.EXP_PT, 0) - (this.currentExp + this.totalItemExp),
     };
+  }
+
+  //
+  public beforeMount() {
+    if (!this.characterDf) {
+      this.characterDf = 5014;
+    }
   }
 
   //

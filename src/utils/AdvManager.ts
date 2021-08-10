@@ -47,6 +47,11 @@ export class AdvManager {
   public constructor(private dataManager: DataManager) {
   }
 
+  public clearCache() {
+    this.#advCache.clear();
+    this.#dialogCache.clear();
+  }
+
   public async getAdv(adv: string) {
     const url = this.getAdvJsonUrl(adv);
     if (!this.#advCache.has(url)) {
@@ -121,6 +126,6 @@ export class AdvManager {
   }
 
   private getAdvJsonUrl(adv: string) {
-    return `export/${this.dataManager.locale === 'ja-JP' ? '' : `${this.dataManager.serverId}/`}adv/${adv}.json`;
+    return `${this.dataManager.exportFolderUrl}adv/${adv}.json`;
   }
 }

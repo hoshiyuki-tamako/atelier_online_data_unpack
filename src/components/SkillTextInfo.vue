@@ -7,7 +7,7 @@ div(v-if="skills && skills.length")
       tr
         th {{ $t('名前') }}
         td
-          router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
+          router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
       tr
         th {{ $t('詳細') }}
         td {{ skill.detail }}
@@ -40,20 +40,20 @@ div(v-if="skills && skills.length")
               p {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
       tr(v-if="skill.effect === EBattleEffectKind.eZONE_CHANGE" v-for="zone of [dataManager.zoneById[skill.effectValue]].filter((p) => p)")
         th
-          router-link(:to="{ name: 'InfoZone', query: { id: zone.id } }") {{ zone.name }}
+          router-link(:to="{ name: 'InfoZone', query: { id: zone.id } }" target="_blank") {{ zone.name }}
         td
           p(v-for="zoneEffectId of zone.effectlist") {{ dataManager.zoneEffectById[zoneEffectId].name }} ({{ dataManager.zoneEffectById[zoneEffectId].value }})
       tr(v-if="skill.effect === EBattleEffectKind.eSTART_SKILL && dataManager.skillById[skill.effectValue]")
         th {{ $t('スキル') }}
         td
           p(v-for="skill of [dataManager.skillById[skill.effectValue]]")
-            router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
+            router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
       tr(v-if="skill.combSkillList.length || skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE")
         th {{ $t('含まれるスキル') }}
         td
           template(v-for="skill of skill.combSkillList")
             p
-              router-link(:to="{ name: 'Skills', query: { id: skill.id } }") {{ skill.name }}
+              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
             p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[skill.id]].filter((p) => p)")
               router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
           p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[skill.id]].filter((p) => p)")

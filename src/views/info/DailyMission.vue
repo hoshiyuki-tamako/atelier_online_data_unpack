@@ -12,8 +12,8 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import Enumerable from 'linq';
+import VueBase from '@/components/VueBase';
 
 @Component({
   components: {
@@ -50,15 +50,9 @@ export default class extends VueBase {
   }
 
   public isTodayWeek(weekName: string) {
-    const localeTimezone = {
-      'ja-JP': 'Asia/Tokyo',
-      'zh-TW': 'Asia/Taipei',
-      'zh-CN': 'Asia/Taipei',
-      en: 'Asia/Tokyo',
-    };
     const weekFormat = new Intl.DateTimeFormat(this.dataManager.locale, {
       weekday: 'long',
-      timeZone: localeTimezone[this.dataManager.locale],
+      timeZone: this.dataManager.server.timeZone,
     });
     return weekFormat.format(this.now) === weekName;
   }

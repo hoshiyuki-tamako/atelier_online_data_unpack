@@ -4,6 +4,7 @@ import { SpawnerData } from '@/models/SpawnerData';
 import { plainArrayToClass } from 'class-transformer-for-array';
 import Enumerable from 'linq';
 import { parse } from 'papaparse';
+
 import { DataManager } from './DataManager';
 
 export interface IEnemyMap {
@@ -90,17 +91,17 @@ export class SpawnerDataManager {
   public constructor(private dataManager: DataManager) {
   }
 
-  public async load() {
+  public clearCache() {
     this.spawnLists.clear();
+  }
 
-    const spawnFiles = this.getSpawnFilesTree();
-    const spawnListFolders = this.dataManager.serverId === 'jp'
-      ? 'export/SpawnList/TextAsset'
-      : `export/${this.dataManager.serverId}/SpawnList/TextAsset`;
+  public async load() {
+    // Make sure dataManager cache is clear before calling this function
+    const spawnFiles = this.dataManager.files[this.dataManager.serverId]?.export.SpawnList || files.jp.export.SpawnList;
 
     await Promise.all(Object.values(spawnFiles).map(async (csvFileName: string) => {
       try {
-        const url = `${spawnListFolders}/${csvFileName}`;
+        const url = `${this.dataManager.exportFolderUrl}SpawnList/${csvFileName}`;
         const { data } = await new Promise((complete, error) => parse(url, {
           download: true,
           skipEmptyLines: true,
@@ -112,17 +113,5 @@ export class SpawnerDataManager {
         console.error(e);
       }
     }));
-  }
-
-  private getSpawnFilesTree() {
-    switch (this.dataManager.serverId) {
-      case 'tw':
-        return files.export.tw.SpawnList.TextAsset;
-      case 'en':
-        return files.export.en.SpawnList.TextAsset;
-      case 'jp':
-      default:
-        return files.export.SpawnList.TextAsset;
-    }
   }
 }
