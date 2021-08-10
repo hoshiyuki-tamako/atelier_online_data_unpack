@@ -2,6 +2,8 @@ import './registerServiceWorker';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'reflect-metadata';
 
+import 'vue-json-pretty/lib/styles.css';
+
 import ElementUi from 'element-ui';
 import VTooltip from 'v-tooltip';
 import Vue from 'vue';

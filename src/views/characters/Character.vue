@@ -1,5 +1,7 @@
 <template lang="pug">
 div.container
+  JsonViewDialog(ref="jsonViewDialog")
+
   div.item-container(v-if="character")
     div.item-container-left
       h3.item-name {{ character.NAME }}
@@ -16,6 +18,8 @@ div.container
         img(src="img/icon_item01/Texture2D/icon_item01_00006.png" :alt="$t('限界キャンディ')")
         span {{ grow.STONE }}
         span {{ '⭐'.repeat(grow.STAR) }}
+      br
+      el-link(@click="$refs.jsonViewDialog.open(character)" :underline="false") {{ $t('Rawデータ') }}
 
     div.item-container-right
       div(v-if="character.EXC")
@@ -155,10 +159,12 @@ import { MVList as CharacterMVList } from '@/master/chara';
 import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
 import SkillTextInfo from '@/components/SkillTextInfo.vue';
 import { eConditionType } from '@/logic/Enums';
+import JsonViewDialog from '@/components/JsonViewDialog.vue';
 
 @Component({
   components: {
     SkillTextInfo,
+    JsonViewDialog,
   },
 })
 export default class extends VueBase {

@@ -1,5 +1,7 @@
 <template lang="pug">
 div.container
+  JsonViewDialog(ref="jsonViewDialog")
+
   div.filters
     div.filter
       el-select(v-model="filter.skillKind" @change="resetPage" placeholder="" clearable filterable)
@@ -113,6 +115,8 @@ div.container
                 h4 {{ $t('スキル') }}
                 p(v-for="skill of [dataManager.skillById[props.row.effectValue]]")
                   router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+              br
+              el-link(@click="$refs.jsonViewDialog.open(props.row)" :underline="false") {{ $t('Rawデータ') }}
 
             div.item-container-right
               div(v-if="dataManager.itemsBySkill[props.row.id]")
@@ -155,11 +159,12 @@ div.container
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
-import { List as SkillList } from '@/master/skill';
 import LRU from 'lru-cache';
 import { mapFields } from 'vuex-map-fields';
+import VueBase from '@/components/VueBase';
+import { List as SkillList } from '@/master/skill';
 import { EBattleEffectKind, EBattleEffectTarget, EBattleEffectTrigger } from '@/logic/Enums';
+import JsonViewDialog from '@/components/JsonViewDialog.vue';
 
 abstract class VueWithMapFields extends VueBase {
   public showColumnId!: boolean;
@@ -187,6 +192,7 @@ export enum SkillKind {
 
 @Component({
   components: {
+    JsonViewDialog,
   },
   computed: {
     ...mapFields('skillsFilter', ['showColumnId', 'showColumnName', 'showColumnAttackSkillAttribute', 'showColumnAttackSkillElement', 'showColumnTargetTeam', 'showColumnStateOwn', 'showColumnState']),

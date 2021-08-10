@@ -1,5 +1,7 @@
 <template lang="pug">
 div.container
+  JsonViewDialog(ref="jsonViewDialog")
+
   el-dialog(title="" :visible.sync="fbxDialogVisible" width="90%")
     model-fbx.item-fbx-container(v-loading="fbxLoading" @on-load="fbxLoading = false" :src="enemy.model" :position="fbxPosition" :rotation="fbxRotation" backgroundColor="rgb(169,169,169)")
 
@@ -24,6 +26,8 @@ div.container
       p {{ $t('視角') }}: {{ enemy.viewAngleDegree }}°
       p {{ $t('移動速度') }}: {{ enemy.fMoveSpeed }}
       p {{ $t('打撃範囲') }}: {{ enemy.fHitRadius }}
+      br
+      el-link(@click="$refs.jsonViewDialog.open(enemy)" :underline="false") {{ $t('Rawデータ') }}
 
     div.item-container-right
       div
@@ -52,16 +56,18 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
+import { ModelFbx } from 'vue-3d-model';
 import VueBase from '@/components/VueBase';
 import { MVList as EnemyMVList } from '@/master/enemy';
 import { EnemyModifier } from '@/logic/modifiers/EnemyModifier';
-import { ModelFbx } from 'vue-3d-model';
 import SkillTextInfo from '@/components/SkillTextInfo.vue';
+import JsonViewDialog from '@/components/JsonViewDialog.vue';
 
 @Component({
   components: {
     'model-fbx': ModelFbx,
     SkillTextInfo,
+    JsonViewDialog,
   },
 })
 export default class extends VueBase {

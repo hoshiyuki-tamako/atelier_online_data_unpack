@@ -35,9 +35,9 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
+import { mapFields } from 'vuex-map-fields';
 import VueBase from '@/components/VueBase';
 import { CharacterType } from '@/store/characters/charactersFilter';
-import { mapFields } from 'vuex-map-fields';
 
 abstract class VueWithMapFields extends VueBase {
   public characterType!: number;

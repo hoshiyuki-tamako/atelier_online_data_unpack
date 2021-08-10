@@ -48,8 +48,8 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import { mapFields } from 'vuex-map-fields';
+import VueBase from '@/components/VueBase';
 import { eRaceKind } from '@/logic/Enums';
 
 abstract class VueWithMapFields extends VueBase {
@@ -198,22 +198,12 @@ export default class extends VueWithMapFields {
     return items;
   }
 
-  public beforeMount() {
+  public async beforeMount() {
     if (this.$route.query.category) {
-      this.resetFilter();
+      await this.$store.dispatch('itemsFilter/reset');
       this.category = +this.$route.query.category;
       this.$router.replace({ query: { ...this.$route.query, category: undefined } });
     }
-  }
-
-  public resetFilter() {
-    this.category = null;
-    this.name = '';
-    this.weaponKind = null;
-    this.battleElement = null;
-    this.sort = 1;
-    this.legendRecipe = false;
-    this.characterOnlyItem = false;
   }
 }
 </script>

@@ -37,10 +37,10 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
 
 <script lang="ts">
 import Component from 'vue-class-component';
+import MobileDetect from 'mobile-detect';
 import VueBase from '@/components/VueBase';
 import { MVList as QuestMVList } from '@/master/quest';
 import { IAdventure } from '@/utils/AdvManager';
-import MobileDetect from 'mobile-detect';
 import { EOrderType, eMusicID } from '@/logic/Enums';
 import { RichTextService } from '@/services/RichTextService';
 import { MVList as CharaMVList } from '@/master/chara';
@@ -72,7 +72,7 @@ export default class extends VueBase {
   public questDialogs: IAdventure[] = [];
 
   // services
-  private richTextService = new RichTextService();
+  public richTextService = new RichTextService();
 
   public getCharacterIcon(df: number, facialExpression: number) {
     const imageFile = `icon_chara_all_${df.toString().padStart(4, '0')}_${facialExpression.toString().padStart(2, '0')}.png`;

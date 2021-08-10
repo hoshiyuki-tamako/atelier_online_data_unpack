@@ -1,5 +1,7 @@
 <template lang="pug">
 div.container
+  JsonViewDialog(ref="jsonViewDialog")
+
   el-dialog(title="" :visible.sync="fbxDialogVisible" width="90%")
     model-fbx.item-fbx-container(v-loading="fbxLoading" @on-load="fbxLoading = false" :src="item.model" :position="fbxPosition" :rotation="fbxRotation" backgroundColor="rgb(169,169,169)")
 
@@ -39,6 +41,8 @@ div.container
             span {{ $t('売却') }}
             img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="dataManager.wealthById[2].NAME")
             span {{ item.RST.MN }}
+      br
+      el-link(@click="$refs.jsonViewDialog.open(item)" :underline="false") {{ $t('Rawデータ') }}
 
     div.item-container-right
       div(v-if="item.hasSkill || item.EQU_BRD")
@@ -201,18 +205,20 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
+import { clamp } from 'lodash';
+import { ModelFbx } from 'vue-3d-model';
 import VueBase from '@/components/VueBase';
 import { MVList as ItemMVList } from '@/master/item';
 import { ItemModifier } from '@/logic/modifiers/ItemModifier';
-import { clamp } from 'lodash';
-import { ModelFbx } from 'vue-3d-model';
 import { EWeaponKind, ECategory } from '@/logic/Enums';
 import SkillTextInfo from '@/components/SkillTextInfo.vue';
+import JsonViewDialog from '@/components/JsonViewDialog.vue';
 
 @Component({
   components: {
     'model-fbx': ModelFbx,
     SkillTextInfo,
+    JsonViewDialog,
   },
 })
 export default class extends VueBase {

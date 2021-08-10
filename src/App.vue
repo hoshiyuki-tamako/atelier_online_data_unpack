@@ -614,6 +614,7 @@ export default class extends VueWithMapFields {
 @import "./design/styles/degree.sass"
 @import "./design/styles/vue-select.sass"
 @import "./design/styles/element-ui.sass"
+@import "./design/styles/vue-json-pretty.sass"
 @import "./design/styles/option.sass"
 
 *, .reset

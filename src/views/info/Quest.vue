@@ -1,5 +1,6 @@
 <template lang="pug">
 div.container
+  JsonViewDialog(ref="jsonViewDialog")
   AdventureRawDialog#quest-dialog(ref="advDialog")
   div.filters
     div.filter
@@ -60,6 +61,8 @@ div.container
                   router-link(:to="{ name: 'Areas', query: { df: quest.AREA } }" target="_blank")
                     template(v-for="area of [dataManager.areaInfoById[quest.AREA]].filter((p) => p)")
                       template(v-for="fieldName of [dataManager.fieldNameById[area.iAreaNameId]].filter((p) => p)") {{ fieldName.strAreaName }}
+                br
+                el-link(@click="$refs.jsonViewDialog.open(quest)" :underline="false") {{ $t('Rawデータ') }}
               div.item-container-right
                 div(v-if="quest.CONDITION")
                   h4 {{ $t('達成條件') }}
@@ -177,14 +180,15 @@ div.container
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
-import { MVList as QuestMVList } from '@/master/quest';
 import LRU from 'lru-cache';
 import { mapFields } from 'vuex-map-fields';
+import VueBase from '@/components/VueBase';
+import { MVList as QuestMVList } from '@/master/quest';
 import AdventureRawDialog from '@/components/AdventureRawDialog.vue';
 import CharacterSelector from '@/components/inputs/CharacterSelector.vue';
 import WealthSelector from '@/components/inputs/WealthSelector.vue';
 import DegreeSelector from '@/components/inputs/DegreeSelector.vue';
+import JsonViewDialog from '@/components/JsonViewDialog.vue';
 
 abstract class VueWithMapFields extends VueBase {
   public showColumnDF!: boolean;
@@ -214,6 +218,7 @@ abstract class VueWithMapFields extends VueBase {
     CharacterSelector,
     WealthSelector,
     DegreeSelector,
+    JsonViewDialog,
   },
   computed: {
     ...mapFields('questsFilter', ['showColumnDF', 'showColumnNAME', 'showColumnCATEG', 'showColumnCOST', 'showColumnENM', 'showColumnGET', 'showColumnDLV', 'showColumnARA', 'showColumnDialog', 'showColumnCharacter']),
