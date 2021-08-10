@@ -64,13 +64,18 @@ div.container
         span(v-else) {{ $t('物理スキル') }}
       template(slot-scope="scope")
         span {{ scope.row.SATKSkill }}
-        template(v-if="scope.row.SATKSkill && scope.row.skill")
+        template(v-if="scope.row.SATKSkill && scope.row.attackSkill")
           span  (
-          span {{ scope.row.skill.effectValue * 100 }}%
-          span  {{ $t(dataManager.lookup.EBattleElementKindShort[scope.row.skill.element]) }}
+          span {{ scope.row.attackSkill.effectValue * 100 }}%
+          span  {{ $t(dataManager.lookup.EBattleElementKindShort[scope.row.attackSkill.element]) }}
           span )
 
     el-table-column(v-if="showColumnSATK" prop="SATK" :label="$t('物理攻撃')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
+      template(slot-scope="scope")
+        span {{ scope.row.SATK }}
+        template(v-if="scope.row.SATK && canShowAttackElementText(scope.row.item.CATEG)" v-for="elementChangeSkill of [scope.row.item.elementChangeSkill]")
+          span(v-if="elementChangeSkill")  ({{ $t(dataManager.lookup.EBattleElementKindShort[elementChangeSkill.effectValue]) }})
+          span(v-else)  ({{ $t(dataManager.lookup.EBattleElementKindShort[0]) }})
     el-table-column(v-if="showColumnSDEF" prop="SDEF" :label="$t('物理防禦')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
 
     el-table-column(v-if="showColumnMATKSkill && showAttackSkillColumn" prop="MATKSkill" :width="tableOptions.column.attackSkillWidth" :align="tableOptions.column.align" sortable="custom")
@@ -80,13 +85,19 @@ div.container
         span(v-else) {{ $t('魔法スキル') }}
       template(slot-scope="scope")
         span {{ scope.row.MATKSkill }}
-        template(v-if="scope.row.MATKSkill && scope.row.skill")
+        template(v-if="scope.row.MATKSkill && scope.row.attackSkill")
           span  (
-          span {{ scope.row.skill.effectValue * 100 }}%
-          span  {{ $t(dataManager.lookup.EBattleElementKindShort[scope.row.skill.element]) }}
+          span {{ scope.row.attackSkill.effectValue * 100 }}%
+          span  {{ $t(dataManager.lookup.EBattleElementKindShort[scope.row.attackSkill.element]) }}
           span )
 
     el-table-column(v-if="showColumnMATK" prop="MATK" :label="$t('魔法攻撃')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
+      template(slot-scope="scope")
+        span {{ scope.row.MATK }}
+        template(v-if="scope.row.MATK && canShowAttackElementText(scope.row.item.CATEG)" v-for="elementChangeSkill of [scope.row.item.elementChangeSkill]")
+          span(v-if="elementChangeSkill")  ({{ $t(dataManager.lookup.EBattleElementKindShort[elementChangeSkill.effectValue]) }})
+          span(v-else)  ({{ $t(dataManager.lookup.EBattleElementKindShort[0]) }})
+
     el-table-column(v-if="showColumnMDEF" prop="MDEF" :label="$t('魔法防禦')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable="custom")
     el-table-column(v-if="showColumnSPD" prop="SPD" :label="$t('速度')" width="100%" :align="tableOptions.column.align" sortable="custom")
     el-table-column(v-if="showColumnQTH && !support" prop="QTH" :label="$t('クリティカル')" :width="tableOptions.column.criticalHitWidth" :align="tableOptions.column.align" sortable="custom")
@@ -102,14 +113,13 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import Enumerable from 'linq';
 import { sum } from 'lodash';
+import { mapFields } from 'vuex-map-fields';
+import VueBase from '@/components/VueBase';
 import { Formula } from '@/logic/Formula';
 import { MVList as ItemMVList } from '@/master/item';
-import { mapFields } from 'vuex-map-fields';
-import { EBattleAttribute } from '@/logic/Enums';
-import Vue from 'vue';
+import { EBattleAttribute, ECategory } from '@/logic/Enums';
 
 abstract class VueWithMapFields extends VueBase {
   public category!: number | null;
@@ -216,6 +226,10 @@ export default class extends VueWithMapFields {
     return this.isCurrentCategoryWeaponKindFilter && !this.support;
   }
 
+  public canShowAttackElementText(category: ECategory) {
+    return !this.support && category === ECategory.eWEAPON;
+  }
+
   public get isCurrentCategoryWeaponKindFilter() {
     return !this.category || this.dataManager.itemsWeaponKindCategories.includes(this.category);
   }
@@ -305,7 +319,9 @@ export default class extends VueWithMapFields {
       LIGHT: Formula.getSupportElement(p.ELM.LIGHT),
       DARK: Formula.getSupportElement(p.ELM.DARK),
 
-      skill: null,
+      attackSkill: null,
+
+      item: p,
     }));
   }
 
@@ -313,7 +329,7 @@ export default class extends VueWithMapFields {
     return this.filteredItems.map((p) => {
       const SATK = p.getState('SATK', this.quality, this.level).total;
       const MATK = p.getState('MATK', this.quality, this.level).total;
-      const skill = p.getAttackSkill(this.quality);
+      const attackSkill = p.getAttackSkill(this.quality);
       return {
         DF: p.DF,
         NAME: p.NAME,
@@ -322,10 +338,10 @@ export default class extends VueWithMapFields {
 
         totalState: sum(p.getStates(this.quality, this.level).map((i) => i.total)),
         SATK,
-        SATKSkill: skill && [EBattleAttribute.eSLASH_DAMAGED, EBattleAttribute.eBLOW_DAMAGED].includes(skill.attackSkill.attribute) ? Math.round(SATK * skill.effectValue) : 0,
+        SATKSkill: attackSkill && [EBattleAttribute.eSLASH_DAMAGED, EBattleAttribute.eBLOW_DAMAGED].includes(attackSkill.attackSkill.attribute) ? Math.round(SATK * attackSkill.effectValue) : 0,
         SDEF: p.getState('SDEF', this.quality, this.level).total,
         MATK,
-        MATKSkill: skill && skill.attackSkill.attribute === EBattleAttribute.eMAGIC_DAMAGED ? Math.round(MATK * skill.effectValue) : 0,
+        MATKSkill: attackSkill && attackSkill.attackSkill.attribute === EBattleAttribute.eMAGIC_DAMAGED ? Math.round(MATK * attackSkill.effectValue) : 0,
         MDEF: p.getState('MDEF', this.quality, this.level).total,
         SPD: p.getState('SPD', this.quality, this.level).total,
         QTH: p.getState('QTH', this.quality, this.level).total,
@@ -338,7 +354,9 @@ export default class extends VueWithMapFields {
         LIGHT: p.getElement('LIGHT', this.quality).total,
         DARK: p.getElement('DARK', this.quality).total,
 
-        skill,
+        attackSkill,
+
+        item: p,
       };
     });
   }
