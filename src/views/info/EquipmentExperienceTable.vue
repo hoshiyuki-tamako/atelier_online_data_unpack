@@ -12,7 +12,7 @@ import Component from 'vue-class-component';
 import Enumerable from 'linq';
 import VueBase from '@/components/VueBase';
 import { EquipmentExperience } from '@/logic/EquipmentExperience';
-import { MVList as ItemMVList } from '@/master/item';
+// import { MVList as ItemMVList } from '@/master/item';
 
 @Component({
   components: {
@@ -20,7 +20,7 @@ import { MVList as ItemMVList } from '@/master/item';
 })
 export default class extends VueBase {
   public get experiences() {
-    const maxLevel = ItemMVList.equipmentMaxLevel;
+    const maxLevel = 60;
     return Enumerable.range(1, maxLevel)
       .select((level) => ({
         level,
