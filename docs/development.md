@@ -20,12 +20,12 @@ most file follow naming convention from the source code
 
 ### MonoBehaviour
 
-- master `./public/export/*`
-- adv `./public/export/adv/*`
+- master `./public/{serverId}/export/master/*`
+- adv `./public/{serverId}/export/adv/*`
 
 ### Text Assets
 
-- SpawnList `./public/export/SpawnList/TextAsset/*`
+- SpawnList `./public/{serverId}/export/SpawnList/*`
 
 ### Models
 
@@ -89,7 +89,7 @@ item
     },
   ],
   "RST": { // sell
-    "MN": 10, // we sell エーテル gain
+    "MN": 10, // the エーテル amount we will get if we sell it
     "ITEM": []
   },
   "RAR": 1, // 0 = 特殊材料, 1 = normal
@@ -108,8 +108,8 @@ item
   },
   "EQU": { // equipment spec
     "EB": {
-      "G": 0.0, // not sure what G does
-      "M": 0, // GMRB formula, floor(((M - B)/R) * level + B)
+      "G": 0.0, // power gain
+      "M": 0, // GMRB (int) (B + pow(level/R, G) * (M - B))
       "R": 0,
       "B": 0
     },

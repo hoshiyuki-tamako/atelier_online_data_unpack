@@ -62,9 +62,9 @@ import { mapFields } from 'vuex-map-fields';
 import { sify } from 'chinese-conv';
 import MobileDetect from 'mobile-detect';
 import draggable from 'vuedraggable';
+import { TranslateMutationObserver } from 'translate-mutation-observer';
 import VueBase from '@/components/VueBase';
 import InfoHeader from '@/components/home/InfoHeader.vue';
-import { TranslateMutationObserver } from 'translate-mutation-observer';
 import { defaultMenuItemIds } from './store/home';
 import { DataManager } from './utils/DataManager';
 
@@ -172,7 +172,7 @@ export default class extends VueWithMapFields {
       },
       {
         id: 4,
-        title: this.$t('材料強化'),
+        title: this.$t('材料 / 装備品質強化'),
         img: {
           src: 'img/icon_item_s/Texture2D/icon_item_s_10020003.png',
         },
@@ -440,6 +440,36 @@ export default class extends VueWithMapFields {
           name: 'OthersCgs',
         },
       },
+      {
+        id: 31,
+        title: this.$t('品質表'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10059999.png',
+        },
+        to: {
+          name: 'InfoQualityTable',
+        },
+      },
+      {
+        id: 32,
+        title: this.$t('装備経験値表'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_55019999.png',
+        },
+        to: {
+          name: 'InfoEquipmentExperienceTable',
+        },
+      },
+      {
+        id: 33,
+        title: this.$t('装備経験値強化'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_55010003.png',
+        },
+        to: {
+          name: 'ToolsEquipmentExperienceLeveling',
+        },
+      },
     ];
   }
 
@@ -497,6 +527,7 @@ export default class extends VueWithMapFields {
       this.$store.dispatch('questsFilter/reset'),
       this.$store.dispatch('adventBattleFilter/reset'),
       this.$store.dispatch('blazeArtLeveling/reset'),
+      this.$store.dispatch('equipmentLeveling/reset'),
     ]);
     window.location.reload();
   }

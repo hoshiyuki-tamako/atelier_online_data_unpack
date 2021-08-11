@@ -3,37 +3,23 @@ div.container
   div.calculation-state
     h3 {{ $t('ステータスの公式') }}
     div
-      p floor(((M - B)/R) * level + B)
-      br
-      p R = {{ $t('目標レベル值') }}
-      p M = R {{ $t('レベルのステータス最大值') }}
-      p B = {{ $t('ステータス初始值') }}
-      p level = {{ $t('アイテムのレベル') }}
-
-    br
-    h4 {{ $t('Example') }}
-    div
-      p {{ $t('闇夜の盾') }}
-      p LV 1 {{ $t('物理攻撃') }} SATK 6
-      p LV 60 {{ $t('物理攻撃') }} SATK 40
-      p R = 60, M = 40, B = 6, {{ $t('欲しいレベル') }} = 80
-      p ((40 - 6)/60) * 80 + 6 = 51.3333333333
-      p floor(51.3333333333) = 51
-      p LV 80 {{ $t('物理攻撃') }} SATK = 51
-
+      p R = {{ $t('レベル') }}
+      p B = {{ $t('ベース') }}
+      p (int) (B + pow(level/R, G) * (M - B))
     br
     h3 {{ $t('サブ装備') }}
     div
       p x = {{ $t('上值') }} * 0.05
       p x {{ '>' }}= 0 ? ceil(x) : floor(x)
-
     br
     h4 {{ $t('計算') }}
     el-form(label-position="right" label-width="80px")
-      el-form-item(label="R")
-        el-input-number(v-model="state.r" label="R" placeholder="R" size="mini" :min="0" :step="1" step-strictly)
+      el-form-item(label="G")
+        el-input-number(v-model="state.g" label="G" placeholder="G" size="mini" :min="0")
       el-form-item(label="M")
         el-input-number(v-model="state.m" placeholder="M" size="mini" :min="0" :step="1" step-strictly)
+      el-form-item(label="R")
+        el-input-number(v-model="state.r" label="R" placeholder="R" size="mini" :min="0" :step="1" step-strictly)
       el-form-item(label="B")
         el-input-number(v-model="state.b" placeholder="B" size="mini" :min="0" :step="1" step-strictly)
       el-form-item(label="Level")
@@ -45,21 +31,41 @@ div.container
 
   el-divider
   div.calculation-strength
-    h3 {{ $t('強さ') }}
     div
       p {{ $t('強さ') }} = sum({{ $t('物理攻撃') }}{{ $t('ベース') }} + {{ $t('物理防禦') }}{{ $t('ベース') }} + {{ $t('魔法攻撃') }}{{ $t('ベース') }} + {{ $t('魔法防禦') }}{{ $t('ベース') }})
 
   el-divider
   div.calculation-quality
-    h3 {{ $t('調合') }}{{ $t('品質') }}
     div
-      p {{ $t('調合') }}{{ $t('品質') }} = clamp(floor(sum({{ $t('品質') }}) / count) + sum({{ $t('品質特性') }}), 1, 100)
+      p {{ $t('調合品質') }} = clamp(floor(sum({{ $t('品質') }}) / count) + sum({{ $t('品質特性') }}), 1, 100)
 
   el-divider
   div
-    h3 {{ $t('材料強化') }}
+    h3
+      span {{ $t('材料 / 装備品質強化') }}
+      span &nbsp;
+        el-link(@click="onClickTestItemQualityEnhance") test
     div
-      p {{ $t('品質') }} = sum({{ $t('品質') }}{{ $t('経験値') }})
+      p G = 6.5
+      p M = 2500000
+      p R = 100
+      p B = 10
+      p {{ $t('品質経験値') }} = (int) (B + pow(level/R, G) * (M - B))
+      p {{ $t('品質') }} = sum({{ $t('品質経験値') }})
+
+  el-divider
+  div
+    h3
+      span {{ $t('装備経験値強化') }}
+      span &nbsp;
+        el-link(@click="onClickTestItemExperience") test
+    div
+      p G = 3
+      p M = 20000
+      p R = 60
+      p B = 1
+      p {{ $t('装備経験値') }} = (int) (B + pow(level/R, G) * (M - B))
+      p {{ $t('レベル') }} = sum({{ $t('装備経験値') }})
 </template>
 
 <script lang="ts">
@@ -73,6 +79,7 @@ import { Formula } from '@/logic/Formula';
 })
 export default class extends VueBase {
   public state = {
+    g: 1,
     r: 60,
     m: 40,
     b: 6,
@@ -81,6 +88,7 @@ export default class extends VueBase {
 
   public get stateFormula() {
     const formula = new Formula();
+    formula.G = this.state.g;
     formula.R = this.state.r;
     formula.M = this.state.m;
     formula.B = this.state.b;
@@ -93,6 +101,21 @@ export default class extends VueBase {
 
   public get stateSupportResult() {
     return this.stateFormula.getSupportValue(this.state.level);
+  }
+
+  //
+  public onClickTestItemQualityEnhance() {
+    this.$set(this.state, 'g', 6.5);
+    this.$set(this.state, 'm', 2500000);
+    this.$set(this.state, 'r', 100);
+    this.$set(this.state, 'b', 10);
+  }
+
+  public onClickTestItemExperience() {
+    this.$set(this.state, 'g', 3);
+    this.$set(this.state, 'm', 20000);
+    this.$set(this.state, 'r', 60);
+    this.$set(this.state, 'b', 1);
   }
 }
 </script>

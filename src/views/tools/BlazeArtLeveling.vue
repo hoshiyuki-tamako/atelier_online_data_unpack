@@ -16,7 +16,7 @@ div.item-enhance-quality
       CharacterSelector(v-model="characterDf" :characters="dataManager.charactersCanBattle" :showTitle="false" :clearable="false")
       img.icon-large(:src="character.icon" :alt="character.NAME")
     div.blaze-art
-      div
+      div.orginal-item__edit
         span {{ $t('LV') }}
         el-input-number(v-model="level" size="mini" :min="1" :max="character.maxBlazeArtLevel" :step="1" step-strictly)
         span {{ $t('あと') }}
@@ -183,6 +183,9 @@ a
   .item
     padding: 12px
     cursor: pointer
+.orginal-item__edit
+  > span:nth-child(3)
+    margin-left: 12px
 
 .total-item
   display: flex

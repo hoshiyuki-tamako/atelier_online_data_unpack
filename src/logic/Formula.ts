@@ -18,7 +18,11 @@ export class Formula {
   public B = 0;
 
   public getValue(level = 1) {
-    return Math.floor(((this.M - this.B) / this.R) * level + this.B);
+    return Math.trunc(this.B + Math.pow(level/this.R, this.G) * (this.M - this.B));
+  }
+
+  public findLevel(total: number) {
+    return Math.round(this.R * Math.pow((this.B - total)/(this.B - this.M), 1/this.G));
   }
 
   public getSupportValue(level = 1) {

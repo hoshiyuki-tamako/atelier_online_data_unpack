@@ -26,7 +26,15 @@ const toolsRotes: Array<RouteConfig> = [
     name: 'ToolsItemEnhanceQuality',
     component: () => import(/* webpackChunkName: "ToolsItemEnhanceQuality" */ '@/views/tools/ItemEnhanceQuality.vue'),
     meta: {
-      title: '材料強化',
+      title: '材料 / 装備品質強化',
+    },
+  },
+  {
+    path: '/tools/equipmentExperienceLeveling',
+    name: 'ToolsEquipmentExperienceLeveling',
+    component: () => import(/* webpackChunkName: "ToolsEquipmentExperienceLeveling" */ '@/views/tools/EquipmentExperienceLeveling.vue'),
+    meta: {
+      title: '装備経験値強化',
     },
   },
   {
@@ -271,6 +279,22 @@ const infoRoutes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "InfoHunt" */ '@/views/info/Hunt.vue'),
     meta: {
       title: 'トレジャー',
+    },
+  },
+  {
+    path: '/info/qualityTable',
+    name: 'InfoQualityTable',
+    component: () => import(/* webpackChunkName: "InfoQualityTable" */ '@/views/info/QualityTable.vue'),
+    meta: {
+      title: '品質表',
+    },
+  },
+  {
+    path: '/info/equipmentExperienceTable',
+    name: 'InfoEquipmentExperienceTable',
+    component: () => import(/* webpackChunkName: "InfoEquipmentExperienceTable" */ '@/views/info/EquipmentExperienceTable.vue'),
+    meta: {
+      title: '装備経験値表',
     },
   },
 ];

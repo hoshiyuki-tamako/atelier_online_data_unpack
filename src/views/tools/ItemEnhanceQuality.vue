@@ -4,14 +4,14 @@ div.item-enhance-quality
     div.filters
       div.filter
         span {{ $t('品質') }}
-        el-input-number(v-model="quality" size="small" :min="1" :max="Quality.experiences.length" :step="1" step-strictly)
+        el-input-number(v-model="quality" size="small" :min="10" :max="Quality.experiences.length" :step="1" step-strictly)
         el-button(@click="add" size="small" type="primary") +
         el-button(@click="setAll" type="primary" size="small") {{ $t('まとめで設定') }}
         el-button(@click="removeAll" type="danger" icon="el-icon-delete" circle)
     div.items
       div.item(v-for="(quality, i) of qualities")
         div
-          el-input-number(v-model="quality.quality" size="mini" :min="1" :max="Quality.experiences.length" :step="1" step-strictly)
+          el-input-number(v-model="quality.quality" size="mini" :min="10" :max="Quality.experiences.length" :step="1" step-strictly)
         el-tooltip(effect="light" :content="`${$t('品質経験値')} ${quality}`" placement="right")
           div.item__icon(@click="remove(i)")
             img.icon-small(src="img/icon_item_s/Texture2D/icon_item_s_10020003.png" :alt="$t('アイテム')")
@@ -20,12 +20,10 @@ div.item-enhance-quality
       img(src="img/icon_item_s/Texture2D/icon_item_s_10020003.png" :alt="$t('アイテム')")
       div.orginal-item__edit
         span {{ $t('品質') }}
-        el-input-number(v-model="originalQuality" size="mini" :min="1" :max="Quality.experiences.length" :step="1" step-strictly)
+        el-input-number(v-model="originalQuality" size="mini" :min="10" :max="Quality.experiences.length" :step="1" step-strictly)
         span {{ $t('あと') }}
         el-input-number(v-model="untilNextQuality" size="mini" :min="0" :max="maxNextLevel" :step="1" step-strictly)
       div.after-item
-        p x{{ qualities.length }} {{ $t('個') }}
-        br
         table
           tr
             th {{ $t('目標品質') }}
@@ -36,6 +34,11 @@ div.item-enhance-quality
           tr
             th {{ $t('品質経験値') }}
             td {{ result }}
+        br
+        p.total-item
+          img.icon-small(src="img/icon_item_s/Texture2D/icon_item_s_10020003.png" :alt="$t('アイテム')")
+          span x{{ qualities.length }} {{ $t('個') }}
+
 </template>
 
 <script lang="ts">
@@ -159,4 +162,8 @@ a
 
 .after-item td
   padding: 4px
+
+.total-item
+  display: flex
+  align-items: center
 </style>

@@ -120,12 +120,21 @@ export default class extends VueWithMapFields {
         },
       },
       {
-        label: this.$t('材料強化'),
+        label: this.$t('材料 / 装備品質強化'),
         img: {
           src: 'img/icon_item_s/Texture2D/icon_item_s_10020003.png',
         },
         to: {
           name: 'ToolsItemEnhanceQuality',
+        },
+      },
+      {
+        label: this.$t('装備経験値強化'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_55010003.png',
+        },
+        to: {
+          name: 'ToolsEquipmentExperienceLeveling',
         },
       },
       {
@@ -441,6 +450,24 @@ export default class extends VueWithMapFields {
         },
         to: {
           name: 'InfoZone',
+        },
+      },
+      {
+        label: this.$t('品質表'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_10059999.png',
+        },
+        to: {
+          name: 'InfoQualityTable',
+        },
+      },
+      {
+        label: this.$t('装備経験値表'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_55019999.png',
+        },
+        to: {
+          name: 'InfoEquipmentExperienceTable',
         },
       },
     ];
