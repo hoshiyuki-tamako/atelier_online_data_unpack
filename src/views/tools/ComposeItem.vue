@@ -71,11 +71,11 @@ div
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import { clamp } from 'lodash';
+import { mapFields } from 'vuex-map-fields';
+import VueBase from '@/components/VueBase';
 import { MVList as ItemMVList } from '@/master/item';
 import { MaterialOptions } from '@/store/tools/composeItemFilter';
-import { mapFields } from 'vuex-map-fields';
 import SkillTextInfo from '@/components/SkillTextInfo.vue';
 
 abstract class VueWithMapFields extends VueBase {
