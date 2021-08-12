@@ -32,7 +32,7 @@ div.container
     div.item-container-right
       div
         el-form(label-position="left" label-width="110px")
-          el-form-item(label="LV")
+          el-form-item(:label="$t('レベル')")
             el-input-number(v-model="enemyModifier.level" size="mini" :min="1" :step="1" step-strictly)
         table
           tr(v-for="state of enemy.getStates(enemyModifier.level)")

@@ -6,7 +6,6 @@ import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 export class MaterialOptions extends ItemModifier {
   public addonQuality = 0;
 }
-
 @Module({
   namespaced: true,
 })

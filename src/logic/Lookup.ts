@@ -207,4 +207,10 @@ export const lookup = {
     2: '打撃',
     3: '魔法',
   },
+  EBattleAttributeShort: {
+    0: '物理',
+    1: '物理',
+    2: '物理',
+    3: '魔法',
+  },
 };

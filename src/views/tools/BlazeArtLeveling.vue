@@ -17,14 +17,14 @@ div.item-enhance-quality
       img.icon-large(:src="character.icon" :alt="character.NAME")
     div.blaze-art
       div.orginal-item__edit
-        span {{ $t('LV') }}
+        span {{ $t('レベル') }}
         el-input-number(v-model="level" size="mini" :min="1" :max="character.maxBlazeArtLevel" :step="1" step-strictly)
         span {{ $t('あと') }}
         el-input-number(v-model="untilExp" size="mini" :min="0" :max="maxExp" :step="1" step-strictly)
       br
-      p(v-for="{ level, totalExp, untilNextLevel, overExp } of [expInfo]") {{ $t('LV') }} {{ level }} / {{ $t('経験値') }} {{ totalExp }} / {{ $t('あと') }} {{ untilNextLevel }} / {{ $t('無駄になった経験値') }} {{ overExp }}
+      p(v-for="{ level, totalExp, untilNextLevel, overExp } of [expInfo]") {{ $t('レベル') }} {{ level }} / {{ $t('経験値') }} {{ totalExp }} / {{ $t('あと') }} {{ untilNextLevel }} / {{ $t('無駄になった経験値') }} {{ overExp }}
       br
-      p(v-for="(lv, i) of blazeArt.LV") {{ $t('LV') }} {{ i + 1 }} {{ $t('経験値') }} {{ blazeArt.levelExperience(i + 1) }}
+      p(v-for="(lv, i) of blazeArt.LV") {{ $t('レベル') }} {{ i + 1 }} {{ $t('経験値') }} {{ blazeArt.levelExperience(i + 1) }}
       br
       p.total-item(v-for="{ item, count } of totalItems")
         img.icon-small(:src="item.icon" :alt="item.NAME")

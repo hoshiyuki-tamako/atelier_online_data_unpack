@@ -11,15 +11,19 @@ div.container
         el-option(v-for="item in weaponTypeOptions" :key="item.value" :label="item.label" :value="item.value")
   div.filters
     div.filter
-      span LV
+      span {{ $t('レベル') }}
       el-input-number(v-model="level" size="mini" :min="1" :step="1" step-strictly)
     div.filter
-      span {{ $t('食事') }} LV
+      span {{ $t('食事レベル') }}
       el-input-number(v-model="foodLevel" size="mini" :min="1" :max="level" :step="1" step-strictly)
+    div.filter
+      span {{ $t('ブレイズアーツレベル') }}
+      el-input-number(v-model="blazeArtLevel" size="mini" :min="0" :max="5" :step="1" step-strictly)
   div.filters
     div.filter
       el-checkbox(v-model="showColumnTotalState") {{ $t('総戦闘力') }}
       el-checkbox(v-model="showColumnHP") {{ $t('HP') }}
+      el-checkbox(v-model="showColumnBlazeArt") {{ $t('ブレイズアーツ') }}
       el-checkbox(v-model="showColumnSATK") {{ $t('物理攻撃') }}
       el-checkbox(v-model="showColumnSDEF") {{ $t('物理防禦') }}
       el-checkbox(v-model="showColumnMATK") {{ $t('魔法攻撃') }}
@@ -42,6 +46,19 @@ div.container
         router-link(:to="{ name: 'CharactersCharacter', query: { df: scope.row.DF, level, foodLevel } }" target="_blank")
           img.icon-small(:src="scope.row.icon" :alt="scope.row.NAME")
     el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable)
+
+    el-table-column(v-if="showColumnBlazeArt" prop="blazeArt" :width="tableOptions.column.attackSkillWidth" :align="tableOptions.column.align" sortable)
+      template(slot="header")
+        span {{ $t('ブレイズアーツ') }}
+      template(slot-scope="scope")
+        span {{ scope.row.blazeArt }}
+        template(v-if="scope.row.blazeArt && scope.row.blazeArtSkill && scope.row.blazeArtSkill.attackSkill")
+          span  (
+          span {{ scope.row.blazeArtSkill.attackSkill.effectValue * 100 }}%
+          span  {{ $t(dataManager.lookup.EBattleElementKindShort[scope.row.blazeArtSkill.attackSkill.element]) }}
+          span  {{ $t(dataManager.lookup.EBattleAttributeShort[scope.row.blazeArtSkill.attackSkill.attribute]) }}
+          span )
+
     el-table-column(v-if="showColumnHP" prop="HP" :label="$t('HP')" width="100%" :align="tableOptions.column.align" sortable)
     el-table-column(v-if="showColumnSATK" prop="SATK" :label="$t('物理攻撃')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable)
     el-table-column(v-if="showColumnSDEF" prop="SDEF" :label="$t('物理防禦')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable)
@@ -61,9 +78,10 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import { sum } from 'lodash';
 import { mapFields } from 'vuex-map-fields';
+import VueBase from '@/components/VueBase';
+import { EBattleAttribute } from '@/logic/Enums';
 
 abstract class VueWithMapFields extends VueBase {
   public gender!: number | null;
@@ -74,7 +92,11 @@ abstract class VueWithMapFields extends VueBase {
 
   public level!: number;
 
+  public blazeArtLevel!: number;
+
   public showColumnTotalState!: boolean;
+
+  public showColumnBlazeArt!: boolean;
 
   public showColumnHP!: boolean;
 
@@ -111,7 +133,7 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('characterRankingFilter', ['gender', 'weaponType', 'foodLevel', 'level', 'showColumnTotalState', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
+    ...mapFields('characterRankingFilter', ['gender', 'weaponType', 'foodLevel', 'level', 'blazeArtLevel', 'showColumnTotalState', 'showColumnBlazeArt', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK']),
   },
 })
 export default class extends VueWithMapFields {
@@ -119,6 +141,7 @@ export default class extends VueWithMapFields {
     const d = {
       column: {
         longTextWidth: '100%',
+        attackSkillWidth: '170%',
         criticalHitWidth: '130%',
         allElementWidth: '120%',
         darknessWidth: '100%',
@@ -139,8 +162,11 @@ export default class extends VueWithMapFields {
         };
       case 'en':
         return {
+          ...d,
           column: {
+            ...d.column,
             longTextWidth: '180',
+            attackSkillWidth: '200%',
             criticalHitWidth: '120%',
             allElementWidth: '120%',
             darknessWidth: '110%',
@@ -179,27 +205,46 @@ export default class extends VueWithMapFields {
         (!this.gender || p.GEN === this.gender)
         && ([null, '', -1].includes(this.weaponType) || p.WEAPON.some((o) => o.GEN === this.weaponType))
       ))
-      .map((p) => ({
-        icon: p.icon,
-        DF: p.DF,
-        NAME: p.NAME,
-        totalState: sum(p.getStates(this.level, this.foodLevel).map((i) => i.total)),
-        HP: p.getState('HP', this.level, this.foodLevel).total,
-        SATK: p.getState('SATK', this.level, this.foodLevel).total,
-        SDEF: p.getState('SDEF', this.level, this.foodLevel).total,
-        MATK: p.getState('MATK', this.level, this.foodLevel).total,
-        MDEF: p.getState('MDEF', this.level, this.foodLevel).total,
-        SPD: p.getState('SPD', this.level, this.foodLevel).total,
-        QTH: p.getState('QTH', this.level, this.foodLevel).total,
-        DDG: p.getState('DDG', this.level, this.foodLevel).total,
-        totalElement: sum(p.getElements(this.level).map((i) => i.total)),
-        FIRE: p.getElement('FIRE', this.level).total,
-        WATER: p.getElement('WATER', this.level).total,
-        EARTH: p.getElement('EARTH', this.level).total,
-        WIND: p.getElement('WIND', this.level).total,
-        LIGHT: p.getElement('LIGHT', this.level).total,
-        DARK: p.getElement('DARK', this.level).total,
-      }));
+      .map((p) => {
+        const SATK = p.getState('SATK', this.level, this.foodLevel).total;
+        const MATK = p.getState('MATK', this.level, this.foodLevel).total;
+        const blazeArtSkill = p.getBlazeArt(this.level, this.blazeArtLevel);
+        const blazeArt = (() => {
+          if (!blazeArtSkill?.attackSkill) {
+            return 0;
+          }
+
+          return blazeArtSkill.attackSkill.attribute === EBattleAttribute.eMAGIC_DAMAGED
+            ? Math.round(MATK * blazeArtSkill.attackSkill.effectValue)
+            : Math.round(SATK * blazeArtSkill.attackSkill.effectValue);
+        })();
+        console.log(blazeArt);
+        return {
+          icon: p.icon,
+          DF: p.DF,
+          NAME: p.NAME,
+
+          totalState: sum(p.getStates(this.level, this.foodLevel).map((i) => i.total)),
+          blazeArt,
+          HP: p.getState('HP', this.level, this.foodLevel).total,
+          SATK,
+          SDEF: p.getState('SDEF', this.level, this.foodLevel).total,
+          MATK,
+          MDEF: p.getState('MDEF', this.level, this.foodLevel).total,
+          SPD: p.getState('SPD', this.level, this.foodLevel).total,
+          QTH: p.getState('QTH', this.level, this.foodLevel).total,
+          DDG: p.getState('DDG', this.level, this.foodLevel).total,
+          totalElement: sum(p.getElements(this.level).map((i) => i.total)),
+          FIRE: p.getElement('FIRE', this.level).total,
+          WATER: p.getElement('WATER', this.level).total,
+          EARTH: p.getElement('EARTH', this.level).total,
+          WIND: p.getElement('WIND', this.level).total,
+          LIGHT: p.getElement('LIGHT', this.level).total,
+          DARK: p.getElement('DARK', this.level).total,
+
+          blazeArtSkill,
+        };
+      });
   }
 }
 </script>

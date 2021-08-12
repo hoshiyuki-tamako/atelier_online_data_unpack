@@ -72,7 +72,7 @@ export class List {
 
     #attackSkill: List;
 
-    public get attackSkill() {
+    public get attackSkill(): List {
       return this.#attackSkill ||= this.combSkillList.find((i) => i.effect === 1) || this;
     }
 

@@ -25,9 +25,9 @@ div.container
       div(v-if="character.EXC")
         div
           el-form(label-position="left" label-width="110px")
-            el-form-item(label="LV")
+            el-form-item(:label="$t('レベル')")
               el-input-number(v-model="characterModifier.level" size="mini" :min="1" :step="1" step-strictly)
-            el-form-item(:label="`${$t('食事')} LV`")
+            el-form-item(:label="$t('食事レベル')")
               el-input-number(v-model="characterModifier.foodLevel" size="mini" :min="0" :max="Math.min(character.FDM.length, characterModifier.level)" :step="1" step-strictly)
         div.character-levels
           table

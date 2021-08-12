@@ -15,7 +15,7 @@ div.container
         el-option(v-for="item in appearAreaOptions" :key="item.value" :label="item.label" :value="item.value")
   div.filters
     div.filter
-      span LV
+      span {{ $t('レベル') }}
       el-input-number(v-model="level" size="mini" :min="1" :step="1" step-strictly)
   div.filters
     div.filter
@@ -64,8 +64,8 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import { sum } from 'lodash';
+import VueBase from '@/components/VueBase';
 import { mapFields } from 'vuex-map-fields';
 
 abstract class VueWithMapFields extends VueBase {
@@ -144,7 +144,9 @@ export default class extends VueWithMapFields {
         };
       case 'en':
         return {
+          ...d,
           column: {
+            ...d.column,
             longTextWidth: '180',
             criticalHitWidth: '120%',
             allElementWidth: '120%',

@@ -14,7 +14,11 @@ export default class extends VuexModuleBase {
 
   public level = CharacterMVList.maxLevel;
 
+  public blazeArtLevel = 5;
+
   public showColumnTotalState = true;
+
+  public showColumnBlazeArt = true;
 
   public showColumnHP = true;
 
@@ -46,14 +50,16 @@ export default class extends VuexModuleBase {
 
   public showColumnDARK = true;
 
-  @MutationAction({ mutate: ['gender', 'weaponType', 'foodLevel', 'level', 'showColumnTotalState', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK'] })
+  @MutationAction({ mutate: ['gender', 'weaponType', 'foodLevel', 'level', 'blazeArtLevel', 'showColumnTotalState', 'showColumnBlazeArt', 'showColumnHP', 'showColumnSATK', 'showColumnSDEF', 'showColumnMATK', 'showColumnMDEF', 'showColumnSPD', 'showColumnQTH', 'showColumnDDG', 'showColumnTotalElement', 'showColumnFIRE', 'showColumnWATER', 'showColumnEARTH', 'showColumnWIND', 'showColumnLIGHT', 'showColumnDARK'] })
   public async reset() {
     return {
       gender: null,
       weaponType: null,
       foodLevel: CharacterMVList.maxLevel,
       level: CharacterMVList.maxLevel,
+      blazeArtLevel: 5,
       showColumnTotalState: true,
+      showColumnBlazeArt: true,
       showColumnHP: true,
       showColumnSATK: true,
       showColumnSDEF: true,

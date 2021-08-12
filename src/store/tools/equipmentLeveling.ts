@@ -22,7 +22,6 @@ export default class extends VuexModuleBase {
       level: 1,
       untilExp: 0,
       experienceItemDfs: [],
-      characterDf: 0,
     };
   }
 }

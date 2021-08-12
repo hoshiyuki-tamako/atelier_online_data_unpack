@@ -73,7 +73,7 @@ div.top-container
             el-button(@click="itemPickerDialogVisible = true") {{ $t('装備を選ぶ') }}
             el-button(@click="onAddSupportItem" type="primary") +
           div.filter
-            span LV {{ $t('設定') }}
+            span {{ $t('レベル') }} {{ $t('設定') }}
             el-input-number(v-model="supportItemAllLevel" :min="1" size="small" step-strictly)
             el-button(@click="onSetAllSupportItemLevel" type="primary" size="small") {{ $t('まとめで設定') }}
           div.filter
@@ -118,7 +118,7 @@ div.top-container
           td
             el-button(@click="onConfirmSetAllMainItemQuality" type="primary") {{ $t('確認') }}
         tr
-          th LV
+          th {{ $t('レベル') }}
           td
             el-input-number(v-model="mainItemAllLevel" :min="1" size="small" step-strictly)
           td
@@ -163,15 +163,15 @@ div.top-container
           img.character-image(:src="player.character.icon" :alt="player.character.NAME")
           table
             tr
-              th LV
+              th {{ $t('レベル') }}
               td
                 el-input-number(v-model="player.characterModifier.level" :min="1" size="small" step-strictly)
             tr
-              th {{ $t('食事') }} LV
+              th {{ $t('食事レベル') }}
               td
                 el-input-number(v-model="player.characterModifier.foodLevel" :min="0" :max="player.characterModifier.level" size="small" step-strictly)
             tr
-              th {{ $t('ブレイズアーツ') }} LV
+              th {{ $t('ブレイズアーツレベル') }}
               td
                 el-input-number(v-model="player.characterModifier.blazeArtLevel" label="" :min="0" :max="player.character.BA.length ? 5 : 0" size="small" step-strictly)
           table
@@ -264,7 +264,7 @@ div.top-container
             span {{ enemy.enemy.strName }} (LV {{ enemy.level }})
         img.icon-full(:src="enemy.enemy.icon" :alt="enemy.enemy.strName")
         el-form
-          el-form-item(label="LV")
+          el-form-item(:label="$t('レベル')")
             el-input-number(v-model="enemy.level" :min="1" size="small" step-strictly)
         div
           table.enemy-edit-enemy__state-table
@@ -320,7 +320,7 @@ div.top-container
                           td
                             el-input-number(v-model="player.equipmentModifiers[slot].quality" :min="1" size="small" step-strictly)
                         tr
-                          th LV
+                          th {{ $t('レベル') }}
                           td
                             el-input-number(v-model="player.equipmentModifiers[slot].level" :min="1" size="small" step-strictly)
                         tr
@@ -377,7 +377,7 @@ div.top-container
                           td
                             el-input-number(v-model="player.equipmentModifiers[slot].quality" :min="1" size="small" step-strictly)
                         tr
-                          th LV
+                          th {{ $t('レベル') }}
                           td
                             el-input-number(v-model="player.equipmentModifiers[slot].level" :min="1" size="small" step-strictly)
                         tr

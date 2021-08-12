@@ -24,7 +24,7 @@ div.container
       span {{ $t('品質') }}
       el-input-number(v-model="quality" size="mini" :min="1" :step="1" step-strictly)
     div.filter
-      span LV
+      span {{ $t('レベル') }}
       el-input-number(v-model="level" size="mini" :min="1" :step="1" step-strictly)
   div.filters
     div.filter
@@ -204,7 +204,9 @@ export default class extends VueWithMapFields {
         };
       case 'en':
         return {
+          ...d,
           column: {
+            ...d.column,
             longTextWidth: '180',
             attackSkillWidth: '130%',
             criticalHitWidth: '120%',
