@@ -46,7 +46,7 @@
   "次": "Next",
   "レシピ種類": "Recipe Kind",
   "一般レシピ": "Normal Recipe",
-  "おすすめ錬金 LV": "Suggest Synthesis LV",
+  "おすすめ錬金レベル": "Suggest Synthesis Level",
   "売却": "Sell",
   "材料": "Material",
   "クエスト報酬": "Quest Reward",
@@ -333,11 +333,13 @@
   "品質経験値": "Quality Experiences",
   "調合品質": "Synthesis Quality",
   "装備経験値強化": "Equipment Experiences Enhance",
-  "レベル": "level",
+  "レベル": "Level",
   "品質表": "Quality Table",
   "装備経験値表": "Equipment Experiences Table",
   "目標レベル": "Target Level",
   "装備経験値": "Equipment Experiences",
   "レベルから(包括的)": "From Level(inclusive)",
-  "レベルに(包括的)": "To Level(inclusive)"
+  "レベルに(包括的)": "To Level(inclusive)",
+  "ブレイズアーツレベル": "Blaze Arts Level",
+  "食事レベル": "Food Level"
 }
