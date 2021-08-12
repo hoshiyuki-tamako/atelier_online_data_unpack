@@ -131,6 +131,21 @@ div.container
 
       div(v-if="character.FDM.length")
         el-divider {{ $t('食事') }}
+        div.filters
+          div.filter
+            span {{ $t('レベルから(包括的)') }}
+            el-input-number(v-model="startLevel" size="mini" :min="1" :step="1" step-strictly)
+          div.filter
+            span {{ $t('レベルに(包括的)') }}
+            el-input-number(v-model="endLevel" size="mini" :min="1" :step="1" step-strictly)
+        div.food-levels
+          div.food-level-container(v-for="{ item, qualities } of character.totalFoods(startLevel, endLevel)")
+            el-tooltip(v-for="({ quality, count }, i) of qualities" :key="i" :content="item.NAME" placement="left")
+              router-link.food-level-item(:to="{ name: item.RSP.length ? 'ToolsComposeItem' : 'ItemsItem', query: { df: item.DF, quality } }" target="_blank")
+                p {{ $t('品質') }}{{ quality }}
+                img.icon-small(:src="item.icon" :alt="item.NAME")
+                p x {{ count }}
+        br
         small {{ $t('※ゲーム内ではLV1食事お0/60表示されます LV2食事は1/60です') }}
         div.character-food__items
           div.character-food__item(v-for="fdm of character.FDM")
@@ -144,7 +159,6 @@ div.container
               tr(v-for="state of Object.keys(character.SPEC).filter((state) => fdm[state])")
                 td {{ $t(dataManager.lookup.state[state] )}}
                 td {{ fdm[state] }}
-
       div(v-if="character.QST.length")
         el-divider {{ $t('クエスト') }}
         div.character-quest(v-for="[qst, quest] of character.QST.map((p) => [p, dataManager.questById[p.QUEST_DF]]).filter(([, quest]) => quest)")
@@ -172,9 +186,17 @@ export default class extends VueBase {
     return eConditionType;
   }
 
+  public get CharacterMVList() {
+    return CharacterMVList;
+  }
+
   public character: CharacterMVList | null = null;
 
   public characterModifier = new CharacterModifier();
+
+  public startLevel = 1;
+
+  public endLevel = CharacterMVList.maxLevel;
 
   public beforeMount() {
     this.characterModifier.level = +this.$route.query.level || CharacterMVList.maxLevel;
@@ -211,6 +233,17 @@ th, td
   flex-wrap: wrap
   > div:last-child
     margin-left: 10%
+
+.food-levels
+  display: flex
+  flex-wrap: wrap
+
+.food-level-container
+  padding: 14px
+
+.food-level-item
+  display: flex
+  align-items: center
 
 .character-food__items
   display: flex

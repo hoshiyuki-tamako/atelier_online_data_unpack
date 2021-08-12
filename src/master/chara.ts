@@ -263,6 +263,23 @@ export class MVList {
     return dataManager.blazeArtById[this.BA[0]?.DF]?.LV.length || 0;
   }
 
+  public totalFoods(startLevel = 1, endLevel = MVList.maxLevel) {
+    return Enumerable.from(this.FDM)
+      .where((p) => p.NO >= startLevel && p.NO <= endLevel)
+      .selectMany((p) => p.FD)
+      .groupBy((p) => p.DF)
+      .select((p) => ({
+        item: dataManager.itemById[p.key()],
+        qualities: p.groupBy((o) => o.QTY).select((o) => ({
+          quality: o.key(),
+          count: o.count(),
+        })).orderBy((o) => o.quality).toArray(),
+      }))
+      .where((p) => !!p.item)
+      .orderBy((p) => p.item.DF)
+      .toArray();
+  }
+
   //
   public getElement(element: string, level = MVList.maxLevel) {
     const key = JSON.stringify({ element, level });
