@@ -337,5 +337,7 @@
   "品質表": "Quality Table",
   "装備経験値表": "Equipment Experiences Table",
   "目標レベル": "Target Level",
-  "装備経験値": "Equipment Experiences"
+  "装備経験値": "Equipment Experiences",
+  "レベルから(包括的)": "From Level(inclusive)",
+  "レベルに(包括的)": "To Level(inclusive)"
 }
