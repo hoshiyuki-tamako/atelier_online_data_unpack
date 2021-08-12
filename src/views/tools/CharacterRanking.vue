@@ -22,8 +22,8 @@ div.container
   div.filters
     div.filter
       el-checkbox(v-model="showColumnTotalState") {{ $t('総戦闘力') }}
-      el-checkbox(v-model="showColumnHP") {{ $t('HP') }}
       el-checkbox(v-model="showColumnBlazeArt") {{ $t('ブレイズアーツ') }}
+      el-checkbox(v-model="showColumnHP") {{ $t('HP') }}
       el-checkbox(v-model="showColumnSATK") {{ $t('物理攻撃') }}
       el-checkbox(v-model="showColumnSDEF") {{ $t('物理防禦') }}
       el-checkbox(v-model="showColumnMATK") {{ $t('魔法攻撃') }}
@@ -166,7 +166,7 @@ export default class extends VueWithMapFields {
           column: {
             ...d.column,
             longTextWidth: '180',
-            attackSkillWidth: '200%',
+            attackSkillWidth: '220%',
             criticalHitWidth: '120%',
             allElementWidth: '120%',
             darknessWidth: '110%',
@@ -218,7 +218,7 @@ export default class extends VueWithMapFields {
             ? Math.round(MATK * blazeArtSkill.attackSkill.effectValue)
             : Math.round(SATK * blazeArtSkill.attackSkill.effectValue);
         })();
-        console.log(blazeArt);
+
         return {
           icon: p.icon,
           DF: p.DF,
