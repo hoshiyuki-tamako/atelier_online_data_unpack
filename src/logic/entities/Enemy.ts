@@ -51,11 +51,13 @@ export class Enemy {
     return this.abnormalStates.map((p) => p.effectlist).flat().map((p) => dataManager.abnormalStateEffectById[p]);
   }
 
+  public attackBase(skill?: SkillList) {
+    return this.enemy.getState(skill?.attackSkill.attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MATK' : 'SATK', this.level).total;
+  }
+
   public attack(skill: SkillList | null = null) {
-    const multipliers = [{
-      label: 'ベース',
-      value: this.enemy.getState(skill?.attackSkill.attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MATK' : 'SATK', this.level).total,
-    }] as multiplier[];
+    const base = this.attackBase(skill);
+    const multipliers = [] as multiplier[];
 
     if (skill?.attackSkill.attribute) {
       multipliers.push({
@@ -66,12 +68,13 @@ export class Enemy {
 
     const total = Math.round(multipliers.reduce((sum, m) => sum * m.value, 1));
     return {
+      base,
       multipliers,
       total,
     };
   }
 
-  public receiveDamage(multipliers: multiplier[] = [], playerLevel = 0, element = EElement.eNONE, attribute = EBattleAttribute.eNONE, skills: SkillList[] = [], abnormalStateEffects: AbnormalStateEffectMVList[] = [], zone: ZoneList = null) {
+  public receiveDamage(baseDamage: number, multipliers: multiplier[] = [], playerLevel = 0, element = EElement.eNONE, attribute = EBattleAttribute.eNONE, skills: SkillList[] = [], abnormalStateEffects: AbnormalStateEffectMVList[] = [], zone: ZoneList = null) {
     const result = new EnemyReceiveDamage();
 
     const oneDamageSkills = this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eONE_DAMAGE);
@@ -207,7 +210,7 @@ eRECOVER,
       ...onePlusMultiplierSkills.map((p) => 1 + p.effectValue),
     );
 
-    const total = Math.round(calculateMultipliers.reduce((sum, v) => sum * v, 1) - defense);
+    const total = Math.round((baseDamage * .25 - defense * .125) * calculateMultipliers.reduce((sum, v) => sum * v, 1));
     result.total = total > 0 ? total : 1;
     result.zeroPlusMultiplierSkills = zeroMultiplierSkills;
     result.onePlusMultiplierSkills = onePlusMultiplierSkills;

@@ -13,6 +13,9 @@ import { List as SkillList } from '@/master/skill';
 import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
 
+// hard coded value for doing attack/damage
+const reduceDamage = .25;
+const reduceDefense = .125;
 
 type multiplier = { translatedLabel?: string, label?: string, value: number };
 
@@ -170,16 +173,20 @@ export class Player {
   public attackTest(multiplier: number[] = [], skillChain = 0) {
     const { chain, base } = this.skillMultipliers;
     multiplier.push(skillChain > 0 ? (1 + chain) : (1 + base), 1 + skillChain * .2);
+    multiplier.push(.25);
     return Math.round(multiplier.reduce((sum, v) => sum * v, 1));
   }
 
-  public attack(skill: SkillList | null = null, skillChain = 0) {
+  public attackBase(skill?: SkillList) {
     const attribute = skill?.attackSkill.attribute || this.attribute;
+    return this.totalState(attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MATK' : 'SATK');;
+  }
+
+  public attack(skill: SkillList | null = null, skillChain = 0) {
+    const base = this.attackBase(skill);
     const { skillMultipliers } = this;
-    const multipliers = [{
-      label: 'ベース',
-      value: this.totalState(attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MATK' : 'SATK'),
-    }] as multiplier[];
+
+    const multipliers = [] as multiplier[];
 
     if (skill?.attackSkill.attribute) {
       multipliers.push({
@@ -207,12 +214,13 @@ export class Player {
 
     const total = Math.round(multipliers.reduce((sum, m) => sum * m.value, 1));
     return {
+      base,
       multipliers,
       total,
     };
   }
 
-  public receiveDamage(multipliers: multiplier[] = [], attribute = EBattleAttribute.eNONE, element = EElement.eNONE, abnormalStateEffects: AbnormalStateEffectMVList[] = []) {
+  public receiveDamage(baseDamage: number, multipliers: multiplier[] = [], attribute = EBattleAttribute.eNONE, element = EElement.eNONE, abnormalStateEffects: AbnormalStateEffectMVList[] = []) {
     const totalHp = this.totalState('HP');
     const defense = this.totalState(attribute === EBattleAttribute.eMAGIC_DAMAGED ? 'MDEF' : 'SDEF');
 
@@ -293,7 +301,7 @@ export class Player {
       }
     }
 
-    let total = Math.round(multipliers.reduce((sum, multiplier) => sum * multiplier.value, 1) - defense);
+    let total = Math.round((baseDamage * .25 - defense * .125) * multipliers.reduce((sum, multiplier) => sum * multiplier.value, 1));
     if (total <= 0) {
       total = 1;
     }

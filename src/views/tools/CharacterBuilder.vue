@@ -760,14 +760,20 @@ div.top-container
           el-option(v-for="abnormalState of abnormalStates" :key="abnormalState.id" :label="abnormalState.name" :value="abnormalState.id")
       div(v-if="enemy.enemy")
         table
-          tr(v-if="player.equipment.weapon || player.character")
-            template(v-for="receiveDamage of [enemy.receiveDamage(player.attack().multipliers, player.character ? player.characterModifier.level : 0, player.element, player.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
+          tr(v-if="player.equipment.weapon || player.character" v-for="playerAttck of [player.attack()]")
+            template(v-for="receiveDamage of [enemy.receiveDamage(playerAttck.base, playerAttck.multipliers, player.character ? player.characterModifier.level : 0, player.element, player.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
               th
                 v-popover(placement="left-end" trigger="hover")
                   span {{ $t(dataManager.lookup.EBattleAttribute[player.attribute]) }}
                   template(slot="popover")
                     div.popover-base
                       table
+                        tr
+                          th {{ $t('ベース') }}
+                          td 0.25 x {{ +playerAttck.base.toFixed(15) }}
+                        tr(v-if="receiveDamage.defense")
+                          th {{ $t('ディフェンス') }}
+                          td -0.125 x {{ receiveDamage.defense }}
                         tr(v-for="multiplier of receiveDamage.multipliers")
                           th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                           td {{ +multiplier.value.toFixed(15) }}
@@ -780,15 +786,12 @@ div.top-container
                         tr(v-for="skill of receiveDamage.otherEffectSkills")
                           th {{ skill.name }}
                           td {{ skill.detail }}
-                        tr(v-if="receiveDamage.defense")
-                          th {{ $t('ディフェンス') }}
-                          td {{ -receiveDamage.defense }}
               td {{ receiveDamage.total.toFixed() }}
               td HP: {{ receiveDamage.hp.toFixed() }}
           tr(v-if="player.character")
             template(v-for="skill of [player.character.getBlazeArt(player.characterModifier.level, player.characterModifier.blazeArtLevel)].filter((p) => p)")
               template(v-for="playerAttack of [player.attack(skill, skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.base, playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="player.character.faceIcon" :alt="skill.name")
@@ -797,6 +800,12 @@ div.top-container
                           h4 {{ $t('ブレイズアーツ') }}
                           p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
                           table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ +playerAttack.base.toFixed(15) }}
+                            tr(v-if="receiveDamage.defense")
+                              th {{ $t('ディフェンス') }}
+                              td -0.125 x {{ receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
                               th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                               td {{ +multiplier.value.toFixed(15) }}
@@ -809,15 +818,12 @@ div.top-container
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
-                            tr(v-if="receiveDamage.defense")
-                              th {{ $t('ディフェンス') }}
-                              td {{ -receiveDamage.defense }}
                   td {{ receiveDamage.total.toFixed() }}
                   td HP: {{ receiveDamage.hp.toFixed() }}
           tr(v-if="player.equipment.weapon && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality) && player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality).attribute")
             template(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
               template(v-for="playerAttack of [player.attack(skill, skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.base, playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
@@ -826,6 +832,12 @@ div.top-container
                           h4 {{ $t('武器') }}
                           p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
                           table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ +playerAttack.base.toFixed(15) }}
+                            tr(v-if="receiveDamage.defense")
+                              th {{ $t('ディフェンス') }}
+                              td -0.125 x {{ receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
                               th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                               td {{ +multiplier.value.toFixed(15) }}
@@ -839,14 +851,12 @@ div.top-container
                               th {{ skill.name }}
                               td {{ skill.detail }}
                             tr(v-if="receiveDamage.defense")
-                              th {{ $t('ディフェンス') }}
-                              td {{ -receiveDamage.defense }}
                   td {{ receiveDamage.total.toFixed() }}
                   td HP: {{ receiveDamage.hp.toFixed() }}
           tr(v-if="player.equipment.shield && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality) && player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality).attribute")
             template(v-for="skill of [player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)]")
               template(v-for="playerAttack of [player.attack(skill, skillChain)]")
-                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
+                template(v-for="receiveDamage of [enemy.receiveDamage(playerAttack.base, playerAttack.multipliers, player.character ? player.characterModifier.level : 0, skill.attackSkill.element, skill.attackSkill.attribute, player.skills, player.abnormalStateEffects, player.zone)]")
                   th
                     v-popover(placement="left-end" trigger="hover")
                       img.icon-small(:src="skill.icon" :alt="skill.name")
@@ -855,6 +865,12 @@ div.top-container
                           h4 {{ $t('盾') }}
                           p {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
                           table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ +playerAttack.base.toFixed(15) }}
+                            tr(v-if="receiveDamage.defense")
+                              th {{ $t('ディフェンス') }}
+                              td -0.125 x {{ receiveDamage.defense }}
                             tr(v-for="multiplier of receiveDamage.multipliers")
                               th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                               td {{ +multiplier.value.toFixed(15) }}
@@ -867,9 +883,7 @@ div.top-container
                             tr(v-for="skill of receiveDamage.otherEffectSkills")
                               th {{ skill.name }}
                               td {{ skill.detail }}
-                            tr(v-if="receiveDamage.defense")
-                              th {{ $t('ディフェンス') }}
-                              td {{ -receiveDamage.defense }}
+
                   td {{ receiveDamage.total.toFixed() }}
                   td HP: {{ receiveDamage.hp.toFixed() }}
         el-divider(v-if="player.character")
@@ -877,39 +891,46 @@ div.top-container
           h3.player-receive-damage__title
             img.icon-small(:src="player.character.faceIcon" :alt="player.character.NAME")
             span {{ player.character.NAME }}
-          table
-            tr(v-for="receiveDamage of [player.receiveDamage(enemy.attack().multipliers, 0, enemy.enemy.elementChangeSkill ? enemy.enemy.elementChangeSkill.effectValue : 0, enemy.abnormalStateEffects)]")
+          table(v-for="enemyAttack of [enemy.attack()]")
+            tr(v-for="receiveDamage of [player.receiveDamage(enemyAttack.base, enemyAttack.multipliers, 0, enemy.enemy.elementChangeSkill ? enemy.enemy.elementChangeSkill.effectValue : 0, enemy.abnormalStateEffects)]")
               th
                 v-popover(placement="left-end" trigger="hover")
                   span {{ $t(dataManager.lookup.EBattleAttribute[0]) }}
                   template(slot="popover")
                     div.popover-base
                       table
+                        tr
+                          th {{ $t('ベース') }}
+                          td 0.25 x {{ +enemyAttack.base.toFixed(15) }}
+                        tr(v-if="receiveDamage.defense")
+                          th {{ $t('ディフェンス') }}
+                          td -0.125 x {{ receiveDamage.defense }}
                         tr(v-for="multiplier of receiveDamage.multipliers")
                           th {{ multiplier.translatedLabel || $t(multiplier.label) }}
                           td {{ +multiplier.value.toFixed(15) }}
-                        tr(v-if="receiveDamage.defense")
-                          th {{ $t('ディフェンス') }}
-                          td {{ -receiveDamage.defense }}
               td {{ receiveDamage.total.toFixed() }}
               td HP: {{ receiveDamage.hp.toFixed() }}
             tr(v-for="skill of enemy.enemy.skills.filter((p) => p.type === 1 && p.effect === 1)")
-              template(v-for="receiveDamage of [player.receiveDamage(enemy.attack(skill).multipliers, skill.attackSkill.attribute, skill.attackSkill.element, enemy.abnormalStateEffects)]")
-                th
-                  v-popover(placement="left-end" trigger="hover")
-                    span {{ skill.name }}
-                    template(slot="popover")
-                      div.popover-base
-                        h4 {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }} {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
-                        table
-                          tr(v-for="multiplier of receiveDamage.multipliers")
-                            th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                            td {{ +multiplier.value.toFixed(15) }}
-                          tr(v-if="receiveDamage.defense")
-                            th {{ $t('ディフェンス') }}
-                            td {{ -receiveDamage.defense }}
-                td {{ receiveDamage.total.toFixed() }}
-                td HP: {{ receiveDamage.hp.toFixed() }}
+              template(v-for="enemyAttack of [enemy.attack(skill)]")
+                template(v-for="receiveDamage of [player.receiveDamage(enemyAttack.base, enemyAttack.multipliers, skill.attackSkill.attribute, skill.attackSkill.element, enemy.abnormalStateEffects)]")
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ skill.name }}
+                      template(slot="popover")
+                        div.popover-base
+                          h4 {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }} {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ +enemyAttack.base.toFixed(15) }}
+                            tr(v-if="receiveDamage.defense")
+                              th {{ $t('ディフェンス') }}
+                              td -0.125 x {{ receiveDamage.defense }}
+                            tr(v-for="multiplier of receiveDamage.multipliers")
+                              th {{ multiplier.translatedLabel || $t(multiplier.label) }}
+                              td {{ +multiplier.value.toFixed(15) }}
+                  td {{ receiveDamage.total.toFixed() }}
+                  td HP: {{ receiveDamage.hp.toFixed() }}
 </template>
 
 <script lang="ts">
