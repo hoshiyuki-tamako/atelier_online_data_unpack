@@ -4,6 +4,8 @@ import home from '@/store/home';
 import itemsFilter from '@/store/items/itemsFilter';
 import adventBattleFilter from '@/store/others/adventBattleFilter';
 import questsFilter from '@/store/quests/questsFilter';
+import abnormalEffectFilter from '@/store/skills/abnormalEffectFilter';
+import addonFilter from '@/store/skills/addonFilter';
 import skillsFilter from '@/store/skills/skillsFilter';
 import blazeArtLeveling from '@/store/tools/blazeArtLeveling';
 import characterBuilder from '@/store/tools/characterBuilder';
@@ -26,6 +28,8 @@ export default new Vuex.Store({
     enemiesFilter,
     itemsFilter,
     skillsFilter,
+    addonFilter,
+    abnormalEffectFilter,
     characterRankingFilter,
     enemyRankingFilter,
     equipmentRankingFilter,

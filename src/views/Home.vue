@@ -247,6 +247,18 @@ export default class extends VueWithMapFields {
         },
       },
       {
+        label: this.$t('ブレイズアーツ'),
+        img: {
+          src: 'img/icon_item_s/Texture2D/icon_item_s_56010003.png',
+        },
+        to: {
+          name: 'Skills',
+          query: {
+            skillKind: SkillKind.blazeArt,
+          },
+        },
+      },
+      {
         label: this.$t('強化効果'),
         img: {
           src: 'img/icon_item_s/Texture2D/icon_item_s_10950010.png',
@@ -262,18 +274,6 @@ export default class extends VueWithMapFields {
         },
         to: {
           name: 'SkillsAbnormalEffect',
-        },
-      },
-      {
-        label: this.$t('ブレイズアーツ'),
-        img: {
-          src: 'img/icon_item_s/Texture2D/icon_item_s_56010003.png',
-        },
-        to: {
-          name: 'Skills',
-          query: {
-            skillKind: SkillKind.blazeArt,
-          },
         },
       },
     ];

@@ -371,6 +371,15 @@ export class DataManager {
       && !p.name.includes('】')
     )));
   }
+
+  public get skillAddonsRarities() {
+    return this.cache('skillAddonsRarities', () => Enumerable.from(this.skillAddons)
+      .groupBy((p) => p.rarity)
+      .select((p) => p.key())
+      .orderBy((p) => p)
+      .toArray());
+  }
+
   public get skillBlazeArts() {
     return this.cache('skillBlazeArts', () => {
       const characterBlazeArtSkillDfs = new Set(

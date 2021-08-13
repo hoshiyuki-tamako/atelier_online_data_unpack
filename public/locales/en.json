@@ -52,7 +52,7 @@
   "クエスト報酬": "Quest Reward",
   "調合": "Synthesis",
   "調合條件": "Synthesis Requirement",
-  "フィールド用": "Use On Field",
+  "フィールド用": "Field Item",
   "目標": "Target",
   "品質": "Quality",
   "レジェンドレシピ": "Legend Recipe",
@@ -302,7 +302,7 @@
   "クエスト消費": "Quest Cost",
   "所要時間": "Require Time",
   "CG": "CG",
-  "音声あり": "Has Voice",
+  "音声あり": "Voice",
   "スキル連携": "Skill Combo",
   "消費財貨": "Cost Valuable",
   "報酬財貨": "Reward Valuable",
@@ -342,5 +342,6 @@
   "レベルに(包括的)": "To Level(inclusive)",
   "ブレイズアーツレベル": "Blaze Arts Level",
   "食事レベル": "Food Level",
-  "防禦": "Defense"
+  "防禦": "Defense",
+  "スキル強化": "Skill Boost"
 }

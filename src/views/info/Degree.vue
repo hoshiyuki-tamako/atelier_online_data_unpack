@@ -41,10 +41,10 @@ div.container
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import Component from 'vue-class-component';
 import VueBase from '@/components/VueBase';
 import { List as DegreeList } from '@/master/degree';
-import Vue from 'vue';
 
 @Component({
   components: {
@@ -90,8 +90,8 @@ export default class extends VueBase {
   }
 
   public get rarityFilters() {
-    return this.dataManager.degreeRarities.map((value) => ({
-      label: value,
+    return this.dataManager.degreeRarities.filter((value) => value).map((value) => ({
+      label: '⭐'.repeat(value),
       value,
     }));
   }
