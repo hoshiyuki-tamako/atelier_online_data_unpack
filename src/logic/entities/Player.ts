@@ -172,8 +172,8 @@ export class Player {
 
   public attackTest(multiplier: number[] = [], skillChain = 0) {
     const { chain, base } = this.skillMultipliers;
-    multiplier.push(skillChain > 0 ? (1 + chain) : (1 + base), 1 + skillChain * .2);
     multiplier.push(.25);
+    multiplier.push(skillChain > 0 ? (1 + chain) : (1 + base), 1 + skillChain * .2);
     return Math.round(multiplier.reduce((sum, v) => sum * v, 1));
   }
 
