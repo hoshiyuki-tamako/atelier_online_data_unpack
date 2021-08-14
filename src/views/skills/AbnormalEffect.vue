@@ -5,7 +5,7 @@ div.container
       span {{ $t('名前') }}/ID
       el-input(v-model="name" clearable)
   div.content
-    el-table(:data="filteredAbnormaalEffect")
+    el-table(:data="filteredAbnormalState")
       el-table-column(prop="id" label="ID" width="100%" sortable)
       el-table-column(prop="name" :label="$t('名前')" :filters="typeFilters" :filter-method="typeFilderHandler" sortable)
       el-table-column(prop="telop" :label="$t('テクスト')" sortable)
@@ -41,7 +41,7 @@ export default class extends VueWithMapFields {
     }));
   }
 
-  public get filteredAbnormaalEffect() {
+  public get filteredAbnormalState() {
     return this.dataManager.abnormalState.m_vList.filter((p) => (
       (!this.name || p.name.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()) || +this.name === p.id)
     ));
