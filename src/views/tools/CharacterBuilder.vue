@@ -631,19 +631,19 @@ div.top-container
             img.icon-small(:src="player.character.faceIcon" :alt="skill.name")
             p {{ skill.name }}
             p {{ skill.detail }}
-            div(v-if="skill.attackSkill.attribute === 3")
+            div(v-if="skill.attackSkill.attribute === 3" v-for="matk of [player.totalState('MATK')]")
               table
                 tr
                   th {{ $t('正常') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
@@ -657,18 +657,18 @@ div.top-container
                   th {{ $t('魔法攻撃UP中') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2025] ? dataManager.abnormalStateEffectById[2025].name : '' }}
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
                               td 1.3
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -680,21 +680,21 @@ div.top-container
                   th {{ $t('上+魔法防御DOWN大') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2025] ? dataManager.abnormalStateEffectById[2025].name : '' }}
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
                               td 1.3
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3047] ? dataManager.abnormalStateEffectById[3047].name : '' }}
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
                               td 1.4
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -706,21 +706,21 @@ div.top-container
                   th {{ $t('上+属性(-100)') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2025] ? dataManager.abnormalStateEffectById[2025].name : '' }}
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
                               td 1.3
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3047] ? dataManager.abnormalStateEffectById[3047].name : '' }}
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
                               td 1.4
                             tr
                               th {{ $t('属性') }}
@@ -735,21 +735,21 @@ div.top-container
                   th {{ $t('全超+-') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2030] ? dataManager.abnormalStateEffectById[2030].name : '' }}
+                              th {{ dataManager.abnormalStateById[2030] ? dataManager.abnormalStateById[2030].name : '' }}
                               td 1.55
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3050] ? dataManager.abnormalStateEffectById[3050].name : '' }}
+                              th {{ dataManager.abnormalStateById[3050] ? dataManager.abnormalStateById[3050].name : '' }}
                               td 1.55
                             tr
                               th {{ $t('属性') }}
@@ -761,19 +761,19 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
 
-            div(v-else-if="skill.attackSkill.attribute")
+            div(v-else-if="skill.attackSkill.attribute" v-for="satk of [player.totalState('SATK')]")
               table
                 tr
                   th {{ $t('正常') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
                                 td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
@@ -784,18 +784,18 @@ div.top-container
                   th {{ $t('物攻増UP中+') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2016] ? dataManager.abnormalStateEffectById[2016].name : '' }}
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
                               td 1.35
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -807,21 +807,21 @@ div.top-container
                   th {{ $t('上+物理防御DOWN大') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2016] ? dataManager.abnormalStateEffectById[2016].name : '' }}
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
                               td 1.35
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3037] ? dataManager.abnormalStateEffectById[3037].name : '' }}
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
                               td 1.4
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -834,21 +834,21 @@ div.top-container
                   th {{ $t('上+属性(-100)') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2016] ? dataManager.abnormalStateEffectById[2016].name : '' }}
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
                               td 1.35
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3037] ? dataManager.abnormalStateEffectById[3037].name : '' }}
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
                               td 1.4
                             tr
                               th {{ $t('属性') }}
@@ -864,21 +864,21 @@ div.top-container
                   th {{ $t('全超+-') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2020] ? dataManager.abnormalStateEffectById[2020].name : '' }}
+                              th {{ dataManager.abnormalStateById[2020] ? dataManager.abnormalStateById[2020].name : '' }}
                               td 1.55
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3040] ? dataManager.abnormalStateEffectById[3040].name : '' }}
+                              th {{ dataManager.abnormalStateById[3040] ? dataManager.abnormalStateById[3040].name : '' }}
                               td 1.55
                             tr
                               th {{ $t('属性') }}
@@ -896,19 +896,19 @@ div.top-container
             img.icon-small(:src="skill.icon" :alt="skill.name")
             p {{ skill.name }}
             p {{ skill.detail }}
-            div(v-if="skill.attackSkill.attribute === 3")
+            div(v-if="skill.attackSkill.attribute === 3" v-for="matk of [player.totalState('MATK')]")
               table
                 tr
                   th {{ $t('正常') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
@@ -922,18 +922,18 @@ div.top-container
                   th {{ $t('魔法攻撃UP中') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2025] ? dataManager.abnormalStateEffectById[2025].name : '' }}
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
                               td 1.3
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -945,21 +945,21 @@ div.top-container
                   th {{ $t('上+魔法防御DOWN大') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2025] ? dataManager.abnormalStateEffectById[2025].name : '' }}
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
                               td 1.3
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3047] ? dataManager.abnormalStateEffectById[3047].name : '' }}
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
                               td 1.4
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -971,21 +971,21 @@ div.top-container
                   th {{ $t('上+属性(-100)') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2025] ? dataManager.abnormalStateEffectById[2025].name : '' }}
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
                               td 1.3
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3047] ? dataManager.abnormalStateEffectById[3047].name : '' }}
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
                               td 1.4
                             tr
                               th {{ $t('属性') }}
@@ -1000,21 +1000,21 @@ div.top-container
                   th {{ $t('全超+-') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2030] ? dataManager.abnormalStateEffectById[2030].name : '' }}
+                              th {{ dataManager.abnormalStateById[2030] ? dataManager.abnormalStateById[2030].name : '' }}
                               td 1.55
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3050] ? dataManager.abnormalStateEffectById[3050].name : '' }}
+                              th {{ dataManager.abnormalStateById[3050] ? dataManager.abnormalStateById[3050].name : '' }}
                               td 1.55
                             tr
                               th {{ $t('属性') }}
@@ -1025,19 +1025,19 @@ div.top-container
                             tr(v-if="skillChain")
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
-            div(v-else-if="skill.attackSkill.attribute")
+            div(v-else-if="skill.attackSkill.attribute" v-for="satk of [player.totalState('SATK')]")
               table
                 tr
                   th {{ $t('正常') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
                                 td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
@@ -1048,18 +1048,18 @@ div.top-container
                   th {{ $t('物攻増UP中+') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2016] ? dataManager.abnormalStateEffectById[2016].name : '' }}
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
                               td 1.35
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -1071,21 +1071,21 @@ div.top-container
                   th {{ $t('上+物理防御DOWN大') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2016] ? dataManager.abnormalStateEffectById[2016].name : '' }}
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
                               td 1.35
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3037] ? dataManager.abnormalStateEffectById[3037].name : '' }}
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
                               td 1.4
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -1098,21 +1098,21 @@ div.top-container
                   th {{ $t('上+属性(-100)') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2016] ? dataManager.abnormalStateEffectById[2016].name : '' }}
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
                               td 1.35
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3037] ? dataManager.abnormalStateEffectById[3037].name : '' }}
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
                               td 1.4
                             tr
                               th {{ $t('属性') }}
@@ -1128,21 +1128,21 @@ div.top-container
                   th {{ $t('全超+-') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2020] ? dataManager.abnormalStateEffectById[2020].name : '' }}
+                              th {{ dataManager.abnormalStateById[2020] ? dataManager.abnormalStateById[2020].name : '' }}
                               td 1.55
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3040] ? dataManager.abnormalStateEffectById[3040].name : '' }}
+                              th {{ dataManager.abnormalStateById[3040] ? dataManager.abnormalStateById[3040].name : '' }}
                               td 1.55
                             tr
                               th {{ $t('属性') }}
@@ -1160,19 +1160,19 @@ div.top-container
             img.icon-small(:src="`img/icon_skill/Texture2D/${skill.iconPath}.png`" :alt="skill.name")
             p {{ skill.name }}
             p {{ skill.detail }}
-            div(v-if="skill.attackSkill.attribute === 3")
+            div(v-if="skill.attackSkill.attribute === 3" v-for="matk of [player.totalState('MATK')]")
               table
                 tr
                   th {{ $t('正常') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
@@ -1186,18 +1186,18 @@ div.top-container
                   th {{ $t('魔法攻撃UP中') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2025] ? dataManager.abnormalStateEffectById[2025].name : '' }}
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
                               td 1.3
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -1209,21 +1209,21 @@ div.top-container
                   th {{ $t('上+魔法防御DOWN大') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2025] ? dataManager.abnormalStateEffectById[2025].name : '' }}
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
                               td 1.3
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3047] ? dataManager.abnormalStateEffectById[3047].name : '' }}
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
                               td 1.4
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -1235,21 +1235,21 @@ div.top-container
                   th {{ $t('上+属性(-100)') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2025] ? dataManager.abnormalStateEffectById[2025].name : '' }}
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
                               td 1.3
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3047] ? dataManager.abnormalStateEffectById[3047].name : '' }}
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
                               td 1.4
                             tr
                               th {{ $t('属性') }}
@@ -1264,21 +1264,21 @@ div.top-container
                   th {{ $t('全超+-') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('MATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('MATK') }}
+                              td 0.25 x {{ matk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2030] ? dataManager.abnormalStateEffectById[2030].name : '' }}
+                              th {{ dataManager.abnormalStateById[2030] ? dataManager.abnormalStateById[2030].name : '' }}
                               td 1.55
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3050] ? dataManager.abnormalStateEffectById[3050].name : '' }}
+                              th {{ dataManager.abnormalStateById[3050] ? dataManager.abnormalStateById[3050].name : '' }}
                               td 1.55
                             tr
                               th {{ $t('属性') }}
@@ -1289,19 +1289,19 @@ div.top-container
                             tr(v-if="skillChain")
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
-            div(v-else-if="skill.attackSkill.attribute")
+            div(v-else-if="skill.attackSkill.attribute" v-for="satk of [player.totalState('SATK')]")
               table
                 tr
                   th {{ $t('正常') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
                                 td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
@@ -1312,18 +1312,18 @@ div.top-container
                   th {{ $t('物攻増UP中+') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2016] ? dataManager.abnormalStateEffectById[2016].name : '' }}
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
                               td 1.35
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -1335,21 +1335,21 @@ div.top-container
                   th {{ $t('上+物理防御DOWN大') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2016] ? dataManager.abnormalStateEffectById[2016].name : '' }}
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
                               td 1.35
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3037] ? dataManager.abnormalStateEffectById[3037].name : '' }}
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
                               td 1.4
                             tr(v-if="base")
                                 th {{ $t('スキル強化') }}
@@ -1362,21 +1362,21 @@ div.top-container
                   th {{ $t('上+属性(-100)') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2016] ? dataManager.abnormalStateEffectById[2016].name : '' }}
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
                               td 1.35
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3037] ? dataManager.abnormalStateEffectById[3037].name : '' }}
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
                               td 1.4
                             tr
                               th {{ $t('属性') }}
@@ -1392,21 +1392,21 @@ div.top-container
                   th {{ $t('全超+-') }}
                   td
                     v-popover(placement="left-end" trigger="hover")
-                      span {{ player.attackTest([player.totalState('SATK'), skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
+                      span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
                       template(slot="popover")
                         div.equipment-popover
                           table
                             tr
                               th {{ $t('ベース') }}
-                              td 0.25 x {{ player.totalState('SATK') }}
+                              td 0.25 x {{ satk }}
                             tr
                               th {{ $t('スキル') }}
                               td {{ skill.attackSkill.effectValue }}
                             tr
-                              th {{ dataManager.abnormalStateEffectById[2020] ? dataManager.abnormalStateEffectById[2020].name : '' }}
+                              th {{ dataManager.abnormalStateById[2020] ? dataManager.abnormalStateById[2020].name : '' }}
                               td 1.55
                             tr
-                              th {{ dataManager.abnormalStateEffectById[3040] ? dataManager.abnormalStateEffectById[3040].name : '' }}
+                              th {{ dataManager.abnormalStateById[3040] ? dataManager.abnormalStateById[3040].name : '' }}
                               td 1.55
                             tr
                               th {{ $t('属性') }}
