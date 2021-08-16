@@ -83,7 +83,7 @@ item
       "SKILL": [
         {
           "DF": 300302, // relationship to skill.id
-          "VAL": 0
+          "VAL": 0 // special value for special use such as blaze art level exp value, growth oil exp value
         }
       ]
     },
@@ -106,12 +106,12 @@ item
     "LV": 0, // suggested alchemy level
     "EXP": 0 // received wealth point
   },
-  "EQU": { // equipment spec
-    "EB": {
+  "EQU": { // equipment spec, GMRB = (int) (B + pow(level/R, G) * (M - B))
+    "EB": { // not sure what EB means
       "G": 0.0, // power gain
-      "M": 0, // GMRB (int) (B + pow(level/R, G) * (M - B))
-      "R": 0,
-      "B": 0
+      "M": 0, // multiplier
+      "R": 0, // level
+      "B": 0 // base
     },
     "SATK": { // physical attack
       "G": 0.0,
