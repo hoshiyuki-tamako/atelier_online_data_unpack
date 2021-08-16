@@ -594,6 +594,14 @@ export default class extends VueWithMapFields {
         ],
       },
       {
+        title: 'アトリエオンライン攻略wiki',
+        links: [
+          {
+            href: 'http://atelier-online.gamerswiki.jp',
+          },
+        ],
+      },
+      {
         title: '煉金工坊OL 資料庫',
         links: [
           {
