@@ -21,8 +21,8 @@ div.item-enhance-quality
         span {{ $t('あと') }}
         el-input-number(v-model="untilExp" size="mini" :min="0" :max="maxExp" :step="1" step-strictly)
       br
-    div.result
-      table(v-for="r of [result]")
+    div.result(v-for="r of [result]")
+      table
         tr
           th {{ $t('目標レベル') }}
           td {{ r.targetLevel }}
@@ -35,6 +35,21 @@ div.item-enhance-quality
         tr
           th {{ $t('無駄になった経験値') }}
           td {{ r.overExp }}
+      br
+      h4.big-success__title {{ $t('大成功') }}
+      table.big-success__table
+        tr
+          th {{ $t('目標レベル') }}
+          td {{ r.targetLevelBigSuccess }}
+        tr
+          th {{ $t('あと') }}
+          td {{ r.untilNextBigSuccess }}
+        tr
+          th {{ $t('経験値') }}
+          td {{ r.totalExperienceBigSuccess }}
+        tr
+          th {{ $t('無駄になった経験値') }}
+          td {{ r.overExpBigSuccess }}
       br
       p.total-item(v-for="{ item, count } of totalItems")
         img.icon-small(:src="item.icon" :alt="item.NAME")
@@ -167,4 +182,12 @@ a
 .total-item
   display: flex
   align-items: center
+
+.dark-mode .big-success__title,
+.dark-mode .big-success__table th
+  color: gold
+
+.big-success__title,
+.big-success__table th
+  color: red
 </style>

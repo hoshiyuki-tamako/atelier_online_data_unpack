@@ -343,5 +343,8 @@
   "ブレイズアーツレベル": "Blaze Arts Level",
   "食事レベル": "Food Level",
   "防禦": "Defense",
-  "スキル強化": "Skill Boost"
+  "スキル強化": "Skill Boost",
+  "大成功": "Big Success",
+  "※装備品質上げには大成功ありません": "※There is no Big Success to Equipment Quality Enhance",
+  "ゲイン": "Gain"
 }

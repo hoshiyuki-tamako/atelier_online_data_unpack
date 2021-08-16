@@ -131,6 +131,8 @@ div.container
 
       div(v-if="character.FDM.length")
         el-divider {{ $t('食事') }}
+        small {{ $t('※ゲーム内ではLV1食事お0/60表示されます LV2食事は1/60です') }}
+        br
         div.filters
           div.filter
             span {{ $t('レベルから(包括的)') }}
@@ -146,7 +148,6 @@ div.container
                 img.icon-small(:src="item.icon" :alt="item.NAME")
                 p x {{ count }}
         br
-        small {{ $t('※ゲーム内ではLV1食事お0/60表示されます LV2食事は1/60です') }}
         div.character-food__items
           div.character-food__item(v-for="fdm of character.FDM")
             el-divider LV{{ fdm.NO }}

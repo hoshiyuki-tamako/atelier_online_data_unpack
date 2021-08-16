@@ -32,10 +32,24 @@ export class Quality {
     .concat([2625599, 2751565, 2877657, 3003832, 3130048, 3256265, 3382440, 3508352, 3634499, 3760299, 3885891, 4011232, 4136282, 4260998, 4385339, 4509262, 4632727, 4755692, 4878114, 4999953]);
   }
 
-  public experience = 0;
+  public originalExperience = 0;
+
+  public addOnExperiences = 0;
+
+  public get experience() {
+    return this.originalExperience + this.addOnExperiences;
+  }
+
+  public get bigSuccessExperience() {
+    return this.originalExperience + Math.trunc(this.addOnExperiences * 1.5);
+  }
 
   public get isMaxLevel() {
     return this.experience >= Quality.experiences[Quality.experiences.length - 1];
+  }
+
+  public get isBigSuccessMaxLevel() {
+    return this.bigSuccessExperience >= Quality.experiences[Quality.experiences.length - 1];
   }
 
   public get quality() {
@@ -46,12 +60,24 @@ export class Quality {
     return Quality.experiences.findIndex((p) => p > this.experience);
   }
 
+  public get qualityBigSuccess() {
+    if (this.isMaxLevel || this.isBigSuccessMaxLevel) {
+      return Quality.experiences.length;
+    }
+
+    return Quality.experiences.findIndex((p) => p > this.bigSuccessExperience);
+  }
+
   public set quality(quality: number) {
     this.setQuality(quality);
   }
 
   public get leftover() {
     return this.experience - Quality.experiences[this.quality - 1];
+  }
+
+  public get leftoverBigSuccess() {
+    return this.bigSuccessExperience - Quality.experiences[this.qualityBigSuccess - 1];
   }
 
   public get untilNext() {
@@ -62,12 +88,20 @@ export class Quality {
     return Quality.experiences[quality] - Quality.experiences[quality - 1] - this.leftover;
   }
 
+  public get untilNextBigSuccess() {
+    if (this.isBigSuccessMaxLevel) {
+      return 0;
+    }
+    const { qualityBigSuccess } = this;
+    return Quality.experiences[qualityBigSuccess] - Quality.experiences[qualityBigSuccess - 1] - this.leftoverBigSuccess;
+  }
+
   public constructor(experience = Quality.experiences[0]) {
     this.setExperience(experience);
   }
 
   public setExperience(experience = Quality.experiences[0]) {
-    this.experience = experience;
+    this.originalExperience = experience;
     return this;
   }
 
@@ -76,27 +110,26 @@ export class Quality {
       throw new InvalidQualityError();
     }
 
-    this.experience = Quality.experiences[quality - 1];
+    this.originalExperience = Quality.experiences[quality - 1];
 
     if (untilNext && !this.isMaxLevel) {
-      this.experience += Quality.experiences[this.quality] - Quality.experiences[this.quality - 1] - untilNext;
+      this.originalExperience += Quality.experiences[this.quality] - Quality.experiences[this.quality - 1] - untilNext;
     }
 
     return this;
   }
 
-  public addExperience(experience: number) {
-    this.experience += experience;
-    return this;
-  }
-
   public addExperiences(experiences: number[] | Quality[]) {
-    this.experience += sum(experiences);
+    this.addOnExperiences += sum(experiences);
     return this;
   }
 
   public valueOf() {
     return clamp(this.experience, Quality.experiences[0], Quality.experiences[Quality.experiences.length - 1]);
+  }
+
+  public valueOfBigSuccess() {
+    return clamp(this.bigSuccessExperience, Quality.experiences[0], Quality.experiences[Quality.experiences.length - 1]);
   }
 
   public toString() {

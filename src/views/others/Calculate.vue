@@ -3,6 +3,7 @@ div.container
   div.calculation-state
     h3 {{ $t('ステータスの公式') }}
     div
+      p G = {{ $t('ゲイン') }}
       p R = {{ $t('レベル') }}
       p B = {{ $t('ベース') }}
       p (int) (B + pow(level/R, G) * (M - B))
@@ -28,16 +29,6 @@ div.container
         el-input.calculate__result(:value="stateResult" size="mini")
       el-form-item(:label="$t('サブ装備')")
         el-input.calculate__result(:value="stateSupportResult" size="mini")
-
-  el-divider
-  div.calculation-strength
-    div
-      p {{ $t('強さ') }} = sum({{ $t('物理攻撃') }}{{ $t('ベース') }} + {{ $t('物理防禦') }}{{ $t('ベース') }} + {{ $t('魔法攻撃') }}{{ $t('ベース') }} + {{ $t('魔法防禦') }}{{ $t('ベース') }})
-
-  el-divider
-  div.calculation-quality
-    div
-      p {{ $t('調合品質') }} = clamp(floor(sum({{ $t('品質') }}) / count) + sum({{ $t('品質特性') }}), 1, 100)
 
   el-divider
   div
@@ -66,10 +57,21 @@ div.container
       p B = 1
       p {{ $t('装備経験値') }} = (int) (B + pow(level/R, G) * (M - B))
       p {{ $t('レベル') }} = sum({{ $t('装備経験値') }})
+
+  el-divider
+  div.calculation-strength
+    div
+      p {{ $t('強さ') }} = sum({{ $t('物理攻撃') }}{{ $t('ベース') }} + {{ $t('物理防禦') }}{{ $t('ベース') }} + {{ $t('魔法攻撃') }}{{ $t('ベース') }} + {{ $t('魔法防禦') }}{{ $t('ベース') }})
+
   el-divider
   div
     p {{ $t('ダメージ') }} = (({{ $t('攻撃') }} * 0.25) - ({{ $t('防禦') }} * 0.125)) * random(0.95,  1.05)
     p {{ $t('スキル') }} {{ $t('ダメージ') }} = {{ $t('上值') }} * {{ $t('スキル') }} / {{ $t('エフェクト') }}
+
+  el-divider
+  div.calculation-quality
+    div
+      p {{ $t('調合品質') }} = clamp(floor(sum({{ $t('品質') }}) / count) + sum({{ $t('品質特性') }}), 1, 100)
 </template>
 
 <script lang="ts">

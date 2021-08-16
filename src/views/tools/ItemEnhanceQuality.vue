@@ -23,17 +23,32 @@ div.item-enhance-quality
         el-input-number(v-model="originalQuality" size="mini" :min="10" :max="Quality.experiences.length" :step="1" step-strictly)
         span {{ $t('あと') }}
         el-input-number(v-model="untilNextQuality" size="mini" :min="0" :max="maxNextLevel" :step="1" step-strictly)
-      div.after-item
+      div.after-item(v-for="r of [result]")
         table
           tr
             th {{ $t('目標品質') }}
-            td {{ result.quality }}
+            td {{ r.quality }}
           tr
             th {{ $t('あと') }}
-            td {{ result.untilNext }}
+            td {{ r.untilNext }}
           tr
             th {{ $t('品質経験値') }}
-            td {{ result }}
+            td {{ r }}
+        br
+        p
+          small {{ $t('※装備品質上げには大成功ありません') }}
+        br
+        h4.big-success__title {{ $t('大成功') }}
+        table.big-success__table
+          tr
+            th {{ $t('目標品質') }}
+            td {{ r.qualityBigSuccess }}
+          tr
+            th {{ $t('あと') }}
+            td {{ r.untilNextBigSuccess }}
+          tr
+            th {{ $t('品質経験値') }}
+            td {{ r.valueOfBigSuccess() }}
         br
         p.total-item
           img.icon-small(src="img/icon_item_s/Texture2D/icon_item_s_10020003.png" :alt="$t('アイテム')")
@@ -83,7 +98,9 @@ export default class extends VueWithMapFields {
   }
 
   public get result() {
-    return new Quality().setQuality(this.originalQuality || 1, this.untilNextQuality).addExperiences(this.qualities);
+    return new Quality()
+      .setQuality(this.originalQuality || 1, this.untilNextQuality)
+      .addExperiences(this.qualities);
   }
 
   //
@@ -166,4 +183,12 @@ a
 .total-item
   display: flex
   align-items: center
+
+.dark-mode .big-success__title,
+.dark-mode .big-success__table th
+  color: gold
+
+.big-success__title,
+.big-success__table th
+  color: red
 </style>
