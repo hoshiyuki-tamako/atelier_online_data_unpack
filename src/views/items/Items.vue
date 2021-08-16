@@ -39,7 +39,7 @@ div.container
     div.filter
       el-checkbox-group(v-model="has" size="small")
         el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
-  div.items
+  div.items(v-if="!waitForReset")
     router-link(v-for="item of filteredItems" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }")
       el-card.item
         h3 {{ item.NAME }}
@@ -198,12 +198,16 @@ export default class extends VueWithMapFields {
     return items;
   }
 
+  public waitForReset = true;
+
   public async beforeMount() {
     if (this.$route.query.category) {
       await this.$store.dispatch('itemsFilter/reset');
       this.category = +this.$route.query.category;
       this.$router.replace({ query: { ...this.$route.query, category: undefined } });
     }
+
+    this.waitForReset = false;
   }
 }
 </script>

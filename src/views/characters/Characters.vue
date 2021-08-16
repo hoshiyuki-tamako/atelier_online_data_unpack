@@ -26,7 +26,7 @@ div.container
       el-checkbox-group(v-model="has" size="small")
         el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
 
-  div.characters
+  div.characters(v-if="!waitForReset")
     el-card.character(v-for="character of filteredCharacters" :key="character.DF")
       router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
         h3 {{ character.NAME }}
@@ -162,12 +162,16 @@ export default class extends VueWithMapFields {
     }
   }
 
+  public waitForReset = true;
+
   public async beforeMount() {
     if (typeof this.$route.query.characterType !== 'undefined') {
       await this.$store.dispatch('charactersFilter/reset');
       this.characterType = +this.$route.query.characterType;
       this.$router.replace({ query: { ...this.$route.query, characterType: undefined } });
     }
+
+    this.waitForReset = false;
   }
 }
 </script>
