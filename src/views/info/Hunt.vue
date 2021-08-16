@@ -44,10 +44,10 @@ div.hunt-container
       el-divider {{ $t('ボーナス') }}
       div(v-for="join of row.JCND")
         p
-          span ({{ join.RATEBNS }} {{ $t('ボーナス') }}) {{ ' ' }}
           template(v-if="join.ESS")
             el-tooltip(:content="$t('必要')" placement="left")
               span *
+          span ({{ join.RATEBNS }} {{ $t('ボーナス') }}) {{ ' ' }}
           span(v-if="join.TYPE === eConditionType.TotalLv") {{ $t('合計LV') }}{{ join.VALS[0] }}
           span(v-else-if="join.TYPE === eConditionType.CharaCnt") {{ $t('{0}人以上のキャラを編成', join.VALS) }}
           span(v-else-if="join.TYPE === eConditionType.TargetChara") {{ $t('LV{0}以上の{1}の編成', [join.VALS[1], dataManager.characterById[join.VALS[0]].NAME]) }}
