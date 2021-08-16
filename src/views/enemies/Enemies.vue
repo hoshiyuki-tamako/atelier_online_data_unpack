@@ -39,8 +39,8 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import { mapFields } from 'vuex-map-fields';
+import VueBase from '@/components/VueBase';
 
 abstract class VueWithMapFields extends VueBase {
   public eKind!: number | null;
