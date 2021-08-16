@@ -18,6 +18,10 @@ export interface IDialog extends IAdventure {
   voice?: string;
 }
 
+export interface IHeroVoice extends IAdventure {
+  voices?: string[];
+}
+
 export interface ISelection extends IAdventure {
   options: string[];
 }
@@ -80,6 +84,14 @@ export class AdvManager {
               facialExpression: p.vsParam[3] || '0',
               voice: p.vsParam[6],
             } as IDialog;
+          case EOrderType.eVOICE_ADV_PLAYER:
+            if (!p.vsParam[0]) {
+              return null;
+            }
+            return {
+              order: p.eOrder,
+              voices: p.vsParam.slice(0, 2),
+            } as IHeroVoice;
           case EOrderType.eSELECTION:
             return {
               order: p.eOrder,

@@ -1,3 +1,4 @@
+import { Chara } from '@/master/chara';
 import eachLimit from 'async/eachLimit';
 import deepmerge from 'deepmerge';
 import ffmpegStatic from 'ffmpeg-static';
@@ -110,23 +111,58 @@ export default class AudioExport extends ExportBase {
 
   private async generateCharacterVoices(sourceFolder: string, rootFolder: string, serverId: string, voices: string[]) {
     const advFolder = path.join(sourceFolder, serverId, 'adv', 'MonoBehaviour');
+    const masterFolder = path.join(sourceFolder, serverId, 'master', 'MonoBehaviour');
+    const charaFile = path.join(masterFolder, 'chara.json');
+
     if (!await fs.pathExists(advFolder)) {
       console.log(`empty adv folder for generateCharacterVoices: ${advFolder}`);
       await this.writeCharacterVoices(rootFolder, serverId);
       return;
     }
 
-    const advFiles = await fs.readdir(advFolder);
+    if (!await fs.pathExists(advFolder)) {
+      console.log(`empty master folder for generateCharacterVoices: ${masterFolder}`);
+      await this.writeCharacterVoices(rootFolder, serverId);
+      return;
+    }
+
+    if (!await fs.pathExists(charaFile)) {
+      console.log(`missing chara.json for generateCharacterVoices: ${charaFile}`);
+      await this.writeCharacterVoices(rootFolder, serverId);
+      return;
+    }
+
+    const [advFiles, chara] = await Promise.all([
+      fs.readdir(advFolder),
+      fs.readJSON(charaFile) as Promise<Chara>,
+    ]);
     const characterMaps = await Promise.all(advFiles.map(async (advFile) => {
       const adv = await fs.readJson(path.join(advFolder, advFile)) as Adv;
+
+      const mainCharactersRaw = Enumerable.from(adv.vOrderList)
+        .where((p) => p.eOrder === EOrderType.eVOICE_ADV_PLAYER && !!p.vsParam[0])
+        .selectMany((p) =>[
+          {
+            characterDf: '1',
+            characterName: chara.m_vList.find((p) => p.DF === 1)?.NAME || '',
+            voice: p.vsParam[0],
+          },
+          {
+            characterDf: '2',
+            characterName: chara.m_vList.find((p) => p.DF === 2)?.NAME || '',
+            voice: p.vsParam[1],
+          },
+        ]);
+
       return Enumerable.from(adv.vOrderList)
+        .where((p) => p.eOrder === EOrderType.eCHARA_TALK)
         .select((p) => ({
-          order: p.eOrder,
           characterDf: p.vsParam[0],
           characterName: p.vsParam[1],
           voice: p.vsParam[6],
         }))
-        .where((p) => p.order === EOrderType.eCHARA_TALK && p.voice && voices.includes(`${p.voice}.wav`))
+        .concat(mainCharactersRaw)
+        .where((p) => p.voice && voices.includes(`${p.voice}.wav`))
         .groupBy((p) => p.characterDf)
         .toObject(
           (p) => p.key(),

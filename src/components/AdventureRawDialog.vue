@@ -13,6 +13,12 @@ el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destro
           p(v-html="richTextService.richTextToHtml(scope.row.dialog)")
           audio(v-if="scope.row.voice && dataManager.files.audios.voices[`${scope.row.voice}.m4a`]" controls)
             source(:src="`audios/voices/${scope.row.voice}.m4a`" type="audio/mp4")
+        div(v-else-if="scope.row.order === EOrderType.eVOICE_ADV_PLAYER")
+          div.main-character-audio__container(v-for="(voice, i) of scope.row.voices")
+            template(v-if="voice")
+              span {{ i ? '♀' : '♂' }}
+              audio.main-character__audio(v-if="dataManager.files.audios.voices[`${voice}.m4a`]" controls)
+                source(:src="`audios/voices/${voice}.m4a`" type="audio/mp4")
         div(v-else-if="scope.row.order === EOrderType.eSELECTION")
           h4 {{ $t('選択') }}
           p(v-for="option of scope.row.options" v-html="richTextService.richTextToHtml(option)")
@@ -134,4 +140,11 @@ export default class extends VueBase {
   width: 180px
 .dialog-image
   max-width: 100%
+
+.main-character-audio__container
+  display: flex
+  align-items: center
+
+.main-character__audio
+  margin-left: 4px
 </style>
