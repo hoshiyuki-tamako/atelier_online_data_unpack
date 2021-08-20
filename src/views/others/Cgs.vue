@@ -1,34 +1,22 @@
 <template lang="pug">
 div.container
-  div.navs
-    div.nav-link
-      el-link(v-scroll-to="{ el: `#cgs`, duration: -1 }" type="primary" :underline="false")
-        h2 {{ $t('CG') }}
-    div.nav-link
-      el-link(v-scroll-to="{ el: `#bgs`, duration: -1 }" type="primary" :underline="false")
-        h2 {{ $t('背景') }}
-    div.nav-link
-      el-link(v-scroll-to="{ el: `#items`, duration: -1 }" type="primary" :underline="false")
-        h2 {{ $t('アイテム') }}
-
-  el-divider
-
-  div.content
-    div#cgs.cgs
-      el-card(v-for="(cg, i) of cgs" :key="cg.id")
-        router-link(:to="{ name: 'InfoQuest', query: { name: cg.adv } }" target="_blank")
-          h3.cg-header {{ cg.questNames }}
-        a(:href="cg.src" target="_blank")
-          img.cg-img(:src="cg.src" :alt="`${$t('CG')} ${cg.id}`")
-    el-divider
-    div#bgs.cgs
-      div(v-for="(cg, i) of bgs")
-        img.bg-img(:src="cg.src" :alt="`${$t('背景')} ${cg.id}`")
-    el-divider
-    div#items.cgs
-      el-card(v-for="(cg, i) of windowItems" :key="cg.id")
-        a(:href="cg.src" target="_blank")
-          img.item-img(:src="cg.src" :alt="`${$t('アイテム')} ${cg.id}`")
+  el-tabs(v-model="activeTab" type="card")
+    el-tab-pane(:label="$t('CG')" name="cgs")
+      div.cgs
+        el-card(v-for="(cg, i) of cgs" :key="cg.id")
+          router-link(:to="{ name: 'InfoQuest', query: { name: cg.adv } }" target="_blank")
+            h3.cg-header {{ cg.questNames }}
+          a(:href="cg.src" target="_blank")
+            img.cg-img(:src="cg.src" :alt="`${$t('CG')} ${cg.id}`")
+    el-tab-pane(:label="$t('背景')" name="backgrounds")
+      div.cgs
+        div(v-for="(cg, i) of bgs")
+          img.bg-img(:src="cg.src" :alt="`${$t('背景')} ${cg.id}`")
+    el-tab-pane(:label="$t('アイテム')" name="items")
+      div.cgs
+        el-card(v-for="(cg, i) of windowItems" :key="cg.id")
+          a(:href="cg.src" target="_blank")
+            img.item-img(:src="cg.src" :alt="`${$t('アイテム')} ${cg.id}`")
 </template>
 
 <script lang="ts">
@@ -40,6 +28,8 @@ import VueBase from '@/components/VueBase';
   },
 })
 export default class extends VueBase {
+  public activeTab = 'cgs';
+
   public get cgs() {
     return Object.keys(this.dataManager.files.img.still_texture).map((img) => {
       const id = +img.match(/\d+/)[0];
@@ -86,12 +76,6 @@ export default class extends VueBase {
 <style lang="sass" scoped>
 a
   text-decoration: none
-
-.navs
-  display: flex
-
-.nav-link
-  margin: 12px
 
 .cgs
   display: flex

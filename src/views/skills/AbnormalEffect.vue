@@ -1,5 +1,7 @@
 <template lang="pug">
 div.container
+  JsonViewDialog(ref="jsonViewDialog")
+
   div.filters
     div.filter
       span {{ $t('名前') }}/ID
@@ -9,13 +11,15 @@ div.container
       el-checkbox-group(v-model="has" size="small")
         el-checkbox-button(v-for="item of hasFilter" :key="item.value" :label="item.value") {{ item.label }}
   div.content
-    el-table(:data="filteredAbnormalState")
+    el-table(ref="table" :data="filteredAbnormalState")
       el-table-column(type="expand")
         template(slot-scope="props")
-          h3 {{ $t('スキル') }}
+          h3(v-if="hasSkill(props.row.id)") {{ $t('スキル') }}
           div.skills-container
             div.skill-container(v-for="skill of dataManager.skillsByAbnormalState[props.row.id]")
               router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+          br(v-if="hasSkill(props.row.id)")
+          el-link(@click="$refs.jsonViewDialog.open(props.row)" :underline="false") {{ $t('Rawデータ') }}
       el-table-column(prop="id" label="ID" width="100%" sortable)
       el-table-column(prop="name" :label="$t('名前')" :filters="typeFilters" :filter-method="typeFilderHandler" sortable)
       el-table-column(prop="telop" :label="$t('テクスト')" sortable)
@@ -28,24 +32,21 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import { mapFields } from 'vuex-map-fields';
+import Vue from 'vue';
 import VueBase from '@/components/VueBase';
 import { MVList as AbnormalStateMVList } from '@/master/abnormalState';
-
-abstract class VueWithMapFields extends VueBase {
-  public name!: string;
-
-  public has!: number[];
-}
+import JsonViewDialog from '@/components/JsonViewDialog.vue';
 
 @Component({
   components: {
-  },
-  computed: {
-    ...mapFields('abnormalEffectFilter', ['name', 'has']),
+    JsonViewDialog,
   },
 })
-export default class extends VueWithMapFields {
+export default class extends VueBase {
+  public name = '';
+
+  public has = [] as number[];
+
   public get hasFilter() {
     return [
       {
@@ -71,6 +72,28 @@ export default class extends VueWithMapFields {
 
   public typeFilderHandler(value: string, row: AbnormalStateMVList) {
     return row.name.startsWith(value);
+  }
+
+  public beforeMount() {
+    if (this.$route.query.id) {
+      this.name = this.$route.query.id.toString();
+    }
+  }
+
+  public mounted() {
+    if (this.$route.query.id) {
+        type ElementUiTable = {
+          toggleRowExpansion: (row: AbnormalStateMVList, t: boolean) => void
+        } & Vue;
+        const row = this.filteredAbnormalState[0];
+        if (row) {
+          (this.$refs.table as ElementUiTable).toggleRowExpansion(row, true);
+        }
+    }
+  }
+
+  public hasSkill(id: number) {
+    return !!this.dataManager.skillsByAbnormalState[id]?.length;
   }
 }
 </script>

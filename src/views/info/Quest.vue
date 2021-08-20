@@ -392,7 +392,7 @@ export default class extends VueWithMapFields {
   }
 
   public mounted() {
-    if (this.$route.query.df) {
+    if (this.$route.query.df || this.$route.query.name) {
       this.expandAll();
     }
   }

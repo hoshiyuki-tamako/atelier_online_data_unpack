@@ -6,7 +6,7 @@ div.container
       p G = {{ $t('ゲイン') }}
       p R = {{ $t('レベル') }}
       p B = {{ $t('ベース') }}
-      p (int) (B + pow(level/R, G) * (M - B))
+      p trunc(B + pow(level/R, G) * (M - B))
     br
     h3 {{ $t('サブ装備') }}
     div
@@ -41,7 +41,7 @@ div.container
       p M = 2500000
       p R = 100
       p B = 10
-      p {{ $t('品質経験値') }} = (int) (B + pow(level/R, G) * (M - B))
+      p {{ $t('品質経験値') }} = trunc(B + pow(level/R, G) * (M - B))
       p {{ $t('品質') }} = sum({{ $t('品質経験値') }})
 
   el-divider
@@ -55,13 +55,13 @@ div.container
       p M = 20000
       p R = 60
       p B = 1
-      p {{ $t('装備経験値') }} = (int) (B + pow(level/R, G) * (M - B))
+      p {{ $t('装備経験値') }} = trunc(B + pow(level/R, G) * (M - B))
       p {{ $t('レベル') }} = sum({{ $t('装備経験値') }})
 
   el-divider
   div.calculation-strength
     div
-      p {{ $t('強さ') }} = sum({{ $t('物理攻撃') }}{{ $t('ベース') }} + {{ $t('物理防禦') }}{{ $t('ベース') }} + {{ $t('魔法攻撃') }}{{ $t('ベース') }} + {{ $t('魔法防禦') }}{{ $t('ベース') }})
+      p {{ $t('強さ') }} = sum({{ $t('物理攻撃ベース') }} + {{ $t('物理防禦ベース') }} + {{ $t('魔法攻撃ベース') }} + {{ $t('魔法防禦ベース') }})
 
   el-divider
   div

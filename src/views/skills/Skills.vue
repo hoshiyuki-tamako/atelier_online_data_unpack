@@ -41,8 +41,11 @@ div.container
         el-option(v-for="item of dataManager.abnormalState.m_vList" :key="item.value" :label="item.name" :value="item.id")
   div.filters
     div.filter
-      span {{ $t('名前') }}/ID
+      span {{ $t('名前') }}
       el-input(v-model="filter.name" @change="resetPage" clearable)
+    div.filter
+      span ID
+      el-input(v-model="filter.id" @change="resetPage" clearable)
     div.filter
       span {{ $t('詳細') }}
       el-input(v-model="filter.detail" @change="resetPage" clearable)
@@ -97,13 +100,15 @@ div.container
                 h4 {{ $t('追加状態 (自)') }}
                 template(v-for="[state, abnormalState] of props.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
                   el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
-                    p {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
+                    p
+                      router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
               div(v-if="props.row.state.length")
                 br
                 h4 {{ $t('追加状態') }}
                 template(v-for="[state, abnormalState] of props.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
                   el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
-                    p {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
+                    p
+                      router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
 
               div(v-if="props.row.effect === EBattleEffectKind.eZONE_CHANGE" v-for="zone of [dataManager.zoneById[props.row.effectValue]].filter((p) => p)")
                 br
@@ -147,12 +152,14 @@ div.container
         template(slot-scope="scope")
           template(v-for="[state, abnormalState] of scope.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
             el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
-              p {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
+              p
+                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
       el-table-column(v-if="showColumnState" prop="state.length" :label="$t('追加状態')" sortable="custom")
         template(slot-scope="scope")
           template(v-for="[state, abnormalState] of scope.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
             el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
-              p {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
+              p
+                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
     el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredSkills.length" layout="prev, pager, next" background="")
 </template>
 
@@ -309,6 +316,7 @@ export default class extends VueWithMapFields {
   }
 
   public filter = {
+    id: '',
     skillKind: null,
     attribute: '',
     element: '',
@@ -350,14 +358,15 @@ export default class extends VueWithMapFields {
     const key = JSON.stringify(this.filter);
     if (!this.filterCache.has(key)) {
       let skills = this.skills.filter((p) => (
-        (this.filter.attribute === '' || p.attackSkill.attribute === +this.filter.attribute)
+        (!this.filter.id || p.id === +this.filter.id)
+        && (this.filter.attribute === '' || p.attackSkill.attribute === +this.filter.attribute)
         && (this.filter.element === '' || p.attackSkill.element === +this.filter.element)
         && (this.filter.targetTeam === '' || p.targetTeam === +this.filter.targetTeam)
         && (this.filter.targetScope === '' || p.targetScope === +this.filter.targetScope)
         && ([null, '', -1].includes(this.filter.trigger) || p.trigger === this.filter.trigger)
         && ([null, '', -1].includes(this.filter.effect) || p.effect === this.filter.effect)
         && ([null, '', -1].includes(this.filter.effectTarget) || p.effectTarget === this.filter.effectTarget)
-        && (!this.filter.name || p.id === +this.filter.name || p.name.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
+        && (!this.filter.name || p.name.toLocaleLowerCase().includes(this.filter.name.toLocaleLowerCase()))
         && (!this.filter.detail || p.detail.toLocaleLowerCase().includes(this.filter.detail.toLocaleLowerCase()))
         && (!this.filter.abnormalState || p.stateOwn.some(({ id }) => id === this.filter.abnormalState) || p.state.some(({ id }) => id === this.filter.abnormalState))
         && (!this.filter.has.includes(1) || p.stateOwn.length)
@@ -406,7 +415,7 @@ export default class extends VueWithMapFields {
     }
 
     if (this.$route.query.id) {
-      this.$set(this.filter, 'name', this.$route.query.id.toString() || '');
+      this.$set(this.filter, 'id', this.$route.query.id.toString() || '');
     }
   }
 }

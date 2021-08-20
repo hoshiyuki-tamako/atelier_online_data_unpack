@@ -517,7 +517,6 @@ export default class extends VueWithMapFields {
       this.$store.dispatch('equipmentRankingFilter/reset'),
       this.$store.dispatch('skillsFilter/reset'),
       this.$store.dispatch('addonFilter/reset'),
-      this.$store.dispatch('abnormalEffectFilter/reset'),
       this.$store.dispatch('itemsFilter/reset'),
       this.$store.dispatch('enemiesFilter/reset'),
       this.$store.dispatch('charactersFilter/reset'),

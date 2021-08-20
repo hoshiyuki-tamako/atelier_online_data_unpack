@@ -55,13 +55,15 @@ div.container
                   h4 {{ $t('追加状態 (自)') }}
                   template(v-for="[state, abnormalState] of props.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
                     el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
-                      p {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
+                      p
+                         router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
                 div(v-if="props.row.state.length")
                   br
                   h4 {{ $t('追加状態') }}
                   template(v-for="[state, abnormalState] of props.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
                     el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
-                      p {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
+                      p
+                        router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
 
                 div(v-if="props.row.effect === EBattleEffectKind.eZONE_CHANGE" v-for="zone of [dataManager.zoneById[props.row.effectValue]].filter((p) => p)")
                   br

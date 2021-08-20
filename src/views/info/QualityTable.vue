@@ -27,10 +27,9 @@ export default class extends VueBase {
     const ranges = qualityStartQualities
       .map((quality, index, array) => ((index + 1) in array ? [array[index + 1], quality] : null))
       .filter((p) => p);
-    ranges.unshift([100, 101]);
-
     const qualities = ranges
       .reverse()
+      .concat([[100, 101]])
       .map(([start, end]) => Enumerable.range(start, end - start)
         .select((qualityLevel) => ({
           qualityLevel,

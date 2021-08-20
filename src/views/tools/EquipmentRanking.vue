@@ -183,7 +183,7 @@ export default class extends VueWithMapFields {
     const d = {
       column: {
         longTextWidth: '100%',
-        attackSkillWidth: '120%',
+        attackSkillWidth: '140%',
         criticalHitWidth: '130%',
         allElementWidth: '120%',
         darknessWidth: '100%',

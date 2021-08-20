@@ -13,10 +13,10 @@ div.container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import Aplayer from 'vue-aplayer';
-import { MVList as CharacterMVList } from '@/master/chara';
 import Enumerable from 'linq';
+import { MVList as CharacterMVList } from '@/master/chara';
+import VueBase from '@/components/VueBase';
 import { CharacterVoice, CharacterVoiceMap } from '@/scripts/AudioExport';
 import CharacterSelector from '@/components/inputs/CharacterSelector.vue';
 

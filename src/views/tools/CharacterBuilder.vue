@@ -47,9 +47,10 @@ div.top-container
                         img.icon-small(:src="character.icon" :alt="character.NAME")
                 br
                 div(v-for="(skill, i) of item.getSkills()")
-                  p {{ skill.name }}
+                  p
+                    router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
                   p {{ skill.detail }}
-                  p(v-if="item.getSkills().length !== (i + 1)") {{ '>' }}
+                  br(v-if="item.getSkills().length !== (i + 1)")
               div.equipment-popover(v-else-if="itemPickerShowStateType === 1")
                 table
                   tr(v-for="[state, value] of Formula.supportStates.map((state) => [state, item.getSupportState(state).value]).filter(([, p]) => p)")
@@ -191,7 +192,9 @@ div.top-container
                         tr(v-if="state.skills.length")
                           th {{ $t('スキル') }}
                           td
-                            p(v-for="skill of state.skills") {{ skill.name }} {{ s(skill.effectValue) }}{{ skill.effectValue }}
+                            p(v-for="skill of state.skills")
+                              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+                              span  {{ s(skill.effectValue) }}{{ skill.effectValue }}
               td
                 v-popover(placement="right-end" trigger="hover")
                   span {{ state.value + state.foodValue + state.skillValue }}
@@ -207,7 +210,9 @@ div.top-container
                         tr(v-if="state.skills.length")
                           th {{ $t('スキル') }}
                           td
-                            p(v-for="skill of state.skills") {{ skill.name }} {{ s(skill.effectValue) }}{{ skill.effectValue }}
+                            p(v-for="skill of state.skills")
+                              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+                              span  {{ s(skill.effectValue) }}{{ skill.effectValue }}
             tr(v-for="element of player.character.getElements(player.characterModifier.level)")
               th
                 v-popover(placement="right-end" trigger="hover")
@@ -218,7 +223,9 @@ div.top-container
                         tr
                           th {{ $t('スキル') }}
                           td
-                            p(v-for="skill of element.skills") {{ skill.name }} {{ s(skill.effectValue) }}{{ skill.effectValue }}
+                            p(v-for="skill of element.skills")
+                              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+                              span  {{ s(skill.effectValue) }}{{ skill.effectValue }}
               td
                 v-popover(placement="right-end" trigger="hover")
                   span {{ element.value }}
@@ -228,7 +235,9 @@ div.top-container
                         tr
                           th {{ $t('スキル') }}
                           td
-                            p(v-for="skill of element.skills") {{ skill.name }} {{ s(skill.effectValue) }}{{ skill.effectValue }}
+                            p(v-for="skill of element.skills")
+                              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+                              span  {{ s(skill.effectValue) }}{{ skill.effectValue }}
           div
             el-divider
             div(v-for="skill in player.character.getSkillWithComboSkills(player.characterModifier.level)")
@@ -239,8 +248,10 @@ div.top-container
                     p.popover-base__detail(v-if="skill.detail") {{ skill.detail }}
                     br
                     p {{ $t('数値') }}: {{ skill.effectValue }}, {{ skill.effectValue2 }}
-                    p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
-                    p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
+                    p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                      router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
+                    p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                      router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
 
   el-dialog(title="" :visible.sync="enemyEditDialogVisible" width="80%" :fullscreen="!!(md.mobile() || md.tablet())")
     div.enemy-edit
@@ -285,8 +296,10 @@ div.top-container
                   br
                   p(v-if="skill.type === 1") {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }} {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }}
                   p {{ skill.effectValue }}, {{ skill.effectValue2 }}
-                  p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
-                  p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
+                  p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                    router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
+                  p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                    router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
 
   div.character-builder-container
     div.top-equipment-container
@@ -356,9 +369,10 @@ div.top-container
                               img.icon-small(:src="character.icon" :alt="character.NAME")
                       br
                       div(v-for="(skill, i) of getEquipmentSkills(slot)")
-                        p {{ skill.name }}
+                        p
+                          router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
                         p {{ skill.detail }}
-                        p(v-if="getEquipmentSkills(slot).length !== (i + 1)") {{ '>' }}
+                        br(v-if="getEquipmentSkills(slot).length !== (i + 1)")
 
             div.right-equipment
               template(v-for="slot of rightEquipments")
@@ -413,9 +427,10 @@ div.top-container
                               img.icon-small(:src="character.icon" :alt="character.NAME")
                       br
                       div(v-for="(skill, i) of getEquipmentSkills(slot)")
-                        p {{ skill.name }}
+                        p
+                          router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
                         p {{ skill.detail }}
-                        p(v-if="getEquipmentSkills(slot).length !== (i + 1)") {{ '>' }}
+                        br(v-if="getEquipmentSkills(slot).length !== (i + 1)")
 
         div.sub-equipment
           div.sub-equipment-menu
@@ -466,12 +481,12 @@ div.top-container
             v-popover(placement="left-end" trigger="hover")
               span {{ $t('強さ') }}
               template(slot="popover")
-                div.equipment-popover {{ $t('強さ') }} = sum({{ $t('物理攻撃') }}{{ $t('ベース') }} + {{ $t('物理防禦') }}{{ $t('ベース') }} + {{ $t('魔法攻撃') }}{{ $t('ベース') }} + {{ $t('魔法防禦') }}{{ $t('ベース') }})
+                div.equipment-popover {{ $t('強さ') }} = sum({{ $t('物理攻撃ベース') }} + {{ $t('物理防禦ベース') }} + {{ $t('魔法攻撃ベース') }} + {{ $t('魔法防禦ベース') }})
           td
             v-popover(placement="left-end" trigger="hover")
               span {{ player.strength }}
               template(slot="popover")
-                div.equipment-popover {{ $t('強さ') }} = sum({{ $t('物理攻撃') }}{{ $t('ベース') }} + {{ $t('物理防禦') }}{{ $t('ベース') }} + {{ $t('魔法攻撃') }}{{ $t('ベース') }} + {{ $t('魔法防禦') }}{{ $t('ベース') }})
+                div.equipment-popover {{ $t('強さ') }} = sum({{ $t('物理攻撃ベース') }} + {{ $t('物理防禦ベース') }} + {{ $t('魔法攻撃ベース') }} + {{ $t('魔法防禦ベース') }})
         tr(v-for="state of ItemMVList.states")
           th
             v-popover(placement="left-end" trigger="hover")
@@ -629,12 +644,30 @@ div.top-container
           div(v-for="skill of [player.character.getBlazeArt(player.characterModifier.level, player.characterModifier.blazeArtLevel)].filter((p) => p)")
             h4 {{ $t('ブレイズアーツ') }} (LV {{ player.characterModifier.blazeArtLevel }}) {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }} {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
             img.icon-small(:src="player.character.faceIcon" :alt="skill.name")
-            p {{ skill.name }}
+            p
+              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
             p {{ skill.detail }}
             div(v-if="skill.attackSkill.attribute === 3" v-for="matk of [player.totalState('MATK')]")
               table
                 tr
-                  th {{ $t('正常') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('正常') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr(v-if="base")
+                              th {{ $t('スキル強化') }}
+                              td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue], skillChain) }}
@@ -654,7 +687,27 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('魔法攻撃UP中') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('魔法攻撃UP中') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
+                              td 1.3
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3], skillChain) }}
@@ -677,7 +730,30 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('上+魔法防御DOWN大') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+魔法防御DOWN大') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
+                              td 1.3
+                            tr
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
+                              td 1.4
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
@@ -703,7 +779,33 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('上+属性(-100)') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+属性(-100)') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
+                              td 1.3
+                            tr
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
+                              td 1.4
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -732,7 +834,33 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('全超+-') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('全超+-') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2030] ? dataManager.abnormalStateById[2030].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ dataManager.abnormalStateById[3050] ? dataManager.abnormalStateById[3050].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -760,11 +888,24 @@ div.top-container
                             tr(v-if="skillChain")
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
-
             div(v-else-if="skill.attackSkill.attribute" v-for="satk of [player.totalState('SATK')]")
               table
                 tr
-                  th {{ $t('正常') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('正常') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue], skillChain) }}
@@ -781,7 +922,27 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('物攻増UP中+') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('物攻増UP中+') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
+                              td 1.35
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35], skillChain) }}
@@ -804,7 +965,30 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('上+物理防御DOWN大') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+物理防御DOWN大') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
+                              td 1.35
+                            tr
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
+                              td 1.4
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
@@ -831,7 +1015,33 @@ div.top-container
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
 
                 tr
-                  th {{ $t('上+属性(-100)') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+属性(-100)') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
+                              td 1.35
+                            tr
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
+                              td 1.4
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -861,7 +1071,33 @@ div.top-container
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
 
                 tr
-                  th {{ $t('全超+-') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('全超+-') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2020] ? dataManager.abnormalStateById[2020].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ dataManager.abnormalStateById[3040] ? dataManager.abnormalStateById[3040].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -894,12 +1130,30 @@ div.top-container
           div(v-for="skill of [player.equipment.weapon.item.getAttackSkill(player.equipmentModifiers.weapon.quality)]")
             h4 {{ $t('武器') }} {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }} {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
             img.icon-small(:src="skill.icon" :alt="skill.name")
-            p {{ skill.name }}
+            p
+              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
             p {{ skill.detail }}
             div(v-if="skill.attackSkill.attribute === 3" v-for="matk of [player.totalState('MATK')]")
               table
                 tr
-                  th {{ $t('正常') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('正常') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr(v-if="base")
+                              th {{ $t('スキル強化') }}
+                              td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue], skillChain) }}
@@ -919,7 +1173,27 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('魔法攻撃UP中') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('魔法攻撃UP中') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
+                              td 1.3
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3], skillChain) }}
@@ -942,7 +1216,30 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('上+魔法防御DOWN大') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+魔法防御DOWN大') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
+                              td 1.3
+                            tr
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
+                              td 1.4
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
@@ -968,7 +1265,33 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('上+属性(-100)') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+属性(-100)') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
+                              td 1.3
+                            tr
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
+                              td 1.4
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -997,7 +1320,33 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('全超+-') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('全超+-') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2030] ? dataManager.abnormalStateById[2030].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ dataManager.abnormalStateById[3050] ? dataManager.abnormalStateById[3050].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -1028,7 +1377,21 @@ div.top-container
             div(v-else-if="skill.attackSkill.attribute" v-for="satk of [player.totalState('SATK')]")
               table
                 tr
-                  th {{ $t('正常') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('正常') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue], skillChain) }}
@@ -1045,7 +1408,27 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('物攻増UP中+') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('物攻増UP中+') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
+                              td 1.35
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35], skillChain) }}
@@ -1068,7 +1451,30 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('上+物理防御DOWN大') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+物理防御DOWN大') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
+                              td 1.35
+                            tr
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
+                              td 1.4
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
@@ -1095,7 +1501,33 @@ div.top-container
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
 
                 tr
-                  th {{ $t('上+属性(-100)') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+属性(-100)') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
+                              td 1.35
+                            tr
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
+                              td 1.4
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -1125,7 +1557,33 @@ div.top-container
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
 
                 tr
-                  th {{ $t('全超+-') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('全超+-') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2020] ? dataManager.abnormalStateById[2020].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ dataManager.abnormalStateById[3040] ? dataManager.abnormalStateById[3040].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -1158,12 +1616,30 @@ div.top-container
           div(v-for="skill of [player.equipment.shield.item.getAttackSkill(player.equipmentModifiers.shield.quality)]")
             h4 {{ $t('盾') }} {{ $t(dataManager.lookup.EBattleElementKind[skill.attackSkill.element]) }} {{ $t(dataManager.lookup.EBattleAttribute[skill.attackSkill.attribute]) }}
             img.icon-small(:src="`img/icon_skill/Texture2D/${skill.iconPath}.png`" :alt="skill.name")
-            p {{ skill.name }}
+            p
+              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
             p {{ skill.detail }}
             div(v-if="skill.attackSkill.attribute === 3" v-for="matk of [player.totalState('MATK')]")
               table
                 tr
-                  th {{ $t('正常') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('正常') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr(v-if="base")
+                              th {{ $t('スキル強化') }}
+                              td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue], skillChain) }}
@@ -1183,7 +1659,27 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('魔法攻撃UP中') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('魔法攻撃UP中') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
+                              td 1.3
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3], skillChain) }}
@@ -1206,7 +1702,30 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('上+魔法防御DOWN大') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+魔法防御DOWN大') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
+                              td 1.3
+                            tr
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
+                              td 1.4
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4], skillChain) }}
@@ -1232,7 +1751,33 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('上+属性(-100)') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+属性(-100)') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2025] ? dataManager.abnormalStateById[2025].name : '' }}
+                              td 1.3
+                            tr
+                              th {{ dataManager.abnormalStateById[3047] ? dataManager.abnormalStateById[3047].name : '' }}
+                              td 1.4
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.3, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -1261,7 +1806,33 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('全超+-') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('全超+-') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ matk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2030] ? dataManager.abnormalStateById[2030].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ dataManager.abnormalStateById[3050] ? dataManager.abnormalStateById[3050].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([matk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -1292,7 +1863,21 @@ div.top-container
             div(v-else-if="skill.attackSkill.attribute" v-for="satk of [player.totalState('SATK')]")
               table
                 tr
-                  th {{ $t('正常') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('正常') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue], skillChain) }}
@@ -1309,7 +1894,27 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('物攻増UP中+') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('物攻増UP中+') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
+                              td 1.35
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35], skillChain) }}
@@ -1332,7 +1937,30 @@ div.top-container
                               th {{ $t('連携') }}
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
                 tr
-                  th {{ $t('上+物理防御DOWN大') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+物理防御DOWN大') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
+                              td 1.35
+                            tr
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
+                              td 1.4
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4], skillChain) }}
@@ -1359,7 +1987,33 @@ div.top-container
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
 
                 tr
-                  th {{ $t('上+属性(-100)') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('上+属性(-100)') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2016] ? dataManager.abnormalStateById[2016].name : '' }}
+                              td 1.35
+                            tr
+                              th {{ dataManager.abnormalStateById[3037] ? dataManager.abnormalStateById[3037].name : '' }}
+                              td 1.4
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.35, 1.4, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -1389,7 +2043,33 @@ div.top-container
                               td {{ +(1 + skillChain * .2).toFixed(15) }}
 
                 tr
-                  th {{ $t('全超+-') }}
+                  th
+                    v-popover(placement="left-end" trigger="hover")
+                      span {{ $t('全超+-') }}
+                      template(slot="popover")
+                        div.equipment-popover
+                          table
+                            tr
+                              th {{ $t('ベース') }}
+                              td 0.25 x {{ satk }}
+                            tr
+                              th {{ $t('スキル') }}
+                              td {{ skill.attackSkill.effectValue }}
+                            tr
+                              th {{ dataManager.abnormalStateById[2020] ? dataManager.abnormalStateById[2020].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ dataManager.abnormalStateById[3040] ? dataManager.abnormalStateById[3040].name : '' }}
+                              td 1.55
+                            tr
+                              th {{ $t('属性') }}
+                              td {{ skill.attackSkill.element ? 2 : 1 }}
+                            tr(v-if="base")
+                                th {{ $t('スキル強化') }}
+                                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                            tr(v-if="skillChain")
+                              th {{ $t('連携') }}
+                              td {{ +(1 + skillChain * .2).toFixed(15) }}
                   td
                     v-popover(placement="left-end" trigger="hover")
                       span {{ player.attackTest([satk, skill.attackSkill.effectValue, 1.55, 1.55, skill.attackSkill.element ? 2 : 1], skillChain) }}
@@ -1625,6 +2305,7 @@ import { Formula } from '@/logic/Formula';
 import { EquipmentItem } from '@/logic/items/EquipmentItem';
 import { EAbnormalStateTarget, ECategory } from '@/logic/Enums';
 import { PlayerExportVersionConvertor } from '@/logic/convertor/PlayerExportVersionConvertor';
+import { Equipment } from '@/logic/items/Equipment';
 
 @Component({
   components: {
@@ -2116,23 +2797,23 @@ export default class extends VueBase {
   }
 
   // summary
-  public getEquipmentState(state: string, slot: string) {
+  public getEquipmentState(state: string, slot: keyof Equipment) {
     return this.player.equipment[slot].item.getState(state, this.player.equipmentModifiers[slot].quality, this.player.equipmentModifiers[slot].level, this.player.equipmentModifiers[slot].skill);
   }
 
-  public getEquipmentStates(slot: string) {
+  public getEquipmentStates(slot: keyof Equipment) {
     return this.player.equipment[slot].item.getStates(this.player.equipmentModifiers[slot].quality, this.player.equipmentModifiers[slot].level, this.player.equipmentModifiers[slot].skill).filter((p) => p.value || p.skillValue || p.addonValue);
   }
 
-  public getEquipmentElement(element: string, slot: string) {
+  public getEquipmentElement(element: string, slot: keyof Equipment) {
     return this.player.equipment[slot].item.getElement(element, this.player.equipmentModifiers[slot].quality, this.player.equipmentModifiers[slot].skill);
   }
 
-  public getEquipmentElements(slot: string) {
+  public getEquipmentElements(slot: keyof Equipment) {
     return this.player.equipment[slot].item.getElements(this.player.equipmentModifiers[slot].quality, this.player.equipmentModifiers[slot].skill).filter((p) => p.value || p.skillValue || p.addonValue);
   }
 
-  public getEquipmentSkills(slot: string) {
+  public getEquipmentSkills(slot: keyof Equipment) {
     return this.player.equipment[slot].item.getSkills(this.player.equipmentModifiers[slot].quality)
       .concat(this.player.equipmentModifiers[slot].skill ? [this.player.equipmentModifiers[slot].skill] : []);
   }
@@ -2350,9 +3031,6 @@ a
   td
     white-space: nowrap
 
-.character-skill-popover-detail
-  width: 400px
-
 /* enemy editor
 .enemy-edit-picker
   width: 70%
@@ -2380,14 +3058,14 @@ a
 .equipment-icon
   cursor: pointer
 
-.equipment-popover, .character-state-popover, .character-skill-popover
+.equipment-popover, .character-state-popover
   border: 2px solid green
   color: black
   background: white
   height: auto
   padding: 4px
 
-.dark-mode .equipment-popover
+.dark-mode .equipment-popover, .character-state-popover
   color: #eee
   background: #222933
 
