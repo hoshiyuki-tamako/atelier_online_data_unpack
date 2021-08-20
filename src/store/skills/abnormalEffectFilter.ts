@@ -8,10 +8,13 @@ export default class extends VuexModuleBase {
 
   public name = '';
 
-  @MutationAction({ mutate: ['name'] })
+  public has = [] as number[];
+
+  @MutationAction({ mutate: ['name', 'has'] })
   public async reset() {
     return {
       name: '',
+      has: [],
     };
   }
 }

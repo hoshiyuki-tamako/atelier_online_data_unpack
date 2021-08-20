@@ -392,6 +392,26 @@ export class DataManager {
       .toArray());
   }
 
+  public get skillsByAbnormalState() {
+    return this.cache('skillsByAbnormalState', () => Enumerable.from(this.skill.m_vList)
+      .selectMany((skill) => skill.state.map((state) => ({
+        skill,
+        stateId: state.id,
+      })).concat(skill.stateOwn.map((state) => ({
+        skill,
+        stateId: state.id,
+      }))))
+      .groupBy((p) => p.stateId)
+      .where((p) => p.key() in this.abnormalStateById)
+      .toObject(
+        (p) => p.key(),
+        (p) => p.select((o) => o.skill)
+          .distinct((o) => o.id)
+          .orderBy((o) => o.id)
+          .toArray(),
+      )) as { [id: string]: SkillList[] }
+  }
+
   public get skillBlazeArts() {
     return this.cache('skillBlazeArts', () => {
       const characterBlazeArtSkillDfs = new Set(
