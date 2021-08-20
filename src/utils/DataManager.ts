@@ -409,7 +409,7 @@ export class DataManager {
           .distinct((o) => o.id)
           .orderBy((o) => o.id)
           .toArray(),
-      )) as { [id: string]: SkillList[] }
+      ) as { [id: string]: SkillList[] });
   }
 
   public get skillBlazeArts() {
