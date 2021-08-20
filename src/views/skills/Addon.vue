@@ -19,7 +19,7 @@ div.container
       span {{ $t('詳細') }}
       el-input(v-model="detail" clearable)
   div.content
-    el-table(:data="filteredAddon" :default-expand-all.sync="defaultExpandAll")
+    el-table(:data="filteredAddon")
       el-table-column(type="expand")
           template(slot-scope="props")
             div.item-container
