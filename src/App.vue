@@ -97,10 +97,6 @@ abstract class VueWithMapFields extends VueBase {
   metaInfo() {
     return {
       meta: [
-        {
-          name: 'description',
-          content: this.$t('アトリエオンライン 資料庫 攻略'),
-        },
       ],
     };
   },
@@ -561,6 +557,8 @@ export default class extends VueWithMapFields {
     const url = new URL(window.location.toString());
     this.dataManager.locale = url.searchParams.get('locale') || this.defaultLocale;
     this.$i18n.locale = this.dataManager.locale;
+    document.getElementsByTagName('html')[0].lang = this.dataManager.lang;
+
     document.title = this.$t(document.title).toString();
 
     const urlSearchParamCorrect = this.dataManager.locale === url.searchParams.get('locale');
@@ -659,7 +657,7 @@ export default class extends VueWithMapFields {
   padding: 0 !important
 
 .container
-  margin: 12px
+  padding: 12px
 
 .item-fbx-container
   width: 100%

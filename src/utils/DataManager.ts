@@ -109,6 +109,18 @@ export class DataManager {
   public set locale(value: string | null) {
     this.#locale = DataManager.supportedLocales.find((p) => p.toLocaleLowerCase() === value?.toLocaleLowerCase()) || DataManager.defaultLocale;
   }
+  public get lang() {
+    const { locale } = this;
+    switch (locale) {
+      case 'zh-TW':
+      case 'zh-HK':
+        return 'zh-Hant';
+      case 'zh-CN':
+        return 'zh-Hans';
+      default:
+        return locale.substr(0, 2);
+    }
+  }
 
   public get server() {
     return DataManager.serversById[this.serverId];
@@ -354,7 +366,7 @@ export class DataManager {
   }
   public get skillAddonNames() {
     return this.cache('skillAddonNames', () => Enumerable.from(this.skillAddons)
-    .groupBy((p) => p.name.split('　')[0])
+    .groupBy((p) => this.server.id === 'en' ? p.name.split('Lv.')[0] : p.name.split('　')[0])
     .select((p) => p.key())
     .where((p) => !!p)
     .toArray());

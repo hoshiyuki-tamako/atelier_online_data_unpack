@@ -85,9 +85,11 @@ docker-compose up --build -d
 ## Content Update Steps
 
 - Download latest `APK` and `assets`
-- use `AssetStudio` >= 0.15 load folders that include both un-zipped APK, and assets / obb
+- use `AssetStudio` >= 0.16 load folders that include both un-zipped APK, and assets / obb
 - (optional) use `mitmproxy` to extract API messagepack
 - (optional) use `Il2CppDumper` to dump DLL for Enums/others
+
+Make sure `AssetStudio` -> `Options` -> `Export options` -> `Group exported aassets by` `type name`
 
 1. export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./source/jp/master/MonoBehaviour/*.json`
 2. export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/jp/adv/MonoBehaviour/*.json`

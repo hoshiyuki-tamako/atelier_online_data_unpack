@@ -612,6 +612,14 @@ export default class extends VueWithMapFields {
           },
         ],
       },
+      {
+        title: 'Atelier Online Material Quick Reference Sheet',
+        links: [
+          {
+            href: 'https://docs.google.com/spreadsheets/d/1ww56bJvLGK47T7JkiXw-RbId4zz4x1Lxe6Km1zdrLSg/edit?usp=sharing',
+          },
+        ],
+      },
     ];
   }
 

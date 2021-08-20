@@ -342,7 +342,7 @@ export default class extends VueWithMapFields {
         return this.dataManager.skillEffects;
       case SkillKind.none:
       default:
-        return this.dataManager.skill.m_vList.filter((p) => !p.category);
+        return this.dataManager.skill.m_vList;
     }
   }
 
