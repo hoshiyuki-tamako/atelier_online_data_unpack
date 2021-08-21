@@ -170,7 +170,7 @@ div.container
               el-divider LV {{ qst.LV }}
               router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }" target="_blank") {{ quest.NAME }}
 
-        el-tab-pane(:label="$t('クエスト')" name="quest" v-if="dataManager.advQuestsByCharacterId[character.DF] && dataManager.advQuestsByCharacterId[character.DF].length")
+        el-tab-pane(:label="$t('ダイアログ')" name="dialog" v-if="dataManager.advQuestsByCharacterId[character.DF] && dataManager.advQuestsByCharacterId[character.DF].length")
           div
             div.character-quest(v-for="quest of dataManager.advQuestsByCharacterId[character.DF].filter((p) => !character.QST.some((o) => p.DF === o.QUEST_DF))")
               router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }" target="_blank") {{ quest.NAME }}
@@ -222,7 +222,7 @@ export default class extends VueBase {
     if (this.character.EXC) {
       this.activeTab = 'main';
     } else if (this.dataManager.advQuestsByCharacterId[this.character.DF] && this.dataManager.advQuestsByCharacterId[this.character.DF].length) {
-      this.activeTab = 'quest';
+      this.activeTab = 'dialog';
     }
   }
 
