@@ -272,7 +272,7 @@ div.top-container
       div.enemy-edit-enemy(v-if="enemy.enemy")
         h3
           router-link(v-if="enemy.enemy" :to="{ name: 'EnemiesEnemy', query: { df: enemy.enemy.DF, level: enemy.level } }" target="_blank")
-            span {{ enemy.enemy.strName }} (LV {{ enemy.level }})
+            span {{ enemy.enemy.strName }}
         img.icon-full(:src="enemy.enemy.icon" :alt="enemy.enemy.strName")
         el-form
           el-form-item(:label="$t('レベル')")
@@ -3065,7 +3065,7 @@ a
   height: auto
   padding: 4px
 
-.dark-mode .equipment-popover, .character-state-popover
+.dark-mode .equipment-popover, .dark-mode .character-state-popover
   color: #eee
   background: #222933
 
