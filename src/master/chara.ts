@@ -215,6 +215,15 @@ export class MVList {
     }
   }
 
+  public get hasBlazeArts() {
+    return !!this.BA?.length;
+  }
+
+  public get quests() {
+    return this.QST.map((p) => [p, dataManager.questById[p.QUEST_DF]])
+      .filter(([, quest]) => quest);
+  }
+
   public get skillsByLevel() {
     return Enumerable.from(this.SKILL)
       .groupBy((p) => p.LV)

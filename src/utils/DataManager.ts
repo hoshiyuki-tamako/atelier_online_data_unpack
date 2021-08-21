@@ -174,8 +174,8 @@ export class DataManager {
     return {
       item: ['skill', 'zone'],
       chara: ['skill', 'blazeArt'],
-      skill: ['blazeArt'],
-      abnormalState: [],
+      skill: ['blazeArt', 'abnormalState'],
+      abnormalState: ['skill', 'item', 'chara', 'enemy'],
       abnormalStateEffect: [],
       zone: [],
       zoneEffect: [],
@@ -293,14 +293,20 @@ export class DataManager {
   }
   public get itemsBySkill() {
     return this.cache('itemsBySkill', () => Enumerable.from(this.itemsOrderByCategory)
-    .selectMany((item) => item.SPC.map((spc) => spc.SKILL.map((skill) => skill.DF)).flat().map((df) => ({
-      item,
-      df,
-    })))
-    .groupBy((p) => p.df)
+    .selectMany((item) =>
+      item.SPC.map((spc) => spc.SKILL.map((skill) => this.skillById[skill.DF]).filter((p) => p))
+        .flat()
+        .map((skill) => [skill].concat(skill.combSkillList).map((p) => p.id))
+        .flat()
+        .map((id) => ({
+          item,
+          id,
+        }))
+    )
+    .groupBy((p) => p.id)
     .toObject(
       (p) => p.key(),
-      (p) => p.groupBy(({ item }) => item.DF).select((i) => i.first().item).toArray(),
+      (p) => p.select((o) => o.item).distinct((o) => o.DF).orderBy((o) => o.CATEG).thenBy((o) => o.WPN_KIND).thenBy((o) => o.DF).toArray(),
     ) as { [id: string]: ItemMVList[] });
   }
   public get itemsOrderByCategory() {
@@ -433,30 +439,35 @@ export class DataManager {
     .toObject((p) => p.DF) as { [df: string]: EnemyMVList });
   }
   public get enemiesBySkill() {
-    return this.cache('enemiesBySkill', () => {
-      const enemiesBySkill = Enumerable.from(this.enemiesHasValidSpec)
-      .selectMany((enemy) => enemy.sParam.SKILL.map((skill) => ({
-        enemy,
-        df: skill.DF,
-      })))
-      .groupBy((p) => p.df)
+    return this.cache('enemiesBySkill', () => Enumerable.from(this.enemiesHasValidSpec)
+      .selectMany((enemy) =>
+        enemy.sParam.SKILL.map((skill) => this.skillById[skill.DF]).filter((p) => p)
+          .flat()
+          .map((skill) => [skill].concat(skill.combSkillList).map((p) => p.id))
+          .flat()
+          .map((id) => ({
+            enemy,
+            id,
+          }))
+      )
+      .concat(
+        this.skill.m_vList.map(({ id, enemyList }) =>
+          enemyList
+            .map((df) => this.enemyById[df])
+            .filter((p) => p)
+            .flat()
+            .map((enemy) => ({
+              enemy,
+              id,
+            })),
+        ).flat()
+      )
+      .groupBy((p) => p.id)
       .toObject(
         (p) => p.key(),
-        (p) => p.groupBy(({ enemy }) => enemy.DF).select((p) => p.first().enemy).toArray(),
-      ) as { [id: string]: EnemyMVList[] };
-
-      for (const skill of this.skill.m_vList) {
-        for (const enemyId of skill.enemyList) {
-          const enemy = this.enemyById[enemyId];
-          if (enemy) {
-            enemiesBySkill[skill.id] ||= [];
-            enemiesBySkill[skill.id].push(enemy);
-          }
-        }
-      }
-
-      return enemiesBySkill;
-    });
+        (p) => p.select(({ enemy }) => enemy).distinct((o) => o.DF).orderBy((o) => o.eKind).thenBy((o) => o.DF).toArray(),
+      ) as { [id: string]: EnemyMVList[] }
+    );
   }
   public get enemiesByEKind() {
     return this.cache('enemiesByEKind', () => Enumerable.from(this.enemiesHasValidSpec)
@@ -493,9 +504,47 @@ export class DataManager {
   }
   public get abnormalStateTypes() {
     return this.cache('abnormalStateTypes', () => Enumerable.from(this.abnormalState.m_vList)
-    .groupBy((p) => p.name.split('(')[0])
-    .select((p) => p.key())
-    .toArray());
+      .groupBy((p) => p.name.split('(')[0])
+      .select((p) => p.key())
+      .toArray());
+  }
+  public get abnormalStateItems() {
+    return this.cache('abnormalStateItems', () => Enumerable.from(this.abnormalState.m_vList)
+      .toObject(
+        (p) => p.id,
+        (p) => Enumerable.from(this.skillsByAbnormalState[p.id] || [])
+          .selectMany((p) => [p].concat(p.combSkillList.map((o) => this.skillById[o.id]).filter((o) => o)))
+          .selectMany((p) => this.itemsBySkill[p.id] || [])
+          .distinct((p) => p.DF)
+          .orderBy((o) => o.CATEG)
+          .thenBy((o) => o.WPN_KIND)
+          .thenBy((o) => o.DF)
+          .toArray()
+      ) as { [id: string]: ItemMVList[] });
+  }
+  public get abnormalStateCharacters() {
+    return this.cache('abnormalStateCharacters', () => Enumerable.from(this.abnormalState.m_vList)
+      .toObject(
+        (p) => p.id,
+        (p) => Enumerable.from(this.skillsByAbnormalState[p.id] || [])
+          .selectMany((p) => [p].concat(p.combSkillList.map((o) => this.skillById[o.id]).filter((o) => o)))
+          .selectMany((p) => this.charactersBySkill[p.id] || [])
+          .distinct((p) => p.DF)
+          .toArray()
+      ) as { [id: string]: CharacterMVList[] });
+  }
+  public get abnormalStateEnemies() {
+    return this.cache('abnormalStateEnemies', () => Enumerable.from(this.abnormalState.m_vList)
+      .toObject(
+        (p) => p.id,
+        (p) => Enumerable.from(this.skillsByAbnormalState[p.id] || [])
+          .selectMany((p) => [p].concat(p.combSkillList.map((o) => this.skillById[o.id]).filter((o) => o)))
+          .selectMany((p) => this.enemiesBySkill[p.id] || [])
+          .distinct((p) => p.DF)
+          .orderBy((o) => o.eKind)
+          .thenBy((o) => o.DF)
+          .toArray()
+      ) as { [id: string]: EnemyMVList[] });
   }
 
   public get abnormalStateEffectById() {
@@ -522,22 +571,31 @@ export class DataManager {
   }
   public get charactersBySkill() {
     return this.cache('charactersBySkill', () => Enumerable.from(this.chara.m_vList)
-    .selectMany((character) => {
-      const normalSkillDfs = character.SKILL.map((skill) => skill.DF);
-      const blazeArtSkillDfs = character.BA.map((p) => this.blazeArtById[p.DF]?.LV.map((lv) => lv.SKILL_DF)).filter((p) => p).flat();
-      return [...new Set(normalSkillDfs.concat(blazeArtSkillDfs))].map((df) => ({
+    .selectMany((character) => character.SKILL.map((skill) => skill.DF)
+      .concat(
+        character.BA.map((p) => this.blazeArtById[p.DF]?.LV.map((lv) => lv.SKILL_DF))
+          .filter((p) => p)
+          .flat()
+      ).map((id) => this.skillById[id])
+      .filter((p) => p)
+      .map((skill) => [skill].concat(skill.combSkillList).map((o) => o.id))
+      .flat()
+      .map((id) => ({
         character,
-        df,
-      }));
-    })
-    .groupBy((p) => p.df)
+        id,
+      }))
+    )
+    .groupBy((p) => p.id)
     .toObject(
       (p) => p.key(),
-      (p) => p.groupBy(({ character }) => character.DF).select((p) => p.first().character).toArray(),
+      (p) => p.select((o) => o.character).distinct((o) => o.DF).orderBy((o) => o.DF).toArray(),
     ) as { [id: string]: CharacterMVList[] });
   }
   public get charactersCanBattle() {
     return this.cache('charactersCanBattle', () => this.chara.m_vList.filter((p) => p.EXC));
+  }
+  public get charactersHasBlazeArts() {
+    return this.cache('charactersHasBlazeArts', () => this.charactersCanBattle.filter((p) => p.hasBlazeArts));
   }
   public get charactersByGroupDf() {
     return this.cache('charactersByGroupDf', () => Enumerable.from(this.chara.m_vList)
@@ -546,6 +604,13 @@ export class DataManager {
   }
   public get characterNpcs() {
     return this.cache('characterNpcs', () => this.chara.m_vList.filter((p) => !p.EXC));
+  }
+  public get characterMealItemDfs() {
+    return this.cache('characterMealItems', () => Enumerable.from(this.charactersCanBattle)
+      .selectMany((character) => character.FDM.map((p) => p.FD.map((o) => o.DF)).flat())
+      .where((p) => !!p)
+      .distinct()
+      .toArray());
   }
 
   public get zoneNames() {
@@ -776,6 +841,7 @@ export class DataManager {
   public areaModel: IAreaModel[] = areaModel;
   public areaDungeonModel: IAreaModel[] = areaDungeonModel;
   public characterVoices: CharacterVoiceMap;
+  public charactersByAdv: { [adv: string]: number[] };
 
   public advCharacterById: AdvMap;
   public advCgById: AdvMap;
@@ -876,6 +942,31 @@ export class DataManager {
     .toObject((p) => p.key(), (p) => p.select(({ id }) => id).toArray()) as AdvMap);
   }
 
+  public get advQuestsByCharacterId() {
+    return this.cache('advQuestsByCharacterId', () => Enumerable.from(Object.entries(this.charactersByAdv))
+      .selectMany(([adv, dfs]) => dfs.map((df) => ({ adv, df })))
+      .selectMany((p) => this.questsByAdv[p.adv]?.map((quest) => ({
+        character: this.characterById[p.df],
+        quest,
+      })) || [])
+      .where((p) => !!p.character)
+      .groupBy((p) => p.character.DF)
+      .toObject((p) => p.key(), (p) => p.select((o) => o.quest).distinct((o) => o.DF).orderBy((o) => o.DF).toArray()) as { [df: string]: QuestMVList[] }
+    );
+  }
+  public get advQuestsCharacters() {
+    return this.cache('advQuestsCharacters', () => Enumerable.from(Object.entries(this.charactersByAdv))
+      .where(([adv,]) => !!this.questsByAdv[adv])
+      .selectMany(([, dfs]) => dfs)
+      .distinct()
+      .select((df) => this.characterById[df])
+      .where((p) => !!p)
+      .orderBy((p) => p.EXC)
+      .thenBy((p) => p.DF)
+      .toArray()
+    );
+  }
+
   public get advFilesTree() {
     return this.files[this.serverId]?.export.adv || this.files.jp.export.adv;
   }
@@ -923,6 +1014,7 @@ export class DataManager {
       this.advBgById,
       this.advAudioById,
       this.characterVoices,
+      this.charactersByAdv,
     ] = await Promise.all([
       this.loadJson(`${this.serverId}/generated/advCharacterById.json`),
       this.loadJson(`${this.serverId}/generated/advCgById.json`),
@@ -930,6 +1022,10 @@ export class DataManager {
       this.loadJson(`${this.serverId}/generated/advBgById.json`),
       this.loadJson(`${this.serverId}/generated/advAudioById.json`),
       this.loadJson(`${this.serverId}/generated/characterVoices.json`),
+      this.loadJson(`${this.serverId}/generated/charactersByAdv.json`),
+
+      this.loadMasterData('chara'), // required for charactersByAdv
+      this.loadMasterData('quest'), // required for charactersByAdv
     ]);
   }
 

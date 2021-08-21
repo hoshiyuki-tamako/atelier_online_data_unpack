@@ -66,7 +66,8 @@ div
       div.compose-result-export
         el-button(@click="exportComposeItemUrlVisible = true" type="primary" circle) URL
 
-      SkillTextInfo(:skills="compose.getSkills(composeQuality)" :showTitle="false")
+      div.compose-result-skills
+        SkillTextInfo(:skills="compose.getSkills(composeQuality)" :showTitle="false")
 </template>
 
 <script lang="ts">
@@ -314,4 +315,7 @@ a
 
 .compose-result-export
   text-align: center
+
+.compose-result-skills
+  margin-top: 12px
 </style>

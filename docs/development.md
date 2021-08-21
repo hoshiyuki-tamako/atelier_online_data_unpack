@@ -1217,7 +1217,7 @@ for more info of each eOrder see other example at below this example
 
 ```ts
 {
-  "eOrder":20,
+  "eOrder": 20,
   "vsParam": [
     "「平気だよ」", // option 1
     "「考えすぎだって」" // option 2
@@ -1229,11 +1229,26 @@ for more info of each eOrder see other example at below this example
 
 ```ts
 {
-  "eOrder":48,
+  "eOrder": 48,
   "vsParam": [
     "1", // background texture id
     "[px]のアトリエ", // text line 1
     "Atelier" // text line 2
+  ]
+}
+```
+
+### EOrderType.eVOICE_ADV_PLAYER = 98
+
+use for player option selection mostly
+
+```ts
+{
+  "eOrder": 98,
+  "vsParam": [
+    "hero_l_017",
+    "heroine_l_017",
+    "1"
   ]
 }
 ```

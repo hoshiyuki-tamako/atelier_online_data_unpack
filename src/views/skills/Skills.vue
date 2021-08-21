@@ -75,6 +75,7 @@ div.container
               p(v-if="props.row.detail") {{ props.row.detail }}
               br
               p ID: {{ props.row.id }}
+              p(v-if="props.row.category") {{ $t('レア度') }}: {{ '⭐'.repeat(props.row.rarity) }}
               p {{ $t('数値') }}1: {{ props.row.effectValue }}
               p {{ $t('数値') }}2: {{ props.row.effectValue2 }}
               p {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.EBattleAttribute[props.row.attackSkill.attribute]) }}
@@ -129,16 +130,16 @@ div.container
                 router-link(v-for="item in dataManager.itemsBySkill[props.row.id]" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }" target="_blank")
                   el-tooltip(:content="item.NAME" placement="top")
                     img.icon-small(:src="item.icon" :alt="item.NAME")
-              div(v-if="dataManager.enemiesBySkill[props.row.id]")
-                h3 {{ $t('敵') }}
-                router-link(v-for="enemy in dataManager.enemiesBySkill[props.row.id]" :key="enemy.DF" :to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }" target="_blank")
-                  el-tooltip(:content="enemy.strName" placement="top")
-                    img.icon-small(:src="enemy.icon" :alt="enemy.strName")
               div(v-if="dataManager.charactersBySkill[props.row.id]")
                 h3 {{ $t('人物') }}
                 router-link(v-for="character in dataManager.charactersBySkill[props.row.id]" :key="character.DF" :to="{ name: 'CharactersCharacter', query: { df: character.DF } }" target="_blank")
                   el-tooltip(:content="character.NAME" placement="top")
                     img.icon-small(:src="character.icon" :alt="character.NAME")
+              div(v-if="dataManager.enemiesBySkill[props.row.id]")
+                h3 {{ $t('敵') }}
+                router-link(v-for="enemy in dataManager.enemiesBySkill[props.row.id]" :key="enemy.DF" :to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }" target="_blank")
+                  el-tooltip(:content="enemy.strName" placement="top")
+                    img.icon-small(:src="enemy.icon" :alt="enemy.strName")
 
       el-table-column(v-if="showColumnId" prop="id" label="ID" width="100%" sortable="custom")
       el-table-column(v-if="showColumnName" prop="name" :label="$t('名前')")
@@ -195,6 +196,7 @@ export enum SkillKind {
   normal,
   blazeArt,
   effect,
+  addon,
 }
 
 @Component({
@@ -231,6 +233,10 @@ export default class extends VueWithMapFields {
       {
         label: this.$t('パッシブスキル'),
         value: SkillKind.effect,
+      },
+      {
+        label: this.$t('強化効果'),
+        value: SkillKind.addon,
       },
     ];
   }
@@ -305,12 +311,12 @@ export default class extends VueWithMapFields {
         value: 3,
       },
       {
-        label: this.$t('敵'),
-        value: 4,
-      },
-      {
         label: this.$t('人物'),
         value: 5,
+      },
+      {
+        label: this.$t('敵'),
+        value: 4,
       },
     ];
   }
@@ -348,6 +354,8 @@ export default class extends VueWithMapFields {
         return this.dataManager.skillBlazeArts;
       case SkillKind.effect:
         return this.dataManager.skillEffects;
+      case SkillKind.addon:
+        return this.dataManager.skillAddons;
       case SkillKind.none:
       default:
         return this.dataManager.skill.m_vList;

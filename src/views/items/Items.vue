@@ -156,6 +156,10 @@ export default class extends VueWithMapFields {
         label: this.$t('トレジャー'),
         value: 7,
       },
+      {
+        label: this.$t('食事'),
+        value: 8,
+      },
     ];
   }
 
@@ -188,6 +192,7 @@ export default class extends VueWithMapFields {
       && (!this.has.includes(5) || this.dataManager.questsByDeliverItem[p.DF])
       && (!this.has.includes(6) || this.dataManager.questsByRewardItem[p.DF])
       && (!this.has.includes(7) || this.dataManager.api.huntInfosByItemId[p.DF])
+      && (!this.has.includes(8) || this.dataManager.characterMealItemDfs.includes(p.DF))
       && (!this.gender || p.canGenderUseEquipment(this.gender))
     ));
 

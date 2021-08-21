@@ -94,6 +94,7 @@ export default class DataProcessor {
       this.generateBgAdvMap(serverId, outFolder, files, rootFolder),
       this.generateWindowItemAdvMap(serverId, outFolder, files, rootFolder),
       this.generateAudioAdvMap(serverId, outFolder, files, rootFolder),
+      this.generateCharactersByAdv(serverId, outFolder, files, rootFolder),
     ]);
   }
 
@@ -199,6 +200,26 @@ export default class DataProcessor {
     }
 
     await fs.writeJson(path.join(rootFolder, serverId, 'generated', 'advAudioById.json'), audiosById);
+  }
+
+  private async generateCharactersByAdv(serverId: string, advFolder: string, files: string[], rootFolder: string) {
+    const charactersByAdvEntries = await Promise.all(files.map(async (file) => {
+      const adv = await fs.readJson(path.join(advFolder, file)) as Adv;
+      return [adv.m_Name, Enumerable.from(adv.vOrderList)
+        .where((p) => p.eOrder === EOrderType.eCHARA_TALK)
+        .select((p) => +p.vsParam[0])
+        .where((p) => !!p)
+        .concat(
+          adv.vOrderList.filter((p) => p.eOrder === EOrderType.eVOICE_ADV_PLAYER)
+            .map(() => [1, 2])
+            .flat()
+        )
+        .distinct((p) => p)
+        .toArray()];
+    }));
+
+
+    await fs.writeJson(path.join(rootFolder, serverId, 'generated', 'charactersByAdv.json'), Object.fromEntries(charactersByAdvEntries));
   }
 
   //

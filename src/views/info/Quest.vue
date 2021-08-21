@@ -7,7 +7,8 @@ div.container
       span {{ $t('カテゴリー') }}
       el-select(v-model="filter.category" @change="resetPage" placeholder="" clearable filterable)
         el-option(v-for="item of categoryFilter" :key="item.value" :label="item.label" :value="item.value")
-    CharacterSelector(v-model="filter.character" :characters="dataManager.questCharacters" @change="resetPage")
+    CharacterSelector(v-model="filter.mainCharacter" :characters="dataManager.questCharacters" title="メーンキャラクター" @change="resetPage")
+    CharacterSelector(v-model="filter.character" :characters="dataManager.advQuestsCharacters" @change="resetPage")
     WealthSelector(v-model="filter.costWealth" :wealths="dataManager.questCostWealths" :title="$t('消費財貨')" @change="resetPage")
     WealthSelector(v-model="filter.rewardWealth" :wealths="dataManager.questRewardWealths" :title="$t('報酬財貨')" @change="resetPage")
     DegreeSelector(v-model="filter.requireDegree" :degrees="dataManager.questRequireDegrees" :title="$t('必要称号')" @change="resetPage")
@@ -246,6 +247,7 @@ export default class extends VueWithMapFields {
 
   public filter = {
     category: null,
+    mainCharacter: null,
     character: null,
     costWealth: null,
     rewardWealth: null,
@@ -335,7 +337,8 @@ export default class extends VueWithMapFields {
     if (!this.filterCache.has(key)) {
       const quests = this.filter.category ? this.dataManager.questsByCategory[this.filter.category] : [...this.dataManager.quest.m_vList].reverse();
       const filteredQuests = quests.filter((p) => (
-        (!this.filter.character || p.CHARA === this.filter.character)
+        (!this.filter.mainCharacter || p.CHARA === this.filter.mainCharacter)
+        && (!this.filter.character || this.dataManager.advQuestsByCharacterId[this.filter.character]?.some((o) => o.DF === p.DF))
         && (!this.filter.costWealth || p.COST.WTH.DF === this.filter.costWealth)
         && (!this.filter.rewardWealth || p.RWD_WTH.some((i) => i.DF === this.filter.rewardWealth))
         && (!this.filter.requireDegree || p.UNLOCK.some((i) => i.DF === this.filter.requireDegree))

@@ -12,14 +12,11 @@ export type rankScores = { [id: string]: { [enemyIndex: string]: ScoreValue[] } 
   namespaced: true,
 })
 export default class extends VuexModuleBase {
-  public id: number | null = null;
-
   public scores = {} as rankScores;
 
-  @MutationAction({ mutate: ['id', 'scores'] })
+  @MutationAction({ mutate: ['scores'] })
   public async reset() {
     return {
-      id: null,
       scores: {},
     };
   }

@@ -1,6 +1,6 @@
 <template lang="pug">
 div.filter
-  span(v-if="showTitle") {{ $t('キャラクター') }}
+  span(v-if="showTitle") {{ $t(title) }}
   el-select(v-model="character" @change="change" :clearable="clearable" placeholder="" filterable)
     el-option(v-for="(item, i) of characters" :key="i" :label="item.NAME" :value="item.DF")
       img.option-image(v-if="item.hasFaceIcon" :src="item.faceIcon" :alt="item.NAME")
@@ -26,6 +26,9 @@ export default class extends VueBase {
 
   @Prop({ type: Boolean, default: true })
   public showTitle!: boolean;
+
+  @Prop({ type: String, default: 'キャラクター' })
+  public title!: string;
 
   @Prop({ type: Boolean, default: true })
   public clearable!: boolean;

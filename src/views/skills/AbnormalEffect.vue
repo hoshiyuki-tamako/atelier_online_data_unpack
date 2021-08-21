@@ -14,11 +14,34 @@ div.container
     el-table(ref="table" :data="filteredAbnormalState")
       el-table-column(type="expand")
         template(slot-scope="props")
-          h3(v-if="hasSkill(props.row.id)") {{ $t('スキル') }}
-          div.skills-container
-            div.skill-container(v-for="skill of dataManager.skillsByAbnormalState[props.row.id]")
-              router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
-          br(v-if="hasSkill(props.row.id)")
+          template(v-if="dataManager.skillsByAbnormalState[props.row.id] && dataManager.skillsByAbnormalState[props.row.id].length")
+            template(v-if="dataManager.skillsByAbnormalState[props.row.id]")
+              template(v-if="dataManager.abnormalStateItems[props.row.id] && dataManager.abnormalStateItems[props.row.id].length")
+                h3 {{ $t('アイテム') }}
+                div
+                  router-link(v-for="item in dataManager.abnormalStateItems[props.row.id]" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }" target="_blank")
+                    el-tooltip(:content="item.NAME" placement="top")
+                      img.icon-small(:src="item.icon" :alt="item.NAME")
+                br
+              template(v-if="dataManager.abnormalStateCharacters[props.row.id] && dataManager.abnormalStateCharacters[props.row.id].length")
+                div
+                  h3 {{ $t('人物') }}
+                  router-link(v-for="character in dataManager.abnormalStateCharacters[props.row.id]" :key="character.DF" :to="{ name: 'CharactersCharacter', query: { df: character.DF } }" target="_blank")
+                    el-tooltip(:content="character.NAME" placement="top")
+                      img.icon-small(:src="character.icon" :alt="character.NAME")
+                br
+              template(v-if="dataManager.abnormalStateEnemies[props.row.id] && dataManager.abnormalStateEnemies[props.row.id].length")
+                div
+                  h3 {{ $t('敵') }}
+                  router-link(v-for="enemy in dataManager.abnormalStateEnemies[props.row.id]" :key="enemy.DF" :to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }" target="_blank")
+                    el-tooltip(:content="enemy.strName" placement="top")
+                      img.icon-small(:src="enemy.icon" :alt="enemy.strName")
+                br
+            h3 {{ $t('スキル') }}
+            div.skills-container
+              div.skill-container(v-for="skill of dataManager.skillsByAbnormalState[props.row.id]")
+                router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+            br
           el-link(@click="$refs.jsonViewDialog.open(props.row)" :underline="false") {{ $t('Rawデータ') }}
       el-table-column(prop="id" label="ID" width="100%" sortable)
       el-table-column(prop="name" :label="$t('名前')" :filters="typeFilters" :filter-method="typeFilderHandler" sortable)
@@ -53,6 +76,18 @@ export default class extends VueBase {
         label: this.$t('スキル'),
         value: 1,
       },
+      {
+        label: this.$t('アイテム'),
+        value: 3,
+      },
+      {
+        label: this.$t('人物'),
+        value: 5,
+      },
+      {
+        label: this.$t('敵'),
+        value: 4,
+      },
     ];
   }
 
@@ -65,8 +100,11 @@ export default class extends VueBase {
 
   public get filteredAbnormalState() {
     return this.dataManager.abnormalState.m_vList.filter((p) => (
-      (!this.name || p.name.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()) || +this.name === p.id) &&
-      (!this.has.includes(1) || this.dataManager.skillsByAbnormalState[p.id]?.length)
+      (!this.name || p.name.toLocaleLowerCase().includes(this.name.toLocaleLowerCase()) || +this.name === p.id)
+      && (!this.has.includes(1) || this.dataManager.skillsByAbnormalState[p.id]?.length)
+      && (!this.has.includes(3) || this.dataManager.abnormalStateItems[p.id]?.length)
+      && (!this.has.includes(4) || this.dataManager.abnormalStateEnemies[p.id]?.length)
+      && (!this.has.includes(5) || this.dataManager.abnormalStateCharacters[p.id]?.length)
     ));
   }
 
@@ -90,10 +128,6 @@ export default class extends VueBase {
           (this.$refs.table as ElementUiTable).toggleRowExpansion(row, true);
         }
     }
-  }
-
-  public hasSkill(id: number) {
-    return !!this.dataManager.skillsByAbnormalState[id]?.length;
   }
 }
 </script>

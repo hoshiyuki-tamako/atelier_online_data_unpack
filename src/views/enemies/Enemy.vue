@@ -30,28 +30,31 @@ div.container
       el-link(@click="$refs.jsonViewDialog.open(enemy)" :underline="false") {{ $t('Rawデータ') }}
 
     div.item-container-right
-      div
-        el-form(label-position="left" label-width="110px")
-          el-form-item(:label="$t('レベル')")
-            el-input-number(v-model="enemyModifier.level" size="mini" :min="1" :step="1" step-strictly)
-        table
-          tr(v-for="state of enemy.getStates(enemyModifier.level)")
-            th {{ $t(state.label) }}
-            td {{ state.value }}
-          tr(v-for="element of enemy.getElements(enemyModifier.level).filter((p) => p.value)")
-            th {{ $t(element.label) }}
-            td {{ element.value }}
+      el-tabs(v-model="activeTab" type="card")
+        el-tab-pane(:label="$t('メーン')" name="main")
+          div
+            el-form(label-position="left" label-width="110px")
+              el-form-item(:label="$t('レベル')")
+                el-input-number(v-model="enemyModifier.level" size="mini" :min="1" :step="1" step-strictly)
+            table
+              tr(v-for="state of enemy.getStates(enemyModifier.level)")
+                th {{ $t(state.label) }}
+                td {{ state.value }}
+              tr(v-for="element of enemy.getElements(enemyModifier.level).filter((p) => p.value)")
+                th {{ $t(element.label) }}
+                td {{ element.value }}
 
-      div(v-if="enemy.appearAreas.length")
-        el-divider {{ $t('出現エリア') }}
-        p(v-for="area of enemy.appearAreas")
-          router-link(:to="{ name: 'Areas', query: { df: area.iAreaId } }") {{ dataManager.fieldNameById[area.iAreaNameId].strAreaName }}
+          div(v-if="enemy.appearAreas.length")
+            el-divider {{ $t('出現エリア') }}
+            p(v-for="area of enemy.appearAreas")
+              router-link(:to="{ name: 'Areas', query: { df: area.iAreaId } }") {{ dataManager.fieldNameById[area.iAreaNameId].strAreaName }}
 
-      div(v-if="dataManager.questsByEnemy[enemy.DF]")
-        el-divider {{ $t('クエスト') }}
-        p(v-for="quest of dataManager.questsByEnemy[enemy.DF]")
-          router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
-      SkillTextInfo(v-if="enemy.sParam.SKILL.length" :skills="enemy.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)")
+          div(v-if="dataManager.questsByEnemy[enemy.DF]")
+            el-divider {{ $t('クエスト') }}
+            p(v-for="quest of dataManager.questsByEnemy[enemy.DF]")
+              router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
+        el-tab-pane(:label="$t('スキル')" name="skill" v-if="enemy.sParam.SKILL.length")
+          SkillTextInfo(:skills="enemy.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)" :showTitle="false")
 </template>
 
 <script lang="ts">
@@ -71,6 +74,8 @@ import JsonViewDialog from '@/components/JsonViewDialog.vue';
   },
 })
 export default class extends VueBase {
+  public activeTab = 'main';
+
   // model
   public fbxDialogVisible = false;
 

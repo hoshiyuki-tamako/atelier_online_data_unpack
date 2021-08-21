@@ -45,174 +45,184 @@ div.container
       el-link(@click="$refs.jsonViewDialog.open(item)" :underline="false") {{ $t('Rawデータ') }}
 
     div.item-container-right
-      div(v-if="item.hasSkill || item.EQU_BRD")
-        div
-          el-form(label-position="left" label-width="110px")
-            el-form-item(:label="$t('品質')")
-              el-input-number(v-model="itemModifier.quality" size="mini" :min="1" :max="item.EQU_BRD ? Infinity : 100" :step="1" step-strictly)
-            el-form-item(v-if="item.EQU_BRD" :label="$t('レベル')")
-              el-input-number(v-model="itemModifier.level" size="mini" :min="1" :step="1" step-strictly)
-            el-form-item(v-if="item.EQU_BRD" :label="$t('サブ装備')")
-              el-switch(v-model="showSupportState")
-        div
-          div.item-modify
-            div(v-if="item.EQU_BRD")
-              div.item-levels
-                table(v-if="showSupportState")
-                  tr(v-for="state of item.getSupportStates(itemModifier.level)")
-                    template(v-if="state.value")
-                      th {{ $t(state.label) }}
-                      td {{ state.value }}
-                  tr(v-for="element of item.getSupportElements()")
-                    template(v-if="element.value")
-                      th {{ $t(element.label) }}
-                      td {{ element.value }}
-                table(v-else)
-                  tr(v-for="state of item.getStates(itemModifier.quality, itemModifier.level)")
-                    th
-                      v-popover(placement="right-end" trigger="hover")
-                        span {{ $t(state.label) }}
-                        template(v-if="state.value || (state.skills && state.skills.length)" slot="popover")
-                          div.popover-base
-                            table
-                              tr(v-if="state.value")
-                                th {{ $t('ベース') }}
-                                td {{ state.value }}
-                              tr(v-if="state.skills && state.skills.length")
-                                th {{ $t('スキル') }}
-                                td
-                                  p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
-                    td
-                      v-popover(placement="right-end" trigger="hover")
-                        span {{ state.total }}
-                        template(v-if="state.value || (state.skills && state.skills.length)" slot="popover")
-                          div.popover-base
-                            table
-                              tr(v-if="state.value")
-                                th {{ $t('ベース') }}
-                                td {{ state.value }}
-                              tr(v-if="state.skills && state.skills.length")
-                                th {{ $t('スキル') }}
-                                td
-                                  p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
-                  tr(v-for="element of item.getElements(itemModifier.quality)")
-                    th
-                      v-popover(placement="right-end" trigger="hover")
-                        span {{ $t(element.label) }}
-                        template(v-if="element.value || (element.skills && element.skills.length)" slot="popover")
-                          div.popover-base
-                            table
-                              tr(v-if="element.value")
-                                th {{ $t('ベース') }}
-                                td {{ element.value }}
-                              tr(v-if="element.skills && element.skills.length")
-                                th {{ $t('スキル') }}
-                                td
-                                  p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
-                    td
-                      v-popover(placement="right-end" trigger="hover")
-                        span {{ element.total }}
-                        template(v-if="element.value || (element.skills && element.skills.length)" slot="popover")
-                          div.popover-base
-                            table
-                              tr(v-if="element.value")
-                                th {{ $t('ベース') }}
-                                td {{ element.value }}
-                              tr(v-if="element.skills && element.skills.length")
-                                th {{ $t('スキル') }}
-                                td
-                                  p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
-            div(v-if="!showSupportState")
-              div(v-for="skill of item.getSkills(itemModifier.quality)")
-                v-popover(placement="right-end" trigger="hover")
-                  p {{ skill.name }}
-                  template(slot="popover")
-                    div.popover-base
-                      p.popover-base__detail(v-if="skill.detail") {{ skill.detail }}
-                      br
-                      p {{ $t('数値') }}: {{ skill.effectValue }}, {{ skill.effectValue2 }}
-                      p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
-                        router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
-                      p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
-                        router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
+      el-tabs(v-model="activeTab" type="card")
+        el-tab-pane(:label="$t('メーン')" name="main" v-if="hasMainTabItem")
+          div(v-if="item.hasSkill || item.EQU_BRD")
+            div
+              el-form(label-position="left" label-width="110px")
+                el-form-item(:label="$t('品質')")
+                  el-input-number(v-model="itemModifier.quality" size="mini" :min="1" :max="item.EQU_BRD ? Infinity : 100" :step="1" step-strictly)
+                el-form-item(v-if="item.EQU_BRD" :label="$t('レベル')")
+                  el-input-number(v-model="itemModifier.level" size="mini" :min="1" :step="1" step-strictly)
+                el-form-item(v-if="item.EQU_BRD" :label="$t('サブ装備')")
+                  el-switch(v-model="showSupportState")
+            div
+              div.item-modify
+                div(v-if="item.EQU_BRD")
+                  div.item-levels
+                    table(v-if="showSupportState")
+                      tr(v-for="state of item.getSupportStates(itemModifier.level)")
+                        template(v-if="state.value")
+                          th {{ $t(state.label) }}
+                          td {{ state.value }}
+                      tr(v-for="element of item.getSupportElements()")
+                        template(v-if="element.value")
+                          th {{ $t(element.label) }}
+                          td {{ element.value }}
+                    table(v-else)
+                      tr(v-for="state of item.getStates(itemModifier.quality, itemModifier.level)")
+                        th
+                          v-popover(placement="right-end" trigger="hover")
+                            span {{ $t(state.label) }}
+                            template(v-if="state.value || (state.skills && state.skills.length)" slot="popover")
+                              div.popover-base
+                                table
+                                  tr(v-if="state.value")
+                                    th {{ $t('ベース') }}
+                                    td {{ state.value }}
+                                  tr(v-if="state.skills && state.skills.length")
+                                    th {{ $t('スキル') }}
+                                    td
+                                      p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                        td
+                          v-popover(placement="right-end" trigger="hover")
+                            span {{ state.total }}
+                            template(v-if="state.value || (state.skills && state.skills.length)" slot="popover")
+                              div.popover-base
+                                table
+                                  tr(v-if="state.value")
+                                    th {{ $t('ベース') }}
+                                    td {{ state.value }}
+                                  tr(v-if="state.skills && state.skills.length")
+                                    th {{ $t('スキル') }}
+                                    td
+                                      p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                      tr(v-for="element of item.getElements(itemModifier.quality)")
+                        th
+                          v-popover(placement="right-end" trigger="hover")
+                            span {{ $t(element.label) }}
+                            template(v-if="element.value || (element.skills && element.skills.length)" slot="popover")
+                              div.popover-base
+                                table
+                                  tr(v-if="element.value")
+                                    th {{ $t('ベース') }}
+                                    td {{ element.value }}
+                                  tr(v-if="element.skills && element.skills.length")
+                                    th {{ $t('スキル') }}
+                                    td
+                                      p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                        td
+                          v-popover(placement="right-end" trigger="hover")
+                            span {{ element.total }}
+                            template(v-if="element.value || (element.skills && element.skills.length)" slot="popover")
+                              div.popover-base
+                                table
+                                  tr(v-if="element.value")
+                                    th {{ $t('ベース') }}
+                                    td {{ element.value }}
+                                  tr(v-if="element.skills && element.skills.length")
+                                    th {{ $t('スキル') }}
+                                    td
+                                      p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                div(v-if="!showSupportState")
+                  div(v-for="skill of item.getSkills(itemModifier.quality)")
+                    v-popover(placement="right-end" trigger="hover")
+                      p {{ skill.name }}
+                      template(slot="popover")
+                        div.popover-base
+                          p.popover-base__detail(v-if="skill.detail") {{ skill.detail }}
+                          br
+                          p {{ $t('数値') }}: {{ skill.effectValue }}, {{ skill.effectValue2 }}
+                          p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                            router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
+                          p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                            router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
 
-      div(v-if="item.GROUP_DF && dataManager.charactersByGroupDf[item.GROUP_DF]")
-        el-divider {{ $t('キャラクター專用') }}
-        p(v-for="character of dataManager.charactersByGroupDf[item.GROUP_DF]")
-          router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
-            el-tooltip(:content="character.NAME" placement="top")
-              img.icon-middle(:src="character.icon" :alt="character.NAME")
-      div(v-if="item.LRCP_CHARA.length")
-        el-divider {{ $t('レジェンドレシピ') }}
-        div(v-for="character of item.LRCP_CHARA.map((p) => dataManager.characterById[p.DF]).filter((p) => p)")
-          p
-            router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
-              el-tooltip(:content="character.NAME" placement="top")
-                img.icon-middle(:src="character.icon" :alt="character.NAME")
-      div(v-if="dataManager.questsByGetItem[item.DF]")
-        el-divider {{ $t('クエスト調合/採取') }}
-        div(v-for="quest of dataManager.questsByGetItem[item.DF]")
-          p
-            router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
-      div(v-if="dataManager.questsByDeliverItem[item.DF]")
-        el-divider {{ $t('クエスト納品') }}
-        div(v-for="quest of dataManager.questsByDeliverItem[item.DF]")
-          p
-            router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
-      div(v-if="dataManager.questsByRewardItem[item.DF]")
-        el-divider {{ $t('クエスト報酬') }}
-        div(v-for="quest of dataManager.questsByRewardItem[item.DF]")
-          p
-            router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
-      div(v-if="dataManager.api.huntInfosByItemId[item.DF]")
-        el-divider {{ $t('トレジャー') }}
-        div(v-for="(huntInfo, i) of dataManager.api.huntInfosByItemId[item.DF]")
-          p
-            router-link(:to="{ name: 'InfoHunt', query: { huntId: huntInfo.HUNTID } }") {{ huntInfo.NAME }}
-          p(v-for="(rwd, i) of huntInfo.RWD.TRS.concat(huntInfo.RWD.ITM).filter((o) => o.DF === item.DF)")
-            span {{ $t('品質') }}{{ rwd.QTY }}
-            span(v-if="rwd.TRT")  {{ dataManager.skillById[rwd.TRT].name.replace(/\s+/gm, '') }}
-          br(v-if="dataManager.api.huntInfosByItemId[item.DF].length !== (i + 1)")
+          div(v-if="item.GROUP_DF && dataManager.charactersByGroupDf[item.GROUP_DF]")
+            el-divider {{ $t('キャラクター專用') }}
+            p(v-for="character of dataManager.charactersByGroupDf[item.GROUP_DF]")
+              router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }" target="_blank")
+                el-tooltip(:content="character.NAME" placement="top")
+                  img.icon-middle(:src="character.icon" :alt="character.NAME")
 
-      div(v-for="fieldItem of [dataManager.fieldItemById[item.DF]].filter((p) => p)")
-        el-divider {{ $t('フィールド用') }}
-        table
-          tr
-            th {{ $t('目標') }}
-            td {{ $t(dataManager.lookup.eFieldItemRange[fieldItem.eRange]) }}
-          tr
-            th {{ $t('効果') }}
-            td {{ $t(dataManager.lookup.eFieldItemUse[fieldItem.eUse]) }}
-          tr(v-for="abnormalStates of [fieldItem.eStateList.map((p) => dataManager.abnormalStateById[p]).filter((p) => p)].filter((p) => p.length)")
-            th {{ $t('状態') }}
-            td
-              div(v-for="(abnormalState, i) of abnormalStates")
-                p
-                  router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.name }} / {{ abnormalState.turn }} {{ $t('ターン') }}
-      div(v-if="item.RSP.length")
-        el-divider {{ $t('調合條件') }}
-        div(v-if="item.ALT.CST")
-          p
-            el-tooltip(:content="dataManager.wealthById[2].NAME" placement="right")
-              span.wealth-container
-                img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="dataManager.wealthById[2].NAME")
-                span {{ item.ALT.CST }}
-        div.item-compose-items
-          div.item-compose-item(v-for="[rsp, item] of item.RSP.map((rsp) => [rsp, dataManager.itemById[rsp.DF]])")
-            el-tooltip(:content="item.NAME" placement="top")
-              router-link(:to="{ name: 'ItemsItem', query: { df: rsp.DF } }")
-                img.icon-small(:src="item.icon" :alt="item.NAME")
-                span x{{ rsp.NC }}
-      div(v-if="dataManager.itemsByRecipe[item.DF]")
-        el-divider {{ $t('材料') }}
-        div.item-making-container
-          div(v-for="otherItem of dataManager.itemsByRecipe[item.DF]")
-            router-link(:to="{ name: 'ItemsItem', query: { df: otherItem.DF } }")
-              el-tooltip(:content="otherItem.NAME" placement="top")
-                img.icon-small(:src="otherItem.icon" :alt="otherItem.DF")
-      template(v-if="item.SPC.length" v-for="[spc, skills] of item.SPC.map((spc) => [spc, spc.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)]).filter((p) => p[1].length)")
-        SkillTextInfo(:skills="skills")
-          template(slot="title") {{ $t('スキル') }} ({{ $t('品質') }} {{ spc.THR }})
+          div(v-if="item.LRCP_CHARA.length")
+            el-divider {{ $t('レジェンドレシピ') }}
+            div(v-for="character of item.LRCP_CHARA.map((p) => dataManager.characterById[p.DF]).filter((p) => p)")
+              p
+                router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }" target="_blank")
+                  el-tooltip(:content="character.NAME" placement="top")
+                    img.icon-middle(:src="character.icon" :alt="character.NAME")
+
+          div(v-if="item.RSP.length")
+            el-divider {{ $t('調合條件') }}
+            div(v-if="item.ALT.CST")
+              p
+                el-tooltip(:content="dataManager.wealthById[2].NAME" placement="right")
+                  span.wealth-container
+                    img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="dataManager.wealthById[2].NAME")
+                    span {{ item.ALT.CST }}
+            div.item-compose-items
+              div.item-compose-item(v-for="[rsp, item] of item.RSP.map((rsp) => [rsp, dataManager.itemById[rsp.DF]])")
+                el-tooltip(:content="item.NAME" placement="top")
+                  router-link(:to="{ name: 'ItemsItem', query: { df: rsp.DF } }")
+                    img.icon-small(:src="item.icon" :alt="item.NAME")
+                    span x{{ rsp.NC }}
+          div(v-if="dataManager.itemsByRecipe[item.DF]")
+            el-divider {{ $t('材料') }}
+            div.item-making-container
+              div(v-for="otherItem of dataManager.itemsByRecipe[item.DF]")
+                router-link(:to="{ name: 'ItemsItem', query: { df: otherItem.DF } }")
+                  el-tooltip(:content="otherItem.NAME" placement="top")
+                    img.icon-small(:src="otherItem.icon" :alt="otherItem.DF")
+
+        el-tab-pane(:label="$t('スキル')" name="skill" v-if="item.SPC.length")
+          template(v-for="[spc, skills] of item.SPC.map((spc) => [spc, spc.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)]).filter((p) => p[1].length)")
+            SkillTextInfo(:skills="skills")
+              template(slot="title") {{ $t('品質') }} {{ spc.THR }}
+
+        el-tab-pane(:label="$t('クエスト')" name="quest" v-if="dataManager.questsByGetItem[item.DF] || dataManager.questsByDeliverItem[item.DF] || dataManager.questsByRewardItem[item.DF]")
+          div(v-if="dataManager.questsByGetItem[item.DF]")
+            el-divider {{ $t('クエスト調合/採取') }}
+            div(v-for="quest of dataManager.questsByGetItem[item.DF]")
+              p
+                router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }" target="_blank") {{ quest.NAME }}
+          div(v-if="dataManager.questsByDeliverItem[item.DF]")
+            el-divider {{ $t('クエスト納品') }}
+            div(v-for="quest of dataManager.questsByDeliverItem[item.DF]")
+              p
+                router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }" target="_blank") {{ quest.NAME }}
+          div(v-if="dataManager.questsByRewardItem[item.DF]")
+            el-divider {{ $t('クエスト報酬') }}
+            div(v-for="quest of dataManager.questsByRewardItem[item.DF]")
+              p
+                router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }"  target="_blank") {{ quest.NAME }}
+
+        el-tab-pane(:label="$t('トレジャー')" name="hunt" v-if="dataManager.api.huntInfosByItemId[item.DF]")
+          div
+            el-divider {{ $t('トレジャー') }}
+            div(v-for="(huntInfo, i) of dataManager.api.huntInfosByItemId[item.DF]")
+              p
+                router-link(:to="{ name: 'InfoHunt', query: { huntId: huntInfo.HUNTID } }" target="_blank") {{ huntInfo.NAME }}
+              p(v-for="(rwd, i) of huntInfo.RWD.TRS.concat(huntInfo.RWD.ITM).filter((o) => o.DF === item.DF)")
+                span {{ $t('品質') }}{{ rwd.QTY }}
+                span(v-if="rwd.TRT")  {{ dataManager.skillById[rwd.TRT].name.replace(/\s+/gm, '') }}
+              br(v-if="dataManager.api.huntInfosByItemId[item.DF].length !== (i + 1)")
+
+        el-tab-pane(:label="$t('フィールド用')" name="fieldItem" v-if="dataManager.fieldItemById[item.DF]")
+          div(v-for="fieldItem of [dataManager.fieldItemById[item.DF]]")
+            table
+              tr
+                th {{ $t('目標') }}
+                td {{ $t(dataManager.lookup.eFieldItemRange[fieldItem.eRange]) }}
+              tr
+                th {{ $t('効果') }}
+                td {{ $t(dataManager.lookup.eFieldItemUse[fieldItem.eUse]) }}
+              tr(v-for="abnormalStates of [fieldItem.eStateList.map((p) => dataManager.abnormalStateById[p]).filter((p) => p)].filter((p) => p.length)")
+                th {{ $t('状態') }}
+                td
+                  div(v-for="(abnormalState, i) of abnormalStates")
+                    p
+                      router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.name }} / {{ abnormalState.turn }} {{ $t('ターン') }}
 </template>
 
 <script lang="ts">
@@ -241,6 +251,8 @@ export default class extends VueBase {
   public get EWeaponKind() {
     return EWeaponKind;
   }
+
+  public activeTab = '';
 
   // model
   public fbxDialogVisible = false;
@@ -296,6 +308,30 @@ export default class extends VueBase {
     const maxQuality = this.item.EQU_BRD ? Infinity : ItemMVList.itemMaxQuality;
     this.itemModifier.quality = this.$route.query.quality ? clamp(+this.$route.query.quality, 1, maxQuality) : ItemMVList.equipmentMaxQuality;
     this.itemModifier.level = this.$route.query.level ? clamp(+this.$route.query.level, 1, Infinity) : ItemMVList.equipmentMaxLevel;
+
+    this.selectTab();
+  }
+
+  private get hasMainTabItem() {
+    return (this.item.hasSkill || this.item.EQU_BRD)
+      || (this.item.GROUP_DF && this.dataManager.charactersByGroupDf[this.item.GROUP_DF])
+      || this.item.LRCP_CHARA.length
+      || this.item.RSP.length
+      || this.dataManager.itemsByRecipe[this.item.DF];
+  }
+
+  private selectTab() {
+    if (this.hasMainTabItem) {
+      this.activeTab = 'main';
+    } else if (this.item.SPC.length) {
+      this.activeTab = 'skill';
+    } else if (this.dataManager.questsByGetItem[this.item.DF] || this.dataManager.questsByDeliverItem[this.item.DF] || this.dataManager.questsByRewardItem[this.item.DF]) {
+      this.activeTab = 'quest';
+    } else if (this.dataManager.api.huntInfosByItemId[this.item.DF]) {
+      this.activeTab = 'hunt';
+    } else if (this.dataManager.fieldItemById[this.item.DF]) {
+      this.activeTab = 'fieldItem';
+    }
   }
 }
 </script>

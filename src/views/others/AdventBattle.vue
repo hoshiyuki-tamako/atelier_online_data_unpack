@@ -2,53 +2,49 @@
 div.container
   div.filters
     div.filter
-      el-select(v-model="id" placeholder="ID" clearable filterable)
-        el-option(v-for="item of idsFilter" :key="item" :label="item" :value="item")
-    div.filter
       el-button(@click="onClickResetScores" type="danger" icon="el-icon-refresh-left" circle)
   div.content
-    div(v-for="adventBattle of filteredRankList")
-      el-divider {{ adventBattle.ID }}
-      div.advent-battles
-        div.item-container(v-for="(enemyList, enemyListIndex) of adventBattle.EnemyList")
-          div.item-container-left(v-for="enemy of [dataManager.enemyById[enemyList.DF]]")
-            h3.item-name {{ enemy.strName }}
-            router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }")
+    el-tabs(v-model="activeTab" type="card")
+      el-tab-pane(v-for="adventBattle of filteredRankList" :key="adventBattle.ID" :label="adventBattle.ID.toString()" :name="adventBattle.ID.toString()")
+        div.advent-battles
+          div.item-container(v-for="(enemyList, enemyListIndex) of adventBattle.EnemyList")
+            div.item-container-left(v-for="enemy of [dataManager.enemyById[enemyList.DF]]")
+              h3.item-name
+                router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }" target="_blank") {{ enemy.strName }}
               img.icon-full(:src="enemy.icon" :alt="enemy.strName")
 
-          div.item-container-right
-            table
-              tr
-                th {{ $t("課題") }}
-                th {{ $t("ポイント") }}
-                th {{ $t('ダメージ') }}
-                th {{ $t('回数') }}
-              tr(v-for="(score, i) of enemyList.ScoreList")
-                td.advent-battle-name {{ score.name }}
-                td {{ score.score }}
-                td
-                  el-input-number(v-if="!score.isDiapNum" v-model="scores[adventBattle.ID][enemyListIndex][i].damage" size="small" :min="1" :step="1" step-strictly)
-                td
-                  el-input-number(v-model="scores[adventBattle.ID][enemyListIndex][i].times" size="small" :min="0" :max="scoreMax(score.eKind)" :step="1" step-strictly)
-              tr
-                td
-                td
-                td
-                td {{ score(adventBattle.ID, enemyListIndex) }}
+            div.item-container-right
+              table
+                tr
+                  th {{ $t("課題") }}
+                  th {{ $t("ポイント") }}
+                  th {{ $t('ダメージ') }}
+                  th {{ $t('回数') }}
+                tr(v-for="(score, i) of enemyList.ScoreList")
+                  td.advent-battle-name {{ score.name }}
+                  td {{ score.score }}
+                  td
+                    el-input-number(v-if="!score.isDiapNum" v-model="scores[adventBattle.ID][enemyListIndex][i].damage" size="small" :min="1" :step="1" step-strictly)
+                  td
+                    el-input-number(v-model="scores[adventBattle.ID][enemyListIndex][i].times" size="small" :min="0" :max="scoreMax(score.eKind)" :step="1" step-strictly)
+                tr
+                  td
+                  td
+                  td
+                  td {{ score(adventBattle.ID, enemyListIndex) }}
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import Enumerable from 'linq';
 import { clamp } from 'lodash';
-import { EBattleScoreKind } from '@/logic/Enums';
 import { mapFields } from 'vuex-map-fields';
-import { ScoreValue, rankScores } from '@/store/others/adventBattleFilter';
 import deepmerge from 'deepmerge';
+import VueBase from '@/components/VueBase';
+import { EBattleScoreKind } from '@/logic/Enums';
+import { ScoreValue, rankScores } from '@/store/others/adventBattleFilter';
 
 abstract class VueWithMapFields extends VueBase {
-  public id!: number | null;
   public scores!: rankScores;
 }
 
@@ -56,10 +52,12 @@ abstract class VueWithMapFields extends VueBase {
   components: {
   },
   computed: {
-    ...mapFields('adventBattleFilter', ['id', 'scores']),
+    ...mapFields('adventBattleFilter', ['scores']),
   },
 })
 export default class extends VueWithMapFields {
+  public activeTab = '';
+
   public get defaultScores() {
     return Enumerable.from(this.dataManager.adventBattle.RankingList)
       .toObject(
@@ -73,12 +71,8 @@ export default class extends VueWithMapFields {
       ) as rankScores;
   }
 
-  public get idsFilter() {
-    return Object.keys(this.dataManager.adventBattleById).map(Number);
-  }
-
   public get filteredRankList() {
-    return this.dataManager.adventBattle.RankingList.filter((p) => [null, '', -1].includes(this.id) || p.ID === this.id);
+    return this.dataManager.adventBattle.RankingList;
   }
 
   public scoreMax(kind: number) {
@@ -140,6 +134,9 @@ export default class extends VueWithMapFields {
 </script>
 
 <style lang="sass" scoped>
+a
+  text-decoration: none
+
 th
   white-space: nowrap
 td

@@ -2,7 +2,7 @@
 div(v-if="skills && skills.length")
   el-divider(v-if="showTitle")
     slot(name="title") {{ $t('スキル') }}
-  div(v-for="(skill, i) of skills")
+  div.skill-card(v-for="(skill, i) of skills")
     table.skill-table
       tr
         th {{ $t('名前') }}
@@ -60,7 +60,6 @@ div(v-if="skills && skills.length")
               router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
           p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[skill.id]].filter((p) => p)")
             router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
-
     p(v-if="skills.length !== (i + 1)") {{ '>' }}
 </template>
 
