@@ -1,5 +1,7 @@
 <template lang="pug">
 div.container
+  JsonViewDialog(ref="jsonViewDialog")
+
   div.filters
     div.filter
       span {{ $t('種類') }}
@@ -26,6 +28,15 @@ div.container
       el-checkbox(v-model="hasQuest" :label="$t('クエストに必要')" border)
   div.content
     el-table(ref="table" :data="filteredPaginationDegrees" @sort-change="onSortChange")
+      el-table-column(type="expand")
+        template(slot-scope="props")
+          template(v-if="dataManager.questsByDegree[props.row.DF] && dataManager.questsByDegree[props.row.DF][props.row.STP] && dataManager.questsByDegree[props.row.DF][props.row.STP].length")
+            h3 {{ $t('クエスト') }}
+            div.quests-container
+              div.quest-container(v-for="quest of dataManager.questsByDegree[props.row.DF][props.row.STP]")
+                router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }" target="_blank") {{ quest.NAME }}
+            br
+          el-link(@click="$refs.jsonViewDialog.open(props.row)" :underline="false") {{ $t('Rawデータ') }}
       el-table-column(prop="DF" label="DF" width="100%" sortable="custom")
       el-table-column(prop="STP" :label="$t('ステップ')" sortable="custom")
       el-table-column(prop="TYP" :label="$t('種類')" sortable="custom")
@@ -45,9 +56,11 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import VueBase from '@/components/VueBase';
 import { List as DegreeList } from '@/master/degree';
+import JsonViewDialog from '@/components/JsonViewDialog.vue';
 
 @Component({
   components: {
+    JsonViewDialog,
   },
 })
 export default class extends VueBase {
@@ -105,7 +118,7 @@ export default class extends VueBase {
       && ([null, '', -1].includes(this.type) || p.TYP === this.type)
       && ([null, '', -1].includes(this.rarity) || p.RTY === this.rarity)
       && (!this.isKeySideQuest || p.KEY_SIDE_QUEST)
-      && (!this.hasQuest || this.dataManager.questRequireDegrees.some((i) => i.DF === p.DF))
+      && (!this.hasQuest || this.dataManager.questsByDegree[p.DF]?.[p.STP]?.length)
     ));
 
     if (this.sort) {
@@ -139,3 +152,11 @@ export default class extends VueBase {
   }
 }
 </script>
+
+<style lang="sass" scoped>
+.quests-container
+  display: flex
+  flex-wrap: wrap
+.quest-container
+  padding: 12px
+</style>

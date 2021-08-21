@@ -652,6 +652,25 @@ export class DataManager {
     .orderBy((p) => p.DF)
     .toArray());
   }
+  public get questsByDegree() {
+    return this.cache('questsByDegree', () => Enumerable.from(this.quest.m_vList)
+      .selectMany((quest) => quest.UNLOCK.map((unlock) => ({
+        quest,
+        unlock,
+      })))
+      .groupBy((p) => p.unlock.DF)
+      .toObject(
+        (p) => p.key(),
+        (p) => p.groupBy((p) => p.unlock.STP)
+          .toObject(
+            (o) => o.key(),
+            (o) => o.select(({ quest }) => quest)
+              .distinct((quest) => quest.DF)
+              .orderBy((quest) => quest.DF)
+              .toArray(),
+        ),
+      ) as { [df: string ]: { [stp: string]: QuestMVList[]} });
+  }
   public get questsByAdv() {
     return this.cache('questsByAdv', () => Enumerable.from(this.quest.m_vList)
     .selectMany((quest) => quest.NPC_FD.map((npcfd) => ({
