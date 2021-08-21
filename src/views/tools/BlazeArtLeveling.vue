@@ -13,7 +13,7 @@ div.item-enhance-quality
           img.icon-middle(:src="item.icon" :alt="item.NAME")
   div.right
     div.character
-      CharacterSelector(v-model="characterDf" :characters="dataManager.charactersCanBattle" :showTitle="false" :clearable="false")
+      CharacterSelector(v-model="characterDf" :characters="dataManager.charactersHasBlazeArts" :showTitle="false" :clearable="false")
       img.icon-large(:src="character.icon" :alt="character.NAME")
     div.blaze-art
       div.orginal-item__edit
@@ -22,9 +22,22 @@ div.item-enhance-quality
         span {{ $t('あと') }}
         el-input-number(v-model="untilExp" size="mini" :min="0" :max="maxExp" :step="1" step-strictly)
       br
-      p(v-for="{ level, totalExp, untilNextLevel, overExp } of [expInfo]") {{ $t('レベル') }} {{ level }} / {{ $t('経験値') }} {{ totalExp }} / {{ $t('あと') }} {{ untilNextLevel }} / {{ $t('無駄になった経験値') }} {{ overExp }}
-      br
       p(v-for="(lv, i) of blazeArt.LV") {{ $t('レベル') }} {{ i + 1 }} {{ $t('経験値') }} {{ blazeArt.levelExperience(i + 1) }}
+      br
+      div.result(v-for="{ level, totalExp, untilNextLevel, overExp } of [expInfo]")
+        table
+          tr
+            th {{ $t('目標レベル') }}
+            td {{ level }}
+          tr
+            th {{ $t('あと') }}
+            td {{ untilNextLevel }}
+          tr
+            th {{ $t('経験値') }}
+            td {{ totalExp }}
+          tr
+            th {{ $t('無駄になった経験値') }}
+            td {{ overExp }}
       br
       p.total-item(v-for="{ item, count } of totalItems")
         img.icon-small(:src="item.icon" :alt="item.NAME")
@@ -134,8 +147,11 @@ export default class extends VueWithMapFields {
 
   //
   public beforeMount() {
-    if (!this.characterDf) {
-      this.characterDf = 5014;
+    if (!(this.characterDf && this.character?.hasBlazeArts)) {
+      this.characterDf = this.dataManager.charactersHasBlazeArts[0]?.DF;
+      if (!this.characterDf) {
+        this.$router.push({ name: 'Home' });
+      }
     }
   }
 
@@ -190,4 +206,12 @@ a
 .total-item
   display: flex
   align-items: center
+
+.result th
+  text-align: left
+  white-space: nowrap
+  padding: 4px
+
+.result td
+  padding: 4px
 </style>
