@@ -113,7 +113,7 @@ export class AdvManager {
               id: +p.vsParam[0],
             } as IMusic;
           case EOrderType.ePICTURE:
-            if (!+p.vsParam[0]) {
+            if (+p.vsParam[0] <= 0) {
               return null;
             }
             return {

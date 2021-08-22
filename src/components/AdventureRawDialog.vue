@@ -1,44 +1,47 @@
 <template lang="pug">
-el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destroy-on-close="true" top="0" :visible.sync="visible" width="80%" :fullscreen="!!(md.mobile() || md.tablet())")
-  el-divider(v-if="quest")
-    h3 {{ quest.NAME }}
-  el-table(:data="questDialogs" :show-header="false")
-    el-table-column(width="210px")
-      template(slot-scope="scope")
-        img.dialog-character-image(v-if="scope.row.characterDf" :src="getCharacterIcon(scope.row.characterDf, scope.row.facialExpression)" :alt="dataManager.characterById[scope.row.characterDf] ? dataManager.characterById[scope.row.characterDf].NAME : scope.row.characterDf")
-    el-table-column
-      template(slot-scope="scope")
-        div(v-if="scope.row.order === EOrderType.eCHARA_TALK")
-          h4(v-html="richTextService.richTextToHtml(scope.row.name)")
-          p(v-html="richTextService.richTextToHtml(scope.row.dialog)")
-          audio(v-if="scope.row.voice && dataManager.files.audios.voices[`${scope.row.voice}.m4a`]" controls)
-            source(:src="`audios/voices/${scope.row.voice}.m4a`" type="audio/mp4")
-        div(v-else-if="scope.row.order === EOrderType.eVOICE_ADV_PLAYER")
-          div.main-character-audio__container(v-for="(voice, i) of scope.row.voices")
-            template(v-if="voice")
-              span {{ i ? '♀' : '♂' }}
-              audio.main-character__audio(v-if="dataManager.files.audios.voices[`${voice}.m4a`]" controls)
-                source(:src="`audios/voices/${voice}.m4a`" type="audio/mp4")
-        div(v-else-if="scope.row.order === EOrderType.eSELECTION")
-          h4 {{ $t('選択') }}
-          p(v-for="option of scope.row.options" v-html="richTextService.richTextToHtml(option)")
-        div(v-else-if="scope.row.order === EOrderType.eBG")
-          h4 {{ $t('背景') }}
-          p(v-html="richTextService.richTextToHtml(scope.row.text1 || '')")
-          p(v-html="richTextService.richTextToHtml(scope.row.text2 || '')")
-          img.dialog-image(:src="`img/bg_texture/BG_Texture_${scope.row.id.toString().padStart(4, '0')}.png`" :alt="scope.row.id")
-        div(v-else-if="scope.row.order === EOrderType.eMUSIC")
-          h4 {{ $t('音楽') }}
-          p {{ eMusicID[scope.row.id] || '-' }}
-          template(v-if="scope.row.id > 0" v-for="bgm of [dataManager.soundListBgmById[scope.row.id]].filter(p => p)")
-            audio(v-if="dataManager.files.audios.musics[bgm.fileName]" controls)
-              source(:src="bgm.file" type="audio/mp4")
-        div(v-else-if="scope.row.order === EOrderType.ePICTURE")
-          img.dialog-image(:src="`img/still_texture/Still_Texture_${scope.row.id.toString().padStart(4, '0')}.png`" :alt="scope.row.id")
-        div(v-else-if="scope.row.order === EOrderType.eWINDOW_ITEM")
-          img.dialog-image(:src="`img/item_texture/item_texture_${scope.row.id.toString().padStart(4, '0')}.png`" :alt="scope.row.id")
-  div(slot="footer")
-    el-button(@click="visible = false" type="primary") {{ $t('閉じる') }}
+div(style="display: contents")
+  JsonViewDialog(ref="jsonViewDialog")
+  el-dialog#quest-dialog(v-loading="loading" title="" :lock-scroll="false" :destroy-on-close="true" top="0" :visible.sync="visible" width="80%" :fullscreen="!!(md.mobile() || md.tablet())")
+    el-divider(v-if="quest")
+      h3 {{ quest.NAME }}
+    el-table(:data="questDialogs" :show-header="false")
+      el-table-column(width="210px")
+        template(slot-scope="scope")
+          img.dialog-character-image(v-if="scope.row.characterDf" :src="getCharacterIcon(scope.row.characterDf, scope.row.facialExpression)" :alt="dataManager.characterById[scope.row.characterDf] ? dataManager.characterById[scope.row.characterDf].NAME : scope.row.characterDf")
+      el-table-column
+        template(slot-scope="scope")
+          div(v-if="scope.row.order === EOrderType.eCHARA_TALK")
+            h4(v-html="richTextService.richTextToHtml(scope.row.name)")
+            p(v-html="richTextService.richTextToHtml(scope.row.dialog)")
+            audio(v-if="scope.row.voice && dataManager.files.audios.voices[`${scope.row.voice}.m4a`]" controls)
+              source(:src="`audios/voices/${scope.row.voice}.m4a`" type="audio/mp4")
+          div(v-else-if="scope.row.order === EOrderType.eVOICE_ADV_PLAYER")
+            div.main-character-audio__container(v-for="(voice, i) of scope.row.voices")
+              template(v-if="voice")
+                span {{ i ? '♀' : '♂' }}
+                audio.main-character__audio(v-if="dataManager.files.audios.voices[`${voice}.m4a`]" controls)
+                  source(:src="`audios/voices/${voice}.m4a`" type="audio/mp4")
+          div(v-else-if="scope.row.order === EOrderType.eSELECTION")
+            h4 {{ $t('選択') }}
+            p(v-for="option of scope.row.options" v-html="richTextService.richTextToHtml(option)")
+          div(v-else-if="scope.row.order === EOrderType.eBG")
+            h4 {{ $t('背景') }}
+            p(v-html="richTextService.richTextToHtml(scope.row.text1 || '')")
+            p(v-html="richTextService.richTextToHtml(scope.row.text2 || '')")
+            img.dialog-image(:src="`img/bg_texture/BG_Texture_${scope.row.id.toString().padStart(4, '0')}.png`" :alt="scope.row.id")
+          div(v-else-if="scope.row.order === EOrderType.eMUSIC")
+            h4 {{ $t('音楽') }}
+            p {{ eMusicID[scope.row.id] || '-' }}
+            template(v-if="scope.row.id > 0" v-for="bgm of [dataManager.soundListBgmById[scope.row.id]].filter(p => p)")
+              audio(v-if="dataManager.files.audios.musics[bgm.fileName]" controls)
+                source(:src="bgm.file" type="audio/mp4")
+          div(v-else-if="scope.row.order === EOrderType.ePICTURE")
+            img.dialog-image(:src="`img/still_texture/Still_Texture_${scope.row.id.toString().padStart(4, '0')}.png`" :alt="scope.row.id")
+          div(v-else-if="scope.row.order === EOrderType.eWINDOW_ITEM")
+            img.dialog-image(:src="`img/item_texture/item_texture_${scope.row.id.toString().padStart(4, '0')}.png`" :alt="scope.row.id")
+    div(slot="footer")
+      el-link.adv-raw-json__link(v-if="adv" @click="$refs.jsonViewDialog.open(adv)" :underline="false") {{ $t('Rawデータ') }}
+      el-button(@click="visible = false" type="primary") {{ $t('閉じる') }}
 </template>
 
 <script lang="ts">
@@ -50,9 +53,12 @@ import { IAdventure } from '@/utils/AdvManager';
 import { EOrderType, eMusicID } from '@/logic/Enums';
 import { RichTextService } from '@/services/RichTextService';
 import { MVList as CharaMVList } from '@/master/chara';
+import { Adv } from '@/master/adv';
+import JsonViewDialog from '@/components/JsonViewDialog.vue';
 
 @Component({
   components: {
+    JsonViewDialog,
   },
 })
 export default class extends VueBase {
@@ -73,7 +79,7 @@ export default class extends VueBase {
 
   public quest: QuestMVList | null = null;
 
-  public adv = '';
+  public adv: Adv | null = null;
 
   public questDialogs: IAdventure[] = [];
 
@@ -108,6 +114,11 @@ export default class extends VueBase {
       this.visible = true;
       this.loading = true;
       this.questDialogs = await this.dataManager.advManager.getDialog(quest.NPC_FD.map((p) => p.ADV).filter((p) => p));
+
+      const firstAdv = quest.NPC_FD.map((p) => p.ADV).filter((p) => p)[0];
+      if (firstAdv) {
+        this.adv = await this.dataManager.advManager.getAdv(firstAdv);
+      }
     } catch (e) {
       this.visible = false;
       this.$message.error(e.toString());
@@ -124,6 +135,10 @@ export default class extends VueBase {
       this.visible = true;
       this.loading = true;
       this.questDialogs = await this.dataManager.advManager.getDialog(advs);
+
+      if (advs[0]) {
+        this.adv = await this.dataManager.advManager.getAdv(advs[0]);
+      }
     } catch (e) {
       this.visible = false;
       this.$message.error(e.toString());
@@ -147,4 +162,7 @@ export default class extends VueBase {
 
 .main-character__audio
   margin-left: 4px
+
+.adv-raw-json__link
+  float: left
 </style>
