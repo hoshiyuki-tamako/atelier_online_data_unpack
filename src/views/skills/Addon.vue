@@ -30,15 +30,13 @@ div.container
                 p(v-if="props.row.detail") {{ props.row.detail }}
                 br
                 p ID: {{ props.row.id }}
+                p(v-if="props.row.category") {{ $t('レア度') }}: {{ '⭐'.repeat(props.row.rarity) }}
                 p {{ $t('数値') }}1: {{ props.row.effectValue }}
-                p {{ $t('数値') }}2: {{ props.row.effectValue2 }}
-                p {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.EBattleAttribute[props.row.attackSkill.attribute]) }}
-                p {{ $t('属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[props.row.attackSkill.element]) }}
-                p {{ $t('對象') }}: {{ $t(dataManager.lookup.targetTeam[props.row.targetTeam]) }} {{ $t(dataManager.lookup.eFieldItemRange[props.row.targetScope]) }}
+                p(v-if="props.row.effectValue2") {{ $t('数値') }}2: {{ props.row.effectValue2 }}
                 p(v-if="props.row.spAdd") {{ $t('SP回復率') }}: {{ props.row.spAdd }} {{ $t('倍') }}
                 p(v-if="props.row.trigger") {{ $t('トリガー') }}: {{ EBattleEffectTrigger[props.row.trigger] || props.row.trigger }}
-                p(v-if="props.row.effect") {{ $t('エフェクト') }} {{ EBattleEffectKind[props.row.effect] || props.row.effect }}
-                p(v-if="props.row.effectTarget") {{ $t('エフェクトターゲット') }} {{ EBattleEffectTarget[props.row.effectTarget] || props.row.effectTarget }}
+                p(v-if="props.row.effect") {{ $t('エフェクト') }}: {{ EBattleEffectKind[props.row.effect] || props.row.effect }}
+                p(v-if="props.row.effectTarget") {{ $t('エフェクトターゲット') }}: {{ EBattleEffectTarget[props.row.effectTarget] || props.row.effectTarget }}
                 p(v-if="props.row.coolTime") {{ $t('クールダウンタイム') }}: {{ props.row.coolTime }}{{ $t('ターン') }}
                 div(v-if="props.row.combSkillList.length || props.row.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE")
                   br
@@ -99,7 +97,9 @@ div.container
       el-table-column(prop="name" :label="$t('名前')" :filters="typeFilters" :filter-method="typeFilderHandler" sortable)
       el-table-column(prop="detail" :label="$t('詳細')" sortable)
       el-table-column(prop="effectValue" :label="$t('数値')" sortable)
-        template(slot-scope="scope") {{ scope.row.effectValue }}, {{ scope.row.effectValue2 }}
+        template(slot-scope="scope")
+          span {{ scope.row.effectValue }}
+          span(v-if="scope.row.effectValue2") , {{ scope.row.effectValue2 }}
       el-table-column(prop="rarity" :label="$t('レア度')" sortable)
         template(slot-scope="scope") {{ '⭐'.repeat(scope.row.rarity) }}
 </template>

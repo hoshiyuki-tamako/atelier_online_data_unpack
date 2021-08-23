@@ -57,11 +57,9 @@ div.container
     div.filter
       el-checkbox(v-model="showColumnId") ID
       el-checkbox(v-model="showColumnName") {{ $t('名前') }}
-      el-checkbox(v-model="showColumnAttackSkillAttribute") {{ $t('攻撃タイプ') }}
-      el-checkbox(v-model="showColumnAttackSkillElement") {{ $t('属性') }}
-      el-checkbox(v-model="showColumnTargetTeam") {{ $t('對象') }}
-      el-checkbox(v-model="showColumnStateOwn") {{ $t('追加状態 (自)') }}
-      el-checkbox(v-model="showColumnState") {{ $t('追加状態') }}
+      el-checkbox(v-model="showColumnTrigger") {{ $t('トリガー') }}
+      el-checkbox(v-model="showColumnEffect") {{ $t('エフェクト') }}
+      el-checkbox(v-model="showColumnEffectTarget") {{ $t('エフェクトターゲット') }}
 
   div.content
     el-table(ref="table" :data="filteredPaginationSkills" default-expand-all @sort-change="onSortChange")
@@ -77,39 +75,17 @@ div.container
               p ID: {{ props.row.id }}
               p(v-if="props.row.category") {{ $t('レア度') }}: {{ '⭐'.repeat(props.row.rarity) }}
               p {{ $t('数値') }}1: {{ props.row.effectValue }}
-              p {{ $t('数値') }}2: {{ props.row.effectValue2 }}
-              p {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.EBattleAttribute[props.row.attackSkill.attribute]) }}
-              p {{ $t('属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[props.row.attackSkill.element]) }}
-              p {{ $t('對象') }}: {{ $t(dataManager.lookup.targetTeam[props.row.targetTeam]) }} {{ $t(dataManager.lookup.eFieldItemRange[props.row.targetScope]) }}
+              p(v-if="props.row.effectValue2") {{ $t('数値') }}2: {{ props.row.effectValue2 }}
+              p(v-if="props.row.attribute") {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.EBattleAttribute[props.row.attackSkill.attribute]) }}
+              p(v-if="props.row.attribute") {{ $t('属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[props.row.attackSkill.element]) }}
+              p(v-if="props.row.attribute") {{ $t('對象') }}:
+                span(v-if="dataManager.locale === 'en'")  {{ $t(dataManager.lookup.eFieldItemRange[props.row.targetScope]) }} {{ $t(dataManager.lookup.targetTeam[props.row.targetTeam]) }}
+                span(v-else)  {{ $t(dataManager.lookup.targetTeam[props.row.targetTeam]) }} {{ $t(dataManager.lookup.eFieldItemRange[props.row.targetScope]) }}
               p(v-if="props.row.spAdd") {{ $t('SP回復率') }}: {{ props.row.spAdd }} {{ $t('倍') }}
               p(v-if="props.row.trigger") {{ $t('トリガー') }}: {{ EBattleEffectTrigger[props.row.trigger] || props.row.trigger }}
-              p(v-if="props.row.effect") {{ $t('エフェクト') }} {{ EBattleEffectKind[props.row.effect] || props.row.effect }}
-              p(v-if="props.row.effectTarget") {{ $t('エフェクトターゲット') }} {{ EBattleEffectTarget[props.row.effectTarget] || props.row.effectTarget }}
+              p(v-if="props.row.effect") {{ $t('エフェクト') }}: {{ EBattleEffectKind[props.row.effect] || props.row.effect }}
+              p(v-if="props.row.effectTarget") {{ $t('エフェクトターゲット') }}: {{ EBattleEffectTarget[props.row.effectTarget] || props.row.effectTarget }}
               p(v-if="props.row.coolTime") {{ $t('クールダウンタイム') }}: {{ props.row.coolTime }}{{ $t('ターン') }}
-              div(v-if="props.row.combSkillList.length || props.row.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE")
-                br
-                h4 {{ $t('含まれるスキル') }}
-                template(v-for="skill of props.row.combSkillList")
-                  p
-                    router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
-                  p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[skill.id]].filter((p) => p)")
-                    router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
-                p(v-if="props.row.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[props.row.id]].filter((p) => p)")
-                  router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
-              div(v-if="props.row.stateOwn.length")
-                br
-                h4 {{ $t('追加状態 (自)') }}
-                template(v-for="[state, abnormalState] of props.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
-                  el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
-                    p
-                      router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
-              div(v-if="props.row.state.length")
-                br
-                h4 {{ $t('追加状態') }}
-                template(v-for="[state, abnormalState] of props.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
-                  el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
-                    p
-                      router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
 
               div(v-if="props.row.effect === EBattleEffectKind.eZONE_CHANGE" v-for="zone of [dataManager.zoneById[props.row.effectValue]].filter((p) => p)")
                 br
@@ -125,6 +101,46 @@ div.container
               el-link(@click="$refs.jsonViewDialog.open(props.row)" :underline="false") {{ $t('Rawデータ') }}
 
             div.item-container-right
+              div(v-if="props.row.stateOwn.length")
+                h4 {{ $t('追加状態 (自)') }}
+                template(v-for="[state, abnormalState] of props.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                  el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
+                    p
+                      el-tag(size="small" effect="plain")
+                        router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }}
+                      el-tag(size="small")
+                        router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.name }}
+                      template(v-if="abnormalState.effectlist.length" v-for="id of [abnormalState.effectlist.length > 1 ? abnormalState.effectlist[abnormalState.effectlist.length - 1] : abnormalState.effectlist[0]]")
+                        el-tag(v-if="dataManager.abnormalStateEffectById[id]" size="small" effect="plain")
+                          router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('数値') }} {{ dataManager.abnormalStateEffectById[id].value }}
+                      el-tag(size="small" effect="plain")
+                        router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.turn }} {{ $t('ターン') }}
+                br
+              div(v-if="props.row.state.length")
+                h4 {{ $t('追加状態') }}
+                template(v-for="[state, abnormalState] of props.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                  el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
+                    p
+                      el-tag(size="small" effect="plain")
+                        router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }}
+                      el-tag(size="small")
+                        router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.name }}
+                      template(v-if="abnormalState.effectlist.length" v-for="id of [abnormalState.effectlist.length > 1 ? abnormalState.effectlist[abnormalState.effectlist.length - 1] : abnormalState.effectlist[0]]")
+                        el-tag(v-if="dataManager.abnormalStateEffectById[id]" size="small" effect="plain")
+                          router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('数値') }} {{ dataManager.abnormalStateEffectById[id].value }}
+                      el-tag(size="small" effect="plain")
+                        router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.turn }} {{ $t('ターン') }}
+                br
+              div(v-if="props.row.combSkillList.length || props.row.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE")
+                h4 {{ $t('含まれるスキル') }}
+                template(v-for="skill of props.row.combSkillList")
+                  p
+                    router-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank") {{ skill.name }}
+                  p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[skill.id]].filter((p) => p)")
+                    router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
+                p(v-if="props.row.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="skill of [dataManager.skillById[props.row.id]].filter((p) => p)")
+                  router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
+                br
               div(v-if="dataManager.itemsBySkill[props.row.id]")
                 h3 {{ $t('アイテム') }}
                 router-link(v-for="item in dataManager.itemsBySkill[props.row.id]" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }" target="_blank")
@@ -143,24 +159,13 @@ div.container
 
       el-table-column(v-if="showColumnId" prop="id" label="ID" width="100%" sortable="custom")
       el-table-column(v-if="showColumnName" prop="name" :label="$t('名前')")
-      el-table-column(v-if="showColumnAttackSkillAttribute" prop="attackSkill.attribute" :label="$t('攻撃タイプ')" sortable="custom")
-        template(slot-scope="scope") {{ $t(dataManager.lookup.EBattleAttribute[scope.row.attackSkill.attribute]) }}
-      el-table-column(v-if="showColumnAttackSkillElement" prop="attackSkill.element" :label="$t('属性')" sortable="custom")
-        template(slot-scope="scope") {{ $t(dataManager.lookup.EBattleElementKind[scope.row.attackSkill.element]) }}
-      el-table-column(v-if="showColumnTargetTeam" prop="targetTeam" :label="$t('對象')" sortable="custom")
-        template(slot-scope="scope") {{ $t(dataManager.lookup.targetTeam[scope.row.targetTeam]) }}{{ $t(dataManager.lookup.eFieldItemRange[scope.row.targetScope]) }}
-      el-table-column(v-if="showColumnStateOwn" prop="stateOwn.length" :label="$t('追加状態 (自)')" sortable="custom")
-        template(slot-scope="scope")
-          template(v-for="[state, abnormalState] of scope.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
-            el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
-              p
-                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
-      el-table-column(v-if="showColumnState" prop="state.length" :label="$t('追加状態')" sortable="custom")
-        template(slot-scope="scope")
-          template(v-for="[state, abnormalState] of scope.row.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
-            el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
-              p
-                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }}
+      el-table-column(v-if="showColumnTrigger" prop="trigger" :label="$t('トリガー')" sortable="custom")
+        template(slot-scope="scope") {{ EBattleEffectTrigger[scope.row.trigger] || scope.row.trigger }}
+      el-table-column(v-if="showColumnEffect" prop="effect" :label="$t('エフェクト')" sortable="custom")
+        template(slot-scope="scope") {{ EBattleEffectKind[scope.row.effect] || scope.row.effect }}
+      el-table-column(v-if="showColumnEffectTarget" prop="effectTarget" :label="$t('エフェクトターゲット')" sortable="custom")
+        template(slot-scope="scope") {{ EBattleEffectTarget[scope.row.effectTarget] || scope.row.effectTarget }}
+
     el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredSkills.length" layout="prev, pager, next" background="")
 </template>
 
@@ -179,15 +184,11 @@ abstract class VueWithMapFields extends VueBase {
 
   public showColumnName!: boolean;
 
-  public showColumnAttackSkillAttribute!: boolean;
+  public showColumnTrigger!: boolean;
 
-  public showColumnAttackSkillElement!: boolean;
+  public showColumnEffect!: boolean;
 
-  public showColumnTargetTeam!: boolean;
-
-  public showColumnStateOwn!: boolean;
-
-  public showColumnState!: boolean;
+  public showColumnEffectTarget!: boolean;
 }
 
 // eslint-disable-next-line no-shadow
@@ -204,7 +205,7 @@ export enum SkillKind {
     JsonViewDialog,
   },
   computed: {
-    ...mapFields('skillsFilter', ['showColumnId', 'showColumnName', 'showColumnAttackSkillAttribute', 'showColumnAttackSkillElement', 'showColumnTargetTeam', 'showColumnStateOwn', 'showColumnState']),
+    ...mapFields('skillsFilter', ['showColumnId', 'showColumnName', 'showColumnTrigger', 'showColumnEffect', 'showColumnEffectTarget']),
   },
 })
 export default class extends VueWithMapFields {

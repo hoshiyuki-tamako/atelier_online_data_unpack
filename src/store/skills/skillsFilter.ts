@@ -9,26 +9,20 @@ export default class extends VuexModuleBase {
 
   public showColumnName = true;
 
-  public showColumnAttackSkillAttribute = true;
+  public showColumnTrigger = true;
 
-  public showColumnAttackSkillElement = true;
+  public showColumnEffect = true;
 
-  public showColumnTargetTeam = true;
+  public showColumnEffectTarget = true;
 
-  public showColumnStateOwn = true;
-
-  public showColumnState = true;
-
-  @MutationAction({ mutate: ['showColumnId', 'showColumnName', 'showColumnAttackSkillAttribute', 'showColumnAttackSkillElement', 'showColumnTargetTeam', 'showColumnStateOwn', 'showColumnState'] })
+  @MutationAction({ mutate: ['showColumnId', 'showColumnName', 'showColumnTrigger', 'showColumnEffect', 'showColumnEffectTarget'] })
   public async reset() {
     return {
       showColumnId: true,
       showColumnName: true,
-      showColumnAttackSkillAttribute: true,
-      showColumnAttackSkillElement: true,
-      showColumnTargetTeam: true,
-      showColumnStateOwn: true,
-      showColumnState: true,
+      showColumnTrigger: true,
+      showColumnEffect: true,
+      showColumnEffectTarget: true,
     };
   }
 }

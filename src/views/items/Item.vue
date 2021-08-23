@@ -129,7 +129,7 @@ div.container
                                       td
                                         p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
                 div(v-if="!showSupportState")
-                  div(v-for="skill of item.getSkills(itemModifier.quality)")
+                  div(v-for="skill of item.getSkillWithComboSkills(itemModifier.quality)")
                     v-popover(placement="right-end" trigger="hover")
                       p
                         el-link.poppover__a(icon="el-icon-more" :underline="false") {{ skill.name }}
@@ -141,26 +141,34 @@ div.container
                               b {{ $t('数値') }}
                               span  {{ skill.effectValue }}
                               span(v-if="skill.effectValue2") , {{ skill.effectValue2 }}
+                            template(v-if="skill.combSkillList && skill.combSkillList.length")
+                              p
+                                b {{ $t('含まれるスキル') }}
+                              template(v-for="_skill of skill.combSkillList")
+                                p {{ _skill.name }}
+                                p(v-if="_skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="__skill of [dataManager.skillById[_skill.id]].filter((p) => p)") {{ __skill.name }} / {{ __skill.effectValue2 }}{{ $t('ターン') }}
+                              p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="_skill of [dataManager.skillById[skill.id]].filter((p) => p)") {{ _skill.name }} / {{ _skill.effectValue2 }}{{ $t('ターン') }}
+
                             br(v-if="skill.stateOwn.length || skill.state.length")
                             p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                              el-tag(size="small" effect="plain")
+                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }}
                               el-tag(size="small")
                                 router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.name }}
                               template(v-if="abnormalState.effectlist.length" v-for="id of [abnormalState.effectlist.length > 1 ? abnormalState.effectlist[abnormalState.effectlist.length - 1] : abnormalState.effectlist[0]]")
                                 el-tag(v-if="dataManager.abnormalStateEffectById[id]" size="small" effect="plain")
                                   router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('数値') }} {{ dataManager.abnormalStateEffectById[id].value }}
-                              el-tag(size="small" effect="plain")
-                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }}
                               el-tag(size="small" effect="plain")
                                 router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.turn }} {{ $t('ターン') }}
 
                             p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                              el-tag(size="small" effect="plain")
+                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }}
                               el-tag(size="small")
                                 router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.name }}
                               template(v-if="abnormalState.effectlist.length" v-for="id of [abnormalState.effectlist.length > 1 ? abnormalState.effectlist[abnormalState.effectlist.length - 1] : abnormalState.effectlist[0]]")
                                 el-tag(v-if="dataManager.abnormalStateEffectById[id]" size="small" effect="plain")
                                   router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('数値') }} {{ dataManager.abnormalStateEffectById[id].value }}
-                              el-tag(size="small" effect="plain")
-                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }}
                               el-tag(size="small" effect="plain")
                                 router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.turn }} {{ $t('ターン') }}
 
@@ -202,7 +210,7 @@ div.container
                     img.icon-small(:src="otherItem.icon" :alt="otherItem.DF")
 
         el-tab-pane(:label="$t('スキル')" name="skill" v-if="item.SPC.length")
-          template(v-for="[spc, skills] of item.SPC.map((spc) => [spc, spc.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)]).filter((p) => p[1].length)")
+          template(v-for="[spc, skills] of item.allSkillWithComboSkills")
             SkillTextInfo(:skills="skills")
               template(slot="title") {{ $t('品質') }} {{ spc.THR }}
 
@@ -237,7 +245,7 @@ div.container
         el-tab-pane(:label="$t('フィールド用')" name="fieldItem" v-if="dataManager.fieldItemById[item.DF]")
           div(v-for="fieldItem of [dataManager.fieldItemById[item.DF]]")
             table
-              tr
+              tr(v-if="fieldItem.eRange")
                 th {{ $t('目標') }}
                 td {{ $t(dataManager.lookup.eFieldItemRange[fieldItem.eRange]) }}
               tr
@@ -258,7 +266,7 @@ import { ModelFbx } from 'vue-3d-model';
 import VueBase from '@/components/VueBase';
 import { MVList as ItemMVList } from '@/master/item';
 import { ItemModifier } from '@/logic/modifiers/ItemModifier';
-import { EWeaponKind, ECategory } from '@/logic/Enums';
+import { EWeaponKind, ECategory, EBattleEffectKind } from '@/logic/Enums';
 import SkillTextInfo from '@/components/SkillTextInfo.vue';
 import JsonViewDialog from '@/components/JsonViewDialog.vue';
 
@@ -270,6 +278,10 @@ import JsonViewDialog from '@/components/JsonViewDialog.vue';
   },
 })
 export default class extends VueBase {
+  public get EBattleEffectKind() {
+    return EBattleEffectKind;
+  }
+
   public get ItemMVList() {
     return ItemMVList;
   }
@@ -365,13 +377,6 @@ export default class extends VueBase {
 <style lang="sass" scoped>
 a
   text-decoration: none
-
-table.default-table th
-  white-space: nowrap
-
-table.default-table th, td
-  text-align: left
-  padding: 4px
 
 .item-local-link
   display: flex

@@ -647,6 +647,7 @@ export default class extends VueWithMapFields {
 @import "./design/styles/element-ui.sass"
 @import "./design/styles/vue-json-pretty.sass"
 @import "./design/styles/option.sass"
+@import "./design/styles/table.sass"
 
 *, .reset
   padding: 0

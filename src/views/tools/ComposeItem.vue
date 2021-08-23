@@ -37,10 +37,11 @@ div
             div
               img(:src="material.icon" :alt="material.NAME")
             template(slot="popover")
-              div.popover-base.item-popover
-                router-link(:to="{ name: 'ItemsItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ material.NAME }}
-                p {{ material.DESC }}
-                router-link(v-if="material.RSP.length" :to="{ name: 'ToolsComposeItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ $t('調合') }}
+              div.popover-container.item-popover
+                el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
+                  router-link(:to="{ name: 'ItemsItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ material.NAME }}
+                  p {{ material.DESC }}
+                  router-link(v-if="material.RSP.length" :to="{ name: 'ToolsComposeItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ $t('調合') }}
 
       div.compose-item(@click="itemPickerDialogVisible = true")
         div.compose-requirement
@@ -54,9 +55,10 @@ div
           div.compose-item-image
             img(:src="compose.icon" :alt="compose.NAME")
           template(slot="popover")
-            div.popover-base.item-popover
-              router-link(:to="{ name: 'ItemsItem', query: { df: compose.DF, quality: composeQuality } }" target="_blank") {{ compose.NAME }}
-              p {{ compose.DESC }}
+            div.popover-container.item-popover
+              el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
+                router-link(:to="{ name: 'ItemsItem', query: { df: compose.DF, quality: composeQuality } }" target="_blank") {{ compose.NAME }}
+                p {{ compose.DESC }}
 
     div.compose-result
       h3 {{ $t('品質') }} {{ composeQuality }}

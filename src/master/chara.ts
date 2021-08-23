@@ -230,7 +230,10 @@ export class MVList {
       .orderBy((p) => p.key())
       .select((p) => ({
         level: p.key(),
-        skillDfs: p.select((i) => i.DF).toArray(),
+        skills: p.select((i) => dataManager.skillById[i.DF])
+          .where((p) => !!p)
+          .selectMany((skill) => skill.withComboSkills)
+          .toArray(),
       }));
   }
 
@@ -253,7 +256,10 @@ export class MVList {
   public getSkillWithComboSkills(level = MVList.maxLevel) {
     const key = JSON.stringify({ level });
     if (!this.#skillWithComboSkillCache.has(key)) {
-      this.#skillWithComboSkillCache.set(key, SkillList.removeOverrideSkills(this.getSkills(level).map((p) => p.withComboSkills).flat()));
+      const skills = SkillList.removeOverrideSkills(this.getRawSkills(level))
+        .map((skill) => skill.withComboSkills)
+        .flat();
+      this.#skillWithComboSkillCache.set(key, Enumerable.from(skills).distinct((p) => p.id).toArray());
     }
     return this.#skillWithComboSkillCache.get(key);
   }

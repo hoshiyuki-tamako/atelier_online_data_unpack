@@ -88,6 +88,9 @@ export class MVList {
   #elementChangeSkill: SkillList;
   #skillsCache = new Map<string, SkillList[]>();
   #skillWithComboSkillCache = new Map<string, SkillList[]>();
+  #attackSkillCache = new Map<number, SkillList | undefined | null>();
+  #allSkillWithComboSkills: [Spc, SkillList[]][];
+
   #elementCache = new Map<string, IElementResult>();
   #stateCache = new Map<string, IStateResult>();
 
@@ -221,13 +224,32 @@ export class MVList {
   public getSkillWithComboSkills(quality = MVList.equipmentMaxQuality) {
     const key = JSON.stringify({ quality });
     if (!this.#skillWithComboSkillCache.has(key)) {
-      this.#skillWithComboSkillCache.set(key, this.getSkills(quality).map((p) => p.withComboSkills).flat());
+      this.#skillWithComboSkillCache.set(key, Enumerable.from(this.SPC)
+        .orderByDescending((p) => p.THR)
+        .where((p) => p.THR <= quality)
+        .firstOrDefault()
+        ?.SKILL.filter((p) => dataManager.skillById[p.DF])
+        .map((p) => dataManager.skillById[p.DF].withComboSkills)
+        .flat() || []);
     }
     return this.#skillWithComboSkillCache.get(key);
   }
 
   public getAttackSkill(quality = MVList.equipmentMaxQuality) {
-    return this.getSkills(quality).find((p) => p.type === 1);
+    if (!this.#attackSkillCache.has(quality)) {
+      this.#attackSkillCache.set(quality, this.getSkills(quality).find((p) => p.type === 1));
+    }
+
+    return this.#attackSkillCache.get(quality);
+  }
+
+  public get allSkillWithComboSkills() {
+    return this.#allSkillWithComboSkills ??= this.SPC.map((spc) => [
+      spc,
+      spc.SKILL.filter((p) => dataManager.skillById[p.DF])
+        .map((p) => dataManager.skillById[p.DF].withComboSkills)
+        .flat(),
+    ] as [Spc, SkillList[]]).filter(([, skills]) => skills.length);
   }
 
   // elements
