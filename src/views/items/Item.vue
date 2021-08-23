@@ -60,7 +60,7 @@ div.container
               div.item-modify
                 div(v-if="item.EQU_BRD")
                   div.item-levels
-                    table(v-if="showSupportState")
+                    table.default-table(v-if="showSupportState")
                       tr(v-for="state of item.getSupportStates(itemModifier.level)")
                         template(v-if="state.value")
                           th {{ $t(state.label) }}
@@ -69,74 +69,100 @@ div.container
                         template(v-if="element.value")
                           th {{ $t(element.label) }}
                           td {{ element.value }}
-                    table(v-else)
+                    table.default-table(v-else)
                       tr(v-for="state of item.getStates(itemModifier.quality, itemModifier.level)")
                         th
                           v-popover(placement="right-end" trigger="hover")
-                            span {{ $t(state.label) }}
+                            span.poppover__a {{ $t(state.label) }}
                             template(v-if="state.value || (state.skills && state.skills.length)" slot="popover")
-                              div.popover-base
-                                table
-                                  tr(v-if="state.value")
-                                    th {{ $t('ベース') }}
-                                    td {{ state.value }}
-                                  tr(v-if="state.skills && state.skills.length")
-                                    th {{ $t('スキル') }}
-                                    td
-                                      p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                              div.popover-container
+                                el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
+                                  table.default-table
+                                    tr(v-if="state.value")
+                                      th {{ $t('ベース') }}
+                                      td {{ state.value }}
+                                    tr(v-if="state.skills && state.skills.length")
+                                      th {{ $t('スキル') }}
+                                      td
+                                        p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
                         td
                           v-popover(placement="right-end" trigger="hover")
-                            span {{ state.total }}
+                            span.poppover__a {{ state.total }}
                             template(v-if="state.value || (state.skills && state.skills.length)" slot="popover")
-                              div.popover-base
-                                table
-                                  tr(v-if="state.value")
-                                    th {{ $t('ベース') }}
-                                    td {{ state.value }}
-                                  tr(v-if="state.skills && state.skills.length")
-                                    th {{ $t('スキル') }}
-                                    td
-                                      p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                              div.popover-container
+                                el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
+                                  table.default-table
+                                    tr(v-if="state.value")
+                                      th {{ $t('ベース') }}
+                                      td {{ state.value }}
+                                    tr(v-if="state.skills && state.skills.length")
+                                      th {{ $t('スキル') }}
+                                      td
+                                        p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
                       tr(v-for="element of item.getElements(itemModifier.quality)")
                         th
                           v-popover(placement="right-end" trigger="hover")
-                            span {{ $t(element.label) }}
+                            span.poppover__a {{ $t(element.label) }}
                             template(v-if="element.value || (element.skills && element.skills.length)" slot="popover")
-                              div.popover-base
-                                table
-                                  tr(v-if="element.value")
-                                    th {{ $t('ベース') }}
-                                    td {{ element.value }}
-                                  tr(v-if="element.skills && element.skills.length")
-                                    th {{ $t('スキル') }}
-                                    td
-                                      p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                              div.popover-container
+                                el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
+                                  table.default-table
+                                    tr(v-if="element.value")
+                                      th {{ $t('ベース') }}
+                                      td {{ element.value }}
+                                    tr(v-if="element.skills && element.skills.length")
+                                      th {{ $t('スキル') }}
+                                      td
+                                        p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
                         td
                           v-popover(placement="right-end" trigger="hover")
-                            span {{ element.total }}
+                            span.poppover__a {{ element.total }}
                             template(v-if="element.value || (element.skills && element.skills.length)" slot="popover")
-                              div.popover-base
-                                table
-                                  tr(v-if="element.value")
-                                    th {{ $t('ベース') }}
-                                    td {{ element.value }}
-                                  tr(v-if="element.skills && element.skills.length")
-                                    th {{ $t('スキル') }}
-                                    td
-                                      p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                              div.popover-container
+                                el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
+                                  table.default-table
+                                    tr(v-if="element.value")
+                                      th {{ $t('ベース') }}
+                                      td {{ element.value }}
+                                    tr(v-if="element.skills && element.skills.length")
+                                      th {{ $t('スキル') }}
+                                      td
+                                        p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
                 div(v-if="!showSupportState")
                   div(v-for="skill of item.getSkills(itemModifier.quality)")
                     v-popover(placement="right-end" trigger="hover")
-                      p {{ skill.name }}
+                      p
+                        el-link.poppover__a(icon="el-icon-more" :underline="false") {{ skill.name }}
                       template(slot="popover")
-                        div.popover-base
-                          p.popover-base__detail(v-if="skill.detail") {{ skill.detail }}
-                          br
-                          p {{ $t('数値') }}: {{ skill.effectValue }}, {{ skill.effectValue2 }}
-                          p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
-                            router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
-                          p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
-                            router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }} {{ abnormalState.name }} {{ abnormalState.turn }} {{ $t('ターン') }}
+                        div.popover-container
+                          el-card.popover__card(shadow="never" :body-style="elCardPopoverStyle")
+                            p.popover-container__detail(v-if="skill.detail") {{ skill.detail }}
+                            p
+                              b {{ $t('数値') }}
+                              span  {{ skill.effectValue }}
+                              span(v-if="skill.effectValue2") , {{ skill.effectValue2 }}
+                            br(v-if="skill.stateOwn.length || skill.state.length")
+                            p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                              el-tag(size="small")
+                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.name }}
+                              template(v-if="abnormalState.effectlist.length" v-for="id of [abnormalState.effectlist.length > 1 ? abnormalState.effectlist[abnormalState.effectlist.length - 1] : abnormalState.effectlist[0]]")
+                                el-tag(v-if="dataManager.abnormalStateEffectById[id]" size="small" effect="plain")
+                                  router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('数値') }} {{ dataManager.abnormalStateEffectById[id].value }}
+                              el-tag(size="small" effect="plain")
+                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }}
+                              el-tag(size="small" effect="plain")
+                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.turn }} {{ $t('ターン') }}
+
+                            p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
+                              el-tag(size="small")
+                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.name }}
+                              template(v-if="abnormalState.effectlist.length" v-for="id of [abnormalState.effectlist.length > 1 ? abnormalState.effectlist[abnormalState.effectlist.length - 1] : abnormalState.effectlist[0]]")
+                                el-tag(v-if="dataManager.abnormalStateEffectById[id]" size="small" effect="plain")
+                                  router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('数値') }} {{ dataManager.abnormalStateEffectById[id].value }}
+                              el-tag(size="small" effect="plain")
+                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }}
+                              el-tag(size="small" effect="plain")
+                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.turn }} {{ $t('ターン') }}
 
           div(v-if="item.GROUP_DF && dataManager.charactersByGroupDf[item.GROUP_DF]")
             el-divider {{ $t('キャラクター專用') }}
@@ -340,10 +366,10 @@ export default class extends VueBase {
 a
   text-decoration: none
 
-th
+table.default-table th
   white-space: nowrap
 
-th, td
+table.default-table th, td
   text-align: left
   padding: 4px
 

@@ -18,6 +18,20 @@ export default abstract class VueBase extends Vue {
     return condition ? '✓' : 'x';
   }
 
+  public get elCardPopoverStyle() {
+    return {
+      padding: '12px',
+      border: 'MediumSeaGreen solid 1px',
+    };
+  }
+
+  public get elCardPopoverStyleSmall() {
+    return {
+      padding: '6px',
+      border: 'MediumSeaGreen solid 1px',
+    };
+  }
+
   // notification
   public successNotification() {
     this.$notify({
