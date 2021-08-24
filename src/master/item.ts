@@ -89,7 +89,7 @@ export class MVList {
   #skillsCache = new Map<string, SkillList[]>();
   #skillWithComboSkillCache = new Map<string, SkillList[]>();
   #attackSkillCache = new Map<number, SkillList | undefined | null>();
-  #allSkillWithComboSkills: [Spc, SkillList[]][];
+  #allSkills: [Spc, SkillList[]][];
 
   #elementCache = new Map<string, IElementResult>();
   #stateCache = new Map<string, IStateResult>();
@@ -243,11 +243,11 @@ export class MVList {
     return this.#attackSkillCache.get(quality);
   }
 
-  public get allSkillWithComboSkills() {
-    return this.#allSkillWithComboSkills ??= this.SPC.map((spc) => [
+  public get allSkills() {
+    return this.#allSkills ??= this.SPC.map((spc) => [
       spc,
       spc.SKILL.filter((p) => dataManager.skillById[p.DF])
-        .map((p) => dataManager.skillById[p.DF].withComboSkills)
+        .map((p) => dataManager.skillById[p.DF])
         .flat(),
     ] as [Spc, SkillList[]]).filter(([, skills]) => skills.length);
   }

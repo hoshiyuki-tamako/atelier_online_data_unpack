@@ -90,6 +90,11 @@ export class ApiManager {
     ]);
   }
 
+  public loadFromOptimizedData(aoserver: { huntSummary: string }) {
+    const huntSummaryBuffer = Uint8Array.from(atob(aoserver.huntSummary), c => c.charCodeAt(0));
+    this.huntInfos = plainArrayToClass(HuntInfo, msgpack.decode(huntSummaryBuffer)[16][0], { isArray: true });
+  }
+
   // api
   public async comHuntSummary() {
     const data = await this.call('aoserver/nat/api/com/hunt/Summary').then((p) => p.arrayBuffer());

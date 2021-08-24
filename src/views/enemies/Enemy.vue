@@ -54,7 +54,7 @@ div.container
             p(v-for="quest of dataManager.questsByEnemy[enemy.DF]")
               router-link(:to="{ name: 'InfoQuest', query: { df: quest.DF } }") {{ quest.NAME }}
         el-tab-pane(:label="$t('スキル')" name="skill" v-if="enemy.sParam.SKILL.length")
-          SkillTextInfo(:skills="enemy.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p)" :showTitle="false")
+          SkillTextInfo(:skills="enemy.skills" :showTitle="false")
 </template>
 
 <script lang="ts">

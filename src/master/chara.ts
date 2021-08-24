@@ -232,7 +232,6 @@ export class MVList {
         level: p.key(),
         skills: p.select((i) => dataManager.skillById[i.DF])
           .where((p) => !!p)
-          .selectMany((skill) => skill.withComboSkills)
           .toArray(),
       }));
   }

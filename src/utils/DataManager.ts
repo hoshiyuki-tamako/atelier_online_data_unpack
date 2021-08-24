@@ -978,12 +978,14 @@ export class DataManager {
     this.spawnerDataManager.clearCache();
 
     this.showHiddenContent = showHiddenContent;
-    await Promise.all([
-      ...Object.keys(this.dataDependency).map((name) => this.loadMasterData(name)),
-      this.loadGenerated(),
-      this.spawnerDataManager.load(),
-      this.api.load(),
-    ]);
+    await this.loadFromOptimizedData();
+
+    // await Promise.all([
+    //   ...Object.keys(this.dataDependency).map((name) => this.loadMasterData(name)),
+    //   this.loadGenerated(),
+    //   this.spawnerDataManager.load(),
+    //   this.api.load(),
+    // ]);
   }
 
   public async loadMasterData(name: string) {
@@ -1027,6 +1029,25 @@ export class DataManager {
       this.loadMasterData('chara'), // required for charactersByAdv
       this.loadMasterData('quest'), // required for charactersByAdv
     ]);
+  }
+
+  //
+  public async loadFromOptimizedData() {
+    const data = await this.loadJson(`${this.serverId}/data.json`);
+
+    for (const [k, v] of Object.entries(data.export.master)) {
+      const variableName = Object.entries(this.dataFileMap).find(([, file]) => file === k)?.[0] || k;
+      this[variableName] = this.dataClassMap[variableName]
+        ? plainToClass(this.dataClassMap[variableName], v)
+        : v;
+    }
+
+    for (const [k, v] of Object.entries(data.generated)) {
+      this[k] = v;
+    }
+
+    this.api.loadFromOptimizedData(data.aoserver);
+    await this.spawnerDataManager.loadFromOptimizedData(data.export.SpawnList);
   }
 
   // helper

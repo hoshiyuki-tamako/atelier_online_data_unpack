@@ -102,7 +102,7 @@ div.container
 
             div.item-container-right
               div(v-if="props.row.stateOwn.length")
-                h4 {{ $t('追加状態 (自)') }}
+                h4 {{ $t('追加状態(自)') }}
                 template(v-for="[state, abnormalState] of props.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
                   p
                     el-tag(size="small" effect="plain")
@@ -298,7 +298,7 @@ export default class extends VueWithMapFields {
   public get hasFilter() {
     return [
       {
-        label: this.$t('追加状態 (自)'),
+        label: this.$t('追加状態(自)'),
         value: 1,
       },
       {

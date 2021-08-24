@@ -114,4 +114,19 @@ export class SpawnerDataManager {
       }
     }));
   }
+
+  public async loadFromOptimizedData(spawnLists: { [file: string]: string }) {
+    for (const [file, spawnList] of Object.entries(spawnLists)) {
+      try {
+        const { data } = await new Promise((complete, error) => parse(spawnList, {
+          skipEmptyLines: true,
+          complete,
+          error,
+        }));
+        this.spawnLists.set(file, plainArrayToClass(SpawnerData, data, { isArray: true }));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
 }

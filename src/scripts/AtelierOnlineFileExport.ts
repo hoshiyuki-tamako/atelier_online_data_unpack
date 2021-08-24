@@ -2,7 +2,6 @@ import dirTree, { DirectoryTree } from 'directory-tree';
 import fs from 'fs-extra';
 import path from 'path';
 
-import { serverIds } from './config';
 import { ISaveable } from './interfaces/ISaveable';
 
 export type PathTree = { [s: string]: PathTree | string | null };

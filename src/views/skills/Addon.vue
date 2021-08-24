@@ -50,7 +50,7 @@ div.container
                     router-link(:to="{ name: 'Skills', query: { id: skill.effectValue } }" target="_blank") {{ skill.name }} / {{ skill.effectValue2 }}{{ $t('ターン') }}
                 div(v-if="props.row.stateOwn.length")
                   br
-                  h4 {{ $t('追加状態 (自)') }}
+                  h4 {{ $t('追加状態(自)') }}
                   template(v-for="[state, abnormalState] of props.row.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
                     el-tooltip(:content="abnormalState.effectlist.map((id) => dataManager.abnormalStateEffectById[id]).filter((p) => p).map((p) => `${p.name} ${p.value}`).join(' / ')" placement="top")
                       p

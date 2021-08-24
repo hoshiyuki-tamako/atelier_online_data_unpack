@@ -28,20 +28,20 @@ div
     div.compose-material-container
       div.compose-material-top
         div.compose-material(v-for="(material, i) of materials")
-          v-popover(placement="right-end" trigger="hover")
-            div
-              el-input-number.compose-input--size(v-model="materialOptions[i].quality" :min="1" :max="100" :placeholder="$t('品質')" size="small")
-            div
-              el-select.compose-input--size(v-model="materialOptions[i].addonQuality" :placeholder="$t('品質特性')" size="small" filterable)
-                el-option(v-for="v in new Array(16).keys()" :key="v" :label="`${$t('品質特性')} ${v}`" :value="v")
-            div
-              img(:src="material.icon" :alt="material.NAME")
-            template(slot="popover")
-              div.popover-container.item-popover
-                el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
-                  router-link(:to="{ name: 'ItemsItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ material.NAME }}
-                  p {{ material.DESC }}
-                  router-link(v-if="material.RSP.length" :to="{ name: 'ToolsComposeItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ $t('調合') }}
+          el-popover(placement="right-end" trigger="hover")
+            div(slot="reference")
+              div
+                el-input-number.compose-input--size(v-model="materialOptions[i].quality" :min="1" :max="100" :placeholder="$t('品質')" size="small")
+              div
+                el-select.compose-input--size(v-model="materialOptions[i].addonQuality" :placeholder="$t('品質特性')" size="small" filterable)
+                  el-option(v-for="v in new Array(16).keys()" :key="v" :label="`${$t('品質特性')} ${v}`" :value="v")
+              div
+                img(:src="material.icon" :alt="material.NAME")
+            div.item-popover
+              router-link(:to="{ name: 'ItemsItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ material.NAME }}
+              p {{ material.DESC }}
+              br(v-if="material.RSP.length")
+              router-link(v-if="material.RSP.length" :to="{ name: 'ToolsComposeItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ $t('調合') }}
 
       div.compose-item(@click="itemPickerDialogVisible = true")
         div.compose-requirement
@@ -51,14 +51,12 @@ div
                 img(src="img/icon_item01/Texture2D/icon_item01_00002.png" :alt="dataManager.wealthById[2].NAME")
                 span {{ pickedItem.ALT.CST }}
 
-        v-popover(placement="right-end" trigger="hover")
-          div.compose-item-image
-            img(:src="compose.icon" :alt="compose.NAME")
-          template(slot="popover")
-            div.popover-container.item-popover
-              el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
-                router-link(:to="{ name: 'ItemsItem', query: { df: compose.DF, quality: composeQuality } }" target="_blank") {{ compose.NAME }}
-                p {{ compose.DESC }}
+          el-popover(placement="right-end" trigger="hover")
+            div.compose-item-image(slot="reference")
+              img(:src="compose.icon" :alt="compose.NAME")
+            div.item-popover
+              router-link(:to="{ name: 'ItemsItem', query: { df: compose.DF, quality: composeQuality } }" target="_blank") {{ compose.NAME }}
+              p {{ compose.DESC }}
 
     div.compose-result
       h3 {{ $t('品質') }} {{ composeQuality }}

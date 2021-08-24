@@ -1,6 +1,7 @@
 module.exports = {
   lintOnSave: false,
   publicPath: process.env.NODE_ENV === 'production' ? '/atelier_online_data_unpack/' : '/',
+  transpileDependencies: ['class-transformer', 'class-transformer-for-array', 'class-transformer-validator', 'translate-mutation-observer'],
   pwa: {
     name: 'アトリエオンライン資料庫',
     manifestOptions: {

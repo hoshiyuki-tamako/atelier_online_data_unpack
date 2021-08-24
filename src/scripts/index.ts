@@ -4,6 +4,7 @@ import path from 'path';
 import ApiExport from './ApiExport';
 import AtelierOnlineFileExport from './AtelierOnlineFileExport';
 import AudioExport from './AudioExport';
+import DataLoadOptimization from './DataLoadOptimization';
 import DataProcessor from './DataProcessor';
 import ModelExport from './ModelExport';
 import StaticGenerate from './StaticGenerate';
@@ -32,6 +33,7 @@ class Main {
 
     await Promise.all(promises);
     await new AtelierOnlineFileExport().save(rootFolder);
+    await new DataLoadOptimization().save(rootFolder);
   }
 }
 

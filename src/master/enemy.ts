@@ -124,6 +124,7 @@ export class MVList {
 
   #elementChangeSkill: SkillList;
   #skills: SkillList[];
+  #skillWithComboSkills: SkillList[];
   #elementCache = new Map<string, IElementResult>();
   #stateCache = new Map<string, IStateResult>();
 
@@ -188,6 +189,13 @@ export class MVList {
   // skill
   public get skills() {
     return this.#skills ??= this.sParam.SKILL.map((p) => dataManager.skillById[p.DF]).filter((p) => p);
+  }
+
+  public get skillsWithComboSkills() {
+    return this.#skillWithComboSkills ??= this.sParam.SKILL.map((p) => dataManager.skillById[p.DF])
+      .filter((p) => p)
+      .map((skill) => skill.withComboSkills)
+      .flat();
   }
 
   public get attackSkills() {

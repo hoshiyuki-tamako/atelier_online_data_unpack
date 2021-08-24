@@ -35,105 +35,77 @@ div.container
               table.default-table
                 tr(v-for="state of character.getStates(characterModifier.level, characterModifier.foodLevel)")
                   th
-                    v-popover(placement="right-end" trigger="hover")
-                      span.poppover__a {{ $t(state.label) }}
-                      template(v-if="state.value || state.foodValue || state.skills.length" slot="popover")
-                        div.popover-container
-                          el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
-                            table.default-table
-                              tr(v-if="state.value")
-                                th {{ $t('ベース') }}
-                                td {{ state.value }}
-                              tr(v-if="state.foodValue")
-                                th {{ $t('食事') }}
-                                td {{ state.foodValue }}
-                              tr(v-if="state.skills.length")
-                                th {{ $t('スキル') }}
-                                td
-                                  p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                    el-popover(:disabled="!(state.value || state.foodValue || state.skills.length)" placement="right-end" trigger="hover")
+                      template(slot="reference")
+                        span.poppover__a {{ $t(state.label) }}
+                      table.default-table
+                        tr(v-if="state.value")
+                          th {{ $t('ベース') }}
+                          td {{ state.value }}
+                        tr(v-if="state.foodValue")
+                          th {{ $t('食事') }}
+                          td {{ state.foodValue }}
+                        tr(v-if="state.skills.length")
+                          th {{ $t('スキル') }}
+                          td
+                            p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
                   td
-                    v-popover(placement="right-end" trigger="hover")
-                      span.poppover__a {{ state.total }}
-                      template(v-if="state.value || state.foodValue || state.skills.length" slot="popover")
-                        div.popover-container
-                          el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
-                            table.default-table
-                              tr(v-if="state.value")
-                                th {{ $t('ベース') }}
-                                td {{ state.value }}
-                              tr(v-if="state.foodValue")
-                                th {{ $t('食事') }}
-                                td {{ state.foodValue }}
-                              tr(v-if="state.skills.length")
-                                th {{ $t('スキル') }}
-                                td
-                                  p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                    el-popover(:disabled="!(state.value || state.foodValue || state.skills.length)" placement="right-end" trigger="hover")
+                      template(slot="reference")
+                        span.poppover__a {{ state.total }}
+                      table.default-table
+                        tr(v-if="state.value")
+                          th {{ $t('ベース') }}
+                          td {{ state.value }}
+                        tr(v-if="state.foodValue")
+                          th {{ $t('食事') }}
+                          td {{ state.foodValue }}
+                        tr(v-if="state.skills.length")
+                          th {{ $t('スキル') }}
+                          td
+                            p(v-for="skill of state.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
                 tr(v-for="element of character.getElements(characterModifier.level)")
                   th
-                    v-popover(placement="right-end" trigger="hover")
-                      span.poppover__a {{ $t(element.label) }}
-                      template(v-if="element.skills.length" slot="popover")
-                        div.popover-container
-                          el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
-                            table.default-table
-                              tr(v-if="element.skills.length")
-                                th {{ $t('スキル') }}
-                                td
-                                  p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                    el-popover(:disabled="!element.skills.length" placement="right-end" trigger="hover")
+                      template(slot="reference")
+                        span.poppover__a {{ $t(element.label) }}
+                      table.default-table
+                        tr(v-if="element.skills.length")
+                          th {{ $t('スキル') }}
+                          td
+                            p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
                   td
-                    v-popover(placement="right-end" trigger="hover")
-                      span.poppover__a {{ element.value }}
-                      template(v-if="element.skills.length" slot="popover")
-                        div.popover-container
-                          el-card.popover__card(shadow="never" :body-style="elCardPopoverStyleSmall")
-                            table.default-table
-                              tr(v-if="element.skills.length")
-                                th {{ $t('スキル') }}
-                                td
-                                  p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
+                    el-popover(:disabled="!element.skills.length" placement="right-end" trigger="hover")
+                      template(slot="reference")
+                        span.poppover__a {{ element.value }}
+                      table.default-table
+                        tr(v-if="element.skills.length")
+                          th {{ $t('スキル') }}
+                          td
+                            p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
               div
                 div(v-for="skill in character.getSkillWithComboSkills(characterModifier.level)")
-                    v-popover(placement="right-end" trigger="hover")
+                  el-popover(placement="right-end" trigger="hover")
+                    template(slot="reference")
                       p
                         el-link.poppover__a(icon="el-icon-more" :underline="false") {{ skill.name }}
-                      template(slot="popover")
-                        div.popover-container
-                          el-card.popover__card(shadow="never" :body-style="elCardPopoverStyle")
-                            p.popover-container__detail(v-if="skill.detail") {{ skill.detail }}
-                            p
-                              b {{ $t('数値') }}
-                              span  {{ skill.effectValue }}
-                              span(v-if="skill.effectValue2") , {{ skill.effectValue2 }}
-                            template(v-if="skill.combSkillList && skill.combSkillList.length")
-                              p
-                                b {{ $t('含まれるスキル') }}
-                              template(v-for="_skill of skill.combSkillList")
-                                p {{ _skill.name }}
-                                p(v-if="_skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="__skill of [dataManager.skillById[_skill.id]].filter((p) => p)") {{ __skill.name }} / {{ __skill.effectValue2 }}{{ $t('ターン') }}
-                              p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="_skill of [dataManager.skillById[skill.id]].filter((p) => p)") {{ _skill.name }} / {{ _skill.effectValue2 }}{{ $t('ターン') }}
+                    p.popover__detail(v-if="skill.detail") {{ skill.detail }}
+                    p(v-if="skill.effectValue || skill.effectValue2")
+                      b {{ $t('数値') }}
+                      span  {{ skill.effectValue }}
+                      span(v-if="skill.effectValue2") , {{ skill.effectValue2 }}
+                    template(v-if="skill.combSkillList && skill.combSkillList.length")
+                      br
+                      p
+                        b {{ $t('含まれるスキル') }}
+                      template(v-for="_skill of skill.combSkillList")
+                        p {{ _skill.name }}
+                        p(v-if="_skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="__skill of [dataManager.skillById[_skill.id]].filter((p) => p)") {{ __skill.name }} / {{ __skill.effectValue2 }}{{ $t('ターン') }}
+                      p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="_skill of [dataManager.skillById[skill.id]].filter((p) => p)") {{ _skill.name }} / {{ _skill.effectValue2 }}{{ $t('ターン') }}
 
-                            br(v-if="skill.stateOwn.length || skill.state.length")
-                            p(v-for="[state, abnormalState] of skill.stateOwn.map((p) => [p, dataManager.abnormalStateById[p.id]])")
-                              el-tag(size="small" effect="plain")
-                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }}
-                              el-tag(size="small")
-                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.name }}
-                              template(v-if="abnormalState.effectlist.length" v-for="id of [abnormalState.effectlist.length > 1 ? abnormalState.effectlist[abnormalState.effectlist.length - 1] : abnormalState.effectlist[0]]")
-                                el-tag(v-if="dataManager.abnormalStateEffectById[id]" size="small" effect="plain")
-                                  router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('数値') }} {{ dataManager.abnormalStateEffectById[id].value }}
-                              el-tag(size="small" effect="plain")
-                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.turn }} {{ $t('ターン') }}
-
-                            p(v-for="[state, abnormalState] of skill.state.map((p) => [p, dataManager.abnormalStateById[p.id]])")
-                              el-tag(size="small" effect="plain")
-                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('確率', [(state.rate * 100).toFixed()]) }}
-                              el-tag(size="small")
-                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.name }}
-                              template(v-if="abnormalState.effectlist.length" v-for="id of [abnormalState.effectlist.length > 1 ? abnormalState.effectlist[abnormalState.effectlist.length - 1] : abnormalState.effectlist[0]]")
-                                el-tag(v-if="dataManager.abnormalStateEffectById[id]" size="small" effect="plain")
-                                  router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ $t('数値') }} {{ dataManager.abnormalStateEffectById[id].value }}
-                              el-tag(size="small" effect="plain")
-                                router-link(:to="{ name: 'SkillsAbnormalEffect', query: { id: abnormalState.id } }" target="_blank") {{ abnormalState.turn }} {{ $t('ターン') }}
+                    br(v-if="skill.stateOwn.length || skill.state.length")
+                    AbnormlStateTags(:states="skill.stateOwn" :own="true")
+                    AbnormlStateTags(:states="skill.state")
 
           div(v-if="character.GROUP_DF && onlyItems.length")
             el-divider {{ $t('専用アイテム') }}
@@ -165,7 +137,7 @@ div.container
             div(v-for="ba of character.BA")
               div(v-for="[lv, blazeArt] of dataManager.blazeArtById[ba.DF].LV.entries()")
                 template(v-for="[skill, baLevel] of [[dataManager.skillById[blazeArt.SKILL_DF], lv + 1]]")
-                  SkillTextInfo(:skills="[skill].concat(skill.combSkillList.map((o) => dataManager.skillById[o.id]).filter((o) => o))")
+                  SkillTextInfo(:skills="[skill]")
                     template(slot="title") LV {{ ba.LV }} / BA LV {{ baLevel }} / EXP {{ dataManager.blazeArtById[ba.DF].levelExperience(baLevel) }}
 
         el-tab-pane(:label="$t('食事')" name="meal" v-if="character.FDM.length")
@@ -220,11 +192,13 @@ import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
 import SkillTextInfo from '@/components/SkillTextInfo.vue';
 import { EBattleEffectKind, eConditionType } from '@/logic/Enums';
 import JsonViewDialog from '@/components/JsonViewDialog.vue';
+import AbnormlStateTags from '@/components/skills/AbnormlStateTags.vue';
 
 @Component({
   components: {
     SkillTextInfo,
     JsonViewDialog,
+    AbnormlStateTags,
   },
 })
 export default class extends VueBase {

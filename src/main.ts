@@ -5,7 +5,6 @@ import 'reflect-metadata';
 import 'vue-json-pretty/lib/styles.css';
 
 import ElementUi from 'element-ui';
-import VTooltip from 'v-tooltip';
 import Vue from 'vue';
 import VueMeta from 'vue-meta';
 import VueScrollTo from 'vue-scrollto';
@@ -25,7 +24,6 @@ Vue.use(ElementUi, {
 
 Vue.use(VueMeta);
 Vue.use(VueScrollTo);
-Vue.use(VTooltip);
 
 new Vue({
   router,
