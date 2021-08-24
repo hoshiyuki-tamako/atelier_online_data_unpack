@@ -74,7 +74,7 @@ div.container
               br
               p ID: {{ props.row.id }}
               p(v-if="props.row.category") {{ $t('レア度') }}: {{ '⭐'.repeat(props.row.rarity) }}
-              p {{ $t('数値') }}1: {{ props.row.effectValue }}
+              p(v-if="props.row.effectValue") {{ $t('数値') }}1: {{ props.row.effectValue }}
               p(v-if="props.row.effectValue2") {{ $t('数値') }}2: {{ props.row.effectValue2 }}
               p(v-if="props.row.attribute") {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.EBattleAttribute[props.row.attackSkill.attribute]) }}
               p(v-if="props.row.attribute") {{ $t('属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[props.row.attackSkill.element]) }}
