@@ -314,7 +314,7 @@ div.top-container
                 p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="_skill of [dataManager.skillById[skill.id]].filter((p) => p)") {{ _skill.name }} / {{ _skill.effectValue2 }}{{ $t('ターン') }}
 
               br(v-if="skill.stateOwn.length || skill.state.length")
-              AbnormlStateTags(:states="skill.stateOwn")
+              AbnormlStateTags(:states="skill.stateOwn" :own="true")
               AbnormlStateTags(:states="skill.state")
 
   div.character-builder-container
