@@ -37,43 +37,60 @@ import Enumerable from 'linq';
 
 import { ApiManager } from './ApiManager';
 
-type AtelierServerInfo = {
-  id: string;
-  locales: string[];
-  timeZone: string;
+const localesLabel = {
+  'ja-JP': '日本語',
+  'zh-TW': '繁體中文',
+  'zh-CN': '简体',
+  'en': 'English',
+};
+
+class AtelierServerInfo {
+  public id = '';
+  public name = '';
+  public locales = [] as string[];
+  public timeZone = '';
+
+  public version = '';
+  public updateDate = '';
+
+  public get languages() {
+    return this.locales.map((locale) => ({
+      name: localesLabel[locale] || locale,
+      locale,
+    }));
+  }
 }
 
 export class DataManager {
-  public static localesLabel = {
-    'ja-JP': '日本語',
-    'zh-TW': '繁體中文',
-    'zh-CN': '简体',
-    'en': 'English',
-  };
-
-  public static serverIdLabels = {
-    'jp': '日本',
-    'tw': '台灣',
-    'en': 'Global',
-  };
-
   public static servers = [
-    {
+    plainToClass(AtelierServerInfo, {
       id: 'jp',
+      name: '日本',
       locales: ['ja-JP'],
       timeZone: 'Asia/Tokyo',
-    },
-    {
+
+      version: '3.15.2',
+      updateDate: '2021-05-26',
+    }),
+    plainToClass(AtelierServerInfo, {
       id: 'tw',
+      name: '台灣',
       locales: ['zh-TW', 'zh-CN'],
       timeZone: 'Asia/Taipei',
-    },
-    {
+
+      version: '3.5.0',
+      updateDate: '2021-07-29',
+    }),
+    plainToClass(AtelierServerInfo, {
       id: 'en',
+      name: 'Global',
       locales: ['en'],
       timeZone: 'America/Los_Angeles',
-    },
-  ] as AtelierServerInfo[];
+
+      version: '1.0.0',
+      updateDate: '2021-08-25',
+    }),
+  ];
 
   public static get serversById () {
     return Enumerable.from(this.servers).toObject((p) => p.id, (p) => p) as { [id: string]: AtelierServerInfo };

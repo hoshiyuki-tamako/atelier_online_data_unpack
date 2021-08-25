@@ -1,5 +1,5 @@
 import { Formula } from '@/logic/Formula';
-import { sum, clamp } from 'lodash';
+import { clamp, sum } from 'lodash';
 
 export class InvalidQualityError extends Error {
 }
@@ -44,12 +44,24 @@ export class Quality {
     return this.originalExperience + Math.trunc(this.addOnExperiences * 1.5);
   }
 
+  public get isOriginalMaxLevel() {
+    return this.originalExperience >= Quality.experiences[Quality.experiences.length - 1];
+  }
+
   public get isMaxLevel() {
     return this.experience >= Quality.experiences[Quality.experiences.length - 1];
   }
 
   public get isBigSuccessMaxLevel() {
     return this.bigSuccessExperience >= Quality.experiences[Quality.experiences.length - 1];
+  }
+
+  public get originalQuality() {
+    if (this.isOriginalMaxLevel) {
+      return Quality.experiences.length;
+    }
+
+    return Quality.experiences.findIndex((p) => p > this.originalExperience);
   }
 
   public get quality() {

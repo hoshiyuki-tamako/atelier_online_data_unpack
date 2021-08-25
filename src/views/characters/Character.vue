@@ -189,7 +189,7 @@ import Component from 'vue-class-component';
 import VueBase from '@/components/VueBase';
 import { MVList as CharacterMVList } from '@/master/chara';
 import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
-import SkillTextInfo from '@/components/SkillTextInfo.vue';
+import SkillTextInfo from '@/components/skills/SkillTextInfo.vue';
 import { EBattleEffectKind, eConditionType } from '@/logic/Enums';
 import JsonViewDialog from '@/components/JsonViewDialog.vue';
 import AbnormlStateTags from '@/components/skills/AbnormlStateTags.vue';

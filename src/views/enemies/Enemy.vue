@@ -63,7 +63,7 @@ import { ModelFbx } from 'vue-3d-model';
 import VueBase from '@/components/VueBase';
 import { MVList as EnemyMVList } from '@/master/enemy';
 import { EnemyModifier } from '@/logic/modifiers/EnemyModifier';
-import SkillTextInfo from '@/components/SkillTextInfo.vue';
+import SkillTextInfo from '@/components/skills/SkillTextInfo.vue';
 import JsonViewDialog from '@/components/JsonViewDialog.vue';
 
 @Component({

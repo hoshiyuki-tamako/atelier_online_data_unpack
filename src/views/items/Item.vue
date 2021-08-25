@@ -240,7 +240,7 @@ import VueBase from '@/components/VueBase';
 import { MVList as ItemMVList } from '@/master/item';
 import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 import { EWeaponKind, ECategory, EBattleEffectKind } from '@/logic/Enums';
-import SkillTextInfo from '@/components/SkillTextInfo.vue';
+import SkillTextInfo from '@/components/skills/SkillTextInfo.vue';
 import JsonViewDialog from '@/components/JsonViewDialog.vue';
 import AbnormlStateTags from '@/components/skills/AbnormlStateTags.vue';
 

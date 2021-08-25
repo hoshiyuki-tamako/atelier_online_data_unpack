@@ -16,11 +16,11 @@ el-container.containter-main(v-loading="pageLoading")
       div.filter
         span {{ $t('デフォルトサーバ') }}
         el-select(v-model="defaultServerId" placeholder="" @change="onChangeServerId")
-          el-option(v-for="server in dataManager.constructor.servers" :key="server.id" :label="dataManager.constructor.serverIdLabels[server.id]" :value="server.id")
+          el-option(v-for="server in dataManager.constructor.servers" :key="server.id" :label="server.name" :value="server.id")
       div.filter(v-if="dataManager.constructor.serversById[defaultServerId] && dataManager.constructor.serversById[defaultServerId].locales")
         span {{ $t('デフォルトロケール') }}
         el-select(v-model="defaultLocale" placeholder="")
-          el-option(v-for="locale in dataManager.constructor.serversById[defaultServerId].locales" :key="locale" :label="dataManager.constructor.localesLabel[locale]" :value="locale")
+          el-option(v-for="locale in dataManager.constructor.serversById[defaultServerId].languages" :key="locale.locale" :label="locale.name" :value="locale.locale")
     el-divider {{ $t('サイドバー') }}
     div.filters
       div.filter

@@ -2,9 +2,9 @@
 div.title__container
   h2 {{ $t('アトリエオンライン資料庫') }}
   div
-    p(v-for="server in servers")
+    p(v-for="server of dataManager.constructor.servers")
       span.version-link__container
-        span Game Version {{ server.gameVersion }} ({{ server.updateDate }})&nbsp;
+        span Game Version {{ server.version }} ({{ server.updateDate }})&nbsp;
         template(v-for="(language, i) in server.languages")
           span(v-if="$i18n.locale !== language.locale")
             el-link(type="success" :underline="false" :href="changeLocaleHref(server.serverId, language.locale)") ({{ language.name }})
@@ -24,8 +24,8 @@ div.title__container
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import { mapFields } from 'vuex-map-fields';
+import VueBase from '@/components/VueBase';
 
 abstract class VueWithMapFields extends VueBase {
   public settingDialogVisible!: boolean;
@@ -41,48 +41,6 @@ abstract class VueWithMapFields extends VueBase {
   },
 })
 export default class extends VueWithMapFields {
-  public get servers() {
-    return [
-      {
-        serverId: 'jp',
-        gameVersion: '3.15.2',
-        updateDate: '2021-05-26',
-        languages: [
-          {
-            name: '日本語',
-            locale: 'ja-JP',
-          },
-        ],
-      },
-      {
-        serverId: 'tw',
-        gameVersion: '3.5.0',
-        updateDate: '2021-07-29',
-        languages: [
-          {
-            name: '繁體中文',
-            locale: 'zh-TW',
-          },
-          {
-            name: '简体',
-            locale: 'zh-CN',
-          },
-        ],
-      },
-      {
-        serverId: 'en',
-        gameVersion: '1.0.0',
-        updateDate: '2021-08-20',
-        languages: [
-          {
-            name: 'English',
-            locale: 'en',
-          },
-        ],
-      },
-    ];
-  }
-
   public changeLocaleHref(serverId: string, locale: string) {
     const url = new URL(window.location.href);
     // url.searchParams.set('serverId', serverId);

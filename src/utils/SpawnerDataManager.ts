@@ -116,7 +116,7 @@ export class SpawnerDataManager {
   }
 
   public async loadFromOptimizedData(spawnLists: { [file: string]: string }) {
-    for (const [file, spawnList] of Object.entries(spawnLists)) {
+    await Promise.all(Object.entries(spawnLists).map(async ([file, spawnList]) => {
       try {
         const { data } = await new Promise((complete, error) => parse(spawnList, {
           skipEmptyLines: true,
@@ -127,6 +127,6 @@ export class SpawnerDataManager {
       } catch (e) {
         console.error(e);
       }
-    }
+    }));
   }
 }
