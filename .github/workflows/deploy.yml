@@ -21,6 +21,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: install packages
+        run: sudo apt-get install brotli -y
+
       - run: npm i
       - run: npm run build
       - run: bash compress-dist.bash
