@@ -21,21 +21,21 @@ div.container
                 div
                   router-link(v-for="item in dataManager.abnormalStateItems[props.row.id]" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }" target="_blank")
                     el-tooltip(:content="item.NAME" placement="top")
-                      img.icon-small(:src="item.icon" :alt="item.NAME")
+                      img.icon-small(:src="item.icon" :alt="item.NAME" loading="lazy")
                 br
               template(v-if="dataManager.abnormalStateCharacters[props.row.id] && dataManager.abnormalStateCharacters[props.row.id].length")
                 div
                   h3 {{ $t('人物') }}
                   router-link(v-for="character in dataManager.abnormalStateCharacters[props.row.id]" :key="character.DF" :to="{ name: 'CharactersCharacter', query: { df: character.DF } }" target="_blank")
                     el-tooltip(:content="character.NAME" placement="top")
-                      img.icon-small(:src="character.icon" :alt="character.NAME")
+                      img.icon-small(:src="character.icon" :alt="character.NAME" loading="lazy")
                 br
               template(v-if="dataManager.abnormalStateEnemies[props.row.id] && dataManager.abnormalStateEnemies[props.row.id].length")
                 div
                   h3 {{ $t('敵') }}
                   router-link(v-for="enemy in dataManager.abnormalStateEnemies[props.row.id]" :key="enemy.DF" :to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }" target="_blank")
                     el-tooltip(:content="enemy.strName" placement="top")
-                      img.icon-small(:src="enemy.icon" :alt="enemy.strName")
+                      img.icon-small(:src="enemy.icon" :alt="enemy.strName" loading="lazy")
                 br
             h3 {{ $t('スキル') }}
             div.skills-container

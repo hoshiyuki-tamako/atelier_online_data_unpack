@@ -30,7 +30,7 @@ div.container
     el-card.character(v-for="character of filteredCharacters" :key="character.DF")
       router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }")
         h3 {{ character.NAME }}
-        img(:src="character.icon" :alt="character.NAME")
+        img(:src="character.icon" :alt="character.NAME" loading="lazy")
 </template>
 
 <script lang="ts">
@@ -194,4 +194,5 @@ a
   cursor: pointer
   img
     width: 200px
+    height: 200px
 </style>

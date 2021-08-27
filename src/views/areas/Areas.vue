@@ -13,7 +13,7 @@ div.container
       template(v-for="areaInfo of [dataManager.areaInfoById[areaDetail.iAreaID]]")
         template(v-for="fieldName of [dataManager.fieldNameById[areaInfo.iAreaNameId]]")
           div.item-container-left.areas-item-container-left
-            img.icon-full(:src="areaDetail.icon" :alt="areaDetail.iAreaID")
+            img.icon-full(:src="areaDetail.icon" :alt="areaDetail.iAreaID" loading="lazy")
             h3(v-if="fieldName") {{ fieldName.strAreaName }} {{ fieldName.strAreaNameSub.trim() ? `/ ${fieldName.strAreaNameSub}` : '' }}
             p iAreaID: {{ areaDetail.iAreaID }}
             p iLevel: {{ areaDetail.iLevel }}
@@ -47,14 +47,14 @@ div.container
                 div(v-for="item of areaDetail.iItemIDList.map((p) => dataManager.itemById[p])")
                   router-link(:to="{ name: 'ItemsItem', query: { df: item.DF }}")
                     el-tooltip(:content="item.NAME" placement="top")
-                      img.icon-small(:src="item.icon" :alt="item.NAME")
+                      img.icon-small(:src="item.icon" :alt="item.NAME" loading="lazy")
             div(v-if="areaDetail.iEnemyIDList.length")
               el-divider {{ $t('敵') }}
               div.example-container
                 div(v-for="enemy of areaDetail.iEnemyIDList.map((p) => dataManager.enemyById[p])")
                   router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
                     el-tooltip(:content="enemy.strName" placement="top")
-                      img.icon-small(:src="enemy.icon" :alt="enemy.strName")
+                      img.icon-small(:src="enemy.icon" :alt="enemy.strName" loading="lazy")
             div(v-if="areaDetail.otherEnemies.length")
               el-divider {{ $t('他の敵') }}
               div(v-for="{ level, enemies } of areaDetail.otherEnemies")
@@ -63,7 +63,7 @@ div.container
                   div(v-for="enemy of enemies")
                     router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
                       el-tooltip(:content="enemy.strName" placement="top")
-                        img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
+                        img.icon-small(:src="enemy.icon" :alt="enemy.NAME" loading="lazy")
             div(v-if="dataManager.dungeonInfosByAreaId[areaDetail.iAreaID]")
               el-divider {{ $t('ダンジョン') }}
               div
@@ -82,7 +82,7 @@ div.container
                   div(v-for="enemy of enemies")
                     router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF }}")
                       el-tooltip(:content="enemy.strName" placement="top")
-                        img.icon-small(:src="enemy.icon" :alt="enemy.NAME")
+                        img.icon-small(:src="enemy.icon" :alt="enemy.NAME" loading="lazy")
 
             div(v-if="dataManager.gateInfoByAreaId[areaDetail.iAreaID]")
               el-divider {{ $t('ゲート') }}
