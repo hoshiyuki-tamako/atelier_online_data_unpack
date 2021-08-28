@@ -352,5 +352,7 @@
   "魔法攻撃ベース": "Magical Attack Base",
   "魔法防禦ベース": "Magical Defense Base",
   "キャラクタークエスト": "Character Quest",
-  "メーンキャラクター": "Main Character"
+  "メーンキャラクター": "Main Character",
+  "朝": "Morning",
+  "夜": "Night"
 }
