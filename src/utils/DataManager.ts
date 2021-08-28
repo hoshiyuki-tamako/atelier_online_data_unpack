@@ -240,6 +240,7 @@ export class DataManager {
       areaDetail: AreaDetail,
       townInfo: TownInfo,
       soundList: SoundList,
+      extraQuest: ExtraQuest,
     };
   }
 
@@ -836,8 +837,16 @@ export class DataManager {
   public get extraQuestsByQuest() {
     return this.cache('extraQuestsByQuest', () => Enumerable.from(this.extraQuest.List)
     .groupBy((p) => p.iQuestDf)
-    .toObject((p) => p.key(), (p) => p.toArray()) as { [df: string]: ExtraQuestList[] });
+    .toObject((p) => p.key(), (p) => p.first()) as { [df: string]: ExtraQuestList });
   }
+  public get extraQuestAdvs() {
+    return this.cache('extraQuestAdvs', () => Enumerable.from(this.extraQuest.List)
+      .selectMany((p) => [p.sGoodADV, p.sNormalADV, p.sTrueADV])
+      .where((p) => !!p)
+      .distinct()
+      .toArray());
+  }
+
   public get adventBattleById() {
     return this.cache('adventBattleById', () => Enumerable.from(this.adventBattle.RankingList).toObject((p) => p.ID) as { [id: string]: RankingList });
   }
@@ -935,12 +944,18 @@ export class DataManager {
     .toObject((p) => p.key() || '', (p) => p.toArray()) as { [level: string]: string[] });
   }
 
+  public get advs() {
+    return this.cache('advs', () => Object.values(this.advFilesTree).map((p) => p.split('.')[0]).filter((p) => p));
+  }
+
   public get unusedAdvs() {
     return this.cache('unusedAdvs', () => {
-      const advFiles = this.advFilesTree;
-      const advs = Object.values(advFiles).map((p: string) => p.split('.')[0]) as string[];
-      const existingAdvs = this.quest.m_vList.map((p) => p.NPC_FD.map((i) => i.ADV)).flat().filter((p) => p);
-      const notExistingAdvs = advs.filter((p) => !existingAdvs.includes(p));
+      const existingAdvs = this.quest.m_vList.map((p) => p.NPC_FD.map((i) => i.ADV))
+        .flat()
+        .filter((p) => p)
+        .concat(this.extraQuestAdvs);
+
+      const notExistingAdvs = this.advs.filter((p) => !existingAdvs.includes(p));
       return Enumerable.from(notExistingAdvs)
         .groupBy((p) => p.split('_')[0] || p)
         .toObject((p) => p.key(), (p) => p.orderBy((p) => p).toArray()) as { [s: string]: string[] };

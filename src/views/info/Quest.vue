@@ -175,6 +175,9 @@ div.container
       el-table-column(v-if="showColumnDialog" prop="NPC_FD.length" :label="$t('ダイアログ')" width="120%" sortable="custom")
         template(slot-scope="scope")
           el-button(v-if="scope.row.NPC_FD.some((p) => p.ADV)" @click="$refs.advDialog.openDialog(scope.row)" type="primary" size="small") {{ $t('ダイアログ') }}
+          template(v-if="dataManager.extraQuestsByQuest[scope.row.DF]")
+            p(v-for="adv of dataManager.extraQuestsByQuest[scope.row.DF].advs")
+              el-button(@click="$refs.advDialog.openDialogWithAdv([adv])" type="primary" size="small") {{ $t('ダイアログ') }}
     el-pagination(@current-change="scrollTableTop" :page-size="take" :current-page.sync="page" :total="filteredQuests.length" layout="prev, pager, next" background="")
 </template>
 
