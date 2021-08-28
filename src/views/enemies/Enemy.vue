@@ -33,16 +33,42 @@ div.container
       el-tabs(v-model="activeTab" type="card")
         el-tab-pane(:label="$t('メーン')" name="main")
           div
-            el-form(label-position="left" label-width="110px")
-              el-form-item(:label="$t('レベル')")
-                el-input-number(v-model="enemyModifier.level" size="mini" :min="1" :step="1" step-strictly)
-            table
-              tr(v-for="state of enemy.getStates(enemyModifier.level)")
-                th {{ $t(state.label) }}
-                td {{ state.value }}
-              tr(v-for="element of enemy.getElements(enemyModifier.level).filter((p) => p.value)")
-                th {{ $t(element.label) }}
-                td {{ element.value }}
+            div
+              el-form(label-position="left" label-width="110px")
+                el-form-item(:label="$t('レベル')")
+                  el-input-number(v-model="enemyModifier.level" size="mini" :min="1" :step="1" step-strictly)
+            div.enemy-info
+              div
+                table
+                  tr(v-for="state of enemy.getStates(enemyModifier.level)")
+                    th {{ $t(state.label) }}
+                    td {{ state.value }}
+                  tr(v-for="element of enemy.getElements(enemyModifier.level).filter((p) => p.value)")
+                    th {{ $t(element.label) }}
+                    td {{ element.value }}
+              div
+                div(v-for="skill in enemy.skillsWithComboSkills")
+                  el-popover(placement="right-end" trigger="hover")
+                    template(slot="reference")
+                      p
+                        el-link.poppover__a(icon="el-icon-more" :underline="false") {{ skill.name }}
+                    p.popover__detail(v-if="skill.detail") {{ skill.detail }}
+                    p(v-if="skill.effectValue || skill.effectValue2")
+                      b {{ $t('数値') }}
+                      span  {{ skill.effectValue }}
+                      span(v-if="skill.effectValue2") , {{ skill.effectValue2 }}
+                    template(v-if="skill.combSkillList && skill.combSkillList.length")
+                      br
+                      p
+                        b {{ $t('含まれるスキル') }}
+                      template(v-for="_skill of skill.combSkillList")
+                        p {{ _skill.name }}
+                        p(v-if="_skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="__skill of [dataManager.skillById[_skill.id]].filter((p) => p)") {{ __skill.name }} / {{ __skill.effectValue2 }}{{ $t('ターン') }}
+                      p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="_skill of [dataManager.skillById[skill.id]].filter((p) => p)") {{ _skill.name }} / {{ _skill.effectValue2 }}{{ $t('ターン') }}
+
+                    br(v-if="skill.stateOwn.length || skill.state.length")
+                    AbnormlStateTags(:states="skill.stateOwn" :own="true")
+                    AbnormlStateTags(:states="skill.state")
 
           div(v-if="enemy.appearAreas.length")
             el-divider {{ $t('出現エリア') }}
@@ -125,4 +151,10 @@ th
 th, td
   text-align: left
   padding: 4px
+
+.enemy-info
+  display: flex
+  flex-wrap: wrap
+  > div + div
+    margin-left: 10%
 </style>
