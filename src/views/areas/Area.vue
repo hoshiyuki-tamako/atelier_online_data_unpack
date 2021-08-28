@@ -1,12 +1,29 @@
 <template lang="pug">
-div.three(ref="three")
+div.area
+  div.three(ref="three")
+  div.information-container(v-if="root && !(md.mobile() || md.tablet())")
+    div.filters
+      div.filter
+        span FPS
+        el-select.fps__select(v-model="targetFps")
+          el-option(v-for="fps of fpsOptions" :key="fps" :label="fps" :value="fps")
+      div.filter(v-if="enemies.length")
+        el-button(@click="loadEnemyModels()") loadModel
+    el-collapse(v-model="activeNames" v-if="enemies.length")
+      el-collapse-item(v-if="false" :title="$t('敵')" name="pickups")
+      el-collapse-item.collapse-item(v-if="enemies.length" :title="$t('敵')" name="enemies")
+        p(v-for="{ enemy, gameObject } of enemies" @click="lookAtObject(gameObject)")
+          img.icon-small(:src="enemy.icon" :alt="enemy.strName")
+          span {{ enemy.strName }}
+      el-collapse-item(v-if="false" :title="$t('敵')" name="npcs")
+      el-collapse-item(v-if="false" :title="$t('敵')" name="quests")
+      el-collapse-item(v-if="false" :title="$t('敵')" name="gimmics")
 </template>
 
 <script lang="ts">
 /* eslint no-param-reassign: "off" */
 
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import {
   Scene,
   AmbientLight,
@@ -15,16 +32,33 @@ import {
   Object3D,
   Mesh,
   WebGLRenderer,
+  Raycaster,
+  Color,
+
+  MeshBasicMaterial,
+  BoxGeometry,
 } from 'three';
+import { Interaction } from 'three.interaction/src/index';
+
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+import MobileDetect from 'mobile-detect';
+
 import { List as AreaDetailList } from '@/master/areaDetail';
+import VueBase from '@/components/VueBase';
+import { MVList as EnemyMVList } from '@/master/enemy';
+
+
+type ThreeInteraactionObject3D = { on: (s: string, fn: () => void) => void };
 
 @Component({
   components: {
   },
 })
 export default class extends VueBase {
+  public md = new MobileDetect(window.navigator.userAgent);
+
   // render
   public scene = new Scene();
 
@@ -38,8 +72,17 @@ export default class extends VueBase {
 
   public renderLoop: number | null = null;
 
+  public raycaster = new Raycaster();
+
+  public interaction = new Interaction(this.renderer, this.scene, this.camera);
+
   // loader
   public fbxLoader = new FBXLoader();
+
+  private fbxLoaderErrorHandler = (err: ErrorEvent) => {
+    this.$message.error(err.error);
+    console.error(err);
+  };
 
   // area data
   public area: AreaDetailList | null = null;
@@ -53,6 +96,17 @@ export default class extends VueBase {
   public fieldDungeon = '';
 
   public raw = '';
+
+  // objects
+  public enemies = [] as { enemy: EnemyMVList, gameObject: Object3D & ThreeInteraactionObject3D }[];
+
+  // states
+  public orginalColors = new Map<MeshBasicMaterial, Color>();
+
+  // UI
+  public activeNames = [] as string[];
+  public targetFps = 1;
+  public fpsOptions = [1, 30];
 
   public get fbx() {
     if (this.root) {
@@ -130,7 +184,7 @@ export default class extends VueBase {
     this.fbxLoader.load(this.fbx, (object) => {
       const filters = [
         'Nav',
-        'Collision', 'EnvSound', 'Spawner', 'System',
+        'Collision', 'EnvSound', 'System',
         'light',
         'bgmap', 'radar',
       ];
@@ -166,6 +220,14 @@ export default class extends VueBase {
           return;
         }
 
+        if (child.name === 'Spawner') {
+          for (const c of child.children) {
+            if (c.name.toLocaleLowerCase().includes('enemies')) {
+              this.loadSpawnerEnemies(c.children);
+            }
+          }
+        }
+
         if (child.isMesh) {
           for (const material of Array.isArray(child.material) ? child.material : [child.material]) {
             material.alphaTest = 1;
@@ -176,12 +238,65 @@ export default class extends VueBase {
       });
 
       this.scene.add(object);
-    }, undefined, (err) => {
-      this.$message.error(err.error);
-      console.error(err);
-    });
+    }, undefined, this.fbxLoaderErrorHandler);
 
     return this;
+  }
+
+  private loadSpawnerEnemies(enemyGameObjects: Object3D[]) {
+    for (const enemyGameObject of enemyGameObjects) {
+      const enemy = this.dataManager.enemyById[+enemyGameObject.name.split('_')[0]];
+      if (enemy?.model) {
+        this.enemies.push({ enemy, gameObject: enemyGameObject as Object3D & ThreeInteraactionObject3D });
+        const geometry = new BoxGeometry(1, 1, 1);
+        const material = new MeshBasicMaterial({ color: new Color() });
+        const mesh = new Mesh(geometry, material);
+        mesh.visible = false;
+        enemyGameObject.add(mesh);
+      }
+    }
+  }
+
+  private loadEnemy(enemy: EnemyMVList, enemyGameObject: Object3D & ThreeInteraactionObject3D) {
+    this.fbxLoader.load(enemy.model, (enemyObject) => {
+      enemyObject.rotation.x = 0;
+      enemyObject.rotation.y = Math.PI;
+      enemyObject.rotation.z = Math.PI;
+
+      enemyGameObject.add(enemyObject);
+      enemyGameObject.on('click', () => {
+        window.open(this.$router.resolve({ name: 'EnemiesEnemy', query: { df: enemy.DF.toString() } }).href, '_blank');
+      });
+      enemyGameObject.on('mouseover', () => {
+        enemyGameObject.traverse((o: Group & Object3D & Mesh) => {
+          if (o.isMesh) {
+            for (const material of (Array.isArray(o.material) ? o.material : [o.material]) as MeshBasicMaterial[]) {
+              if (!this.orginalColors.has(material)) {
+                this.orginalColors.set(material, material.color.clone());
+              }
+              const orginalColor = this.orginalColors.get(material);
+              material.color = new Color(
+                orginalColor.r + 5,
+                orginalColor.g + 5,
+                orginalColor.b + 5,
+              );
+            }
+          }
+        });
+      });
+      enemyGameObject.on('mouseout', () => {
+        enemyGameObject.traverse((o: Group & Object3D & Mesh) => {
+          if (o.isMesh) {
+            for (const material of (Array.isArray(o.material) ? o.material : [o.material]) as MeshBasicMaterial[]) {
+              if (this.orginalColors.has(material)) {
+                material.color = this.orginalColors.get(material);
+              }
+            }
+          }
+        });
+        this.orginalColors.clear();
+      });
+    }, undefined, this.fbxLoaderErrorHandler);
   }
 
   private initializeRenderer() {
@@ -201,9 +316,7 @@ export default class extends VueBase {
 
   private initializeRenderLoop() {
     this.controls.addEventListener('change', this.render);
-
-    const targetFps = 1;
-    this.renderLoop = window.setInterval(this.render, 1000 / targetFps);
+    this.renderLoop = window.setInterval(this.render, 1000 / this.targetFps);
   }
 
   private render = () => {
@@ -213,11 +326,43 @@ export default class extends VueBase {
       });
     }
   }
+
+  //
+  public lookAtObject(obj: Object3D) {
+    this.camera.position.set(obj.position.x + 1, obj.position.y + 10, obj.position.z + 1);
+  }
+
+  public loadEnemyModels() {
+    for (const { enemy, gameObject } of this.enemies) {
+      this.loadEnemyModel(enemy, gameObject);
+    }
+  }
+
+  public loadEnemyModel(enemy: EnemyMVList, gameObject: Object3D & ThreeInteraactionObject3D) {
+    gameObject.remove(gameObject.children[0]);
+    this.loadEnemy(enemy, gameObject);
+  }
 }
 </script>
 
 <style lang="sass" scoped>
+.area
+  display: flex
+
 .three
   overflow: hidden
-  z-index: 99999
+  width: 100%
+
+.information-container
+  position: fixed
+  right: 0
+  top: 0
+  min-width: 300px
+
+.collapse-item
+  overflow-y: auto
+  max-height: 80vh
+
+.fps__select
+  width: 100px
 </style>

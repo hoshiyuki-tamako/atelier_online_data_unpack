@@ -1,4 +1,4 @@
-import { EWeaponKind } from './Enums';
+import { eAreaMulti, EWeaponKind } from './Enums';
 
 export const lookup = {
   // value lookups
@@ -212,5 +212,11 @@ export const lookup = {
     1: '物理',
     2: '物理',
     3: '魔法',
+  },
+  eAreaMulti: {
+    [eAreaMulti.Free]: '',
+    [eAreaMulti.Single]: '',
+    [eAreaMulti.Multi]: '',
+    [eAreaMulti.EnumMax]: '',
   },
 };

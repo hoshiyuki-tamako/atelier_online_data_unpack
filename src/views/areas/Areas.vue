@@ -18,6 +18,17 @@ div.container
             p iAreaID: {{ areaDetail.iAreaID }}
             p iLevel: {{ areaDetail.iLevel }}
             p(v-if="areaInfo.iHardMode") {{ $t('ハードモード') }}: {{ tickCross(true) }}
+            p(v-if="false") {{ $t('multi-mode') }}: {{ $t(dataManager.lookup.eAreaMulti[areaInfo.eMultiKind]) }}
+            p(v-if="areaInfo.eMusic_Day && dataManager.soundListBgmById[areaInfo.eMusic_Day] && dataManager.files.audios.musics[dataManager.soundListBgmById[areaInfo.eMusic_Day].fileName]") BGM {{ $t('朝') }}:
+              audio.area-bgm__audio(controls)
+                source(:src="dataManager.soundListBgmById[areaInfo.eMusic_Day].file" type="audio/mp4")
+            p(v-if="areaInfo.eMusic_Night && dataManager.soundListBgmById[areaInfo.eMusic_Night] && dataManager.files.audios.musics[dataManager.soundListBgmById[areaInfo.eMusic_Night].fileName]") BGM {{ $t('夜') }}:
+              audio.area-bgm__audio(controls)
+                source(:src="dataManager.soundListBgmById[areaInfo.eMusic_Night].file" type="audio/mp4")
+
+            p(v-if="areaInfo.eOtherMusicList.length") BGM {{ $t('他') }}:
+              audio.area-bgm__audio(controls v-for="[bgmId, bgm] of areaInfo.eOtherMusicList.map((p) => [p, dataManager.soundListBgmById[p]])")
+                source(:src="bgm.file" type="audio/mp4")
             template(v-if="dataManager.areaModelsById[areaDetail.iAreaID]")
               br
               div(v-for="{ root, iLevel } of dataManager.areaModelsById[areaDetail.iAreaID]")
@@ -172,4 +183,7 @@ a
 
 .area-field-title__img
   max-width: 100vw
+
+.area-bgm__audio
+  width: 100%
 </style>

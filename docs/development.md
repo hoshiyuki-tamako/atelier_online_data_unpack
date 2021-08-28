@@ -939,13 +939,13 @@ areaInfo
   "cMapListColor": {
     "rgba": 4294967295
   },
-  "eMusic_Day": 6,
-  "eMusic_Night": 7,
+  "eMusic_Day": 6, // soundList.BGM.iID
+  "eMusic_Night": 7, // soundList.BGM.iID
   "eOtherMusicList": [
-    8
+    8 // soundList.BGM.iID
   ],
-  "eMusic_NormalBattle": 28,
-  "eMultiKind": 0,
+  "eMusic_NormalBattle": 28, // soundList.BGM.iID
+  "eMultiKind": 0, // eAreaMulti
   "eSunlightKind": 0,
   "sSunlightAnimPath": "",
   "aFixedSunlight": []
