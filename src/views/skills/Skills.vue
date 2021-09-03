@@ -68,7 +68,7 @@ div.container
           div.item-container
             div.item-container-left
               p(v-if="props.row.iconPath")
-                img.icon-small(:src="props.row.icon" :alt="props.row.name")
+                img.icon-small(:src="props.row.icon" alt="")
               h3 {{ props.row.name }}
               p(v-if="props.row.detail") {{ props.row.detail }}
               br

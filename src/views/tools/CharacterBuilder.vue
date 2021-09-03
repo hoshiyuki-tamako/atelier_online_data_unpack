@@ -275,12 +275,12 @@ div.top-container
             img.icon-small(src="img/icon_item_s/Texture2D/icon_item_s_10790001.png" :alt="$t('削除する')")
           div(v-for="enemy of filteredEnemies" @click="onPickEnemy(enemy)")
             p.item-name {{ enemy.strName }}
-            img.icon-small(:src="enemy.icon" :alt="enemy.strName")
+            img.icon-small(:src="enemy.icon" alt="")
       div.enemy-edit-enemy(v-if="enemy.enemy")
         h3
           router-link(v-if="enemy.enemy" :to="{ name: 'EnemiesEnemy', query: { df: enemy.enemy.DF, level: enemy.level } }" target="_blank")
             span {{ enemy.enemy.strName }}
-        img.icon-full(:src="enemy.enemy.icon" :alt="enemy.enemy.strName")
+        img.icon-full(:src="enemy.enemy.icon" alt="")
         el-form
           el-form-item(:label="$t('レベル')")
             el-input-number(v-model="enemy.level" :min="1" size="small" step-strictly)

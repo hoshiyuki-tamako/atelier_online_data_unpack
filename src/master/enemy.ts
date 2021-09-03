@@ -192,10 +192,7 @@ export class MVList {
   }
 
   public get skillsWithComboSkills() {
-    return this.#skillWithComboSkills ??= this.sParam.SKILL.map((p) => dataManager.skillById[p.DF])
-      .filter((p) => p)
-      .map((skill) => skill.withComboSkills)
-      .flat();
+    return this.#skillWithComboSkills ??= this.skills.map((skill) => skill.withComboSkills).flat();
   }
 
   public get attackSkills() {

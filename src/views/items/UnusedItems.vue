@@ -11,13 +11,13 @@ div.container
   div.unused-items-container
     div.unused-item-container(v-for="icon of icons")
       p {{ icon.id }}
-      img(:src="icon.src" :alt="icon.id")
+      img(:src="icon.src" alt="")
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component';
-import VueBase from '@/components/VueBase';
 import { ModelFbx } from 'vue-3d-model';
+import VueBase from '@/components/VueBase';
 
 @Component({
   components: {

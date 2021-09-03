@@ -13,7 +13,7 @@ div.area
       el-collapse-item(v-if="false" :title="$t('敵')" name="pickups")
       el-collapse-item.collapse-item(v-if="enemies.length" :title="$t('敵')" name="enemies")
         p(v-for="{ enemy, gameObject } of enemies" @click="lookAtObject(gameObject)")
-          img.icon-small(:src="enemy.icon" :alt="enemy.strName")
+          img.icon-small(:src="enemy.icon" alt="")
           span {{ enemy.strName }}
       el-collapse-item(v-if="false" :title="$t('敵')" name="npcs")
       el-collapse-item(v-if="false" :title="$t('敵')" name="quests")

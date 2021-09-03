@@ -42,7 +42,7 @@ div.container
       template(slot-scope="scope")
         span {{ scope.row.strName }}
         router-link(:to="{ name: 'EnemiesEnemy', query: { df: scope.row.DF, level } }" target="_blank")
-          img.icon-small(:src="scope.row.icon" :alt="scope.row.strName")
+          img.icon-small(:src="scope.row.icon" alt="")
     el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable)
     el-table-column(v-if="showColumnEXP" prop="EXP" :label="$t('EXP')" width="100%" :align="tableOptions.column.align" sortable)
     el-table-column(v-if="showColumnHP" prop="HP" :label="$t('HP')" width="100%" :align="tableOptions.column.align" sortable)

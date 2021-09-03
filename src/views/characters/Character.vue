@@ -5,8 +5,8 @@ div.container
   div.item-container(v-if="character")
     div.item-container-left
       h3.item-name {{ character.NAME }}
-      img.icon-full(v-for="src of character.images" :src="src" :alt="character.NAME")
-      img.icon-full(v-for="src of character.otherImages" :src="src" :alt="character.NAME")
+      img.icon-full(v-for="src of character.images" :src="src" alt="")
+      img.icon-full(v-for="src of character.otherImages" :src="src" alt="")
       p {{ character.DESC }}
       br
       p DF: {{ character.DF }}

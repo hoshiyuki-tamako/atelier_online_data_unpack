@@ -44,7 +44,7 @@ div.container
       template(slot-scope="scope")
         span {{ scope.row.NAME }}
         router-link(:to="{ name: 'CharactersCharacter', query: { df: scope.row.DF, level, foodLevel } }" target="_blank")
-          img.icon-small(:src="scope.row.icon" :alt="scope.row.NAME")
+          img.icon-small(:src="scope.row.icon" alt="")
     el-table-column(v-if="showColumnTotalState" prop="totalState" :label="$t('総戦闘力')" :width="tableOptions.column.longTextWidth" :align="tableOptions.column.align" sortable)
 
     el-table-column(v-if="showColumnBlazeArt" prop="blazeArt" :width="tableOptions.column.attackSkillWidth" :align="tableOptions.column.align" sortable)

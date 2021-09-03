@@ -3,7 +3,7 @@ div.filter
   span {{ title || $t('称号') }}
   el-select(v-model="degree" @change="change" placeholder="" clearable filterable)
     el-option(v-for="item of degrees" :key="item.DF" :label="item.NAME" :value="item.DF")
-      img.option-image(v-if="item.hasIcon" :src="item.icon" :alt="item.NAME")
+      img.option-image(v-if="item.hasIcon" :src="item.icon" alt="")
       span.option-text {{ item.NAME }}
 </template>
 

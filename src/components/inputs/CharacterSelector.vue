@@ -3,8 +3,8 @@ div.filter
   span(v-if="showTitle") {{ $t(title) }}
   el-select(v-model="character" @change="change" :clearable="clearable" placeholder="" filterable)
     el-option(v-for="(item, i) of characters" :key="i" :label="item.NAME" :value="item.DF")
-      img.option-image(v-if="item.hasFaceIcon" :src="item.faceIcon" :alt="item.NAME")
-      img.option-image(v-else-if="item.hasIcon" :src="item.icon" :alt="item.NAME")
+      img.option-image(v-if="item.hasFaceIcon" :src="item.faceIcon" alt="")
+      img.option-image(v-else-if="item.hasIcon" :src="item.icon" alt="")
       span.option-text {{ item.NAME }}
 </template>
 

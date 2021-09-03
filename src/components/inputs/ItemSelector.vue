@@ -3,7 +3,7 @@ div.filter
   span {{ $t('アイテム') }}
   el-select(v-model="item" @change="change" placeholder="" clearable filterable)
     el-option(v-for="item of items" :key="item.DF" :label="item.NAME" :value="item.DF")
-      img.option-image(:src="item.icon" :alt="item.NAME")
+      img.option-image(:src="item.icon" alt="")
       span.option-text {{ item.NAME }}
 </template>
 

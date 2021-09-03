@@ -43,7 +43,7 @@ div.container
     router-link(v-for="item of filteredItems" :key="item.DF" :to="{ name: 'ItemsItem', query: { df: item.DF } }")
       el-card.item
         h3 {{ item.NAME }}
-        img.item__image(:src="item.icon" :alt="item.NAME" loading="lazy")
+        img.item__image(:src="item.icon" alt="" loading="lazy")
 </template>
 
 <script lang="ts">

@@ -51,7 +51,7 @@ div.container
       template(slot-scope="scope")
         span {{ scope.row.NAME }}
         router-link(:to="{ name: 'ItemsItem', query: { df: scope.row.DF, quality, level } }" target="_blank")
-          img.icon-small(:src="scope.row.icon" :alt="scope.row.NAME")
+          img.icon-small(:src="scope.row.icon" alt="")
         template(v-if="scope.row.GROUP_DF && dataManager.charactersByGroupDf[scope.row.GROUP_DF]" v-for="character of dataManager.charactersByGroupDf[scope.row.GROUP_DF]")
           router-link(:to="{ name: 'CharactersCharacter', query: { df: character.DF } }" target="_blank")
             img.icon-small(:src="character.icon" :alt="character.NAME")

@@ -34,7 +34,7 @@ div.container
       h3
         router-link(:to="{ name: 'EnemiesEnemy', query: { df: enemy.DF } }")
           p {{ enemy.strName }}
-          img(:src="enemy.icon" :alt="enemy.strName" loading="lazy")
+          img(:src="enemy.icon" alt="" loading="lazy")
 </template>
 
 <script lang="ts">

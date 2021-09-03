@@ -11,7 +11,7 @@ div
       div.item-picker-items
         div(v-for="item in filteredItems" @click="onPickItem(item)")
           p {{ item.NAME }}
-          img.icon-small(:src="item.icon" :alt="item.NAME")
+          img.icon-small(:src="item.icon" alt="")
     div(slot="footer")
       el-button(@click="itemPickerDialogVisible = false" type="primary") {{ $t('閉じる') }}
 

@@ -9,9 +9,9 @@ div.container
     div.item-container-left
       h3.item-name {{ item.NAME }}
       div.item-has-3d(v-if="item.model" @click="openFbxViwer")
-        img.icon-full(:src="item.icon" :alt="item.NAME")
+        img.icon-full(:src="item.icon" alt="")
       div(v-else)
-        img.icon-full(:src="item.icon" :alt="item.NAME")
+        img.icon-full(:src="item.icon" alt="")
       p {{ item.DESC }}
       div.item-local-link
         p(v-if="item.RSP.length")

@@ -5,11 +5,11 @@ div.container
       el-popover(v-if="dataManager.advCharacterById[otherCharacter.df]" placement="top-start" trigger="hover")
         div(slot="reference")
           h3 {{ otherCharacter.df }}
-          img(:src="`img/icon_chara/Texture2D/${otherCharacter.icon}`" :alt="otherCharacter.df" loading="lazy")
+          img(:src="`img/icon_chara/Texture2D/${otherCharacter.icon}`" alt="" loading="lazy")
         p(v-for="name of dataManager.advCharacterById[otherCharacter.df]") {{ name }}
       template(v-else)
         h3 {{ otherCharacter.df }}
-        img(:src="`img/icon_chara/Texture2D/${otherCharacter.icon}`" :alt="otherCharacter.df" loading="lazy")
+        img(:src="`img/icon_chara/Texture2D/${otherCharacter.icon}`" alt="" loading="lazy")
 </template>
 
 <script lang="ts">

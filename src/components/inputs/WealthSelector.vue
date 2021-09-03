@@ -6,7 +6,7 @@ div.filter
       template(v-if="item.CHARA" v-for="character of [dataManager.characterById[item.CHARA]].filter((p) => p)")
         img.option-image(v-if="character.hasFaceIcon" :src="character.faceIcon" :alt="character.NAME")
         img.option-image(v-else-if="character.hasIcon" :src="character.icon" :alt="character.NAME")
-      img.option-image(:src="item.icon" :alt="item.NAME")
+      img.option-image(:src="item.icon" alt="")
       span.option-text {{ item.NAME }}
 </template>
 
