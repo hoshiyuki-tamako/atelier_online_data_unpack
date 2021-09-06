@@ -238,7 +238,7 @@
   "ダメージ": "Damage",
   "物理": "Physical",
   "スラッシュ": "Slash(physical)",
-  "打撃": "Batter(physical)",
+  "爆発": "Explosion(physical)",
   "魔法": "Magic",
   "攻撃タイプ": "Attack Type",
   "インポート失敗": "Import Failure",

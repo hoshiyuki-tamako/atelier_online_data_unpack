@@ -4,7 +4,18 @@ import {
   EBattleElementKind as _EBattleElementKind,
   EBattleEffectTrigger as _EBattleEffectTrigger,
   EBattleEffectKind as _EBattleEffectKind,
+  ECategory,
   EWeaponKind,
+  ESubCategory as _ESubCategory,
+  EDegreeMissonType as _EDegreeMissonType,
+  EJobKind as _EJobKind,
+  eFieldItemRange as _eFieldItemRange,
+  eFieldItemUse as _eFieldItemUse,
+  eAttackTargetKind as _eAttackTargetKind,
+  eEnemySize as _eEnemySize,
+  EQuestCategory as _EQuestCategory,
+  EQuestType as _EQuestType,
+  EBattleAttribute as _EBattleAttribute,
 } from './Enums';
 
 export const elementMapSkillEffectTarget = {
@@ -34,37 +45,37 @@ export const twoHandledWeaponKind = [
 
 // name lookups
 export const itemCategory = {
-  11: '材料',
-  12: '回復',
-  13: '攻撃',
-  14: '能力上昇',
-  15: '探索',
-  16: '料理',
+  [ECategory.eMATERIAL]: '材料',
+  [ECategory.eRECOVERY]: '回復',
+  [ECategory.eBOMB]: '攻撃',
+  [ECategory.eSUPPORT]: '能力上昇',
+  [ECategory.eTOOL]: '探索',
+  [ECategory.eFOOD]: '料理',
 
-  17: '特殊',
+  [ECategory.eUNIQUE]: '特殊',
 
-  20: '武器',
-  21: '盾',
-  31: '頭装備',
-  32: '体装備',
-  40: 'アクセサリー',
-  50: '経験値',
-  51: '武器強化',
-  52: '防具強化',
-  53: 'アクセ強化',
-  54: '限界突破',
-  55: '万能強化',
-  56: 'ブレイズアーツ経験値',
+  [ECategory.eWEAPON]: '武器',
+  [ECategory.eSHIELD]: '盾',
+  [ECategory.eHELM]: '頭装備',
+  [ECategory.eARMOR]: '体装備',
+  [ECategory.eACCESSORY]: 'アクセサリー',
+  [ECategory.eGROW_CHARA]: '経験値',
+  [ECategory.eGROW_WEAPON]: '武器強化',
+  [ECategory.eGROW_ARMOR]: '防具強化',
+  [ECategory.eGROW_ACCESSORY]: 'アクセ強化',
+  [ECategory.eGROW_STONE]: '限界突破',
+  [ECategory.eGROW_OTHER]: '万能強化',
+  [ECategory.eGROW_BLAZE_ARTS]: 'ブレイズアーツ経験値',
 };
 
 export const weaponKind = {
-  1: '剣',
-  3: '槍',
-  4: '弓',
-  5: '杖',
-  7: '大剣',
-  9: 'メイス',
-  12: '盾',
+  [EWeaponKind.eSWORD]: '剣',
+  [EWeaponKind.eLANCE]: '槍',
+  [EWeaponKind.eBOW]: '弓',
+  [EWeaponKind.eROD]: '杖',
+  [EWeaponKind.eBLADE]: '大剣',
+  [EWeaponKind.eMACE]: 'メイス',
+  [EWeaponKind.eSHIELD]: '盾',
 };
 
 export const targetTeam = {
@@ -108,39 +119,39 @@ export const attackType = {
 
 // enum lookup
 export const ESubCategory = {
-  0: '全種類',
-  2001: '剣',
-  2002: '両手槌',
-  2003: '槍',
-  2004: '弓',
-  2005: '杖',
-  2006: '双剣',
-  2007: '大剣',
-  2008: '魔導書',
-  2009: 'メイス',
-  2010: 'ナックル',
-  2011: '銃',
-  2012: '盾',
+  [_ESubCategory.eALL]: '全種類',
+  [_ESubCategory.eSWORD]: '剣',
+  [_ESubCategory.eHAMMER]: '両手槌',
+  [_ESubCategory.eLANCE]: '槍',
+  [_ESubCategory.eBOW]: '弓',
+  [_ESubCategory.eROD]: '杖',
+  [_ESubCategory.eDUAL]: '双剣',
+  [_ESubCategory.eBLADE]: '大剣',
+  [_ESubCategory.eBOOK]: '魔導書',
+  [_ESubCategory.eMACE]: 'メイス',
+  [_ESubCategory.eKNUCKLE]: 'ナックル',
+  [_ESubCategory.eGUN]: '銃',
+  [_ESubCategory.eSHIELD]: '盾',
 };
 
 export const EDegreeMissonType = {
-  0: '課題',
-  1: '討伐',
-  2: '調合',
-  4: '探索',
-  5: '他',
-  6: 'ランキング',
+  [_EDegreeMissonType.eNONE]: '課題',
+  [_EDegreeMissonType.eSUBJUGATION]: '討伐',
+  [_EDegreeMissonType.eALTER]: '調合',
+  [_EDegreeMissonType.eEXPLORE]: '探索',
+  [_EDegreeMissonType.eOTHER]: '他',
+  [_EDegreeMissonType.eRANKING]: 'ランキング',
 };
 
 export const EJobKind = {
-  0: '無職',
-  1: '錬金術師',
-  2: '魔法使い',
-  3: 'ヘビー戰士',
-  4: '戰士',
-  5: '射手',
-  6: '回復',
-  7: '銃使い',
+  [_EJobKind.eNONE]: '無職',
+  [_EJobKind.eALCHEMIST]: '錬金術師',
+  [_EJobKind.eWITCH]: '魔法使い',
+  [_EJobKind.eHEAVY_FIGHTER]: 'ヘビー戰士',
+  [_EJobKind.eFIGHTER]: '戰士',
+  [_EJobKind.eARCHER]: '射手',
+  [_EJobKind.eMONK]: '回復',
+  [_EJobKind.eGUNNER]: '銃使い',
 };
 
 export const EBattleElementKind = {
@@ -154,82 +165,83 @@ export const EBattleElementKind = {
 };
 
 export const EBattleElementKindShort = {
-  0: '無',
-  1: '火',
-  2: '水',
-  3: '風',
-  4: '土',
-  5: '光',
-  6: '闇',
+  [_EBattleElementKind.eNONE]: '無',
+  [_EBattleElementKind.eFIRE]: '火',
+  [_EBattleElementKind.eWATER]: '水',
+  [_EBattleElementKind.eWIND]: '風',
+  [_EBattleElementKind.eEARTH]: '土',
+  [_EBattleElementKind.eLIGHT]: '光',
+  [_EBattleElementKind.eDARK]: '闇',
 };
 
 export const eFieldItemRange = {
-  1: '一人',
-  2: '全人',
-  3: '自分',
+  [_eFieldItemRange.None]: '',
+  [_eFieldItemRange.One]: '一人',
+  [_eFieldItemRange.All]: '全人',
+  [_eFieldItemRange.EnumMax]: '自分',
 };
 
 export const eFieldItemUse = {
-  1: 'HP回復',
-  2: '回復',
+  [_eFieldItemUse.HPHeal]: 'HP回復',
+  [_eFieldItemUse.Recovery]: '回復',
 };
 
 export const EAttackTargetKind = {
-  0: '一人',
-  1: '全人',
+  [_eAttackTargetKind.One]: '一人',
+  [_eAttackTargetKind.All]: '全人',
 };
 
 export const eEnemySize = {
-  0: '小さい',
-  1: '中',
-  2: '大きい',
+  [_eEnemySize.Small]: '小さい',
+  [_eEnemySize.Medium]: '中',
+  [_eEnemySize.Large]: '大きい',
 };
 
 export const EQuestCategory = {
-  0: '-',
-  1: 'メーン',
-  2: 'サイド',
-  3: '依頼',
-  4: '公認試験',
-  5: 'キャラ',
-  6: 'イベント Special',
-  7: 'イベント Normal',
-  8: 'イベント Extra',
+  [_EQuestCategory.None]: '-',
+  [_EQuestCategory.Main]: 'メーン',
+  [_EQuestCategory.Side]: 'サイド',
+  [_EQuestCategory.Sub_Normal]: '依頼',
+  [_EQuestCategory.Sub_Extra]: '公認試験',
+  [_EQuestCategory.Chara]: 'キャラ',
+  [_EQuestCategory.Event_Special]: 'イベント Special',
+  [_EQuestCategory.Event_Normal]: 'イベント Normal',
+  [_EQuestCategory.Event_Extra]: 'イベント Extra',
 };
 
 export const EQuestType = {
-  5001: '討伐',
-  5002: '戦闘',
-  5003: 'クエスト',
-  5004: '調合',
-  5005: '連携',
-  5006: 'スキル',
-  5007: '納品',
-  5008: '調合',
-  5009: 'アイテム',
-  5010: '採集',
-  5011: '区域',
-  5012: '場所',
-  5013: '町',
-  5014: 'ダンジョン',
-  5015: 'タッチ',
-  5016: '対話アイテム',
-  5017: '対話',
-  5018: '対話納品',
+  [_EQuestType.Subjugation]: '討伐',
+  [_EQuestType.Battle]: '戦闘',
+  [_EQuestType.Quest]: 'クエスト',
+  [_EQuestType.Alter]: '調合',
+  [_EQuestType.SkillChain]: '連携',
+  [_EQuestType.ActiveSkill]: 'スキル',
+  [_EQuestType.Delivery]: '納品',
+  [_EQuestType.Alchemy]: '調合',
+  [_EQuestType.Item]: 'アイテム',
+  [_EQuestType.Pickup]: '採集',
+  [_EQuestType.Area]: '区域',
+  [_EQuestType.Place]: '場所',
+  [_EQuestType.Town]: '町',
+  [_EQuestType.Dungeon]: 'ダンジョン',
+  [_EQuestType.Touch]: 'タッチ',
+  [_EQuestType.TalkItem]: '対話アイテム',
+  [_EQuestType.Talk]: '対話',
+  [_EQuestType.TalkDelivery]: '対話納品',
 };
 
 export const EBattleAttribute = {
-  0: '無種類',
-  1: 'スラッシュ',
-  2: '打撃',
-  3: '魔法',
+  [_EBattleAttribute.eNONE]: '無種類',
+  [_EBattleAttribute.eSLASH_DAMAGED]: 'スラッシュ',
+  [_EBattleAttribute.eBLOW_DAMAGED]: '爆発',
+  [_EBattleAttribute.eMAGIC_DAMAGED]: '魔法',
 };
 
 export const EBattleAttributeShort = {
-  0: '物理',
-  1: '物理',
-  2: '物理',
-  3: '魔法',
+  [_EBattleAttribute.eNONE]: '物理',
+  [_EBattleAttribute.eSLASH_DAMAGED]: '物理',
+  [_EBattleAttribute.eBLOW_DAMAGED]: '物理',
+  [_EBattleAttribute.eMAGIC_DAMAGED]: '魔法',
 };
 
 export const eAreaMulti = {
