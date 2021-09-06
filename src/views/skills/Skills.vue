@@ -262,10 +262,12 @@ export default class extends VueWithMapFields {
   }
 
   public get targetScopeFilter() {
-    return Object.entries(this.dataManager.lookup.eFieldItemRange).map(([value, label]) => ({
-      label: this.$t(label),
-      value: +value,
-    }));
+    return Object.entries(this.dataManager.lookup.eFieldItemRange)
+      .filter(([, label]) => label)
+      .map(([value, label]) => ({
+        label: this.$t(label),
+        value: +value,
+      }));
   }
 
   public get triggerFilter() {

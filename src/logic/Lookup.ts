@@ -263,7 +263,7 @@ export const EBattleEffectTarget = {
   [_EBattleEffectTarget.eSDEF]: state.SDEF,
   [_EBattleEffectTarget.eMDEF]: state.MDEF,
   [_EBattleEffectTarget.eSPD]: state.SPD,
-  [_EBattleEffectTarget.eHIT]: '',
+  [_EBattleEffectTarget.eHIT]: '命中率',
   [_EBattleEffectTarget.eAVOID]: state.DDG,
   [_EBattleEffectTarget.eCRITICAL]: state.QTH,
   [_EBattleEffectTarget.eSKILL]: 'スキル',
