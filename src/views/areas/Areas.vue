@@ -18,7 +18,7 @@ div.container
             p iAreaID: {{ areaDetail.iAreaID }}
             p iLevel: {{ areaDetail.iLevel }}
             p(v-if="areaInfo.iHardMode") {{ $t('ハードモード') }}: {{ tickCross(true) }}
-            p(v-if="false") {{ $t('multi-mode') }}: {{ $t(dataManager.lookup.eAreaMulti[areaInfo.eMultiKind]) }}
+            p {{ $t('接続') }}: {{ $t(dataManager.lookup.eAreaMulti[areaInfo.eMultiKind]) }}
             p(v-if="areaInfo.eMusic_Day && dataManager.soundListBgmById[areaInfo.eMusic_Day] && dataManager.files.audios.musics[dataManager.soundListBgmById[areaInfo.eMusic_Day].fileName]") BGM {{ $t('朝') }}:
               audio.area-bgm__audio(controls)
                 source(:src="dataManager.soundListBgmById[areaInfo.eMusic_Day].file" type="audio/mp4")

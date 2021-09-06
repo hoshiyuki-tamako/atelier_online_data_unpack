@@ -245,14 +245,40 @@ export const EBattleAttributeShort = {
 };
 
 export const eAreaMulti = {
-  [_eAreaMulti.Free]: '',
-  [_eAreaMulti.Single]: '',
-  [_eAreaMulti.Multi]: '',
+  [_eAreaMulti.Free]: '無制限',
+  [_eAreaMulti.Single]: 'シングルプレーヤー',
+  [_eAreaMulti.Multi]: 'マルチプレイヤー',
   [_eAreaMulti.EnumMax]: '',
+};
+
+export const EBattleEffectTrigger = {
+  [_EBattleEffectTrigger.eRECOVER]: '回復',
 };
 
 export const EBattleEffectKind = {
   [_EBattleEffectKind.eDAMAGE_RATE]: '攻撃',
+  [_EBattleEffectKind.eELEMENT_CHANGE]: '属性化',
+  [_EBattleEffectKind.eCOUNTER]: '反撃確率',
+  [_EBattleEffectKind.eHP_ABSORB]: 'HP回復',
+  [_EBattleEffectKind.ePHYSICS_ATTACK_TURN_3]: '3ターン',
+  [_EBattleEffectKind.ePHYSICS_ATTACK_TURN_4]: '4ターン',
+  [_EBattleEffectKind.ePHYSICS_ATTACK_TURN_5]: '5ターン',
+  [_EBattleEffectKind.eAUTO_BOMB]: '確率', // 攻撃系アイテム確率
+  [_EBattleEffectKind.eHP_REGENE]: '回復量',
+  [_EBattleEffectKind.ePURSUIT]: '追撃確率',
+  [_EBattleEffectKind.eBATTLE_EXP_UP]: '経験値アップ',
+  [_EBattleEffectKind.eCOVER]: 'かばう確率',
+  [_EBattleEffectKind.eTREASURE_ADD]: '確率', // ドロップ獲得数アップ確率
+  [_EBattleEffectKind.eREADY_WIT]: 'アイテムの再使用時間が短縮',
+  // [_EBattleEffectKind.eITEM_AFTER_ATACK]: 'ターン数を消費しない',
+  // [_EBattleEffectKind.eITEM_DOUBLE_10]: '一定確率で同じアイテムを使って強力な追撃をする。ドローしたアイテムは消費されない',
+  // [_EBattleEffectKind.eACTIONTURN]: 'クリティカル攻撃が発生した後、一定確率で次の行動が速くなる。',
+  // [_EBattleEffectKind.eITEM_COST_DOWN]: 'マニュアルアイテムを使用する際、一定確率でアイテムを消費しない。',
+  // [_EBattleEffectKind.eCOVER_DYING]: '瀕死の味方が攻撃される際に一定確率で代わりに攻撃を受け、さらにそのダメージを軽減する。',
+  [_EBattleEffectKind.eBUFF_DELETE]: '確率', // 効果を打ち消すの確率
+  [_EBattleEffectKind.eAUTO_SUPPORT]: '確率',
+  // [_EBattleEffectKind.eSTATE_GRANT_UP]: '攻撃対象が状態異常にかかりやすくなる。',
+  [_EBattleEffectKind.eSTEAL_ETHER]: '確率',
 };
 
 export const EBattleEffectTarget = {

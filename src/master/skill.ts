@@ -1,4 +1,5 @@
 import { EBattleEffectKind, EBattleEffectTarget, EBattleEffectTrigger } from '@/logic/Enums';
+import { dataManager } from '@/utils/DataManager';
 import { Type } from 'class-transformer';
 
 export class Skill {
@@ -82,13 +83,27 @@ export class List {
     }
 
     public get isEffectValueRate() {
-      return [EBattleEffectKind.eDAMAGE_RATE].includes(this.effect);
+      return [EBattleEffectKind.eDAMAGE_RATE, EBattleEffectKind.eCOUNTER, EBattleEffectKind.eHP_ABSORB, EBattleEffectKind.ePHYSICS_ATTACK_TURN_3, EBattleEffectKind.eAUTO_BOMB, EBattleEffectKind.eHP_REGENE, EBattleEffectKind.ePURSUIT, EBattleEffectKind.eBATTLE_EXP_UP, EBattleEffectKind.eCOVER, EBattleEffectKind.eTREASURE_ADD, EBattleEffectKind.eREADY_WIT, EBattleEffectKind.eITEM_DOUBLE_10, EBattleEffectKind.eACTIONTURN, EBattleEffectKind.eITEM_COST_DOWN, EBattleEffectKind.ePHYSICS_ATTACK_TURN_4, EBattleEffectKind.eCOVER_DYING, EBattleEffectKind.eBUFF_DELETE, EBattleEffectKind.eAUTO_RECOVER, EBattleEffectKind.eAUTO_SUPPORT, EBattleEffectKind.eSTATE_GRANT_UP, EBattleEffectKind.eSTEAL_ETHER, EBattleEffectKind.ePHYSICS_ATTACK_TURN_5].includes(this.effect);
+    }
+
+    public get isEffectValueElementChange() {
+      return [EBattleEffectKind.eELEMENT_CHANGE].includes(this.effect);
+    }
+
+    public get isSpecialEffect() {
+      return this.isEffectValueRate || this.isEffectValueElementChange;
     }
 
     public get effectValueText() {
-      return this.isEffectValueRate
-        ? `${+(this.effectValue * 100).toFixed(15)}%`
-        : this.effectValue.toString();
+      if (this.isEffectValueRate) {
+        return `${+(this.effectValue * 100).toFixed(14)}%`;
+      }
+
+      if (this.isEffectValueElementChange) {
+        return dataManager.lookup.EBattleElementKindShort[this.effectValue];
+      }
+
+      return this.effectValue.toString();
     }
 }
 

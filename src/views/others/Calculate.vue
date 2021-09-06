@@ -4,6 +4,7 @@ div.container
     h3 {{ $t('ステータスの公式') }}
     div
       p G = {{ $t('ゲイン') }}
+      p M = {{ $t('マックス') }}
       p R = {{ $t('レベル') }}
       p B = {{ $t('ベース') }}
       p trunc(B + pow(level/R, G) * (M - B))
@@ -35,7 +36,7 @@ div.container
     h3
       span {{ $t('材料 / 装備品質強化') }}
       span &nbsp;
-        el-link(@click="onClickTestItemQualityEnhance") test
+        el-link(@click="onClickTestItemQualityEnhance") {{ $t('試し') }}
     div
       p G = 6.5
       p M = 2500000
@@ -49,7 +50,7 @@ div.container
     h3
       span {{ $t('装備経験値強化') }}
       span &nbsp;
-        el-link(@click="onClickTestItemExperience") test
+        el-link(@click="onClickTestItemExperience") {{ $t('試し') }}
     div
       p G = 3
       p M = 20000

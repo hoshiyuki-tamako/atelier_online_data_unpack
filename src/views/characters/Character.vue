@@ -85,7 +85,7 @@ div.container
                             p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
               div
                 div(v-for="skill in character.getSkillWithComboSkills(characterModifier.level)")
-                  SkillPopup(:skill="skill")
+                  SkillPopover(:skill="skill")
 
           div(v-if="character.GROUP_DF && onlyItems.length")
             el-divider {{ $t('専用アイテム') }}
@@ -172,13 +172,13 @@ import { CharacterModifier } from '@/logic/modifiers/CharacterModifier';
 import SkillTextInfo from '@/components/skills/SkillTextInfo.vue';
 import { EBattleEffectKind, eConditionType } from '@/logic/Enums';
 import JsonViewDialog from '@/components/JsonViewDialog.vue';
-import SkillPopup from '@/components/skills/SkillPopup.vue';
+import SkillPopover from '@/components/skills/SkillPopover.vue';
 
 @Component({
   components: {
     SkillTextInfo,
     JsonViewDialog,
-    SkillPopup,
+    SkillPopover,
   },
 })
 export default class extends VueBase {

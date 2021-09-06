@@ -238,7 +238,7 @@ div.top-container
           div
             el-divider
             div(v-for="skill in player.character.getSkillWithComboSkills(player.characterModifier.level)")
-              SkillPopup(:skill="skill")
+              SkillPopover(:skill="skill")
 
   el-dialog(title="" :visible.sync="enemyEditDialogVisible" width="80%" :fullscreen="!!(md.mobile() || md.tablet())")
     div.enemy-edit
@@ -275,7 +275,7 @@ div.top-container
         div(v-if="enemy.enemy.sParam.SKILL.length")
           el-divider
           div(v-for="(skill, i) of enemy.enemy.skillsWithComboSkills")
-            SkillPopup(:skill="skill")
+            SkillPopover(:skill="skill")
 
   div.character-builder-container
     div.top-equipment-container
@@ -846,13 +846,13 @@ import { EAbnormalStateTarget, EBattleEffectKind, ECategory } from '@/logic/Enum
 import { PlayerExportVersionConvertor } from '@/logic/convertor/PlayerExportVersionConvertor';
 import { Equipment } from '@/logic/items/Equipment';
 import SkillAttackTest from '@/components/characterBuilder/SkillAttackTest.vue';
-import SkillPopup from '@/components/skills/SkillPopup.vue';
+import SkillPopover from '@/components/skills/SkillPopover.vue';
 
 @Component({
   components: {
     'v-select': vSelect,
     SkillAttackTest,
-    SkillPopup,
+    SkillPopover,
   },
   async beforeRouteLeave(to, from, next) {
     if (this.hasChange) {

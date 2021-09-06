@@ -48,7 +48,7 @@ div.container
                     td {{ element.value }}
               div
                 div(v-for="skill in enemy.skillsWithComboSkills")
-                  SkillPopup(:skill="skill")
+                  SkillPopover(:skill="skill")
 
           div(v-if="enemy.appearAreas.length")
             el-divider {{ $t('出現エリア') }}
@@ -71,14 +71,14 @@ import { MVList as EnemyMVList } from '@/master/enemy';
 import { EnemyModifier } from '@/logic/modifiers/EnemyModifier';
 import SkillTextInfo from '@/components/skills/SkillTextInfo.vue';
 import JsonViewDialog from '@/components/JsonViewDialog.vue';
-import SkillPopup from '@/components/skills/SkillPopup.vue';
+import SkillPopover from '@/components/skills/SkillPopover.vue';
 
 @Component({
   components: {
     'model-fbx': ModelFbx,
     SkillTextInfo,
     JsonViewDialog,
-    SkillPopup,
+    SkillPopover,
   },
 })
 export default class extends VueBase {

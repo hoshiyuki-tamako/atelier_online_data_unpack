@@ -13,9 +13,13 @@ div(v-if="skill")
             i.el-icon-right
       div
         p(v-if="skill.effectValue || skill.effectValue2")
-          b {{ $t(dataManager.lookup.EBattleEffectTarget[skill.effectTarget] || dataManager.lookup.EBattleEffectKind[skill.effect] || '数値') }}
-          template(v-if="skill.isEffectValueRate")
-            span {{ skill.effectValueText }}
+          b
+            span(v-if="skill.trigger") {{ $t(dataManager.lookup.EBattleEffectTrigger[skill.trigger]) }}{{ dataManager.locale === 'en' ? ' ' : '' }}
+            span {{ $t(dataManager.lookup.EBattleEffectTarget[skill.effectTarget] || dataManager.lookup.EBattleEffectKind[skill.effect] || '数値') }}
+          template(v-if="skill.isEffectValueElementChange")
+            span  {{ $t(skill.effectValueText) }}
+          template(v-else-if="skill.isEffectValueRate")
+            span  {{ skill.effectValueText }}
           template(v-else)
             span  {{ skill.effectValue }}
             span(v-if="skill.effectValue2") , {{ skill.effectValue2 }}

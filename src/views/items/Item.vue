@@ -25,7 +25,7 @@ div.container
         p {{ $t('性別') }}: {{ item.genderTextIcon }}
       template(v-if="item.WPN_KIND")
         p {{ $t('武器種類') }}: {{ $t(dataManager.lookup.weaponKind[item.WPN_KIND]) }}
-        p {{ $t('攻撃属性') }}: {{ $t(dataManager.lookup.EBattleElementKind[item.elementChangeSkill ? item.elementChangeSkill.effectValue : 0]) }}
+        p {{ $t('攻撃属性') }}: {{ $t(dataManager.lookup.EBattleElementKindShort[item.elementChangeSkill ? item.elementChangeSkill.effectValue : 0]) }}
         p(v-if="item.WPN_KIND !== EWeaponKind.eSHIELD") {{ $t('攻撃タイプ') }}: {{ $t(dataManager.lookup.attackType[+ItemMVList.magicDamageWeaponKinds.includes(item.WPN_KIND)]) }}
         template(v-if="item.JOB.length")
           p {{ $t('職業') }}: {{ item.JOB.map(p => $t(dataManager.lookup.EJobKind[p])).join(',') }}
@@ -122,7 +122,7 @@ div.container
                                   p(v-for="skill of element.skills") {{ skill.name }} {{ skill.effectValue > 0 ? '+' : ''}}{{ skill.effectValue }}
                 div(v-if="!showSupportState")
                   div(v-for="skill of item.getSkillWithComboSkills(itemModifier.quality)")
-                    SkillPopup(:skill="skill")
+                    SkillPopover(:skill="skill")
 
           div(v-if="item.GROUP_DF && dataManager.charactersByGroupDf[item.GROUP_DF]")
             el-divider {{ $t('キャラクター專用') }}
@@ -221,14 +221,14 @@ import { ItemModifier } from '@/logic/modifiers/ItemModifier';
 import { EWeaponKind, ECategory, EBattleEffectKind } from '@/logic/Enums';
 import SkillTextInfo from '@/components/skills/SkillTextInfo.vue';
 import JsonViewDialog from '@/components/JsonViewDialog.vue';
-import SkillPopup from '@/components/skills/SkillPopup.vue';
+import SkillPopover from '@/components/skills/SkillPopover.vue';
 
 @Component({
   components: {
     'model-fbx': ModelFbx,
     SkillTextInfo,
     JsonViewDialog,
-    SkillPopup,
+    SkillPopover,
   },
 })
 export default class extends VueBase {
