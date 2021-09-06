@@ -74,7 +74,7 @@ export class Enemy {
     };
   }
 
-  public receiveDamage(baseDamage: number, multipliers: multiplier[] = [], playerLevel = 0, element = EElement.eNONE, attribute = EBattleAttribute.eNONE, skills: SkillList[] = [], abnormalStateEffects: AbnormalStateEffectMVList[] = [], zone: ZoneList = null) {
+  public receiveDamage(baseDamage: number, multipliers: multiplier[] = [], isSkill = false, playerLevel = 0, element = EElement.eNONE, attribute = EBattleAttribute.eNONE, skills: SkillList[] = [], abnormalStateEffects: AbnormalStateEffectMVList[] = [], zone: ZoneList = null) {
     const result = new EnemyReceiveDamage();
 
     const oneDamageSkills = this.enemy.skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eDAMAGED && skill.effect === EBattleEffectKind.eONE_DAMAGE);
@@ -96,7 +96,6 @@ eATTACK_ELEMENT,
 eATTACK_GOBLIN,
 eATTACK_GHOST,
 eATTACK_CRITICAL,
-eATTACK_SKILL,
 eATTACK_NONSKILL,
 eDAMAGED_HPHALF,
 eDAMAGED_HPDYING,
@@ -120,6 +119,10 @@ eRECOVER,
     onePlusMultiplierSkills.push(...skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eANYTIME && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
 
     onePlusMultiplierSkills.push(...skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eATTACK_NOT_MACE && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
+
+    if (isSkill) {
+      onePlusMultiplierSkills.push(...skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eATTACK_SKILL && skill.effect === EBattleEffectKind.eDAMAGE_RATE));
+    }
 
     if (this.enemy.eKind === 31) {
       onePlusMultiplierSkills.push(...skills.filter((skill) => skill.trigger === EBattleEffectTrigger.eATTACK_PUNI && skill.effect === EBattleEffectKind.eDAMAGE_RATE));

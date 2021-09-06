@@ -145,7 +145,7 @@ export class Player {
     return this.equipments
       .map(([slot, equipment]) => equipment.item.getSkills(this.equipmentModifiers[slot].quality))
       .flat()
-      .concat(this.character?.getSkills(this.characterModifier.level) || []);
+      .concat(this.character?.getSkillWithComboSkills(this.characterModifier.level) || []);
   }
 
   public get skillMultipliers() {
@@ -214,6 +214,7 @@ export class Player {
 
     const total = Math.round(multipliers.reduce((sum, m) => sum * m.value, 1));
     return {
+      skill,
       base,
       multipliers,
       total,

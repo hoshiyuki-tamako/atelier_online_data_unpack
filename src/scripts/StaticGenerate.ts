@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 
-import { lookup } from '../logic/Lookup';
+import * as lookup from '../logic/Lookup';
 import { ISaveable } from './interfaces/ISaveable';
 import * as enums from '../logic/Enums';
 

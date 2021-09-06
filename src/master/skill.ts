@@ -1,3 +1,4 @@
+import { EBattleEffectKind, EBattleEffectTarget, EBattleEffectTrigger } from '@/logic/Enums';
 import { Type } from 'class-transformer';
 
 export class Skill {
@@ -39,11 +40,11 @@ export class List {
     detail: string;
     attribute: number;
     type: number;
-    trigger: number;
-    effect: number;
+    trigger: EBattleEffectTrigger;
+    effect: EBattleEffectKind;
     effectValue: number;
     effectValue2: number;
-    effectTarget: number;
+    effectTarget: EBattleEffectTarget;
     state: State[];
     stateOwn: State[];
     targetTeam: number;
@@ -78,6 +79,16 @@ export class List {
 
     public get withComboSkills() {
       return [this as List].concat(this.combSkillList);
+    }
+
+    public get isEffectValueRate() {
+      return [EBattleEffectKind.eDAMAGE_RATE].includes(this.effect);
+    }
+
+    public get effectValueText() {
+      return this.isEffectValueRate
+        ? `${+(this.effectValue * 100).toFixed(15)}%`
+        : this.effectValue.toString();
     }
 }
 

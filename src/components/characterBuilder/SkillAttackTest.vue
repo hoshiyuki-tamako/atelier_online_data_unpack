@@ -15,7 +15,7 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.effectValue }}
             tr(v-if="base")
               th {{ $t('スキル強化') }}
-              td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+              td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -32,7 +32,7 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.effectValue }}
             tr(v-if="base")
               th {{ $t('スキル強化') }}
-              td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+              td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -53,7 +53,7 @@ div(v-if="skill.attackSkill.attribute === 3")
               td 1.3
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -73,7 +73,7 @@ div(v-if="skill.attackSkill.attribute === 3")
               td 1.3
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -97,7 +97,7 @@ div(v-if="skill.attackSkill.attribute === 3")
               td 1.4
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -120,7 +120,7 @@ div(v-if="skill.attackSkill.attribute === 3")
               td 1.4
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -147,7 +147,7 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -173,7 +173,7 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -200,7 +200,7 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -226,7 +226,7 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -243,7 +243,7 @@ div(v-else-if="skill.attackSkill.attribute")
               td 0.25 x {{ satk }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -257,7 +257,7 @@ div(v-else-if="skill.attackSkill.attribute")
               td 0.25 x {{ satk }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -278,7 +278,7 @@ div(v-else-if="skill.attackSkill.attribute")
               td 1.35
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -298,7 +298,7 @@ div(v-else-if="skill.attackSkill.attribute")
               td 1.35
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -322,7 +322,7 @@ div(v-else-if="skill.attackSkill.attribute")
               td 1.4
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -345,7 +345,7 @@ div(v-else-if="skill.attackSkill.attribute")
               td 1.4
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -373,7 +373,7 @@ div(v-else-if="skill.attackSkill.attribute")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -399,7 +399,7 @@ div(v-else-if="skill.attackSkill.attribute")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -427,7 +427,7 @@ div(v-else-if="skill.attackSkill.attribute")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}
@@ -453,7 +453,7 @@ div(v-else-if="skill.attackSkill.attribute")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ skillChain > 0 ? (1 + chain) : (1 + base) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
               td {{ +(1 + skillChain * .2).toFixed(15) }}

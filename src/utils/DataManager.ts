@@ -2,7 +2,7 @@ import areaDungeonModel from '@/../public/generated/areaDungeonModel.json';
 import areaModel from '@/../public/generated/areaModel.json';
 import files from '@/../public/generated/files.json';
 import { EAbnormalStateTarget, EBattleEffectKind, EBattleEffectTrigger, EDegreeMissonType } from '@/logic/Enums';
-import { lookup } from '@/logic/Lookup';
+import * as lookup from '@/logic/Lookup';
 import { AbnormalState, MVList as AbnormalStateMVList } from '@/master/abnormalState';
 import { AbnormalStateEffect, MVList as AbnormalStateEffectMVList } from '@/master/abnormalStateEffect';
 import { AdventBattle, RankingList } from '@/master/adventBattle';
@@ -88,7 +88,7 @@ export class DataManager {
       timeZone: 'America/Los_Angeles',
 
       version: '1.0.0',
-      updateDate: '2021-08-25',
+      updateDate: '2021-09-02',
     }),
   ];
 
