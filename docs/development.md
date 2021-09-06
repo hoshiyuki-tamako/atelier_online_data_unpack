@@ -173,7 +173,7 @@ item
       "R": 0,
       "B": 0
     },
-    "RST_SLP": {
+    "RST_SLP": { // RST = effect resistance, RST effect currently unused
       "G": 0.0,
       "M": 0,
       "R": 0,
@@ -185,13 +185,13 @@ item
       "R": 0,
       "B": 0
     },
-    "RST_BRN": {
+    "RST_BRN": { // resistance burn
       "G": 0.0,
       "M": 0,
       "R": 0,
       "B": 0
     },
-    "RST_FRZ": {
+    "RST_FRZ": { // resistance freeze
       "G": 0.0,
       "M": 0,
       "R": 0,
@@ -203,7 +203,7 @@ item
       "R": 0,
       "B": 0
     },
-    "RST_DRK": {
+    "RST_DRK": { // resistance darkness
       "G": 0.0,
       "M": 0,
       "R": 0,
@@ -227,7 +227,7 @@ item
       "R": 0,
       "B": 0
     },
-    "RST_STN": {
+    "RST_STN": { // resistance stun
       "G": 0.0,
       "M": 0,
       "R": 0,
