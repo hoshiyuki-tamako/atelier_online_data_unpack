@@ -609,7 +609,7 @@ div.top-container
                       td {{ skill.effectValue }}
       br
       div
-        span {{ $t('スキル連携') }} x {{ +(1 + skillChain * .2).toFixed(15) }}
+        span {{ $t('スキル連携') }} x {{ +(1 + skillChain * .2).toFixed(14) }}
         el-slider(v-model="skillChain" :step="1" :max="14")
       br
       template(v-if="player" v-for="{ chain, base } of [player.skillMultipliers]")
@@ -662,19 +662,19 @@ div.top-container
                   table.default-table
                     tr
                       th {{ $t('ベース') }}
-                      td 0.25 x {{ +playerAttck.base.toFixed(15) }}
+                      td 0.25 x {{ +playerAttck.base.toFixed(14) }}
                     tr(v-if="receiveDamage.defense")
                       th {{ $t('ディフェンス') }}
                       td -0.125 x {{ receiveDamage.defense }}
                     tr(v-for="multiplier of receiveDamage.multipliers")
                       th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                      td {{ +multiplier.value.toFixed(15) }}
+                      td {{ +multiplier.value.toFixed(14) }}
                     tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                       th {{ skill.name }}
                       td {{ skill.effectValue }}
                     tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
                       th {{ skill.name }}
-                      td {{ +(1 + skill.effectValue).toFixed(15) }}
+                      td {{ +(1 + skill.effectValue).toFixed(14) }}
                     tr(v-for="skill of receiveDamage.otherEffectSkills")
                       th {{ skill.name }}
                       td {{ skill.detail }}
@@ -694,19 +694,19 @@ div.top-container
                         table.default-table
                           tr
                             th {{ $t('ベース') }}
-                            td 0.25 x {{ +playerAttack.base.toFixed(15) }}
+                            td 0.25 x {{ +playerAttack.base.toFixed(14) }}
                           tr(v-if="receiveDamage.defense")
                             th {{ $t('ディフェンス') }}
                             td -0.125 x {{ receiveDamage.defense }}
                           tr(v-for="multiplier of receiveDamage.multipliers")
                             th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                            td {{ +multiplier.value.toFixed(15) }}
+                            td {{ +multiplier.value.toFixed(14) }}
                           tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                             th {{ skill.name }}
                             td {{ skill.effectValue }}
                           tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
                             th {{ skill.name }}
-                            td {{ +(1 + skill.effectValue).toFixed(15) }}
+                            td {{ +(1 + skill.effectValue).toFixed(14) }}
                           tr(v-for="skill of receiveDamage.otherEffectSkills")
                             th {{ skill.name }}
                             td {{ skill.detail }}
@@ -726,19 +726,19 @@ div.top-container
                         table.default-table
                           tr
                             th {{ $t('ベース') }}
-                            td 0.25 x {{ +playerAttack.base.toFixed(15) }}
+                            td 0.25 x {{ +playerAttack.base.toFixed(14) }}
                           tr(v-if="receiveDamage.defense")
                             th {{ $t('ディフェンス') }}
                             td -0.125 x {{ receiveDamage.defense }}
                           tr(v-for="multiplier of receiveDamage.multipliers")
                             th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                            td {{ +multiplier.value.toFixed(15) }}
+                            td {{ +multiplier.value.toFixed(14) }}
                           tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                             th {{ skill.name }}
                             td {{ skill.effectValue }}
                           tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
                             th {{ skill.name }}
-                            td {{ +(1 + skill.effectValue).toFixed(15) }}
+                            td {{ +(1 + skill.effectValue).toFixed(14) }}
                           tr(v-for="skill of receiveDamage.otherEffectSkills")
                             th {{ skill.name }}
                             td {{ skill.detail }}
@@ -758,19 +758,19 @@ div.top-container
                         table.default-table
                           tr
                             th {{ $t('ベース') }}
-                            td 0.25 x {{ +playerAttack.base.toFixed(15) }}
+                            td 0.25 x {{ +playerAttack.base.toFixed(14) }}
                           tr(v-if="receiveDamage.defense")
                             th {{ $t('ディフェンス') }}
                             td -0.125 x {{ receiveDamage.defense }}
                           tr(v-for="multiplier of receiveDamage.multipliers")
                             th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                            td {{ +multiplier.value.toFixed(15) }}
+                            td {{ +multiplier.value.toFixed(14) }}
                           tr(v-for="skill of receiveDamage.zeroPlusMultiplierSkills")
                             th {{ skill.name }}
                             td {{ skill.effectValue }}
                           tr(v-for="skill of receiveDamage.onePlusMultiplierSkills")
                             th {{ skill.name }}
-                            td {{ +(1 + skill.effectValue).toFixed(15) }}
+                            td {{ +(1 + skill.effectValue).toFixed(14) }}
                           tr(v-for="skill of receiveDamage.otherEffectSkills")
                             th {{ skill.name }}
                             td {{ skill.detail }}
@@ -791,13 +791,13 @@ div.top-container
                     table.default-table
                       tr
                         th {{ $t('ベース') }}
-                        td 0.25 x {{ +enemyAttack.base.toFixed(15) }}
+                        td 0.25 x {{ +enemyAttack.base.toFixed(14) }}
                       tr(v-if="receiveDamage.defense")
                         th {{ $t('ディフェンス') }}
                         td -0.125 x {{ receiveDamage.defense }}
                       tr(v-for="multiplier of receiveDamage.multipliers")
                         th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                        td {{ +multiplier.value.toFixed(15) }}
+                        td {{ +multiplier.value.toFixed(14) }}
               td {{ receiveDamage.total.toFixed() }}
               td HP: {{ receiveDamage.hp.toFixed() }}
             tr(v-for="skill of enemy.enemy.skills.filter((p) => p.type === 1 && p.effect === 1)")
@@ -812,13 +812,13 @@ div.top-container
                         table.default-table
                           tr
                             th {{ $t('ベース') }}
-                            td 0.25 x {{ +enemyAttack.base.toFixed(15) }}
+                            td 0.25 x {{ +enemyAttack.base.toFixed(14) }}
                           tr(v-if="receiveDamage.defense")
                             th {{ $t('ディフェンス') }}
                             td -0.125 x {{ receiveDamage.defense }}
                           tr(v-for="multiplier of receiveDamage.multipliers")
                             th {{ multiplier.translatedLabel || $t(multiplier.label) }}
-                            td {{ +multiplier.value.toFixed(15) }}
+                            td {{ +multiplier.value.toFixed(14) }}
                   td {{ receiveDamage.total.toFixed() }}
                   td HP: {{ receiveDamage.hp.toFixed() }}
 </template>

@@ -15,10 +15,10 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.effectValue }}
             tr(v-if="base")
               th {{ $t('スキル強化') }}
-              td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+              td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
       td
         el-popover(placement="right-end" trigger="hover")
           template(slot="reference")
@@ -32,10 +32,10 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.effectValue }}
             tr(v-if="base")
               th {{ $t('スキル強化') }}
-              td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+              td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
     tr
       th
         el-popover(placement="left-end" trigger="hover")
@@ -53,10 +53,10 @@ div(v-if="skill.attackSkill.attribute === 3")
               td 1.3
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
       td
         el-popover(placement="right-end" trigger="hover")
           template(slot="reference")
@@ -73,10 +73,10 @@ div(v-if="skill.attackSkill.attribute === 3")
               td 1.3
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
     tr
       th
         el-popover(placement="left-end" trigger="hover")
@@ -97,10 +97,10 @@ div(v-if="skill.attackSkill.attribute === 3")
               td 1.4
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
       td
         el-popover(placement="right-end" trigger="hover")
           template(slot="reference")
@@ -120,10 +120,10 @@ div(v-if="skill.attackSkill.attribute === 3")
               td 1.4
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
     tr
       th
         el-popover(placement="left-end" trigger="hover")
@@ -147,10 +147,10 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
       td
         el-popover(placement="right-end" trigger="hover")
           template(slot="reference")
@@ -173,10 +173,10 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
     tr
       th
         el-popover(placement="left-end" trigger="hover")
@@ -200,10 +200,10 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
       td
         el-popover(placement="right-end" trigger="hover")
           template(slot="reference")
@@ -226,10 +226,10 @@ div(v-if="skill.attackSkill.attribute === 3")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
 div(v-else-if="skill.attackSkill.attribute")
   table.default-table(v-for="satk of [player.totalState('SATK')]")
     tr
@@ -243,10 +243,10 @@ div(v-else-if="skill.attackSkill.attribute")
               td 0.25 x {{ satk }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
       td
         el-popover(placement="right-end" trigger="hover")
           template(slot="reference")
@@ -257,10 +257,10 @@ div(v-else-if="skill.attackSkill.attribute")
               td 0.25 x {{ satk }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
     tr
       th
         el-popover(placement="left-end" trigger="hover")
@@ -278,10 +278,10 @@ div(v-else-if="skill.attackSkill.attribute")
               td 1.35
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
       td
         el-popover(placement="right-end" trigger="hover")
           template(slot="reference")
@@ -298,10 +298,10 @@ div(v-else-if="skill.attackSkill.attribute")
               td 1.35
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
     tr
       th
         el-popover(placement="left-end" trigger="hover")
@@ -322,10 +322,10 @@ div(v-else-if="skill.attackSkill.attribute")
               td 1.4
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
       td
         el-popover(placement="right-end" trigger="hover")
           template(slot="reference")
@@ -345,10 +345,10 @@ div(v-else-if="skill.attackSkill.attribute")
               td 1.4
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
 
     tr
       th
@@ -373,10 +373,10 @@ div(v-else-if="skill.attackSkill.attribute")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
       td
         el-popover(placement="right-end" trigger="hover")
           template(slot="reference")
@@ -399,10 +399,10 @@ div(v-else-if="skill.attackSkill.attribute")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
 
     tr
       th
@@ -427,10 +427,10 @@ div(v-else-if="skill.attackSkill.attribute")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
       td
         el-popover(placement="right-end" trigger="hover")
           template(slot="reference")
@@ -453,10 +453,10 @@ div(v-else-if="skill.attackSkill.attribute")
               td {{ skill.attackSkill.element ? 2 : 1 }}
             tr(v-if="base")
                 th {{ $t('スキル強化') }}
-                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(15) }}
+                td {{ +(skillChain > 0 ? (1 + chain) : (1 + base)).toFixed(14) }}
             tr(v-if="skillChain")
               th {{ $t('連携') }}
-              td {{ +(1 + skillChain * .2).toFixed(15) }}
+              td {{ +(1 + skillChain * .2).toFixed(14) }}
 </template>
 
 <script lang="ts">
