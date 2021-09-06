@@ -5,28 +5,32 @@ div(v-if="skill")
       p
         el-link.poppover__a(icon="el-icon-more" :underline="false") {{ skill.name }}
     div
-      router-link.skill-popup-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank")
-        i.el-icon-right
-      p.popover__detail(v-if="skill.detail") {{ skill.detail }}
-      p(v-if="skill.effectValue || skill.effectValue2")
-        b {{ $t(dataManager.lookup.EBattleEffectTarget[skill.effectTarget] || dataManager.lookup.EBattleEffectKind[skill.effect] || '数値') }}
-        template(v-if="skill.isEffectValueRate")
-          span {{ skill.effectValueText }}
-        template(v-else)
-          span  {{ skill.effectValue }}
-          span(v-if="skill.effectValue2") , {{ skill.effectValue2 }}
-      template(v-if="skill.combSkillList && skill.combSkillList.length")
-        br
-        p
-          b {{ $t('含まれるスキル') }}
-        template(v-for="_skill of skill.combSkillList")
-          p {{ _skill.name }}
-          p(v-if="_skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="__skill of [dataManager.skillById[_skill.id]].filter((p) => p)") {{ __skill.name }} / {{ __skill.effectValue2 }}{{ $t('ターン') }}
-        p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="_skill of [dataManager.skillById[skill.id]].filter((p) => p)") {{ _skill.name }} / {{ _skill.effectValue2 }}{{ $t('ターン') }}
+      div.popover-message__top-container
+        div
+          p.popover__detail(v-if="skill.detail") {{ skill.detail }}
+        div.popover-message__skill-link
+          router-link.skill-popup-link(:to="{ name: 'Skills', query: { id: skill.id } }" target="_blank")
+            i.el-icon-right
+      div
+        p(v-if="skill.effectValue || skill.effectValue2")
+          b {{ $t(dataManager.lookup.EBattleEffectTarget[skill.effectTarget] || dataManager.lookup.EBattleEffectKind[skill.effect] || '数値') }}
+          template(v-if="skill.isEffectValueRate")
+            span {{ skill.effectValueText }}
+          template(v-else)
+            span  {{ skill.effectValue }}
+            span(v-if="skill.effectValue2") , {{ skill.effectValue2 }}
+        template(v-if="skill.combSkillList && skill.combSkillList.length")
+          br
+          p
+            b {{ $t('含まれるスキル') }}
+          template(v-for="_skill of skill.combSkillList")
+            p {{ _skill.name }}
+            p(v-if="_skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="__skill of [dataManager.skillById[_skill.id]].filter((p) => p)") {{ __skill.name }} / {{ __skill.effectValue2 }}{{ $t('ターン') }}
+          p(v-if="skill.effect === EBattleEffectKind.eSTATE_GRANT_PASSIVE" v-for="_skill of [dataManager.skillById[skill.id]].filter((p) => p)") {{ _skill.name }} / {{ _skill.effectValue2 }}{{ $t('ターン') }}
 
-      br(v-if="skill.stateOwn.length || skill.state.length")
-      AbnormlStateTags(:states="skill.stateOwn" :own="true")
-      AbnormlStateTags(:states="skill.state")
+        br(v-if="skill.stateOwn.length || skill.state.length")
+        AbnormlStateTags(:states="skill.stateOwn" :own="true")
+        AbnormlStateTags(:states="skill.state")
 </template>
 
 <script lang="ts">
@@ -61,7 +65,13 @@ th, td
   text-align: left
   padding: 4px
 
+.popover-message__top-container
+  display: flex
+
+.popover-message__skill-link
+  margin-left: auto
+
 .skill-popup-link
   float: right
-  margin-left: 12px
+  padding-left: 12px
 </style>
