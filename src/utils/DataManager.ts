@@ -69,8 +69,8 @@ export class DataManager {
       locales: ['ja-JP'],
       timeZone: 'Asia/Tokyo',
 
-      version: '3.15.2',
-      updateDate: '2021-05-26',
+      version: '3.15.3',
+      updateDate: '2021-09-22',
     }),
     plainToClass(AtelierServerInfo, {
       id: 'tw',
@@ -88,7 +88,7 @@ export class DataManager {
       timeZone: 'America/Los_Angeles',
 
       version: '1.0.0',
-      updateDate: '2021-09-02',
+      updateDate: '2021-09-16',
     }),
   ];
 

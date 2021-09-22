@@ -373,161 +373,161 @@ abnormalstateeffect
 chara
 
 ```ts
+{
+  "DF": 4, // id
+  "CATEG": 1, // character category
+  "NAME": "アニスヒソップ",
+  "DESC": "アニスヒソップの説明。",
+  "GEN": 2, // gender
+  "ICON": "./chara.png",
+  "BTST": 2, // Job kind, see enum eJobKind
+  "EXC": 8,
+  "SKILL": [ // skills, note that it can have duplicated / overrideID skill, make sure remove before process
     {
-      "DF": 4, // id
-      "CATEG": 1, // character category
-      "NAME": "アニスヒソップ",
-      "DESC": "アニスヒソップの説明。",
-      "GEN": 2, // gender
-      "ICON": "./chara.png",
-      "BTST": 2, // Job kind, see enum eJobKind
-      "EXC": 8,
-      "SKILL": [ // skills, note that it can have duplicated / overrideID skill, make sure remove before process
-        {
-          "DF": 400101, // relationship to skill.id
-          "LV": 0 // required character reach this level
-        },
-      ],
-      "SPEC": { // see item.EQU for more info
-        "HP": {
-          "G": 1.0,
-          "M": 1463,
-          "R": 60,
-          "B": 147
-        },
-        "SATK": {
-          "G": 1.0,
-          "M": 732,
-          "R": 60,
-          "B": 73
-        },
-        "SDEF": {
-          "G": 1.0,
-          "M": 1000,
-          "R": 60,
-          "B": 100
-        },
-        "MATK": {
-          "G": 1.0,
-          "M": 1195,
-          "R": 60,
-          "B": 119
-        },
-        "MDEF": {
-          "G": 1.0,
-          "M": 1268,
-          "R": 60,
-          "B": 127
-        },
-        "SPD": {
-          "G": 1.0,
-          "M": 242,
-          "R": 60,
-          "B": 8
-        },
-        "SDA": {
-          "G": 1.0,
-          "M": 100,
-          "R": 60,
-          "B": 100
-        },
-        "LDA": {
-          "G": 1.0,
-          "M": 100,
-          "R": 60,
-          "B": 100
-        },
-        "QTH": {
-          "G": 1.0,
-          "M": 10,
-          "R": 60,
-          "B": 10
-        },
-        "DDG": {
-          "G": 1.0,
-          "M": 0,
-          "R": 60,
-          "B": 0
-        },
-        "SADD": {
-          "G": 1.0,
-          "M": 0,
-          "R": 60,
-          "B": 0
-        }
-      },
-      "FDM": [ // food
-        {
-          "NO": 1, // sort order
-          "GRD": 1, // item count of "FD": []
-          "FD": [ // item
-            {
-              "DF": 10830001, // relationship to item.DF
-              "QTY": 0 // quality of the item
-            }
-          ],
-          "HP": 8, // total state, just add this value to existing state will give the result total state. no sum/other process required
-          "SATK": 4,
-          "SDEF": 5,
-          "MATK": 6,
-          "MDEF": 7,
-          "SPD": 1,
-          "SDA": 0,
-          "LDA": 0,
-          "QTH": 0,
-          "DDG": 0,
-          "SADD": 0
-        }
-      ],
-      "QST": [ // character quest
-        {
-          "NO": 1, // sort order
-          "QUEST_DF": 500004001, // relationship to quest.DF
-          "FLAG_DF": 23005000,
-          "LV": 1 // required character level
-        },
-      ],
-      "WEAPON": [ // weapon gender
-        {
-          "GEN": 2005 // relationship to item.EQU_GND[].GEN
-        }
-      ],
-      "GROW": [ // how many stone required to growth
-        {
-          "STAR": 1, // at one star
-          "STONE": 10 // how many stone required
-        },
-      ],
-      "MDL": { // model info
-        "fScale": 1.0,
-        "eAnimKind": 1,
-        "avHelmOffset": [
-          {
-            "id": 4,
-            "offsetY": 0.0
-          }
-        ],
-        "bMacho": 0,
-        "hairId": 4,
-        "eyeId": 4,
-        "headId": 4,
-        "voice": 4,
-        "weaponId": 0,
-        "bodyId": 4,
-        "shieldId": 0,
-        "helmId": 0,
-        "accId1": 16,
-        "accId2": 0,
-        "accId3": 0
-      },
-      "BA": [ // blaze art
-        {
-          "LV": 100, // level that required to gain this blaze art
-          "DF": 5008 // relationship to blaze_art.DF
-        }
-      ],
-      "GROUP_DF": 4 // relationship to item.GORUP_DF, use for checking character only special item
+      "DF": 400101, // relationship to skill.id
+      "LV": 0 // required character reach this level
+    },
+  ],
+  "SPEC": { // see item.EQU for more info
+    "HP": {
+      "G": 1.0,
+      "M": 1463,
+      "R": 60,
+      "B": 147
+    },
+    "SATK": {
+      "G": 1.0,
+      "M": 732,
+      "R": 60,
+      "B": 73
+    },
+    "SDEF": {
+      "G": 1.0,
+      "M": 1000,
+      "R": 60,
+      "B": 100
+    },
+    "MATK": {
+      "G": 1.0,
+      "M": 1195,
+      "R": 60,
+      "B": 119
+    },
+    "MDEF": {
+      "G": 1.0,
+      "M": 1268,
+      "R": 60,
+      "B": 127
+    },
+    "SPD": {
+      "G": 1.0,
+      "M": 242,
+      "R": 60,
+      "B": 8
+    },
+    "SDA": {
+      "G": 1.0,
+      "M": 100,
+      "R": 60,
+      "B": 100
+    },
+    "LDA": {
+      "G": 1.0,
+      "M": 100,
+      "R": 60,
+      "B": 100
+    },
+    "QTH": {
+      "G": 1.0,
+      "M": 10,
+      "R": 60,
+      "B": 10
+    },
+    "DDG": {
+      "G": 1.0,
+      "M": 0,
+      "R": 60,
+      "B": 0
+    },
+    "SADD": {
+      "G": 1.0,
+      "M": 0,
+      "R": 60,
+      "B": 0
     }
+  },
+  "FDM": [ // food
+    {
+      "NO": 1, // sort order
+      "GRD": 1, // item count of "FD": []
+      "FD": [ // item
+        {
+          "DF": 10830001, // relationship to item.DF
+          "QTY": 0 // quality of the item
+        }
+      ],
+      "HP": 8, // total state, just add this value to existing state will give the result total state. no sum/other process required
+      "SATK": 4,
+      "SDEF": 5,
+      "MATK": 6,
+      "MDEF": 7,
+      "SPD": 1,
+      "SDA": 0,
+      "LDA": 0,
+      "QTH": 0,
+      "DDG": 0,
+      "SADD": 0
+    }
+  ],
+  "QST": [ // character quest
+    {
+      "NO": 1, // sort order
+      "QUEST_DF": 500004001, // relationship to quest.DF
+      "FLAG_DF": 23005000,
+      "LV": 1 // required character level
+    },
+  ],
+  "WEAPON": [ // weapon gender
+    {
+      "GEN": 2005 // relationship to item.EQU_GND[].GEN
+    }
+  ],
+  "GROW": [ // how many stone required to growth
+    {
+      "STAR": 1, // at one star
+      "STONE": 10 // how many stone required
+    },
+  ],
+  "MDL": { // model info
+    "fScale": 1.0,
+    "eAnimKind": 1,
+    "avHelmOffset": [
+      {
+        "id": 4,
+        "offsetY": 0.0
+      }
+    ],
+    "bMacho": 0,
+    "hairId": 4,
+    "eyeId": 4,
+    "headId": 4,
+    "voice": 4,
+    "weaponId": 0,
+    "bodyId": 4,
+    "shieldId": 0,
+    "helmId": 0,
+    "accId1": 16,
+    "accId2": 0,
+    "accId3": 0
+  },
+  "BA": [ // blaze art
+    {
+      "LV": 100, // level that required to gain this blaze art
+      "DF": 5008 // relationship to blaze_art.DF
+    }
+  ],
+  "GROUP_DF": 4 // relationship to item.GORUP_DF, use for checking character only special item
+}
 ```
 
 ## Blaze Art
