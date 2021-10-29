@@ -26,7 +26,7 @@ due to ad-blocker, some of the files has rename to fit the needs such as removin
 
 Suggest to have 16GB or more ram, a fast nvme ssd due to large amount of audio/assets files when using vue-cli
 
-- NodeJs >= 14
+- NodeJs >= 16
 
 ```bash
 npm i
