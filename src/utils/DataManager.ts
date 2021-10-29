@@ -79,7 +79,7 @@ export class DataManager {
       timeZone: 'Asia/Taipei',
 
       version: '3.5.0',
-      updateDate: '2021-07-29',
+      updateDate: '2021-10-18',
     }),
     plainToClass(AtelierServerInfo, {
       id: 'en',
