@@ -88,11 +88,11 @@ export class DataManager {
       timeZone: 'America/Los_Angeles',
 
       version: '1.0.0',
-      updateDate: '2021-11-11',
+      updateDate: '2021-11-25',
     }),
   ];
 
-  public static get serversById () {
+  public static get serversById() {
     return Enumerable.from(this.servers).toObject((p) => p.id, (p) => p) as { [id: string]: AtelierServerInfo };
   }
 
