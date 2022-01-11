@@ -88,7 +88,7 @@ export class DataManager {
       timeZone: 'America/Los_Angeles',
 
       version: '1.0.0',
-      updateDate: '2021-12-09',
+      updateDate: '2022-01-06',
     }),
   ];
 
