@@ -37,11 +37,15 @@ import Enumerable from 'linq';
 
 import { ApiManager } from './ApiManager';
 
+function timezoneOffset(timeZone: string) {
+  return +new Date(0).toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone });
+}
+
 const localesLabel = {
   'ja-JP': '日本語',
   'zh-TW': '繁體中文',
   'zh-CN': '简体',
-  'en': 'English',
+  en: 'English',
 };
 
 class AtelierServerInfo {
@@ -52,6 +56,8 @@ class AtelierServerInfo {
 
   public version = '';
   public updateDate = '';
+
+  public endOfServicesDate = null as Date;
 
   public get languages() {
     return this.locales.map((locale) => ({
@@ -71,6 +77,8 @@ export class DataManager {
 
       version: '3.15.3',
       updateDate: '2021-09-22',
+
+      endOfServicesDate: null,
     }),
     plainToClass(AtelierServerInfo, {
       id: 'tw',
@@ -80,6 +88,10 @@ export class DataManager {
 
       version: '3.5.0',
       updateDate: '2021-10-18',
+
+      get endOfServicesDate() {
+        return new Date(Date.UTC(2022, 2 - 1, 14));
+      },
     }),
     plainToClass(AtelierServerInfo, {
       id: 'en',
@@ -88,7 +100,9 @@ export class DataManager {
       timeZone: 'America/Los_Angeles',
 
       version: '1.0.0',
-      updateDate: '2022-01-06',
+      updateDate: '2022-01-20',
+
+      endOfServicesDate: null,
     }),
   ];
 

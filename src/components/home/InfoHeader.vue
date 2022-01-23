@@ -2,12 +2,18 @@
 div.title__container
   h2 {{ $t('アトリエオンライン資料庫') }}
   div
-    p(v-for="server of dataManager.constructor.servers")
+    p(v-for="server of DataManager.servers")
       span.version-link__container
-        span Game Version {{ server.version }} ({{ server.updateDate }})&nbsp;
+        el-popover(v-if="server.endOfServicesDate" placement="right-end" trigger="hover")
+          span(slot="reference")
+            span(style="text-decoration: line-through") Game Version {{ server.version }} &nbsp;
+          div
+            span {{ new Intl.DateTimeFormat(dataManager.locale, { dateStyle: 'long' }).format(server.endOfServicesDate) }} {{ $t('サービス終了') }}
+        span(v-else) Game Version {{ server.version }} ({{ server.updateDate }})&nbsp;
+
         template(v-for="(language, i) in server.languages")
           span(v-if="$i18n.locale !== language.locale")
-            el-link(type="success" :underline="false" :href="changeLocaleHref(server.serverId, language.locale)") ({{ language.name }})
+            el-link(type="success" :underline="false" :href="changeLocaleHref(server.id, language.locale)") ({{ language.name }})
           span(v-else) ({{ language.name }})
           span(v-if="server.languages.length !== (i - 1) ")
   div
@@ -26,6 +32,7 @@ div.title__container
 import Component from 'vue-class-component';
 import { mapFields } from 'vuex-map-fields';
 import VueBase from '@/components/VueBase';
+import { DataManager } from '@/utils/DataManager';
 
 abstract class VueWithMapFields extends VueBase {
   public settingDialogVisible!: boolean;
@@ -41,6 +48,10 @@ abstract class VueWithMapFields extends VueBase {
   },
 })
 export default class extends VueWithMapFields {
+  public get DataManager() {
+    return DataManager;
+  }
+
   public changeLocaleHref(serverId: string, locale: string) {
     const url = new URL(window.location.href);
     // url.searchParams.set('serverId', serverId);
