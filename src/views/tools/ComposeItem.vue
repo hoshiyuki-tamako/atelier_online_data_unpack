@@ -28,20 +28,20 @@ div
     div.compose-material-container
       div.compose-material-top
         div.compose-material(v-for="(material, i) of materials")
-          el-popover(placement="right-end" trigger="hover")
-            div(slot="reference")
-              div
-                el-input-number.compose-input--size(v-model="materialOptions[i].quality" :min="1" :max="100" :placeholder="$t('品質')" size="small")
-              div
-                el-select.compose-input--size(v-model="materialOptions[i].addonQuality" :placeholder="$t('品質特性')" size="small" filterable)
-                  el-option(v-for="v in new Array(16).keys()" :key="v" :label="`${$t('品質特性')} ${v}`" :value="v")
-              div
+          div
+            div
+              el-input-number.compose-input--size(v-model="materialOptions[i].quality" :min="1" :max="100" :placeholder="$t('品質')" size="small")
+            div
+              el-select.compose-input--size(v-model="materialOptions[i].addonQuality" :placeholder="$t('品質特性')" size="small" filterable)
+                el-option(v-for="v in new Array(16).keys()" :key="v" :label="`${$t('品質特性')} ${v}`" :value="v")
+            el-popover(placement="right-end" trigger="hover")
+              div(slot="reference")
                 img(:src="material.icon" :alt="material.NAME")
-            div.item-popover
-              router-link(:to="{ name: 'ItemsItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ material.NAME }}
-              p {{ material.DESC }}
-              br(v-if="material.RSP.length")
-              router-link(v-if="material.RSP.length" :to="{ name: 'ToolsComposeItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ $t('調合') }}
+              div.item-popover
+                router-link(:to="{ name: 'ItemsItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ material.NAME }}
+                p {{ material.DESC }}
+                br(v-if="material.RSP.length")
+                router-link(v-if="material.RSP.length" :to="{ name: 'ToolsComposeItem', query: { df: material.DF, quality: materialOptions[i].quality } }" target="_blank") {{ $t('調合') }}
 
       div.compose-item(@click="itemPickerDialogVisible = true")
         div.compose-requirement
