@@ -304,7 +304,7 @@ export default class extends VueBase {
     this.selectTab();
   }
 
-  private get hasMainTabItem() {
+  public get hasMainTabItem() {
     return (this.item.hasSkill || this.item.EQU_BRD)
       || (this.item.GROUP_DF && this.dataManager.charactersByGroupDf[this.item.GROUP_DF])
       || this.item.LRCP_CHARA.length
@@ -312,7 +312,7 @@ export default class extends VueBase {
       || this.dataManager.itemsByRecipe[this.item.DF];
   }
 
-  private selectTab() {
+  public selectTab() {
     if (this.hasMainTabItem) {
       this.activeTab = 'main';
     } else if (this.item.SPC.length) {

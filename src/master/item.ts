@@ -38,7 +38,7 @@ export class Item {
   m_Script: MGameObject;
   m_Name: string;
 
-  @Type((_) => MVList)
+  @Type(() => MVList)
   public m_vList: MVList[] = [];
 }
 
@@ -74,7 +74,7 @@ export class MVList {
   EQU_BRD: number;
   RSP: Rsp[];
   ALT: Alt;
-  @Type((_) => EQU)
+  @Type(() => EQU)
   EQU: EQU;
   EQU_GND: EquGnd[];
   ELM: Elm;
@@ -336,7 +336,7 @@ export class MVList {
   }
 
   public getSupportElements() {
-    return Object.keys(this.ELM).map(this.getSupportElement.bind(this));
+    return Object.keys(this.ELM).map((element) => this.getSupportElement(element));
   }
 }
 
@@ -362,48 +362,48 @@ export interface Elm {
 }
 
 export class EQU {
-  @Type((_) => Formula)
+  @Type(() => Formula)
   EB: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   SATK: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   SDEF: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   MATK: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   MDEF: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   SPD: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   SDA: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   LDA: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   QTH: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   DDG: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   SADD: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   RST_SLP: Formula;
-  @Type((_) => Formula)
-  @Type((_) => Formula)
+  @Type(() => Formula)
+  @Type(() => Formula)
   RST_PSN: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   RST_BRN: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   RST_FRZ: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   RST_PRZ: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   RST_DRK: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   RST_SLN: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   RST_CUS: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   RST_SLW: Formula;
-  @Type((_) => Formula)
+  @Type(() => Formula)
   RST_STN: Formula;
 }
 
