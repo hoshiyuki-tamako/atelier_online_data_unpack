@@ -6,10 +6,10 @@ div.title__container
       span.version-link__container
         el-popover(v-if="server.endOfServicesDate" placement="right-end" trigger="hover")
           span(slot="reference")
-            span(style="text-decoration: line-through") Game Version {{ server.version }} &nbsp;
+            span ❌ Game Version {{ server.version }} &nbsp;
           div
             span {{ new Intl.DateTimeFormat(dataManager.locale, { dateStyle: 'long' }).format(server.endOfServicesDate) }} {{ $t('サービス終了') }}
-        span(v-else) Game Version {{ server.version }} ({{ server.updateDate }})&nbsp;
+        span(v-else) 🟢 Game Version {{ server.version }} ({{ server.updateDate }})&nbsp;
 
         template(v-for="(language, i) in server.languages")
           span(v-if="$i18n.locale !== language.locale")
