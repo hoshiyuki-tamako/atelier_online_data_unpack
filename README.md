@@ -89,7 +89,7 @@ docker-compose up --build -d
 - (optional) use `mitmproxy` to extract API messagepack
 - (optional) use `Il2CppDumper` to dump DLL for Enums/others
 
-Make sure `AssetStudio` -> `Options` -> `Export options` -> `Group exported aassets by` `type name`
+Make sure `AssetStudio` -> `Options` -> `Export options` -> `Group exported assets by` `type name`
 
 1. export type `MonoBehaviour` Container `assets/assetbundles/master/**/*` to `./source/jp/master/MonoBehaviour/*.json`
 2. export type `MonoBehaviour` Container `assets/assetbundles/adv/*` to `./source/jp/adv/MonoBehaviour/*.json`
