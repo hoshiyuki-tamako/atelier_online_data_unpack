@@ -76,9 +76,9 @@ export class DataManager {
       timeZone: 'Asia/Tokyo',
 
       version: '3.15.3',
-      updateDate: '2021-09-22',
+      updateDate: '2022-01-26',
 
-      endOfServicesDate: null,
+      endOfServicesDate: new Date(Date.UTC(2022, 3 - 1, 31, 15)),
     }),
     plainToClass(AtelierServerInfo, {
       id: 'tw',
@@ -89,9 +89,7 @@ export class DataManager {
       version: '3.5.0',
       updateDate: '2021-10-18',
 
-      get endOfServicesDate() {
-        return new Date(Date.UTC(2022, 2 - 1, 14));
-      },
+      endOfServicesDate: new Date(Date.UTC(2022, 2 - 1, 14)),
     }),
     plainToClass(AtelierServerInfo, {
       id: 'en',

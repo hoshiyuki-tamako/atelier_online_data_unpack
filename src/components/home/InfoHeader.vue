@@ -80,6 +80,7 @@ export default class extends VueWithMapFields {
   color: rgb(153, 122, 79)
 
 .version-link__container
+  cursor: help
   > span
     padding-right: 4px
 </style>
