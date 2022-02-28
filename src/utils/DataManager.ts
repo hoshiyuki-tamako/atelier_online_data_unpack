@@ -76,7 +76,7 @@ export class DataManager {
       timeZone: 'Asia/Tokyo',
 
       version: '3.15.3',
-      updateDate: '2022-01-26',
+      updateDate: '2022-02-28',
 
       endOfServicesDate: new Date(Date.UTC(2022, 3 - 1, 31, 15)),
     }),
@@ -98,7 +98,7 @@ export class DataManager {
       timeZone: 'America/Los_Angeles',
 
       version: '1.0.0',
-      updateDate: '2022-02-03',
+      updateDate: '2022-02-17',
 
       endOfServicesDate: null,
     }),
