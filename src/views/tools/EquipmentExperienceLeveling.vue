@@ -85,7 +85,7 @@ export default class extends VueWithMapFields {
 
   //
   public get equipmentExpItems() {
-    return this.dataManager.itemsByCategory[ECategory.eGROW_OTHER];
+    return this.dataManager.itemsByCategory[ECategory.eGROW_OTHER] ?? [];
   }
 
   public get experienceItemDfs() {

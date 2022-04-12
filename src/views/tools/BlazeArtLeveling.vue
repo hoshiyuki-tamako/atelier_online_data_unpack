@@ -80,7 +80,7 @@ export default class extends VueWithMapFields {
 
   //
   public get blazeArtExpItems() {
-    return this.dataManager.itemsByCategory[ECategory.eGROW_BLAZE_ARTS];
+    return this.dataManager.itemsByCategory[ECategory.eGROW_BLAZE_ARTS] ?? [];
   }
 
   public get experienceItemDfs() {

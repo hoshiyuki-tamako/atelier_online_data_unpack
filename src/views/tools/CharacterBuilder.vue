@@ -1059,7 +1059,7 @@ export default class extends VueBase {
 
   // item picker
   public get itemPickerItems() {
-    return this.itemPickerFilterCategory ? this.dataManager.itemsByCategory[this.itemPickerFilterCategory] : this.dataManager.itemsEquipments;
+    return (this.itemPickerFilterCategory ? this.dataManager.itemsByCategory[this.itemPickerFilterCategory] : this.dataManager.itemsEquipments) ?? [];
   }
 
   public get filteredItemPickerItems() {

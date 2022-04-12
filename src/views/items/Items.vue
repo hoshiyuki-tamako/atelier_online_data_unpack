@@ -165,7 +165,7 @@ export default class extends VueWithMapFields {
 
   public get items() {
     if (this.category) {
-      return this.dataManager.itemsByCategory[this.category];
+      return this.dataManager.itemsByCategory[this.category] ?? [];
     }
     if (this.sort !== null) {
       return this.dataManager.item.m_vList;

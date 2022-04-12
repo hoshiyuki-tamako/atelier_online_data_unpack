@@ -283,7 +283,7 @@ export default class extends VueWithMapFields {
     }
 
     if (this.category) {
-      return this.dataManager.itemsByCategory[this.category];
+      return this.dataManager.itemsByCategory[this.category] ?? [];
     }
 
     return this.dataManager.itemsEquipments;
