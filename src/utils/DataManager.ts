@@ -100,7 +100,7 @@ export class DataManager {
       version: '1.0.0',
       updateDate: '2022-04-28',
 
-      endOfServicesDate: null,
+      endOfServicesDate: new Date(Date.UTC(2022, 8 - 1, 17)),
     }),
   ];
 
