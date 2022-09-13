@@ -1162,8 +1162,8 @@ export enum EBattleElementKind
   eNONE,
   eFIRE,
   eWATER,
-  eEARTH,
   eWIND,
+  eEARTH,
   eLIGHT,
   eDARK
 }
